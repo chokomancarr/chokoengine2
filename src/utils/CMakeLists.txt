@@ -1,7 +1,7 @@
-set(DIR src)
+set(DIR src/utils)
 
 set(SOURCES
 	${SOURCES}
-	${DIR}/chokoengine.cpp
+	${DIR}/strext.cpp
 	PARENT_SCOPE
 )

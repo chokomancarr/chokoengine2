@@ -1,6 +1,7 @@
 #pragma once
 
 BEGIN_CE_NAMESPACE
+
 enum class InputKey {
     None = 0,
 	Space = 32,
@@ -17,4 +18,5 @@ enum class InputKey {
 	NumPadDot, NumPadDivide, NumPadMultiply, NumPadMinus, NumPadAdd, NumPadEnter, NumPadEqual,
 	LeftShift = 340, LeftControl, LeftAlt, RightShift = 344, RightControl, RightAlt
 };
+
 END_CE_NAMESPACE

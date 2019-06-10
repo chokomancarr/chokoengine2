@@ -1,9 +1,5 @@
 #pragma once
-#include "defines.hpp"
-
-#include <iostream>
-#include <fstream>
-#include <string>
+#include "chokoengine.hpp"
 
 BEGIN_CE_NAMESPACE
 

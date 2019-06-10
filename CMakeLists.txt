@@ -84,16 +84,21 @@ else()
     )
 endif()
 
-set(SOURCES)
+if(MSVC)
+    set(SOURCES
+        cpp.hint
+    )
+else()
+	set(SOURCES)
+endif()
 
 include_directories(${INC_DIRS})
 link_directories(${LINK_DIRS})
 
 add_subdirectory("src")
-if (MSVC)
-    add_subdirectory("src/winonly")
-endif()
+add_subdirectory("src/core")
+add_subdirectory("src/utils")
 
-add_library(chokoengine2 ${SOURCES})
+add_library(chokoengine2 SHARED ${SOURCES} ${HEADERS})
 
 target_link_libraries(chokoengine2 ${LIBS})

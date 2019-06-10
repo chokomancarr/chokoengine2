@@ -1,3 +1,5 @@
+build/
+
 # Prerequisites
 *.d
 
@@ -16,10 +18,6 @@
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
-*.smod
-
 # Compiled Static libraries
 *.lai
 *.la
@@ -31,5 +29,8 @@
 *.out
 *.app
 
+#Visual Studio
 .vscode/
 .vs/
+*.user
+CMakeSettings.json
