@@ -3,6 +3,9 @@ set(DIR src/core)
 set(SOURCES
 	${SOURCES}
 	${DIR}/debug.cpp
+	${DIR}/display.cpp
+	${DIR}/input.cpp
 	${DIR}/io.cpp
+	${DIR}/mvp.cpp
 	PARENT_SCOPE
 )

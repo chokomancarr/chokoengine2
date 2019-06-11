@@ -1,6 +1,5 @@
 #include "chokoengine_common.hpp"
 
-#include <sstream>
 #ifdef PLATFORM_WIN
 #include <io.h>
 #include <Shlobj.h>

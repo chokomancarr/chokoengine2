@@ -1,0 +1,32 @@
+#pragma once
+#include "chokoengine.hpp"
+#include <stack>
+
+BEGIN_CE_NAMESPACE
+
+class MVP {
+	class stack : public std::stack<Mat4x4> {
+	public:
+		using std::stack<Mat4x4>::c;
+	};
+
+	static stack MV, P;
+	static Mat4x4 _mv, _p;
+	static bool changedMv, changedP;
+	static Mat4x4 identity;
+	static bool isProj;
+
+public:
+	CE_OBJECT_COMMON;
+
+	static void Reset();
+	static void Switch(bool isProj);
+	static void Push(), Pop(), Clear();
+	static void Mul(const Mat4x4& mat);
+	static void Translate(const Vec3& v), Translate(float x, float y, float z);
+	static void Scale(const Vec3& v), Scale(float x, float y, float z);
+
+	static Mat4x4 modelview(), projection();
+};
+
+END_CE_NAMESPACE

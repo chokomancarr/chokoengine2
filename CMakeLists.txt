@@ -49,7 +49,7 @@ set(INC_DIRS
 if (MSVC)
     set(INC_DIRS
         ${INC_DIRS}
-        ${PROJECT_SOURCE_DIR}/src/winonly
+        ${PROJECT_SOURCE_DIR}/include/ce2/winonly
     )
 endif()
 
@@ -96,8 +96,9 @@ include_directories(${INC_DIRS})
 link_directories(${LINK_DIRS})
 
 add_subdirectory("src")
+add_subdirectory("src/asset")
 add_subdirectory("src/core")
-add_subdirectory("src/utils")
+add_subdirectory("src/ext")
 
 add_library(chokoengine2 SHARED ${SOURCES} ${HEADERS})
 

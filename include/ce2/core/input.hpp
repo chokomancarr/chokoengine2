@@ -1,12 +1,14 @@
 #pragma once
 #include "defines.hpp"
-#include "input_keys.hpp"
+#include "enums/input_keys.hpp"
 
 BEGIN_CE_NAMESPACE
 
 class Input {
 
 public:
+	CE_OBJECT_COMMON;
+
 	static void Init();
 
 	/* Checks if key \p c is pressed this frame but not pressed in the previous frame
