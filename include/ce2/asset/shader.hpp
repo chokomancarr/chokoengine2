@@ -3,7 +3,8 @@
 
 BEGIN_CE_NAMESPACE
 
-class Shader : public RefCnt {
+class _Shader { CE_OBJECT_COMMON
+
 	GLuint pointer;
 	std::vector<GLuint> pointers;
 	std::vector<GLint> uniforms;
@@ -18,12 +19,8 @@ class Shader : public RefCnt {
 
 	void UpdatePointer();
 public:
-	CE_OBJECT_COMMON;
-
-	Shader() : pointer(0) {}
-	Shader(const std::string& vert, const std::string& frag);
-
-	REFCNT_DESTRUCTOR(Shader);
+	_Shader() : pointer(0) {}
+	_Shader(const std::string& vert, const std::string& frag);
 
 	operator bool() const {
 		return !!pointer;
@@ -32,8 +29,8 @@ public:
 		return pointer;
 	}
 
-	Shader& AddUniform(const std::string& s);
-	Shader& AddUniforms(std::initializer_list<const std::string> ss);
+	void AddUniform(const std::string& s);
+	void AddUniforms(std::initializer_list<const std::string> ss);
 
 	void SetOptions(const std::initializer_list<std::string>& nms);
 	void SetOption(const std::string& nm, bool on);

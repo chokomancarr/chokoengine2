@@ -9,6 +9,10 @@ bool MVP::changedMv = true, MVP::changedP = true;
 Mat4x4 MVP::identity = Mat4x4(1.f);
 bool MVP::isProj = false;
 
+bool MVP::Init() {
+	return true;
+}
+
 void MVP::Reset() {
 	P = stack();
 	P.push(identity);

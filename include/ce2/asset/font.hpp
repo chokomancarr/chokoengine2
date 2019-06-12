@@ -7,7 +7,8 @@
 
 BEGIN_CE_NAMESPACE
 
-class Font {
+class _Font { CE_OBJECT_COMMON
+
     static FT_Library _ftlib;
     static Shader _prog;
 	static uint vaoSz;
@@ -31,6 +32,8 @@ class Font {
 	std::vector<uint> ids;
 	std::vector<uint> cs;
 
+	static bool Init();
+
     void InitVao(uint sz);
 	void SizeVec(uint sz);
     
@@ -39,16 +42,13 @@ class Font {
     
 	static uint utf2unc(char*& c);
 public:
-	CE_OBJECT_COMMON;
 
 	GET_MEMBER_FUNC(bool, loaded);
 	GET_SET_MEMBER_FUNC(FontAlign, alignment);
 
-    static void Init();
-
     /* Constructs a font from a .ttf file
      */
-	Font(const std::string& path);
+	_Font(const std::string& path);
 };
 
 END_CE_NAMESPACE

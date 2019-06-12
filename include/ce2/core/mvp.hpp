@@ -4,7 +4,7 @@
 
 BEGIN_CE_NAMESPACE
 
-class MVP {
+class MVP {CE_CLASS_COMMON
 	class stack : public std::stack<Mat4x4> {
 	public:
 		using std::stack<Mat4x4>::c;
@@ -16,8 +16,8 @@ class MVP {
 	static Mat4x4 identity;
 	static bool isProj;
 
+	static bool Init();
 public:
-	CE_OBJECT_COMMON;
 
 	static void Reset();
 	static void Switch(bool isProj);

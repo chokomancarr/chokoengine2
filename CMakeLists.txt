@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project (chokoengine2)
+project (ChokoEngine)
 
 if (UNIX AND NOT APPLE)
 	set(LINUX TRUE)
@@ -99,7 +99,23 @@ add_subdirectory("src")
 add_subdirectory("src/asset")
 add_subdirectory("src/core")
 add_subdirectory("src/ext")
+add_subdirectory("src/scene")
+add_subdirectory("src/scene/comp")
 
-add_library(chokoengine2 SHARED ${SOURCES} ${HEADERS})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-target_link_libraries(chokoengine2 ${LIBS})
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+
+add_library(ChokoEngine SHARED ${SOURCES} ${HEADERS})
+
+set_target_properties(ChokoEngine PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/include/ce2
+	IMPORTED_LINK_INTERFACE_LIBRARIES ChokoEngine
+	IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/build/lib/ChokoEngine.lib
+)
+
+target_link_libraries(ChokoEngine ${LIBS})
+
+export(TARGETS ChokoEngine FILE ${CMAKE_SOURCE_DIR}/examples/cmake/ChokoEngineConfig.cmake)

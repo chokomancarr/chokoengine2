@@ -1,4 +1,4 @@
-#include "chokoengine_common.hpp"
+#include "chokoengine.hpp"
 
 #ifdef PLATFORM_WIN
 #include <io.h>

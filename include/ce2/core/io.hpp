@@ -3,14 +3,12 @@
 
 BEGIN_CE_NAMESPACE
 
-class IO {
+class IO { CE_CLASS_COMMON
 	static std::string _path;
-public:
-	CE_OBJECT_COMMON;
-
-	GET_ST_MEMBER_FUNC(std::string, path);
 
 	static void Init();
+public:
+	GET_ST_MEMBER_FUNC(std::string, path);
 
 	/* Checks if \p path is a valid file on disk
 	*/

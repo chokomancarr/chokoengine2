@@ -1,4 +1,4 @@
-#include "chokoengine_common.hpp"
+#include "chokoengine.hpp"
 
 BEGIN_CE_NAMESPACE
 

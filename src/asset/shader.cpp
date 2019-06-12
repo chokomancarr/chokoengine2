@@ -2,7 +2,7 @@
 
 BEGIN_CE_NAMESPACE
 
-bool Shader::LoadShader(GLenum shaderType, std::string source, GLuint& shader, std::string* err) {
+bool _Shader::LoadShader(GLenum shaderType, std::string source, GLuint& shader, std::string* err) {
 	int compile_result = 0;
 
 	shader = glCreateShader(shaderType);
@@ -29,7 +29,7 @@ bool Shader::LoadShader(GLenum shaderType, std::string source, GLuint& shader, s
 				glGetShaderInfoLog(shader, info_log_length, NULL, &shader_log[0]);
 				shader = 0;
 				*err += std::string(&shader_log[0]);
-				Debug::Error("Shader", *err);
+				Debug::Error("_Shader", *err);
 			}
 		}
 		glDeleteShader(shader);
@@ -38,7 +38,7 @@ bool Shader::LoadShader(GLenum shaderType, std::string source, GLuint& shader, s
 	return true;
 }
 
-bool Shader::LinkShader(GLuint pointer) {
+bool _Shader::LinkShader(GLuint pointer) {
 	int link_result = 0;
 	glLinkProgram(pointer);
 	glGetProgramiv(pointer, GL_LINK_STATUS, &link_result);
@@ -47,27 +47,27 @@ bool Shader::LinkShader(GLuint pointer) {
 		glGetProgramiv(pointer, GL_INFO_LOG_LENGTH, &info_log_length);
 		std::vector<char> program_log(info_log_length);
 		glGetProgramInfoLog(pointer, info_log_length, NULL, &program_log[0]);
-		Debug::Error("Shader", "Link error: " + std::string(&program_log[0]));
+		Debug::Error("_Shader", "Link error: " + std::string(&program_log[0]));
 		return false;
 	}
 	return true;
 }
 
-GLuint Shader::FromVF(const std::string& vert, const std::string& frag) {
+GLuint _Shader::FromVF(const std::string& vert, const std::string& frag) {
 	GLuint vertex_shader, fragment_shader;
 	std::string err = "";
 	if (vert == "" || frag == "") {
-		Debug::Error("Shader Compiler", "vert or frag is empty!");
+		Debug::Error("_Shader Compiler", "vert or frag is empty!");
 		return 0;
 	}
 
 	if (!LoadShader(GL_VERTEX_SHADER, vert, vertex_shader, &err)) {
-		Debug::Error("Shader Compiler", "Vert error: " + err);
+		Debug::Error("_Shader Compiler", "Vert error: " + err);
 		return 0;
 	}
 
 	if (!LoadShader(GL_FRAGMENT_SHADER, frag, fragment_shader, &err)) {
-		Debug::Error("Shader Compiler", "Frag error: " + err);
+		Debug::Error("_Shader Compiler", "Frag error: " + err);
 		return 0;
 	}
 
@@ -87,11 +87,11 @@ GLuint Shader::FromVF(const std::string& vert, const std::string& frag) {
 	return pointer;
 }
 
-GLint Shader::Loc(int i) {
+GLint _Shader::Loc(int i) {
 	return uniforms[i];
 }
 
-void Shader::UpdatePointer() {
+void _Shader::UpdatePointer() {
 	uint i = 0, j = 0;
 	for (auto& v : options) {
 		if (v.second)
@@ -101,7 +101,7 @@ void Shader::UpdatePointer() {
 	pointer = pointers[j];
 }
 
-Shader::Shader(const std::string& vert, const std::string& frag) {
+_Shader::_Shader(const std::string& vert, const std::string& frag) {
 	uint vers = 1;
 	std::istringstream vstrm(vert);
 	std::string s;
@@ -128,30 +128,24 @@ Shader::Shader(const std::string& vert, const std::string& frag) {
 	pointer = pointers[0];
 }
 
-void Shader::DestroyRef() {
-	if (!!pointer)
-		glDeleteProgram(pointer);
-}
-
-Shader& Shader::AddUniform(const std::string& s) {
+void _Shader::AddUniform(const std::string& s) {
 	uniforms.push_back(glGetUniformLocation(pointer, s.c_str()));
-	return *this;
 }
 
-Shader& Shader::AddUniforms(std::initializer_list<const std::string> ss) {
-	for (auto& s : ss)
+void _Shader::AddUniforms(std::initializer_list<const std::string> ss) {
+	for (auto& s : ss) {
 		AddUniform(s);
-	return *this;
+	}
 }
 
-void Shader::SetOptions(const std::initializer_list<std::string>& nms) {
+void _Shader::SetOptions(const std::initializer_list<std::string>& nms) {
 	for (auto& v : options) {
 		v.second = std::find(nms.begin(), nms.end(), v.first) != nms.end();
 	}
 	UpdatePointer();
 }
 
-void Shader::SetOption(const std::string& nm, bool on) {
+void _Shader::SetOption(const std::string& nm, bool on) {
 	for (auto& v : options) {
 		if (v.first == nm) {
 			v.second = on;
@@ -161,11 +155,11 @@ void Shader::SetOption(const std::string& nm, bool on) {
 	UpdatePointer();
 }
 
-void Shader::Bind() {
+void _Shader::Bind() {
 	glUseProgram(pointer);
 }
 
-void Shader::Unbind() {
+void _Shader::Unbind() {
 	glUseProgram(0);
 }
 

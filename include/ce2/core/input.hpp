@@ -4,13 +4,10 @@
 
 BEGIN_CE_NAMESPACE
 
-class Input {
-
-public:
-	CE_OBJECT_COMMON;
+class Input { CE_CLASS_COMMON
 
 	static void Init();
-
+public:
 	/* Checks if key \p c is pressed this frame but not pressed in the previous frame
 	*/
 	static bool KeyDown(InputKey c);

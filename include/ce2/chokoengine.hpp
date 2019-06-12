@@ -44,8 +44,8 @@ BEGIN_CE_NAMESPACE
 
 class Engine {
 public:
-	bool Init();
-	void Cleanup();
+	static bool Init();
+	static void Cleanup();
 };
 
 END_CE_NAMESPACE

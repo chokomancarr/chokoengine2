@@ -19,4 +19,11 @@
     GET_ST_MEMBER_FUNC(tp, nm)\
     SET_ST_MEMBER_FUNC(tp, nm)
 
-#define CE_OBJECT_COMMON
+#define CE_CLASS_COMMON\
+	friend class ChokoEngine::Engine;\
+	friend class ChokoLait;
+
+#define CE_OBJECT_COMMON\
+	CE_CLASS_COMMON
+
+#include "defines_object.hpp"

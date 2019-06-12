@@ -20,23 +20,12 @@
 
 class ChokoLait {
     static int initd;
-    static GLFWwindow* window;
 
     static void _InitVars();
-
-    static void MouseGL(GLFWwindow* window, int button, int state, int mods);
-    static void MouseScrGL(GLFWwindow* window, double xoff, double yoff);
-    static void MotionGL(GLFWwindow* window, double x, double y);
-    static void ReshapeGL(GLFWwindow* window, int w, int h);
 public:
-    ChokoLait() {
-        if (!initd) {
-            _InitVars();
-            initd = 1;
-        }
-    }
+	static ChokoEngine::Camera mainCamera;
 
-    static rCamera mainCamera;
+	ChokoLait();
 
     static void Init(int scrW, int scrH);
 

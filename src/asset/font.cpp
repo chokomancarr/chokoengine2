@@ -3,14 +3,26 @@
 
 BEGIN_CE_NAMESPACE
 
-FT_Library Font::_ftlib = nullptr;
-Shader Font::_prog;
-uint Font::vaoSz = 0;
-GLuint Font::vao = 0;
-GLuint Font::vbos[] = { 0, 0, 0 };
-GLuint Font::idbuf = 0;
+FT_Library _Font::_ftlib = nullptr;
+Shader _Font::_prog;
+uint _Font::vaoSz = 0;
+GLuint _Font::vao = 0;
+GLuint _Font::vbos[] = { 0, 0, 0 };
+GLuint _Font::idbuf = 0;
 
-void Font::SizeVec(uint sz) {
+bool _Font::Init() {
+	int err = FT_Init_FreeType(&_ftlib);
+	if (err != FT_Err_Ok) {
+		Debug::Error("_Font", "Initializing Freetype failed!");
+		return false;
+	}
+
+	(_prog = Shader(glsl::fontVert, glsl::fontFrag))
+		->AddUniforms({ "col", "sampler", "mask" });
+	return true;
+}
+
+void _Font::SizeVec(uint sz) {
 	if (vecSize >= sz) return;
 	poss.resize(sz * 4 + 1);
 	cs.resize(sz * 4);
@@ -30,7 +42,7 @@ void Font::SizeVec(uint sz) {
 	}
 }
 
-GLuint Font::GetGlyph(uint size, uint mask) {
+GLuint _Font::GetGlyph(uint size, uint mask) {
 	if (_glyphs.count(size) == 1) {
 		auto& gly = _glyphs[size];
 		if (gly.count(mask) == 1)
@@ -39,7 +51,7 @@ GLuint Font::GetGlyph(uint size, uint mask) {
 	return CreateGlyph(size, mask);
 }
 
-GLuint Font::CreateGlyph(uint sz, uint mask) {
+GLuint _Font::CreateGlyph(uint sz, uint mask) {
     FT_Set_Pixel_Sizes(_face, 0, sz);
     _glyphs.emplace(sz, std::unordered_map<uint, _glyph_st>(0));
     auto& g = _glyphs[sz][mask];
@@ -74,7 +86,7 @@ GLuint Font::CreateGlyph(uint sz, uint mask) {
     return g.tex;
 }
 
-void Font::InitVao(uint sz) {
+void _Font::InitVao(uint sz) {
 	vaoSz = sz;
 	if (!!vao) {
 		glDeleteVertexArrays(1, &vao);
@@ -108,7 +120,7 @@ void Font::InitVao(uint sz) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-uint Font::utf2unc(char*& c) {
+uint _Font::utf2unc(char*& c) {
 #define MK(cc) uint(*(cc) & 63)
 	if (!((*c >> 7) & 1)) {
 		return *(c++);
@@ -133,20 +145,10 @@ uint Font::utf2unc(char*& c) {
 	}
 }
 
-void Font::Init() {
-	int err = FT_Init_FreeType(&_ftlib);
-	if (err != FT_Err_Ok) {
-		Debug::Error("Font", "Initializing Freetype failed!");
-	}
-
-	(_prog = Shader(glsl::fontVert, glsl::fontFrag))
-		.AddUniforms({ "col", "sampler", "mask" });
-}
-
-Font::Font(const std::string& path) : _loaded(false), _alignment(FontAlign::TopLeft), vecSize(0) {
+_Font::_Font(const std::string& path) : _loaded(false), _alignment(FontAlign::TopLeft), vecSize(0) {
 	auto err = FT_New_Face(_ftlib, path.c_str(), 0, &_face);
 	if (err != FT_Err_Ok) {
-		Debug::Warning("Font", "Freetype loader failed with error code " + std::to_string(err));
+		Debug::Warning("_Font", "Freetype loader failed with error code " + std::to_string(err));
 		return;
 	}
 	FT_Select_Charmap(_face, FT_ENCODING_UNICODE);
