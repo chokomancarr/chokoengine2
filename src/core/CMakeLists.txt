@@ -7,5 +7,6 @@ set(SOURCES
 	${DIR}/input.cpp
 	${DIR}/io.cpp
 	${DIR}/mvp.cpp
+	${DIR}/ui.cpp
 	PARENT_SCOPE
 )

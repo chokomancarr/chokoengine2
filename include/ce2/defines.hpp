@@ -4,10 +4,13 @@
 #define CE_VERSION_MINOR 0
 #define CE_VERSION_REVISION 0
 
-#define BEGIN_CE_NAMESPACE namespace ChokoEngine {
+#define CE_NAMESPACE ChokoEngine
+#define CE_NS ::CE_NAMESPACE::
+
+#define BEGIN_CE_NAMESPACE namespace CE_NAMESPACE {
 #define END_CE_NAMESPACE }
 
-#define GET_MEMBER_FUNC(tp, nm) tp nm() { return _ ## nm; }
+#define GET_MEMBER_FUNC(tp, nm) tp nm() const { return _ ## nm; }
 #define SET_MEMBER_FUNC(tp, nm) void nm(const tp& v) { _ ## nm = v; }
 #define GET_SET_MEMBER_FUNC(tp, nm)\
     GET_MEMBER_FUNC(tp, nm)\

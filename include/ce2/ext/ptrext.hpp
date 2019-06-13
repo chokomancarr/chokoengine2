@@ -14,12 +14,12 @@ public:
 		_object = rhs;
 	}
 
-	T* operator->() {
+	T* operator->() const {
 		return _object.get();
 	}
 
 	operator bool() const {
-		return _object;
+		return !!_object;
 	}
 
 	operator std::shared_ptr<T>() {

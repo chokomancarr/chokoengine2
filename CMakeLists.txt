@@ -96,11 +96,13 @@ include_directories(${INC_DIRS})
 link_directories(${LINK_DIRS})
 
 add_subdirectory("src")
+add_subdirectory("src/3rdparty")
 add_subdirectory("src/asset")
 add_subdirectory("src/core")
 add_subdirectory("src/ext")
 add_subdirectory("src/scene")
 add_subdirectory("src/scene/comp")
+add_subdirectory("src/types")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

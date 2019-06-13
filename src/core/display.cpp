@@ -2,7 +2,7 @@
 
 BEGIN_CE_NAMESPACE
 
-uint Display::_width = 256, Display::_height = 256;
+uint Display::_width, Display::_height;
 float Display::_dpiScl = 1;
 
 GLFWwindow* Display::_window = nullptr;
@@ -32,6 +32,9 @@ bool Display::InitWindow(uint w, uint h) {
 		Debug::Error("System", "Glew error: " + std::string((const char*)glewGetErrorString(GlewInitResult)));
 		abort();
 	}
+
+	_width = w;
+	_height = h;
 
 	return true;
 }

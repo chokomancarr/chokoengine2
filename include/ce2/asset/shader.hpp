@@ -19,15 +19,10 @@ class _Shader { CE_OBJECT_COMMON
 
 	void UpdatePointer();
 public:
-	_Shader() : pointer(0) {}
+	_Shader();
 	_Shader(const std::string& vert, const std::string& frag);
 
-	operator bool() const {
-		return !!pointer;
-	}
-	operator GLuint() const {
-		return pointer;
-	}
+	operator bool() const;
 
 	void AddUniform(const std::string& s);
 	void AddUniforms(std::initializer_list<const std::string> ss);
@@ -37,6 +32,8 @@ public:
 
 	void Bind();
 	void Unbind();
+
+	friend class UI;
 };
 
 END_CE_NAMESPACE

@@ -11,6 +11,8 @@ bool Engine::Init() {
 	TRYINIT(Debug);
 	TRYINIT(IO);
 	TRYINIT(MVP);
+	TRYINIT(UI);
+	
 	TRYINIT(_Camera);
 
 	return true;

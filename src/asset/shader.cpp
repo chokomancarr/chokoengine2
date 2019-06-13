@@ -101,6 +101,8 @@ void _Shader::UpdatePointer() {
 	pointer = pointers[j];
 }
 
+_Shader::_Shader() : pointer(0) {}
+
 _Shader::_Shader(const std::string& vert, const std::string& frag) {
 	uint vers = 1;
 	std::istringstream vstrm(vert);
@@ -126,6 +128,10 @@ _Shader::_Shader(const std::string& vert, const std::string& frag) {
 		pointers.push_back(FromVF(prep + vert, prep + frag));
 	}
 	pointer = pointers[0];
+}
+
+_Shader::operator bool() const {
+	return !!pointer;
 }
 
 void _Shader::AddUniform(const std::string& s) {
