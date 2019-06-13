@@ -13,21 +13,17 @@
 #define CHOKO_LAIT
 #endif
 
-#define CHOKOLAIT_INIT_VARS ChokoLait __chokolait_instance;
+#define CHOKOLAIT_INIT_VARS(w, h) ChokoLait __chokolait_instance(w, h)
 
 #include "chokoengine.hpp"
 
 
 class ChokoLait {
-    static int initd;
+	static bool initd;
 
-    static void _InitVars();
-public:
 	static ChokoEngine::Camera mainCamera;
-
-	ChokoLait();
-
-    static void Init(int scrW, int scrH);
+public:
+	ChokoLait(int w, int h);
 
     static bool alive();
 

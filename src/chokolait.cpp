@@ -2,33 +2,27 @@
 
 namespace CE = ChokoEngine;
 
-int ChokoLait::initd = 0;
+bool ChokoLait::initd = false;
 
 CE::Camera ChokoLait::mainCamera;
 
-void ChokoLait::_InitVars() {
-	if (!CE::Engine::Init()) {
-		exit(-1);
-	}
-}
-
-ChokoLait::ChokoLait() {
+ChokoLait::ChokoLait(int w, int h) {
 	if (!initd) {
-		_InitVars();
-		initd = 1;
-	}
-}
 
-void ChokoLait::Init(int scrW, int scrH) {
-	if (!initd) {
-		_InitVars();
-		initd = 1;
-	}
+		CE::Display::Init();
+		CE::Display::InitWindow(w, h);
 
+		if (!CE::Engine::Init()) {
+			exit(-1);
+		}
+
+		initd = true;
+	}
 }
 
 bool ChokoLait::alive() {
-	return true;
+	glfwPollEvents();
+	return !glfwWindowShouldClose(CE::Display::_window);
 }
 
 void ChokoLait::Update(emptyCallbackFunc func) {

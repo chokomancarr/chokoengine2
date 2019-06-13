@@ -40,6 +40,8 @@ typedef glm::vec4 Vec4;
 typedef glm::quat Quat;
 typedef glm::mat4 Mat4x4;
 
+class ChokoLait;
+
 BEGIN_CE_NAMESPACE
 
 class Engine {

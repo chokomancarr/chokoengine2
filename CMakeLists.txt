@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project (ChokoEngine)
+project (ChokoEngine VERSION 2.0.0 DESCRIPTION "asdf")
 
 if (UNIX AND NOT APPLE)
 	set(LINUX TRUE)
@@ -110,12 +110,14 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 add_library(ChokoEngine SHARED ${SOURCES} ${HEADERS})
 
-set_target_properties(ChokoEngine PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/include/ce2
-	IMPORTED_LINK_INTERFACE_LIBRARIES ChokoEngine
-	IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/build/lib/ChokoEngine.lib
-)
+set_target_properties(ChokoEngine PROPERTIES PUBLIC_HEADER include/ce2/chokoengine.hpp)
 
 target_link_libraries(ChokoEngine ${LIBS})
 
-export(TARGETS ChokoEngine FILE ${CMAKE_SOURCE_DIR}/examples/cmake/ChokoEngineConfig.cmake)
+
+
+add_subdirectory("editor")
+
+add_executable(ChokoEditor ${SOURCES} ${HEADERS})
+
+target_link_libraries(ChokoEditor ${LIBS})

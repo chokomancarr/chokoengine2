@@ -20,7 +20,7 @@ bool Display::Init() {
 }
 
 bool Display::InitWindow(uint w, uint h) {
-	if (!(_window = glfwCreateWindow(10, 10, "ChokoEngine App", NULL, NULL))) {
+	if (!(_window = glfwCreateWindow(w, h, "ChokoEngine App", NULL, NULL))) {
 		Debug::Error("System", "Fatal: Cannot create glfw window!");
 		return false;
 	}
