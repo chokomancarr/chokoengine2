@@ -20,7 +20,7 @@ if (MSVC)
 elseif (LINUX)
 	add_definitions(-DPLATFORM_LNX)
 elseif (APPLE)
-	add_definitions(-DPLATFORM_OSX -DGL_SILENCE_DEPRECATION -DCL_SILENCE_DEPRECATION)
+	add_definitions(-DPLATFORM_MAC -DGL_SILENCE_DEPRECATION -DCL_SILENCE_DEPRECATION)
 else()
 	message(FATAL_ERROR "Platform not supported!")
 endif()
@@ -114,10 +114,15 @@ set_target_properties(ChokoEngine PROPERTIES PUBLIC_HEADER include/ce2/chokoengi
 
 target_link_libraries(ChokoEngine ${LIBS})
 
-
+set(SOURCES )
 
 add_subdirectory("editor")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
+
+set(LIBS
+	${LIBS}
+	ChokoEngine
+)
 
 target_link_libraries(ChokoEditor ${LIBS})

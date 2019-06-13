@@ -6,7 +6,7 @@ BEGIN_CE_NAMESPACE
 class IO { CE_CLASS_COMMON
 	static std::string _path;
 
-	static void Init();
+	static bool Init();
 public:
 	GET_ST_MEMBER_FUNC(std::string, path);
 

@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
-#ifdef PLATFORM_OSX
+#ifdef PLATFORM_MAC
 #include <mach-o/dyld.h>
 #endif
 #endif
@@ -20,7 +20,7 @@ BEGIN_CE_NAMESPACE
 
 std::string IO::_path;
 
-void IO::Init() {
+bool IO::Init() {
 	const int cpathsz = 200;
 	char cpath[cpathsz];
 #ifdef PLATFORM_WIN
@@ -31,10 +31,12 @@ void IO::Init() {
 	readlink("/proc/self/exe", cpath, 200);
 	_path = cpath;
 #else
-	_NSGetExecutablePath(cpath, &cpathsz);
-	path = realpath(cpath, 0);
+	_NSGetExecutablePath(cpath, (uint32_t*)&cpathsz);
+	_path = realpath(cpath, 0);
 #endif
 	_path = _path.substr(0, _path.find_last_of('/') + 1);
+
+	return true;
 }
 
 bool IO::FileExists(const std::string& path) {

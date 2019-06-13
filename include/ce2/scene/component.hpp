@@ -4,7 +4,6 @@
 BEGIN_CE_NAMESPACE
 
 class _Component { CE_OBJECT_COMMON
-
 protected:
 	_Component(ComponentType t);
 public:

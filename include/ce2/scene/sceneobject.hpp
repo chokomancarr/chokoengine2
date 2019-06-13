@@ -12,7 +12,7 @@ public:
 	/* Returns component of type T attached to this object
 	 */
 	template<typename T>
-	T& GetComponent();
+	T GetComponent();
 
 };
 

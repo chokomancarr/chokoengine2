@@ -5,7 +5,7 @@
  * See https://chokomancarr.github.io/ChokoLait/ for documentation and examples.
  */
 
-#if !defined(PLATFORM_WIN) && !defined(PLATFORM_LNX) && !defined(PLATFORM_OSX)
+#if !defined(PLATFORM_WIN) && !defined(PLATFORM_LNX) && !defined(PLATFORM_MAC)
 #error("platform macro must be defined!")
 #endif
 
