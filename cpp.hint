@@ -6,3 +6,9 @@
 #define CE_END_NAMESPACE }
 
 #define CE_GET_MEMBER
+
+#define CE_BEGIN_BK_NAMESPACE CE_BEGIN_NAMESPACE\
+    namespace Backend {
+
+#define CE_END_BK_NAMESPACE }\
+    CE_END_NAMESPACE

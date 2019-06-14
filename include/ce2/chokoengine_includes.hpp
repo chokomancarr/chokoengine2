@@ -18,6 +18,7 @@ CE_OBJECT(Texture)
 
 /* scene
  */
+class Object;
 CE_OBJECT(Scene)
 CE_OBJECT(SceneObject)
 CE_OBJECT(Component)
@@ -38,6 +39,7 @@ CE_END_NAMESPACE
 #include "core/mvp.hpp"
 #include "core/ui.hpp"
 
+#include "scene/object_base.hpp"
 #include "scene/scene.hpp"
 #include "scene/sceneobject.hpp"
 #include "scene/component.hpp"

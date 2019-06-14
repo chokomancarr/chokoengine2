@@ -12,6 +12,8 @@ class Ref {
 public:
 	Ref();
 
+	Ref(std::nullptr_t);
+
 	template <class... Args>
 	static Ref<T> New(Args&&... args);
 
@@ -19,13 +21,13 @@ public:
 
 	T* operator ->() const;
 
-	operator bool() const;
-
-	operator std::shared_ptr<T>();
+	bool operator !() const;
 
 	bool operator ==(const Ref<T>& rhs) const;
 
 	bool operator !=(const Ref<T>& rhs) const;
+
+	friend T;
 };
 
 CE_END_NAMESPACE

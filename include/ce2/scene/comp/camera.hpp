@@ -4,7 +4,6 @@
 CE_BEGIN_NAMESPACE
 
 class _Camera : public _Component { CE_COMPONENT_COMMON
-
 	bool _orthographic;
 	float _fov;
 	float _orthoSize;

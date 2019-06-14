@@ -10,6 +10,9 @@ template <class T>
 Ref<T>::Ref() : _object(nullptr) {}
 
 template <class T>
+Ref<T>::Ref(std::nullptr_t) : _object(nullptr) {}
+
+template <class T>
 template <class... Args>
 Ref<T> Ref<T>::New(Args&&... args) {
     return Ref<T>(std::make_shared<T>(std::forward<Args>(args)...));
@@ -26,13 +29,8 @@ T* Ref<T>::operator ->() const {
 }
 
 template <class T>
-Ref<T>::operator bool() const {
-    return !!_object;
-}
-
-template <class T>
-Ref<T>::operator std::shared_ptr<T>() {
-    return _object;
+bool Ref<T>::operator !() const {
+    return !_object;
 }
 
 template <class T>
