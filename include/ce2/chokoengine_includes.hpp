@@ -6,6 +6,7 @@
 #include "ext/strext.hpp"
 
 #include "types/color.hpp"
+#include "types/quat.hpp"
 #include "types/rect.hpp"
 
 CE_BEGIN_NAMESPACE

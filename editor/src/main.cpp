@@ -14,9 +14,12 @@ int main() {
 	CE::Scene s = CE::Scene::New();
 	auto o = s->AddNewObject();
 	o->name("object1");
-	s->AddNewObject()->name("object2");
+	auto o2 = s->AddNewObject();
+	o2->name("object2");
 	s->AddNewObject(o)->name("subobject1");
 	s->AddNewObject(o)->name("subobject2");
+	s->AddNewObject(o2)->name("subobject3");
+	o2->AddComponent<CE::Camera>();
 
 	std::cout << s->Tree() << std::endl;
 

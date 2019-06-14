@@ -37,7 +37,6 @@ typedef glm::tvec2<int, glm::highp> Int3;
 typedef glm::vec3 Vec3;
 typedef glm::tvec3<int, glm::highp> Int4;
 typedef glm::vec4 Vec4;
-typedef glm::quat Quat;
 typedef glm::mat4 Mat4x4;
 
 class ChokoLait;

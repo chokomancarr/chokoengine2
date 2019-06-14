@@ -13,14 +13,19 @@ template <class T>
 Ref<T>::Ref(std::nullptr_t) : _object(nullptr) {}
 
 template <class T>
+template <class U>
+Ref<T>::Ref(const Ref<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
+
+template <class T>
 template <class... Args>
 Ref<T> Ref<T>::New(Args&&... args) {
     return Ref<T>(std::make_shared<T>(std::forward<Args>(args)...));
 }
 
 template <class T>
-void Ref<T>::operator =(const std::shared_ptr<T>& rhs) {
-    _object = rhs;
+Ref<T>& Ref<T>::operator =(const Ref<T>& rhs) {
+    _object = rhs._object;
+    return *this;
 }
 
 template <class T>
