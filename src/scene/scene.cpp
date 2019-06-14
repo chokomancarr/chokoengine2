@@ -2,16 +2,27 @@
 
 CE_BEGIN_NAMESPACE
 
-void _Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, int level) {
+void _Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const std::vector<bool>& level) {
+    auto lvl2 = level;
+    lvl2.push_back(true);
     auto sz = objs.size();
     if (!sz) return;
     for (size_t a = 0; a < sz; a++) {
-        for (int b = 0; b < level; b++) {
-            s += "|  ";
+        for (auto l : level) {
+            s += l ? "|  " : "   ";
         }
         s += (a == sz - 1) ? "`--" : "+--";
-        s += objs[a]->name() + "\n";
-        DoTree(s, objs[a]->children(), level + 1);
+        s += objs[a]->name() + " [";
+        for (auto& c : objs[a]->components()) {
+            s += " " + c->name() + ",";
+        }
+        if (s.back() != '[') {
+            s.back() = ' ';
+        }
+        s += "]\n";
+        if (a == sz - 1)
+            lvl2.back() = false;
+        DoTree(s, objs[a]->children(), lvl2);
     }
 }
 
@@ -49,7 +60,7 @@ void _Scene::RemoveObject(const SceneObject& o) {
 
 std::string _Scene::Tree() const {
     std::string result = _name + "\n";
-    DoTree(result, _objects, 0);
+    DoTree(result, _objects, std::vector<bool>());
     return result;
 }
 

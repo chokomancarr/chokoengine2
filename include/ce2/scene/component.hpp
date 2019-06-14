@@ -3,9 +3,9 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Component { CE_OBJECT_COMMON
+class _Component : public Object { CE_OBJECT_COMMON
 protected:
-	_Component(ComponentType t);
+	_Component(ComponentType t, const std::string& nm);
 public:
 	virtual ~_Component() {}
 
@@ -13,5 +13,7 @@ public:
 };
 
 CE_END_NAMESPACE
+
+#define CE_COMPDEF(nm) _Component(ComponentType::nm, #nm)
 
 #include "comp/camera.hpp"

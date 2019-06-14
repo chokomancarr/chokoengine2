@@ -15,6 +15,7 @@ public:
 			const Quat& rot = Quat(1, 0, 0, 0),
 			const Vec3& scl = Vec3(1));
 
+	CE_GET_MEMBER(components);
 	CE_GET_MEMBER(children);
 
 	CE_GET_MEMBER(parent);
