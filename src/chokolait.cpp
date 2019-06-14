@@ -6,21 +6,24 @@ bool ChokoLait::initd = false;
 
 CE::Camera ChokoLait::mainCamera;
 
-ChokoLait::ChokoLait(int w, int h) {
-	if (!initd) {
-
-		CE::Display::Init();
-		CE::Display::InitWindow(w, h);
-
-		if (!CE::Engine::Init()) {
-			exit(-1);
-		}
-
-		initd = true;
+bool ChokoLait::Init(const std::string& title, int w, int h) {
+	if (initd) {
+		CE::Debug::Warning("ChokoLait", "Init called more than once!");
 	}
+
+	CE::Display::Init();
+	CE::Display::InitWindow(title, w, h);
+
+	if (!CE::Engine::Init()) {
+		return false;
+	}
+
+	initd = true;
 
 	glClearColor(1, 0, 0, 0);
 	glClearDepth(1);
+
+	return true;
 }
 
 bool ChokoLait::alive() {

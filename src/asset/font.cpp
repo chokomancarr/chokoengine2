@@ -17,7 +17,7 @@ bool _Font::Init() {
 		return false;
 	}
 
-	(_prog = Shader(glsl::fontVert, glsl::fontFrag))
+	(_prog = Shader::New(glsl::fontVert, glsl::fontFrag))
 		->AddUniforms({ "col", "sampler", "mask" });
 	return true;
 }

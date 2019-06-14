@@ -5,11 +5,15 @@ CE_BEGIN_NAMESPACE
 
 template <class T>
 class Ref {
+	Ref(std::shared_ptr<T> o);
+
 	std::shared_ptr<T> _object;
 
 public:
+	Ref();
+
 	template <class... Args>
-	Ref(Args&&... args);
+	static Ref<T> New(Args&&... args);
 
 	void operator =(const std::shared_ptr<T>& rhs);
 

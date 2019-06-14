@@ -9,11 +9,19 @@ class _SceneObject { CE_OBJECT_COMMON
 
 public:
 
-	/* Returns component of type T attached to this object
+	/* Adds a new component to the object
 	 */
 	template<typename T>
+	T AddComponent();
+
+	/* Retrieves a component in the object
+	 */
+	template <typename T>
 	T GetComponent();
 
+	/* Removes a component from the object
+	 */
+	void RemoveComponent(const Component& c);
 };
 
 CE_END_NAMESPACE

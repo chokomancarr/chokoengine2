@@ -19,8 +19,8 @@ bool Display::Init() {
 	return true;
 }
 
-bool Display::InitWindow(uint w, uint h) {
-	if (!(_window = glfwCreateWindow(w, h, "ChokoEngine App", NULL, NULL))) {
+bool Display::InitWindow(const std::string& title, uint w, uint h) {
+	if (!(_window = glfwCreateWindow(w, h, title.c_str(), NULL, NULL))) {
 		Debug::Error("System", "Fatal: Cannot create glfw window!");
 		return false;
 	}

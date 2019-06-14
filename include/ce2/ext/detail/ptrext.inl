@@ -4,9 +4,16 @@
 CE_BEGIN_NAMESPACE
 
 template <class T>
+Ref<T>::Ref(std::shared_ptr<T> o) : _object(o) {}
+
+template <class T>
+Ref<T>::Ref() : _object(nullptr) {}
+
+template <class T>
 template <class... Args>
-Ref<T>::Ref(Args&&... args)
-        : _object(std::make_shared<T>(std::forward<Args>(args)...)) {}
+Ref<T> Ref<T>::New(Args&&... args) {
+    return Ref<T>(std::make_shared<T>(std::forward<Args>(args)...));
+}
 
 template <class T>
 void Ref<T>::operator =(const std::shared_ptr<T>& rhs) {

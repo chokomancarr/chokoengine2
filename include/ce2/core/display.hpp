@@ -10,7 +10,7 @@ class Display { CE_CLASS_COMMON
 	static GLFWwindow* _window;
 
 	static bool Init();
-	static bool InitWindow(uint w, uint h);
+	static bool InitWindow(const std::string& title, uint w, uint h);
 public:
 
 	CE_GET_ST_MEMBER(width);

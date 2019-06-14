@@ -2,13 +2,14 @@
 
 namespace CE = ChokoEngine;
 
-CHOKOLAIT_INIT_VARS(800, 600);
-
-CE::Texture tex(CE::IO::path() + "../../res/logo.png");
+CE::Texture tex;
 
 void paint();
 
 int main() {
+	ChokoLait::Init("ChokoEditor", 800, 600);
+
+	tex = CE::Texture::New(CE::IO::path() + "../../res/logo.png");
 
 	while (ChokoLait::alive()) {
 		ChokoLait::Update();

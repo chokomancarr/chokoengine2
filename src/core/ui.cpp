@@ -15,7 +15,7 @@ glm::mat3 UI::matrix;
 bool UI::matrixIsI;
 
 bool UI::Init() {
-    (texShad = Shader(glsl::uiVert, glsl::uiTexFrag))
+    (texShad = Shader::New(glsl::uiVert, glsl::uiTexFrag))
         ->AddUniforms({ "tex", "col", "level" });
 
     _vboSz = 100;

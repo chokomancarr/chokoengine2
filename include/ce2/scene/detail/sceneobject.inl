@@ -4,6 +4,11 @@
 CE_BEGIN_NAMESPACE
 
 template<typename T>
+T _SceneObject::AddComponent() {
+	_components.push_back(T());
+}
+
+template<typename T>
 T _SceneObject::GetComponent() {
 	for (auto& c : _components) {
 		auto res = dynamic_cast<T*>(&c);
