@@ -9,7 +9,7 @@ extern "C" {
 #include "3rdparty/lodepng.h"
 #include "3rdparty/hdr.h"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 void Texture_I::FlipY(std::vector<byte>& data, uint w, uint h) {
     #pragma omp parallel for
@@ -114,4 +114,4 @@ bool Texture_I::FromBMP(const std::string& path, uint& w, uint& h, byte& channel
 	return true;
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 bool _Shader::LoadShader(GLenum shaderType, std::string source, GLuint& shader, std::string* err) {
 	int compile_result = 0;
@@ -169,4 +169,4 @@ void _Shader::Unbind() {
 	glUseProgram(0);
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

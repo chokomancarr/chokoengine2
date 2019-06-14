@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class _SceneObject { CE_OBJECT_COMMON
 
@@ -16,6 +16,6 @@ public:
 
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE
 
 #include "detail/sceneobject.inl"

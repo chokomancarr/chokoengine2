@@ -7,19 +7,7 @@
 #define CE_NAMESPACE ChokoEngine
 #define CE_NS ::CE_NAMESPACE::
 
-#define BEGIN_CE_NAMESPACE namespace CE_NAMESPACE {
-#define END_CE_NAMESPACE }
-
-#define GET_MEMBER_FUNC(tp, nm) tp nm() const { return _ ## nm; }
-#define SET_MEMBER_FUNC(tp, nm) void nm(const tp& v) { _ ## nm = v; }
-#define GET_SET_MEMBER_FUNC(tp, nm)\
-    GET_MEMBER_FUNC(tp, nm)\
-    SET_MEMBER_FUNC(tp, nm)
-
-#define GET_ST_MEMBER_FUNC(tp, nm) static tp nm() { return _ ## nm; }
-#define SET_ST_MEMBER_FUNC(tp, nm) static void nm(const tp& v) { _ ## nm = v; }
-#define GET_SET_ST_MEMBER_FUNC(tp, nm)\
-    GET_ST_MEMBER_FUNC(tp, nm)\
-    SET_ST_MEMBER_FUNC(tp, nm)
+#define CE_BEGIN_NAMESPACE namespace CE_NAMESPACE {
+#define CE_END_NAMESPACE }
 
 #include "defines_object.hpp"

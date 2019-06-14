@@ -5,7 +5,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class _Font { CE_OBJECT_COMMON
 
@@ -43,12 +43,12 @@ class _Font { CE_OBJECT_COMMON
 	static uint utf2unc(char*& c);
 public:
 
-	GET_MEMBER_FUNC(bool, loaded);
-	GET_SET_MEMBER_FUNC(FontAlign, alignment);
+	CE_GET_MEMBER(loaded);
+	CE_GET_SET_MEMBER(alignment);
 
     /* Constructs a font from a .ttf file
      */
 	_Font(const std::string& path);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

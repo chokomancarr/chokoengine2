@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class StrExt {
 public:
@@ -10,4 +10,4 @@ public:
 	static std::vector<std::string> Split(const std::string& s, char c, bool rmblank = false);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

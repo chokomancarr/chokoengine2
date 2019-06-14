@@ -1,9 +1,9 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 _Component::_Component(ComponentType t) : type(t) {
 
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

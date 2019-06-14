@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class _Texture { CE_OBJECT_COMMON
     GLuint _pointer;
@@ -18,12 +18,12 @@ public:
      */
 	_Texture(const std::string& path);
 
-    GET_MEMBER_FUNC(int, width);
-    GET_MEMBER_FUNC(int, height);
+    CE_GET_MEMBER(width);
+    CE_GET_MEMBER(height);
 
 	bool loaded() const;
 
     friend class UI;
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

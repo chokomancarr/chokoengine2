@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 uint Display::_width, Display::_height;
 float Display::_dpiScl = 1;
@@ -43,4 +43,4 @@ void Display::Resize(uint x, uint y, bool maximize) {
 	glfwSetWindowSize(_window, (int)x, (int)y);
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

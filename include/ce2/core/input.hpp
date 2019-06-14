@@ -2,7 +2,7 @@
 #include "defines.hpp"
 #include "enums/input_keys.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class Input { CE_CLASS_COMMON
 
@@ -21,4 +21,4 @@ public:
 	static bool KeyUp(InputKey c);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

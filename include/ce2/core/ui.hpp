@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class UI { CE_CLASS_COMMON
 
@@ -30,7 +30,7 @@ class UI { CE_CLASS_COMMON
         Vec2 uv0 = Vec2(0, 1), Vec2 uv1 = Vec2(1, 1), 
         Vec2 uv2 = Vec2(0, 0), Vec2 uv3 = Vec2(1, 0));
 public:
-    GET_SET_ST_MEMBER_FUNC(float, alpha);
+    CE_GET_SET_ST_MEMBER(alpha);
 
     /* Draws an image with the provided dimensions
      */
@@ -41,4 +41,4 @@ public:
     static void Rect(const CE_NS Rect& rect, const Color& color);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 std::ofstream Debug::logStream;
 
@@ -23,4 +23,4 @@ void Debug::Error(const std::string& caller, const std::string& msg) {
 	std::flush(std::cout);
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

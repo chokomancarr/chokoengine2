@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 MVP::stack MVP::MV = MVP::stack();
 MVP::stack MVP::P = MVP::stack();
@@ -101,4 +101,4 @@ Mat4x4 MVP::projection() {
 	return _p;
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

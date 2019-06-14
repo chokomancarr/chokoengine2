@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class _Shader { CE_OBJECT_COMMON
 
@@ -36,4 +36,4 @@ public:
 	friend class UI;
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

@@ -1,6 +1,6 @@
 #pragma once
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 enum class FontAlign {
 	TopLeft = 0x00, TopCenter, TopRight,
@@ -8,4 +8,4 @@ enum class FontAlign {
 	BottomLeft = 0x20, BottomCenter, BottomRight
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

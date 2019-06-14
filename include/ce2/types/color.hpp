@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class Color { CE_OBJECT_COMMON
     float _r, _g, _b, _a;
@@ -19,10 +19,10 @@ public:
     Color(const float r, const float g, const float b, const float a = 1);
     Color(const float c, const float a = 1);
 
-    GET_SET_MEMBER_FUNC(float, r);
-    GET_SET_MEMBER_FUNC(float, g);
-    GET_SET_MEMBER_FUNC(float, b);
-    GET_SET_MEMBER_FUNC(float, a);
+    CE_GET_SET_MEMBER(r);
+    CE_GET_SET_MEMBER(g);
+    CE_GET_SET_MEMBER(b);
+    CE_GET_SET_MEMBER(a);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

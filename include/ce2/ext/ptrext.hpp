@@ -1,38 +1,29 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
-template <class T> class Ref {
+template <class T>
+class Ref {
 	std::shared_ptr<T> _object;
 
 public:
-	template<class... Args>
-	Ref(Args&&... args) : _object(std::make_shared<T>(std::forward<Args>(args)...)) {}
+	template <class... Args>
+	Ref(Args&&... args);
 
-	void operator= (const std::shared_ptr<T>& rhs) {
-		_object = rhs;
-	}
+	void operator =(const std::shared_ptr<T>& rhs);
 
-	T* operator->() const {
-		return _object.get();
-	}
+	T* operator ->() const;
 
-	operator bool() const {
-		return !!_object;
-	}
+	operator bool() const;
 
-	operator std::shared_ptr<T>() {
-		return _object;
-	}
+	operator std::shared_ptr<T>();
 
-	bool operator ==(const Ref<T>& rhs) const {
-		return this->_object == rhs._object;
-	}
+	bool operator ==(const Ref<T>& rhs) const;
 
-	bool operator !=(const Ref<T>& rhs) const {
-		return this->_object != rhs._object;
-	}
+	bool operator !=(const Ref<T>& rhs) const;
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE
+
+#include "detail/ptrext.inl"

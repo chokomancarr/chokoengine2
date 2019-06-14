@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 template<typename T>
 T _SceneObject::GetComponent() {
@@ -12,4 +12,4 @@ T _SceneObject::GetComponent() {
 	return T();
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

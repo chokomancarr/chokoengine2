@@ -1,8 +1,8 @@
 // Hint files help the Visual Studio IDE interpret Visual C++ identifiers
 // such as names of functions and macros.
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984
-#define BEGIN_CE_NAMESPACE namespace ChokoEngine {
+#define CE_BEGIN_NAMESPACE namespace ChokoEngine {
 
-#define END_CE_NAMESPACE }
+#define CE_END_NAMESPACE }
 
-#define GET_MEMBER_FUNC
+#define CE_GET_MEMBER

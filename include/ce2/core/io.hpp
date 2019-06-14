@@ -1,14 +1,14 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class IO { CE_CLASS_COMMON
 	static std::string _path;
 
 	static bool Init();
 public:
-	GET_ST_MEMBER_FUNC(std::string, path);
+	CE_GET_ST_MEMBER(path);
 
 	/* Checks if \p path is a valid file on disk
 	*/
@@ -27,4 +27,4 @@ public:
 	static void RemoveFile(const std::string& path);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

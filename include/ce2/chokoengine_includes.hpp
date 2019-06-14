@@ -3,13 +3,12 @@
 
 #include "ext/ptrext.hpp"
 #include "ext/glext.hpp"
-#include "ext/refcnt.hpp"
 #include "ext/strext.hpp"
 
 #include "types/color.hpp"
 #include "types/rect.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 /* assets
  */
@@ -27,7 +26,7 @@ CE_OBJECT(Component)
  */
 CE_OBJECT(Camera)
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE
 
 #include "asset/font.hpp"
 #include "asset/shader.hpp"

@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 template<GLenum T = GL_TEXTURE_2D>
 void SetTexParams(int mp = 0, GLenum ws = GL_CLAMP_TO_EDGE, GLenum wt = GL_CLAMP_TO_EDGE, GLenum mn = GL_LINEAR, GLenum mg = GL_LINEAR) {
@@ -23,4 +23,4 @@ public:
     static bool FromBMP(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

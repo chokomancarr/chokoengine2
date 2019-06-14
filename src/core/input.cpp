@@ -1,7 +1,7 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

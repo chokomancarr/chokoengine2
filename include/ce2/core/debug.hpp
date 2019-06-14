@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class Debug { CE_CLASS_COMMON
 	static std::ofstream logStream;
@@ -13,4 +13,4 @@ public:
 	static void Error(const std::string& caller, const std::string& message);
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

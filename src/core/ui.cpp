@@ -2,7 +2,7 @@
 #include "glsl/uiVert.h"
 #include "glsl/uiTexFrag.h"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 uint UI::_vboSz;
 GLuint UI::_vao, UI::_vboV, UI::_vboU, UI::_tvbo;
@@ -124,4 +124,4 @@ void UI::Rect(const CE_NS Rect& rect, const Color& color) {
 
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

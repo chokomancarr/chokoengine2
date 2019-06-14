@@ -2,7 +2,7 @@
 #include <locale>
 #include <codecvt>
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 std::wstring StrExt::Widen(const std::string& s) {
 	return std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>{}.from_bytes(s);
@@ -26,4 +26,4 @@ std::vector<std::string> StrExt::Split(const std::string& s, char c, bool rm) {
 	return o;
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

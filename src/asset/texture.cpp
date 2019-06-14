@@ -1,7 +1,7 @@
 #include "chokoengine.hpp"
 #include "texture_internal.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 _Texture::_Texture()
         : _pointer(0), _width(0), _height(0), _hdr(false) {}
@@ -47,4 +47,4 @@ bool _Texture::loaded() const {
     return !!_pointer;
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

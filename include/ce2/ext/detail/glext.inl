@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 namespace glext {
 
 template <typename T, GLenum E>
@@ -19,4 +19,4 @@ void SetSubBuf(GLuint buf, T* data, GLsizeiptr sz) {
 }
 
 }
-END_CE_NAMESPACE
+CE_END_NAMESPACE

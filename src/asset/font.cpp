@@ -1,7 +1,7 @@
 #include "chokoengine.hpp"
 #include "glsl/font.h"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 FT_Library _Font::_ftlib = nullptr;
 Shader _Font::_prog;
@@ -157,4 +157,4 @@ _Font::_Font(const std::string& path) : _loaded(false), _alignment(FontAlign::To
 	_loaded = true;
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

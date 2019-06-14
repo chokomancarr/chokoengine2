@@ -16,7 +16,7 @@
 #endif
 #endif
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 std::string IO::_path;
 
@@ -66,4 +66,4 @@ void IO::RemoveFile(const std::string& path) {
 	::remove(path.c_str());
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

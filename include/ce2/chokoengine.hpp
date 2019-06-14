@@ -42,7 +42,7 @@ typedef glm::mat4 Mat4x4;
 
 class ChokoLait;
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class Engine {
 public:
@@ -50,6 +50,6 @@ public:
 	static void Cleanup();
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE
 
 #include "chokoengine_includes.hpp"

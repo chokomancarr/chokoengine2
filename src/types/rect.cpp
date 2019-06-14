@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 Rect::Rect()
         : _x(0), _y(0), _w(0), _h(0) {}
@@ -20,4 +20,4 @@ float Rect::y2() const {
         return _y + _h;
 }
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

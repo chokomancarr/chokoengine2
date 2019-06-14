@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 Color Color::black() {
     return Color(0);
@@ -33,4 +33,4 @@ Color::Color(const float r, const float g, const float b, const float a)
 Color::Color(const float c, const float a)
         : _r(c), _g(c), _b(c), _a(a) {}
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

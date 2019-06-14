@@ -1,7 +1,7 @@
 #include "chokoengine.hpp"
 #include "enums/component_types.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class _Component { CE_OBJECT_COMMON
 protected:
@@ -12,6 +12,6 @@ public:
 	const ComponentType type;
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE
 
 #include "comp/camera.hpp"

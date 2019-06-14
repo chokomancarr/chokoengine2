@@ -2,7 +2,7 @@
 #include "chokoengine.hpp"
 #include <stack>
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 class MVP {CE_CLASS_COMMON
 	class stack : public std::stack<Mat4x4> {
@@ -29,4 +29,4 @@ public:
 	static Mat4x4 modelview(), projection();
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE

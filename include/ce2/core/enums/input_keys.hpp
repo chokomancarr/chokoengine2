@@ -1,6 +1,7 @@
 #pragma once
+#include "chokoengine.hpp"
 
-BEGIN_CE_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 enum class InputKey {
     None = 0,
@@ -19,4 +20,4 @@ enum class InputKey {
 	LeftShift = 340, LeftControl, LeftAlt, RightShift = 344, RightControl, RightAlt
 };
 
-END_CE_NAMESPACE
+CE_END_NAMESPACE
