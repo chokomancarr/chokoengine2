@@ -35,3 +35,6 @@ examples/cmake/
 .vs/
 *.user
 CMakeSettings.json
+
+#Sphinx
+_build/

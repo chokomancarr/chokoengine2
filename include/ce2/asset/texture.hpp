@@ -10,6 +10,9 @@ class _Texture { CE_OBJECT_COMMON
     byte _channels;
     bool _hdr;
 
+	bool partialScaling;
+	Rect scalingArea;
+
 public:
 	_Texture();
 
