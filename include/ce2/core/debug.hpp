@@ -4,7 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 class Debug { CE_CLASS_COMMON
-	static std::ofstream logStream;
+	static CE_EXPORT std::ofstream logStream;
 
 	static bool Init();
 public:

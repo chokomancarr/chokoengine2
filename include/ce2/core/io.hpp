@@ -4,7 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 class IO { CE_CLASS_COMMON
-	static std::string _path;
+	static CE_EXPORT std::string _path;
 
 	static bool Init();
 public:

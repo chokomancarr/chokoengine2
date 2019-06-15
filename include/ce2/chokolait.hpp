@@ -22,9 +22,9 @@ class ChokoLait {
 
 	static bool initd;
 
-    static Scene _scene;
+    static CE_EXPORT Scene _scene;
 
-	static Camera mainCamera;
+	static CE_EXPORT Camera mainCamera;
 public:
     CE_GET_ST_MEMBER(scene);
 

@@ -13,4 +13,18 @@
 #define CE_NOT_IMPLEMENTED\
     throw std::logic_error("Function not implemented!");
 
+#ifdef _MSC_VER
+	#pragma warning(disable:4996)
+#endif
+
+#if PLATFORM_WIN
+	#ifdef BUILD_CHOKOENGINE
+		#define CE_EXPORT __declspec(dllexport)
+	#else
+		#define CE_EXPORT __declspec(dllimport)
+	#endif
+#else
+	#define CE_EXPORT
+#endif
+
 #include "defines_object.hpp"

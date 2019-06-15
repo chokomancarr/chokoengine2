@@ -5,15 +5,15 @@ CE_BEGIN_NAMESPACE
 
 class UI { CE_CLASS_COMMON
 
-    static uint _vboSz;
-	static GLuint _vao, _vboV, _vboU, _tvbo;
-    static GLuint _quadElo;
+    static CE_EXPORT uint _vboSz;
+	static CE_EXPORT GLuint _vao, _vboV, _vboU, _tvbo;
+    static CE_EXPORT GLuint _quadElo;
 
-    static Shader texShad;
+    static CE_EXPORT Shader texShad;
 
-    static float _alpha;
-    static glm::mat3 matrix;
-    static bool matrixIsI;
+    static CE_EXPORT float _alpha;
+    static CE_EXPORT glm::mat3 matrix;
+    static CE_EXPORT bool matrixIsI;
 
     static bool Init();
 

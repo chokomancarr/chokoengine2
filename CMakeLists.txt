@@ -112,10 +112,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 add_library(ChokoEngine SHARED ${SOURCES} ${HEADERS})
+target_compile_definitions(ChokoEngine PRIVATE BUILD_CHOKOENGINE=1)
+
+include(GenerateExportHeader)
+generate_export_header(ChokoEngine)
 
 set_target_properties(ChokoEngine PROPERTIES PUBLIC_HEADER include/ce2/chokoengine.hpp)
 
 target_link_libraries(ChokoEngine ${LIBS})
+
+
+#------editor-------
+
 
 set(SOURCES )
 

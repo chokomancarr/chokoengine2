@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 
 bool ChokoLait::initd = false;
 
-Scene ChokoLait::_scene;
+Scene ChokoLait::_scene = 0;
 
 Camera ChokoLait::mainCamera;
 

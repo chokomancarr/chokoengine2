@@ -10,11 +10,11 @@ class MVP {CE_CLASS_COMMON
 		using std::stack<Mat4x4>::c;
 	};
 
-	static stack MV, P;
-	static Mat4x4 _mv, _p;
-	static bool changedMv, changedP;
-	static const Mat4x4 identity;
-	static bool isProj;
+	static CE_EXPORT stack MV, P;
+	static CE_EXPORT Mat4x4 _mv, _p;
+	static CE_EXPORT bool changedMv, changedP;
+	static CE_EXPORT const Mat4x4 identity;
+	static CE_EXPORT bool isProj;
 
 	static bool Init();
 public:
