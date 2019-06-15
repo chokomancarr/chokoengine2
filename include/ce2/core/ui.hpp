@@ -9,7 +9,8 @@ class UI { CE_CLASS_COMMON
 	static CE_EXPORT GLuint _vao, _vboV, _vboU, _tvbo;
     static CE_EXPORT GLuint _quadElo;
 
-    static CE_EXPORT Shader texShad;
+	static Shader colShad;
+    static Shader texShad;
 
     static CE_EXPORT float _alpha;
     static CE_EXPORT glm::mat3 matrix;
@@ -24,6 +25,8 @@ class UI { CE_CLASS_COMMON
     static float Dh(float f);
     static Vec3 Ds(Vec3 v);
     static Vec2 Ds2(Vec2 v);
+
+	static std::array<Vec3, 4> GetQuadVecs(const CE_NS Rect& r);
 
     static void TexQuad(const CE_NS Rect& q, 
         GLuint tex, Color col = Color::white(), int mip = 0, 

@@ -16,6 +16,8 @@ public:
 	CE_GET_ST_MEMBER(width);
 	CE_GET_ST_MEMBER(height);
 
+	static Rect fullscreenRect();
+
 	static void Resize(uint w, uint h, bool maximize = false);
 };
 

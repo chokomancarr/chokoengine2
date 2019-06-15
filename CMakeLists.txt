@@ -128,8 +128,11 @@ target_link_libraries(ChokoEngine ${LIBS})
 set(SOURCES )
 
 add_subdirectory("editor")
+add_subdirectory("editor/res")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
+
+target_include_directories(ChokoEditor PRIVATE editor)
 
 set(LIBS
 	${LIBS}

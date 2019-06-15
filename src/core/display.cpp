@@ -39,6 +39,10 @@ bool Display::InitWindow(const std::string& title, uint w, uint h) {
 	return true;
 }
 
+Rect Display::fullscreenRect() {
+	return Rect(0, 0, _width, _height);
+}
+
 void Display::Resize(uint x, uint y, bool maximize) {
 	glfwSetWindowSize(_window, (int)x, (int)y);
 }

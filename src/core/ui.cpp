@@ -1,5 +1,7 @@
 #include "chokoengine.hpp"
-#include "glsl/uiVert.h"
+#include "glsl/uiColVert.h"
+#include "glsl/uiColFrag.h"
+#include "glsl/uiTexVert.h"
 #include "glsl/uiTexFrag.h"
 
 CE_BEGIN_NAMESPACE
@@ -8,6 +10,7 @@ uint UI::_vboSz;
 GLuint UI::_vao, UI::_vboV, UI::_vboU, UI::_tvbo;
 GLuint UI::_quadElo;
 
+Shader UI::colShad;
 Shader UI::texShad;
 
 float UI::_alpha;
@@ -15,7 +18,10 @@ glm::mat3 UI::matrix;
 bool UI::matrixIsI;
 
 bool UI::Init() {
-    (texShad = Shader::New(glsl::uiVert, glsl::uiTexFrag))
+	(colShad = Shader::New(glsl::uiColVert, glsl::uiColFrag))
+		->AddUniforms({ "col" });
+
+    (texShad = Shader::New(glsl::uiTexVert, glsl::uiTexFrag))
         ->AddUniforms({ "tex", "col", "level" });
 
     _vboSz = 100;
@@ -68,8 +74,10 @@ void UI::SetVao(uint sz, void* vts, void* uvs) {
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, _vboV);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sz * sizeof(Vec3), vts);
-	glBindBuffer(GL_ARRAY_BUFFER, _vboU);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sz * sizeof(Vec2), uvs);
+	if (uvs) {
+		glBindBuffer(GL_ARRAY_BUFFER, _vboU);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sz * sizeof(Vec2), uvs);
+	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -86,20 +94,25 @@ Vec2 UI::Ds2(Vec2 v) {
 	return Vec2(Dw(v.x) * 2 - 1, 1 - Dh(v.y) * 2);
 }
 
-void UI::TexQuad(const CE_NS Rect& q, GLuint tex, Color col, 
-        int mip, Vec2 uv0, Vec2 uv1, Vec2 uv2, Vec2 uv3) {
-    Vec3 quadPoss[4];
+std::array<Vec3, 4> UI::GetQuadVecs(const CE_NS Rect& q) {
+	std::array<Vec3, 4> quadPoss;
 	quadPoss[0].x = quadPoss[2].x = q.x();
-    quadPoss[0].y = quadPoss[1].y = q.y();
+	quadPoss[0].y = quadPoss[1].y = q.y();
 	quadPoss[1].x = quadPoss[3].x = q.x2();
 	quadPoss[2].y = quadPoss[3].y = q.y2();
 	for (int y = 0; y < 4; ++y) {
 		quadPoss[y].z = 1;
 		quadPoss[y] = Ds(UI::matrixIsI ? quadPoss[y] : UI::matrix*quadPoss[y]);
 	}
+	return quadPoss;
+}
+
+void UI::TexQuad(const CE_NS Rect& q, GLuint tex, Color col, 
+        int mip, Vec2 uv0, Vec2 uv1, Vec2 uv2, Vec2 uv3) {
+	auto quadPoss = GetQuadVecs(q);
 	Vec2 quadUvs[4]{ uv0, uv1, uv2, uv3 };
 
-	UI::SetVao(4, quadPoss, quadUvs);
+	UI::SetVao(4, quadPoss.data(), quadUvs);
 
 	texShad->Bind();
 	glUniform1i(texShad->Loc(0), 0);
@@ -120,8 +133,18 @@ void UI::Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const Color& 
 	    TexQuad(rect, tex->_pointer, color);
 }
 
-void UI::Rect(const CE_NS Rect& rect, const Color& color) {
+void UI::Rect(const CE_NS Rect& q, const Color& col) {
+	auto quadPoss = GetQuadVecs(q);
+	UI::SetVao(4, quadPoss.data(), nullptr);
 
+	colShad->Bind();
+	glUniform4f(colShad->Loc(0), col.r(), col.g(), col.b(), col.a() * _alpha);
+	glBindVertexArray(_vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _quadElo);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glUseProgram(0);
 }
 
 CE_END_NAMESPACE
