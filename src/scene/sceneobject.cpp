@@ -7,6 +7,10 @@ _SceneObject::_SceneObject(const std::string& nm,
     
 }
 
+pTransform _SceneObject::transform() {
+    return &_transform;
+}
+
 void _SceneObject::parent(const SceneObject& p) {
     if (p == _parent) return;
 

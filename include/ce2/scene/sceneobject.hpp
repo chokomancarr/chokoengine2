@@ -4,6 +4,8 @@
 CE_BEGIN_NAMESPACE
 
 class _SceneObject : public Object { CE_OBJECT_COMMON
+	Transform _transform;
+
 	std::vector<Component> _components;
 
 	std::vector<SceneObject> _children;
@@ -11,9 +13,11 @@ class _SceneObject : public Object { CE_OBJECT_COMMON
 
 public:
 	_SceneObject(const std::string& nm = "", 
-			const Vec3& pos = Vec3(), 
+			const Vec3& pos = Vec3(),
 			const Quat& rot = Quat(1, 0, 0, 0),
 			const Vec3& scl = Vec3(1));
+
+	pTransform transform();
 
 	CE_GET_MEMBER(components);
 	CE_GET_MEMBER(children);
@@ -24,12 +28,12 @@ public:
 
 	/* Adds a new component to the object
 	 */
-	template<typename T>
+	template<class T>
 	T AddComponent();
 
 	/* Retrieves a component in the object
 	 */
-	template <typename T>
+	template <class T>
 	T GetComponent();
 
 	/* Removes a component from the object

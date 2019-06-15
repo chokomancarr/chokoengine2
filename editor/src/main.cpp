@@ -7,11 +7,10 @@ CE::Texture tex;
 void paint();
 
 int main() {
-	ChokoLait::Init("ChokoEditor", 800, 600);
-
+	CE::ChokoLait::Init("ChokoEditor", 800, 600);
 	tex = CE::Texture::New(CE::IO::path() + "../../res/logo.png");
 
-	CE::Scene s = CE::Scene::New();
+	auto s = CE::ChokoLait::scene();
 	auto o = s->AddNewObject();
 	o->name("object1");
 	auto o2 = s->AddNewObject();
@@ -23,9 +22,9 @@ int main() {
 
 	std::cout << s->Tree() << std::endl;
 
-	while (ChokoLait::alive()) {
-		ChokoLait::Update();
-		ChokoLait::Paint(0, paint);
+	while (CE::ChokoLait::alive()) {
+		CE::ChokoLait::Update();
+		CE::ChokoLait::Paint(0, paint);
 	}
 }
 

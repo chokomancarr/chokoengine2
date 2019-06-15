@@ -10,4 +10,7 @@
 #define CE_BEGIN_NAMESPACE namespace CE_NAMESPACE {
 #define CE_END_NAMESPACE }
 
+#define CE_NOT_IMPLEMENTED\
+    throw std::logic_error("Function not implemented!");
+
 #include "defines_object.hpp"

@@ -6,5 +6,6 @@ set(SOURCES
 	${DIR}/object_base.cpp
 	${DIR}/scene.cpp
 	${DIR}/sceneobject.cpp
+	${DIR}/transform.cpp
 	PARENT_SCOPE
 )

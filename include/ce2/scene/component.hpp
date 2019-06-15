@@ -7,7 +7,7 @@ class _Component : public Object { CE_OBJECT_COMMON
 protected:
 	_Component(ComponentType t, const std::string& nm);
 public:
-	virtual ~_Component() {}
+	virtual ~_Component() = default;
 
 	const ComponentType type;
 };

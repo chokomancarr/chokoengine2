@@ -30,6 +30,10 @@ Ref<T>& Ref<T>::operator =(const Ref<T>& rhs) {
 
 template <class T>
 T* Ref<T>::operator ->() const {
+    if (!_object) {
+        Debug::Error("Object Reference", "Cannot deferefence: reference is empty!");
+        return nullptr;
+    }
     return _object.get();
 }
 

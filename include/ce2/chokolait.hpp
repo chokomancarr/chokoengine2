@@ -15,13 +15,19 @@
 
 #include "chokoengine.hpp"
 
+CE_BEGIN_NAMESPACE
+
 class ChokoLait {
     typedef void(*emptyCallbackFunc)(void);
 
 	static bool initd;
 
-	static ChokoEngine::Camera mainCamera;
+    static Scene _scene;
+
+	static Camera mainCamera;
 public:
+    CE_GET_ST_MEMBER(scene);
+
     /* Initializes ChokoLait.
      * This function must be called before using any
      * ChokoLait or ChokoEngine API functions.
@@ -36,3 +42,5 @@ public:
     static void Update(emptyCallbackFunc func = 0);
     static void Paint(emptyCallbackFunc rendFunc = 0, emptyCallbackFunc paintFunc = 0);
 };
+
+CE_END_NAMESPACE

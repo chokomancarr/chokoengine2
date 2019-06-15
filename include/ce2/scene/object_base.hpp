@@ -8,6 +8,8 @@ protected:
 
     std::string _name;
 public:
+    virtual ~Object() = default;
+
     CE_GET_SET_MEMBER(name);
 };
 

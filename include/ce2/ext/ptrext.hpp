@@ -5,13 +5,17 @@ CE_BEGIN_NAMESPACE
 
 template <class T>
 class Ref {
-	typedef T TpBase;
+public:
+	typedef T _TpBase;
+	typedef std::shared_ptr<T> _TpPtr;
 
-	Ref(std::shared_ptr<T> o);
+private:
+	Ref(_TpPtr o);
 
-	std::shared_ptr<T> _object;
+	_TpPtr _object;
 
 public:
+
 	Ref();
 
 	Ref(std::nullptr_t);
@@ -31,6 +35,8 @@ public:
 	bool operator ==(const Ref<T>& rhs) const;
 
 	bool operator !=(const Ref<T>& rhs) const;
+
+	CE_GET_MEMBER(object);
 
 	friend T;
 	template <class U>
