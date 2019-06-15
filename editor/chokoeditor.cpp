@@ -1,4 +1,5 @@
 #include "chokoeditor.hpp"
+#include "parsers/json.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
