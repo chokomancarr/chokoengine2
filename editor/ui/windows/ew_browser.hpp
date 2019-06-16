@@ -3,11 +3,8 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-class EWindow {
-public:
-	Rect position;
+class EW_Browser : public EWindow {
 
-	void Draw();
 };
 
 CE_END_ED_NAMESPACE

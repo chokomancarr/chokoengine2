@@ -130,6 +130,7 @@ set(SOURCES )
 
 add_subdirectory("editor")
 add_subdirectory("editor/res")
+add_subdirectory("editor/ui")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
 

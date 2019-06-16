@@ -1,13 +1,10 @@
-#pragma once
 #include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
-class EWindow {
+class EColors {
 public:
-	Rect position;
-
-	void Draw();
+	static Color accent;
 };
 
 CE_END_ED_NAMESPACE

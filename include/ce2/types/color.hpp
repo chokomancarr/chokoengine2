@@ -14,6 +14,7 @@ public:
     static Color blue();
     static Color yellow();
     static Color cyan();
+	static Color gray(float f);
 
     Color();
     Color(const float r, const float g, const float b, const float a = 1);

@@ -23,6 +23,9 @@ Color Color::yellow() {
 Color Color::cyan() {
     return Color(0, 1, 1);
 }
+Color Color::gray(float f) {
+	return Color(f, f, f);
+}
 
 Color::Color()
         : _r(0), _g(0), _b(0), _a(0) {}
