@@ -19,6 +19,8 @@ float UI::_alpha;
 glm::mat3 UI::matrix;
 bool UI::matrixIsI;
 
+Font UI::_defaultFont;
+
 bool UI::Init() {
 	(colShad = Shader::New(glsl::uiColVert, glsl::uiColFrag))
 		->AddUniforms({ "col" });
@@ -125,7 +127,14 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 	colShad->Unbind();
 }
 
-void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font) {
+void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, Font font) {
+	if (!font) {
+		if (!_defaultFont) {
+			Debug::Warning("UI::Label", "Font provided is null!");
+			return;
+		}
+		font = _defaultFont;
+	}
 	const auto fsz = font->size();
 	const auto ssz = str.size();
 	if (!fsz || !ssz) return;

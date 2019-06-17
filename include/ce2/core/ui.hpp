@@ -18,6 +18,8 @@ class UI { CE_CLASS_COMMON
     static CE_EXPORT glm::mat3 matrix;
     static CE_EXPORT bool matrixIsI;
 
+	static CE_EXPORT Font _defaultFont;
+
     static bool Init();
 
     static void InitVao();
@@ -36,6 +38,7 @@ class UI { CE_CLASS_COMMON
         Vec2 uv2 = Vec2(0, 0), Vec2 uv3 = Vec2(1, 0));
 public:
     CE_GET_SET_ST_MEMBER(alpha);
+	CE_GET_SET_ST_MEMBER(defaultFont);
 
     /* Draws an image with the provided dimensions
      */
@@ -49,7 +52,7 @@ public:
      * The text will be abbreviated (The quick fox -> The q...)
      * if the text is longer than the width provided.
      */
-    static void Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font);
+    static void Label(const CE_NS Rect& rect, const std::string& str, const Color& col, Font font = _defaultFont);
 };
 
 CE_END_NAMESPACE
