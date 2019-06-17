@@ -18,7 +18,7 @@ JsonObject JsonParser::Parse(std::string text) {
 		text = text.substr(3);
 	}
 	
-	text.erase(std::remove_if(text.begin(), text.end(), std::isspace), text.end());
+	text.erase(std::remove_if(text.begin(), text.end(), ::isspace), text.end());
 
 	std::istringstream ss(text);
 
