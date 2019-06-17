@@ -6,9 +6,8 @@ CE_BEGIN_NAMESPACE
 FT_Library _Font::_ftlib = nullptr;
 Shader _Font::_prog;
 uint _Font::vaoSz = 0;
-GLuint _Font::vao = 0;
-GLuint _Font::vbos[] = { 0, 0, 0 };
-GLuint _Font::idbuf = 0;
+VertexObject _Font::vao;
+VertexBuffer _Font::idbuf;
 
 bool _Font::Init() {
 	int err = FT_Init_FreeType(&_ftlib);
@@ -88,36 +87,12 @@ GLuint _Font::CreateGlyph(uint sz, uint mask) {
 
 void _Font::InitVao(uint sz) {
 	vaoSz = sz;
-	if (!!vao) {
-		glDeleteVertexArrays(1, &vao);
-		glDeleteBuffers(3, vbos);
-		glDeleteBuffers(1, &idbuf); 
-	}
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(3, vbos);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-	glBufferData(GL_ARRAY_BUFFER, vaoSz * sizeof(Vec3), nullptr, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[1]);
-	glBufferData(GL_ARRAY_BUFFER, vaoSz * sizeof(Vec2), nullptr, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[2]);
-	glBufferData(GL_ARRAY_BUFFER, vaoSz * sizeof(int), nullptr, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(vao);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[1]);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[2]);
-	glVertexAttribIPointer(2, 1, GL_INT, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	glGenBuffers(1, &idbuf);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idbuf);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sz * 6 * sizeof(uint), nullptr, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	vao = VertexObject_New();
+	vao->AddBuffer(VertexBuffer_New(true, 3, vaoSz, nullptr, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
+	vao->AddBuffer(VertexBuffer_New(false, 1, vaoSz, nullptr, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
+
+	idbuf = VertexBuffer_New(false, 1, sz * 6, nullptr, 0, GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 }
 
 uint _Font::utf2unc(char*& c) {

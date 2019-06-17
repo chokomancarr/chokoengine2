@@ -147,4 +147,105 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 	glUseProgram(0);
 }
 
+void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font) {
+	const auto fsz = font->size();
+	const auto ssz = str.size();
+	if (!fsz || !ssz) return;
+	
+	byte align = (byte)font->alignment();
+
+	//get the unicode string
+	auto ucs = StrExt::ToUnicode(str);
+	const auto usz = ucs.size();
+	std::vector<uint> mks;
+
+	//preload glyphs
+	for (auto c : ucs) {
+		c &= 0xff00;
+		if (std::find(mks.begin(), mks.end(), c) == mks.end()) {
+			mks.push_back(c);
+			font->GetGlyph(fsz, c);
+		}
+	}
+
+	//get the total width
+	auto& params = font->_glyphs[fsz];
+	float strw = 0;
+	for (uint i = 0; i < usz; ++i) {
+		const auto& c = ucs[i];
+		strw += params[c & 0xff00].o2s[c & 0x00ff];
+	}
+
+	//get the starting x
+	float xpos = rect.x();
+	switch (align & 0x0f) {
+		case 0: break;
+		case 1: {
+			xpos = rect.x() + (rect.w() - strw) / 2;
+		}
+		case 2: {
+			xpos = rect.x() + rect.w() - strw;
+		}
+		default: break;
+	}
+	xpos = std::roundf(xpos);
+
+	//get the starting y
+	float ypos = rect.y();
+	switch (align >> 4) {
+		case 0: break;
+		case 1: {
+			ypos = rect.y() + (rect.h() - fsz) / 2;
+		}
+		case 2: {
+			ypos = rect.y() + rect.h() - fsz;
+		}
+		default: break;
+	}
+	ypos = std::roundf(ypos);
+
+	//set quads
+	for (size_t i = 0; i < usz * 4; i += 4) {
+		auto& c = ucs[i / 4];
+		auto m = c & 0xff00;
+		auto cc = c & 0x00ff;
+		auto& p = params[m];
+
+		Vec3 off = Vec3(p.off[cc].x, -p.off[cc].y, 0);
+
+		font->poss[i] = Ds(Vec3(xpos - 2, ypos + fsz + 2, 1) + off);
+		font->poss[i + 1] = Ds(Vec3(xpos + fsz + 2, ypos + fsz + 2, 1) + off);
+		font->poss[i + 2] = Ds(Vec3(xpos - 2, ypos + 2, 1) + off);
+		font->poss[i + 3] = Ds(Vec3(xpos + fsz + 2, ypos + 2, 1) + off);
+		std::memset(&font->cs[i], c, 4 * sizeof(uint));
+		xpos += p.o2s[cc];
+		if (c == (uint)' ' || c == (uint)'\t')
+			xpos = std::roundf(xpos);
+	}
+	font->poss[usz * 4] = Ds(Vec3(xpos, 0, 0));
+
+	_Font::vao->buffer(0)->Set(font->poss.data(), usz * 4);
+	_Font::vao->buffer(1)->Set(font->cs.data(), usz * 4);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	_Font::vao->Bind();
+	_Font::idbuf->Bind();
+	_Font::_prog->Bind();
+	glUniform4f(_Font::_prog->Loc(0), col.r(), col.g(), col.b(), col.a() * _alpha);
+	glUniform2f(_Font::_prog->Loc(2), 0, 0);
+	for (auto& m : mks) {
+		const GLuint tex = font->GetGlyph(fsz, 0);
+		glUniform1i(_Font::_prog->Loc(1), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex);
+		glUniform1i(_Font::_prog->Loc(3), m);
+
+		glDrawElements(GL_TRIANGLES, 6 * usz, GL_UNSIGNED_INT, 0);
+	}
+	_Font::_prog->Unbind();
+	_Font::idbuf->Unbind();
+	_Font::vao->Unbind();
+}
+
 CE_END_NAMESPACE

@@ -4,6 +4,8 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EW_Browser : public EWindow {
+protected:
+	void DrawMenu() override {}
 
 };
 

@@ -26,4 +26,35 @@ std::vector<std::string> StrExt::Split(const std::string& s, char c, bool rm) {
 	return o;
 }
 
+std::vector<uint> StrExt::ToUnicode(const std::string& s) {
+#define MK(cc) uint(*(cc) & 63)
+	char* cc = (char*)s.data();
+	std::vector<uint> result;
+	for (uint a = 0; *cc > 0; a++) {
+		if (!((*cc >> 7) & 1)) {
+			result.push_back(*cc++);
+		}
+		else if (!((*cc >> 5) & 1)) {
+			uint res = *cc & 31;
+			res = (res << 6) + MK(cc + 1);
+			cc += 2;
+			result.push_back(res);
+		}
+		else if (!((*cc >> 4) & 1)) {
+			uint res = *cc & 15;
+			res = (res << 12) + (MK(cc + 1) << 6) + MK(cc + 2);
+			cc += 3;
+			result.push_back(res);
+		}
+		else {
+			uint res = *cc & 7;
+			res = (res << 18) + (MK(cc + 1) << 12) + (MK(cc + 2) << 6) + MK(cc + 3);
+			cc += 4;
+			result.push_back(res);
+		}
+	}
+	return result;
+#undef MK
+}
+
 CE_END_NAMESPACE

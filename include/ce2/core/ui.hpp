@@ -42,6 +42,12 @@ public:
     /* Draws a rectangle with the provided dimensions
      */
     static void Rect(const CE_NS Rect& rect, const Color& color);
+
+    /* Draws a string within the provided dimensions
+     * The text will be abbreviated (The quick fox -> The q...)
+     * if the text is longer than the width provided.
+     */
+    void Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font);
 };
 
 CE_END_NAMESPACE

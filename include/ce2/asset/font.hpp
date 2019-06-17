@@ -11,11 +11,14 @@ class _Font { CE_OBJECT_COMMON
 
     static FT_Library _ftlib;
     static Shader _prog;
+
 	static uint vaoSz;
-	static GLuint vao, vbos[3], idbuf;
+	static VertexObject vao;
+	static VertexBuffer idbuf;
     
     bool _loaded;
     
+	uint _size;
 	FT_Face _face;
 	FontAlign _alignment;
 
@@ -43,12 +46,15 @@ class _Font { CE_OBJECT_COMMON
 	static uint utf2unc(char*& c);
 public:
 
-	CE_GET_MEMBER(loaded);
+	CE_GET_SET_MEMBER(loaded);
+	CE_GET_MEMBER(size);
 	CE_GET_SET_MEMBER(alignment);
 
     /* Constructs a font from a .ttf file
      */
 	_Font(const std::string& path);
+
+	friend class UI;
 };
 
 CE_END_NAMESPACE

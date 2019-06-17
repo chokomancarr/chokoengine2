@@ -4,7 +4,11 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EWindow {
+protected:
+	virtual void DrawMenu() = 0;
 public:
+	virtual ~EWindow() = default;
+
 	Rect position;
 
 	void Draw();
