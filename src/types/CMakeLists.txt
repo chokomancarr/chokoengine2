@@ -6,6 +6,8 @@ set(SOURCES
 	${DIR}/mat4x4.cpp
 	${DIR}/quat.cpp
 	${DIR}/rect.cpp
+	${DIR}/texturebuffer.cpp
+	${DIR}/vertexbuffer.cpp
 	${DIR}/vertexobject.cpp
 	PARENT_SCOPE
 )

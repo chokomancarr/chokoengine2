@@ -7,8 +7,10 @@
 CE_BEGIN_NAMESPACE
 
 uint UI::_vboSz;
-GLuint UI::_vao, UI::_vboV, UI::_vboU, UI::_tvbo;
-GLuint UI::_quadElo;
+VertexBuffer UI::_vboV, UI::_vboU;
+VertexObject UI::_vao;
+TextureBuffer UI::_tvbo;
+VertexBuffer UI::_quadElo;
 
 Shader UI::colShad;
 Shader UI::texShad;
@@ -35,50 +37,26 @@ bool UI::Init() {
 }
 
 void UI::InitVao() {
-	glGenVertexArrays(1, &_vao);
-	glGenBuffers(1, &_vboV);
-	glGenBuffers(1, &_vboU);
-	glGenTextures(1, &_tvbo);
+	int d[] = { 0, 2, 1, 2, 3, 1 };
 
-	glBindVertexArray(_vao);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, _vboV);
-	glBufferData(GL_ARRAY_BUFFER, _vboSz * sizeof(Vec3), nullptr, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, _vboU);
-	glBufferData(GL_ARRAY_BUFFER, _vboSz * sizeof(Vec2), nullptr, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	glGenTextures(1, &_tvbo);
-	glBindTexture(GL_TEXTURE_BUFFER, _tvbo);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, _vboV);
-	glBindTexture(GL_TEXTURE_BUFFER, 0);
-
-    int d[] = {0, 2, 1, 2, 3, 1};
-	glGenBuffers(1, &_quadElo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _quadElo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(int), d, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	_vboV = VertexBuffer_New(true, 3, _vboSz, nullptr);
+	_vboU = VertexBuffer_New(true, 2, _vboSz, nullptr);
+	_vao = VertexObject_New();
+	_vao->AddBuffer(_vboV);
+	_vao->AddBuffer(_vboU);
+	_tvbo = TextureBuffer_New(_vboV, GL_RGB32F);
+	_quadElo = VertexBuffer_New(false, 1, 6, d, 0, GL_ELEMENT_ARRAY_BUFFER);
 }
 
 void UI::SetVao(uint sz, void* vts, void* uvs) {
 	if (sz > _vboSz) {
-    	glDeleteTextures(1, &_tvbo);
-		glDeleteBuffers(1, &_vboV);
-		glDeleteBuffers(1, &_vboU);
-		glDeleteVertexArrays(1, &_vao);
 		_vboSz = sz;
 		InitVao();
 	}
-	glBindBuffer(GL_ARRAY_BUFFER, _vboV);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sz * sizeof(Vec3), vts);
+	_vboV->Set(vts, sz);
 	if (uvs) {
-		glBindBuffer(GL_ARRAY_BUFFER, _vboU);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sz * sizeof(Vec2), uvs);
+		_vboU->Set(uvs, sz);
 	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 float UI::Dw(float f) {
@@ -120,12 +98,12 @@ void UI::TexQuad(const CE_NS Rect& q, GLuint tex, Color col,
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glUniform4f(texShad->Loc(1), col.r(), col.g(), col.b(), col.a() * _alpha);
 	glUniform1f(texShad->Loc(2), mip);
-	glBindVertexArray(_vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _quadElo);
+	_vao->Bind();
+	_quadElo->Bind();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	glUseProgram(0);
+	_quadElo->Unbind();
+	_vao->Unbind();
+	texShad->Unbind();
 }
 
 void UI::Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const Color& color) {
@@ -139,12 +117,12 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 
 	colShad->Bind();
 	glUniform4f(colShad->Loc(0), col.r(), col.g(), col.b(), col.a() * _alpha);
-	glBindVertexArray(_vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _quadElo);
+	_vao->Bind();
+	_quadElo->Bind();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	glUseProgram(0);
+	_quadElo->Unbind();
+	_vao->Unbind();
+	colShad->Unbind();
 }
 
 void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font) {

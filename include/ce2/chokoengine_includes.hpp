@@ -11,7 +11,9 @@
 #include "types/quat.hpp"
 #include "types/rect.hpp"
 #include "types/mat4x4.hpp"
+#include "types/vertexbuffer.hpp"
 #include "types/vertexobject.hpp"
+#include "types/texturebuffer.hpp"
 
 CE_BEGIN_NAMESPACE
 

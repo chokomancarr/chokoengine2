@@ -6,11 +6,13 @@ CE_BEGIN_NAMESPACE
 class UI { CE_CLASS_COMMON
 
     static CE_EXPORT uint _vboSz;
-	static CE_EXPORT GLuint _vao, _vboV, _vboU, _tvbo;
-    static CE_EXPORT GLuint _quadElo;
+	static CE_EXPORT VertexBuffer _vboV, _vboU;
+	static CE_EXPORT VertexObject _vao;
+	static CE_EXPORT TextureBuffer _tvbo;
+    static CE_EXPORT VertexBuffer _quadElo;
 
-	static Shader colShad;
-    static Shader texShad;
+	static CE_EXPORT Shader colShad;
+    static CE_EXPORT Shader texShad;
 
     static CE_EXPORT float _alpha;
     static CE_EXPORT glm::mat3 matrix;

@@ -1,0 +1,28 @@
+#include "chokoengine.hpp"
+
+CE_BEGIN_NAMESPACE
+
+_TextureBuffer::_TextureBuffer(const VertexBuffer& buf, GLenum fmt) {
+	glGenTextures(1, &_pointer);
+	glBindTexture(GL_TEXTURE_BUFFER, _pointer);
+	glTexBuffer(GL_TEXTURE_BUFFER, fmt, buf->pointer());
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
+}
+
+_TextureBuffer::~_TextureBuffer() {
+	glDeleteTextures(1, &_pointer);
+}
+
+void _TextureBuffer::Bind() const {
+	glBindTexture(GL_TEXTURE_BUFFER, _pointer);
+}
+
+void _TextureBuffer::Unbind() const {
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
+}
+
+TextureBuffer TextureBuffer_New(const VertexBuffer& buf, GLenum fmt) {
+	return std::make_shared<_TextureBuffer>(buf, fmt);
+}
+
+CE_END_NAMESPACE
