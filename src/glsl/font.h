@@ -1,11 +1,8 @@
 #pragma once
 namespace glsl {
 	const char fontVert[] = R"(
-#version 330 core
 layout(location = 0) in vec3 pos;
 layout(location = 1) in int c;
-
-uniform vec2 off;
 uniform int mask;
 
 out vec2 UV;
@@ -14,7 +11,7 @@ void main() {
 	int cc = c & 0x00ff;
 	int mk = c & 0xff00;
 	if (mk == mask) {
-		gl_Position.xyz = (pos + vec3(off, 0))*2 - vec3(1,1,0);
+		gl_Position.xyz = pos;
 		UV = vec2(mod(cc, 16) + mod(gl_VertexID, 2), (cc/16) + 1 - floor(mod(gl_VertexID, 4)/2))/16;
 	}
 	else {
@@ -26,11 +23,13 @@ void main() {
 )";
 
 	const char fontFrag[] = R"(
-#version 330
 in vec2 UV;
+
 uniform sampler2D sampler;
 uniform vec4 col;
+
 out vec4 color;
+
 void main() {
 	color = vec4(1, 1, 1, texture(sampler, UV).r)*col;
 }

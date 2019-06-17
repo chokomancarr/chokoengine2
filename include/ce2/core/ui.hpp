@@ -49,7 +49,7 @@ public:
      * The text will be abbreviated (The quick fox -> The q...)
      * if the text is longer than the width provided.
      */
-    void Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font);
+    static void Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font);
 };
 
 CE_END_NAMESPACE

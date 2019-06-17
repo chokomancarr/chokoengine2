@@ -12,7 +12,9 @@ bool Engine::Init() {
 	TRYINIT(IO);
 	TRYINIT(MVP);
 	TRYINIT(UI);
-	
+
+	TRYINIT(_Font);
+
 	TRYINIT(_Camera);
 
 	return true;

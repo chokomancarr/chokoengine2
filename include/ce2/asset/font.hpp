@@ -37,7 +37,7 @@ class _Font { CE_OBJECT_COMMON
 
 	static bool Init();
 
-    void InitVao(uint sz);
+    static void InitVao(uint sz);
 	void SizeVec(uint sz);
     
 	GLuint GetGlyph(uint size, uint mask);
@@ -47,7 +47,7 @@ class _Font { CE_OBJECT_COMMON
 public:
 
 	CE_GET_SET_MEMBER(loaded);
-	CE_GET_MEMBER(size);
+	CE_GET_SET_MEMBER(size);
 	CE_GET_SET_MEMBER(alignment);
 
     /* Constructs a font from a .ttf file

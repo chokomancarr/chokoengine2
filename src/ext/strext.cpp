@@ -29,7 +29,7 @@ std::vector<std::string> StrExt::Split(const std::string& s, char c, bool rm) {
 std::vector<uint> StrExt::ToUnicode(const std::string& s) {
 #define MK(cc) uint(*(cc) & 63)
 	char* cc = (char*)s.data();
-	std::vector<uint> result;
+	std::vector<uint> result = {};
 	for (uint a = 0; *cc > 0; a++) {
 		if (!((*cc >> 7) & 1)) {
 			result.push_back(*cc++);

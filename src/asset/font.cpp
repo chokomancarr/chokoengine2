@@ -18,11 +18,15 @@ bool _Font::Init() {
 
 	(_prog = Shader::New(glsl::fontVert, glsl::fontFrag))
 		->AddUniforms({ "col", "sampler", "mask" });
+
+	InitVao(100);
+
 	return true;
 }
 
 void _Font::SizeVec(uint sz) {
 	if (vecSize >= sz) return;
+
 	poss.resize(sz * 4 + 1);
 	cs.resize(sz * 4);
 	uvs.resize(sz * 4);
@@ -39,6 +43,9 @@ void _Font::SizeVec(uint sz) {
 		ids[vecSize * 6 + 4] = 4 * vecSize + 3;
 		ids[vecSize * 6 + 5] = 4 * vecSize + 2;
 	}
+
+	InitVao(sz);
+	idbuf->Set(&ids[0], sz * 6);
 }
 
 GLuint _Font::GetGlyph(uint size, uint mask) {
@@ -86,13 +93,13 @@ GLuint _Font::CreateGlyph(uint sz, uint mask) {
 }
 
 void _Font::InitVao(uint sz) {
-	vaoSz = sz;
+	vaoSz = sz * 4;
 
 	vao = VertexObject_New();
-	vao->AddBuffer(VertexBuffer_New(true, 3, vaoSz, nullptr, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
-	vao->AddBuffer(VertexBuffer_New(false, 1, vaoSz, nullptr, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
+	vao->AddBuffer(VertexBuffer_New(true, 3, vaoSz, nullptr, 0, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
+	vao->AddBuffer(VertexBuffer_New(false, 1, vaoSz, nullptr, 0, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
 
-	idbuf = VertexBuffer_New(false, 1, sz * 6, nullptr, 0, GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+	idbuf = VertexBuffer_New(false, 1, sz * 6, nullptr, 0, GL_ELEMENT_ARRAY_BUFFER);
 }
 
 uint _Font::utf2unc(char*& c) {
@@ -120,7 +127,8 @@ uint _Font::utf2unc(char*& c) {
 	}
 }
 
-_Font::_Font(const std::string& path) : _loaded(false), _alignment(FontAlign::TopLeft), vecSize(0) {
+_Font::_Font(const std::string& path) : _loaded(false), _size(12), _alignment(FontAlign::TopLeft), 
+		vecSize(0), poss({}), uvs({}), ids({}), cs({}) {
 	auto err = FT_New_Face(_ftlib, path.c_str(), 0, &_face);
 	if (err != FT_Err_Ok) {
 		Debug::Warning("_Font", "Freetype loader failed with error code " + std::to_string(err));

@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_VertexObject::_VertexObject() {
+_VertexObject::_VertexObject() : _buffers({}), _bufferSize(0) {
     glGenVertexArrays(1, &_pointer);
 }
 

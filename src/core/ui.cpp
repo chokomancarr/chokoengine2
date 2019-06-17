@@ -135,7 +135,7 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	//get the unicode string
 	auto ucs = StrExt::ToUnicode(str);
 	const auto usz = ucs.size();
-	std::vector<uint> mks;
+	std::vector<uint> mks = {};
 
 	//preload glyphs
 	for (auto c : ucs) {
@@ -189,13 +189,13 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 		auto cc = c & 0x00ff;
 		auto& p = params[m];
 
-		Vec3 off = Vec3(p.off[cc].x, -p.off[cc].y, 0);
+		Vec3 off = Vec3(p.off[cc].x, p.off[cc].y, 0);
 
 		font->poss[i] = Ds(Vec3(xpos - 2, ypos + fsz + 2, 1) + off);
 		font->poss[i + 1] = Ds(Vec3(xpos + fsz + 2, ypos + fsz + 2, 1) + off);
 		font->poss[i + 2] = Ds(Vec3(xpos - 2, ypos + 2, 1) + off);
 		font->poss[i + 3] = Ds(Vec3(xpos + fsz + 2, ypos + 2, 1) + off);
-		std::memset(&font->cs[i], c, 4 * sizeof(uint));
+		font->cs[i] = font->cs[i + 1] = font->cs[i + 2] = font->cs[i + 3] = c;
 		xpos += p.o2s[cc];
 		if (c == (uint)' ' || c == (uint)'\t')
 			xpos = std::roundf(xpos);
@@ -205,11 +205,9 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	_Font::vao->buffer(0)->Set(font->poss.data(), usz * 4);
 	_Font::vao->buffer(1)->Set(font->cs.data(), usz * 4);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+	_Font::_prog->Bind();
 	_Font::vao->Bind();
 	_Font::idbuf->Bind();
-	_Font::_prog->Bind();
 	glUniform4f(_Font::_prog->Loc(0), col.r(), col.g(), col.b(), col.a() * _alpha);
 	glUniform2f(_Font::_prog->Loc(2), 0, 0);
 	for (auto& m : mks) {
@@ -221,9 +219,9 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 
 		glDrawElements(GL_TRIANGLES, 6 * usz, GL_UNSIGNED_INT, 0);
 	}
-	_Font::_prog->Unbind();
 	_Font::idbuf->Unbind();
 	_Font::vao->Unbind();
+	_Font::_prog->Unbind();
 }
 
 CE_END_NAMESPACE
