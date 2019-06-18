@@ -14,11 +14,15 @@ Mat4x4::Mat4x4(float a, float b, float c, float d,
 
 Mat4x4::Mat4x4(const glm::mat4& m) : glm::mat4(m) {}
 
-Mat4x4 Mat4x4::identity() {
+Mat4x4 Mat4x4::inverse() const {
+	return glm::inverse(*this);
+}
+
+Mat4x4 Mat4x4::Identity() {
     return Mat4x4(1);
 }
 
-Mat4x4 Mat4x4::translation(const Vec3& t) {
+Mat4x4 Mat4x4::Translation(const Vec3& t) {
     return Mat4x4(
         1, 0, 0, 0,
         0, 1, 0, 0,
@@ -26,20 +30,24 @@ Mat4x4 Mat4x4::translation(const Vec3& t) {
         t.x, t.y, t.z, 1);
 }
 
-Mat4x4 Mat4x4::rotation(const Quat& q) {
-    CE_NOT_IMPLEMENTED;
+Mat4x4 Mat4x4::Rotation(const Quat& q) {
+	return q.matrix();
 }
 
-Mat4x4 Mat4x4::rotation(const Vec3& e) {
-     CE_NOT_IMPLEMENTED;
+Mat4x4 Mat4x4::Rotation(const Vec3& e) {
+	return Quat::FromEuler(e).matrix();
 }
 
-Mat4x4 Mat4x4::scale(const Vec3& s) {
+Mat4x4 Mat4x4::Scale(const Vec3& s) {
     return Mat4x4(
         s.x, 0, 0, 0,
         0, s.y, 0, 0,
         0, 0, s.z, 0,
         0, 0, 0, 1);
+}
+
+Mat4x4 Mat4x4::FromTRS(const Vec3& t, const Quat& r, const Vec3& s) {
+	return Translation(t) * r.matrix() * Scale(s);
 }
 
 CE_END_NAMESPACE

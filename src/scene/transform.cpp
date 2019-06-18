@@ -5,15 +5,12 @@ CE_BEGIN_NAMESPACE
 Transform::Transform() :
     _localPosition(Vec3()), _worldPosition(Vec3()),
     _localRotation(Quat::identity()), _worldRotation(Quat::identity()),
-    _localScale(Vec3()), _localMatrix(Mat4x4::identity()),
-    _worldMatrix(Mat4x4::identity())
+    _localScale(Vec3(1)), _localMatrix(Mat4x4::Identity()),
+    _worldMatrix(Mat4x4::Identity())
 {}
 
 void Transform::UpdateLocalMatrix() {
-    _localMatrix = 
-        Mat4x4::translation(_localPosition) *
-        Mat4x4::rotation(_localRotation) *
-        Mat4x4::scale(_localScale);
+    _localMatrix = Mat4x4::FromTRS(_localPosition, _localRotation, _localScale);
     UpdateParentMatrix();
 }
 

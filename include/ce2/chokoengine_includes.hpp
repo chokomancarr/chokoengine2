@@ -9,6 +9,17 @@
 #include "ext/glext.hpp"
 #include "ext/strext.hpp"
 
+CE_BEGIN_NAMESPACE
+
+/* types
+ */
+class Color;
+class Quat;
+class Rect;
+class Mat4x4;
+
+CE_END_NAMESPACE
+
 #include "types/color.hpp"
 #include "types/quat.hpp"
 #include "types/rect.hpp"

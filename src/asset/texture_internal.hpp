@@ -21,6 +21,8 @@ public:
     static bool FromPNG(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
 
     static bool FromBMP(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
+
+	static bool FromHDR(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
 };
 
 CE_END_NAMESPACE

@@ -7,6 +7,7 @@ template<class T>
 T _SceneObject::AddComponent() {
 	auto nt = T::New();
 	_components.push_back(static_cast<Component>(nt));
+	nt->_object = std::static_pointer_cast<_SceneObject>(shared_from_this());
 	return nt;
 }
 

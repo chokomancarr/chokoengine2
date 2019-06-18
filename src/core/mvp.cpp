@@ -41,10 +41,12 @@ void MVP::Pop() {
 void MVP::Clear() {
 	if (isProj) {
 		P = stack();
+		P.push(Mat4x4(1));
 		changedP = true;
 	}
 	else {
 		MV = stack();
+		P.push(Mat4x4(1));
 		changedMv = true;
 	}
 }

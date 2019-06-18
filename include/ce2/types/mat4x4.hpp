@@ -14,11 +14,14 @@ public:
 
     Mat4x4(const glm::mat4& rhs);
 
-    static Mat4x4 identity();
-    static Mat4x4 translation(const Vec3& t);
-    static Mat4x4 rotation(const Quat& q);
-    static Mat4x4 rotation(const Vec3& e);
-    static Mat4x4 scale(const Vec3& s);
+	Mat4x4 inverse() const;
+
+    static Mat4x4 Identity();
+    static Mat4x4 Translation(const Vec3& t);
+    static Mat4x4 Rotation(const Quat& q);
+    static Mat4x4 Rotation(const Vec3& e);
+    static Mat4x4 Scale(const Vec3& s);
+	static Mat4x4 FromTRS(const Vec3& t, const Quat& r, const Vec3& s);
 };
 
 CE_END_NAMESPACE

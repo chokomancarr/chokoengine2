@@ -6,10 +6,16 @@ CE_BEGIN_NAMESPACE
 class _Component : public Object { CE_OBJECT_COMMON
 protected:
 	_Component(ComponentType t, const std::string& nm);
+
+	pSceneObject _object;
 public:
 	virtual ~_Component() = default;
 
 	const ComponentType type;
+
+	SceneObject object();
+
+	friend class _SceneObject; //allow set _object
 };
 
 CE_END_NAMESPACE

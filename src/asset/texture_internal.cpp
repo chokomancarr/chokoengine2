@@ -114,4 +114,16 @@ bool Texture_I::FromBMP(const std::string& path, uint& w, uint& h, byte& channel
 	return true;
 }
 
+bool Texture_I::FromHDR(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
+	byte* d = hdr::read_hdr(path.c_str(), &w, &h);
+	if (!d) return false;
+
+	channels = 3;
+	data.resize(w * h * 3 * sizeof(float));
+	hdr::to_float(d, w, h, (float*)data.data());
+	delete[](d);
+
+	return true;
+}
+
 CE_END_NAMESPACE

@@ -17,6 +17,7 @@ void ChokoEditor::Main() {
 	EImages::Init();
 	EWindowManager::Init();
 
+	ChokoLait::scene()->sky(Texture::New(IO::path() + "res/sky.hdr"));
 	ChokoLait::scene()->AddNewObject()
 		->name("__Editor_Cameras__");
 	ChokoLait::scene()->AddNewObject()->name("Player");
@@ -29,11 +30,9 @@ void ChokoEditor::Main() {
 	while (ChokoLait::alive()) {
 		ChokoLait::Update();
 		ChokoLait::Paint(0, [&]() {
-			UI::defaultFont()->alignment(FontAlign::TopLeft);
 			UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.5f));
 			//UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
 			EWindowManager::Draw();
-			UI::defaultFont()->alignment(FontAlign::MiddleCenter);
 		});
 	}
 }

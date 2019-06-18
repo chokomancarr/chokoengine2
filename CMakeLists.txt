@@ -106,6 +106,7 @@ add_subdirectory("src/parsers")
 add_subdirectory("src/scene")
 add_subdirectory("src/scene/comp")
 add_subdirectory("src/types")
+add_subdirectory("src/utils")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

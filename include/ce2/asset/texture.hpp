@@ -26,6 +26,8 @@ public:
 
     CE_GET_MEMBER(width);
     CE_GET_MEMBER(height);
+	CE_GET_MEMBER(channels);
+	CE_GET_MEMBER(hdr);
 
 	bool loaded() const;
 

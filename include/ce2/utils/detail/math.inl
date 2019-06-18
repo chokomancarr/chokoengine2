@@ -13,4 +13,9 @@ T Math::ILerp(const T& a, const T& b, const T& c) {
     return (c - a) / (b - a);
 }
 
+template <typename T>
+T Math::Clamp(const T& t, const T& a, const T& b) {
+	return std::min(std::max(t, a), b);
+}
+
 CE_END_NAMESPACE

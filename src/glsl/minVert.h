@@ -1,8 +1,6 @@
 #pragma once
 namespace glsl {
     const char minVert[] = R"(
-#version 330
-
 void main() {
 	float y = -1;
 	if (gl_VertexID == 2 || gl_VertexID > 3) y = 1;

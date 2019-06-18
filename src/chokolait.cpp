@@ -21,6 +21,10 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 		return false;
 	}
 
+	if (!Backend::Renderer::Init()) {
+		return false;
+	}
+
 	initd = true;
 
 	glClearColor(1, 0, 0, 0);

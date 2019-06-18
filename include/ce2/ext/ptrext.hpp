@@ -41,6 +41,7 @@ public:
 	friend T;
 	template <class U>
 	friend class Ref;
+	friend class _Component; //to allow object from weak pointer
 };
 
 CE_END_NAMESPACE
