@@ -20,6 +20,15 @@ public:
     Color(const float r, const float g, const float b, const float a = 1);
     Color(const float c, const float a = 1);
 
+    Color operator *(float f) const;
+    Color operator *(const Vec2& v) const;
+    Color operator /(float f) const;
+    Color operator /(const Vec2& v) const;
+    Color& operator *=(float f);
+    Color& operator *=(const Vec2& v);
+    Color& operator /=(float f);
+    Color& operator /=(const Vec2& v);
+
     CE_GET_SET_MEMBER(r);
     CE_GET_SET_MEMBER(g);
     CE_GET_SET_MEMBER(b);

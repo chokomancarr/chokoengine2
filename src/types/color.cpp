@@ -36,4 +36,72 @@ Color::Color(const float r, const float g, const float b, const float a)
 Color::Color(const float c, const float a)
         : _r(c), _g(c), _b(c), _a(a) {}
 
+Color Color::operator *(float f) const {
+    return Color (
+        _r * f,
+        _g * f,
+        _b * f,
+        _a * f
+    );
+}
+
+Color Color::operator *(const Vec2& v) const {
+    return Color (
+        _r * v.x,
+        _g * v.x,
+        _b * v.x,
+        _a * v.y
+    );
+}
+
+Color Color::operator /(float f) const {
+    return Color (
+        _r / f,
+        _g / f,
+        _b / f,
+        _a / f
+    );
+}
+
+Color Color::operator /(const Vec2& v) const {
+    return Color (
+        _r / v.x,
+        _g / v.x,
+        _b / v.x,
+        _a / v.y
+    );
+}
+
+Color& Color::operator *=(float f) {
+    _r *= f;
+    _g *= f;
+    _b *= f;
+    _a *= f;
+    return *this;
+}
+
+Color& Color::operator *=(const Vec2& v) {
+    _r *= v.x;
+    _g *= v.x;
+    _b *= v.x;
+    _a *= v.y;
+    return *this;
+}
+
+Color& Color::operator /=(float f) {
+    _r /= f;
+    _g /= f;
+    _b /= f;
+    _a /= f;
+    return *this;
+}
+
+Color& Color::operator /=(const Vec2& v) {
+    _r /= v.x;
+    _g /= v.x;
+    _b /= v.x;
+    _a /= v.y;
+    return *this;
+}
+
 CE_END_NAMESPACE

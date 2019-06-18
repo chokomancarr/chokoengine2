@@ -53,6 +53,13 @@ public:
      * if the text is longer than the width provided.
      */
     static void Label(const CE_NS Rect& rect, const std::string& str, const Color& col, Font font = _defaultFont);
+
+    /* Interactive UI elements
+     * (see interactive_ui.hpp)
+     */
+    class I;
 };
 
 CE_END_NAMESPACE
+
+#include "interactive_ui.hpp"

@@ -15,6 +15,8 @@
 #include "types/vertexobject.hpp"
 #include "types/texturebuffer.hpp"
 
+#include "utils/math.hpp"
+
 CE_BEGIN_NAMESPACE
 
 /* assets
@@ -43,6 +45,7 @@ CE_END_NAMESPACE
 #include "asset/texture.hpp"
 
 #include "core/display.hpp"
+#include "core/input.hpp"
 #include "core/io.hpp"
 #include "core/mvp.hpp"
 #include "core/ui.hpp"
