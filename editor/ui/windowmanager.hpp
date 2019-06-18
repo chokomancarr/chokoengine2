@@ -4,6 +4,7 @@
 #include "window.hpp"
 #include "windows/ew_browser.hpp"
 #include "windows/ew_hierarchy.hpp"
+#include "windows/ew_sceneview.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

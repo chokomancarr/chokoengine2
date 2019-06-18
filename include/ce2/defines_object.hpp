@@ -2,7 +2,8 @@
 
 #define CE_CLASS_COMMON\
 	friend ChokoEngine::Engine;\
-	friend ChokoEngine::ChokoLait;
+	friend ChokoEngine::ChokoLait;\
+	friend ChokoEngine::Backend::Renderer;
 
 #define CE_OBJECT_COMMON\
 	CE_CLASS_COMMON\

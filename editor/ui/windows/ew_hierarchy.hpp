@@ -9,8 +9,9 @@ class EW_Hierarchy : public EWindow {
     void DrawMenuObject(int& off, const std::vector<SceneObject>& oo, int level);
 protected:
 	void DrawMenu() override;
+	
 public:
-
+	bool Init() override;
 };
 
 CE_END_ED_NAMESPACE

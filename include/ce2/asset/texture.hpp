@@ -4,6 +4,9 @@
 CE_BEGIN_NAMESPACE
 
 class _Texture { CE_OBJECT_COMMON
+protected: //allow rendertarget access
+	_Texture(uint w, uint h, bool hdr);
+
     GLuint _pointer;
 
     uint _width, _height;

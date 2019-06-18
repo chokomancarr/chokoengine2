@@ -1,6 +1,8 @@
 #pragma once
 #include "chokoengine.hpp"
 
+#include "backend/chokoengine_backend_base.hpp"
+
 #include "core/debug.hpp"
 
 #include "ext/ptrext.hpp"
@@ -24,6 +26,7 @@ CE_BEGIN_NAMESPACE
 CE_OBJECT(Font)
 CE_OBJECT(Shader)
 CE_OBJECT(Texture)
+CE_OBJECT(RenderTarget)
 
 /* scene
  */
@@ -43,6 +46,7 @@ CE_END_NAMESPACE
 #include "asset/font.hpp"
 #include "asset/shader.hpp"
 #include "asset/texture.hpp"
+#include "asset/rendertarget.hpp"
 
 #include "core/display.hpp"
 #include "core/input.hpp"

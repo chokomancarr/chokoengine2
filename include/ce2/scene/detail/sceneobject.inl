@@ -5,8 +5,9 @@ CE_BEGIN_NAMESPACE
 
 template<class T>
 T _SceneObject::AddComponent() {
-	_components.push_back(static_cast<Component>(T::New()));
-	return static_cast<T>(_components.back());
+	auto nt = T::New();
+	_components.push_back(static_cast<Component>(nt));
+	return nt;
 }
 
 template<class T>

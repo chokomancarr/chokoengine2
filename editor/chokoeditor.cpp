@@ -17,16 +17,11 @@ void ChokoEditor::Main() {
 	EImages::Init();
 	EWindowManager::Init();
 
-	EWindowManager::LoadWindows();
-
-	auto o = ChokoLait::scene()->AddNewObject();
-	o->name("New Object 1");
-	ChokoLait::scene()->AddNewObject(o)->name("foo");
-	ChokoLait::scene()->AddNewObject(o)->name("bar");
-	o = ChokoLait::scene()->AddNewObject();
-	o->name("Main Camera");
-	ChokoLait::scene()->AddNewObject(o)->name("asdf1234");
+	ChokoLait::scene()->AddNewObject()
+		->name("__Editor_Cameras__");
 	ChokoLait::scene()->AddNewObject()->name("Player");
+
+	EWindowManager::LoadWindows();
 
 	UIButtonStyle style(Color(0.1f, 1));
 	style.textNormal(Color::white());
@@ -36,10 +31,9 @@ void ChokoEditor::Main() {
 		ChokoLait::Paint(0, [&]() {
 			UI::defaultFont()->alignment(FontAlign::TopLeft);
 			UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.5f));
-			UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
+			//UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
 			EWindowManager::Draw();
 			UI::defaultFont()->alignment(FontAlign::MiddleCenter);
-			UI::I::Button(Rect(300, 100, 100, 20), style, "Click me!");
 		});
 	}
 }

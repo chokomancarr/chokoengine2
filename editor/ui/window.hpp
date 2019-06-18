@@ -11,6 +11,7 @@ public:
 
 	Rect position;
 
+	virtual bool Init() = 0;
 	void Draw();
 };
 

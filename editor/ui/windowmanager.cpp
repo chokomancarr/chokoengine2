@@ -9,8 +9,9 @@ void EWindowManager::Init() {
 }
 
 void EWindowManager::LoadWindows() {
-	windows.push_back(std::make_shared<EW_Browser>());
+	windows.push_back(std::make_shared<EW_SceneView>());
 	windows.back()->position = Rect(0, 0, 450, 350);
+	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Browser>());
 	windows.back()->position = Rect(0, 351, 600, 249);
 	windows.push_back(std::make_shared<EW_Hierarchy>());
