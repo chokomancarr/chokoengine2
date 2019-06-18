@@ -164,28 +164,38 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	}
 
 	//get the starting x
-	float xpos = rect.x();
+	float xpos = 0;
 	switch (align & 0x0f) {
-		case 0: break;
+		case 0: {
+			xpos = rect.x();
+			break;
+		}
 		case 1: {
 			xpos = rect.x() + (rect.w() - strw) / 2;
+			break;
 		}
 		case 2: {
 			xpos = rect.x() + rect.w() - strw;
+			break;
 		}
 		default: break;
 	}
 	xpos = std::roundf(xpos);
 
 	//get the starting y
-	float ypos = rect.y();
+	float ypos = 0;
 	switch (align >> 4) {
-		case 0: break;
+		case 0: {
+			ypos = rect.y();
+			break;
+		}
 		case 1: {
-			ypos = rect.y() + (rect.h() - fsz) / 2;
+			ypos = rect.y() + (rect.h() - (fsz*3)/2) / 2;
+			break;
 		}
 		case 2: {
-			ypos = rect.y() + rect.h() - fsz;
+			ypos = rect.y() + rect.h() - (fsz*3)/2;
+			break;
 		}
 		default: break;
 	}

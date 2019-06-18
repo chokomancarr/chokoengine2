@@ -2,13 +2,20 @@
 
 CE_BEGIN_NAMESPACE
 
-InputMouseStatus UI::I::Button(const CE_NS Rect& r, const Color& c) {
-    return Button(r, UIButtonStyle(c,
-        Math::Lerp(c, Color::white(), 0.5f),
-        Math::Lerp(c, Color::black(), 0.5f)));
+InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, const std::string& t, const Font& font) {
+    const auto ret = TrButton(r);
+    const auto col = (ret == InputMouseStatus::None) ? s.normal() :
+        ((ret == InputMouseStatus::Hover) ? s.hover() : s.pressed());
+    Rect(r, col);
+
+    if (!t.empty()) {
+        Label(r, t, s.textNormal(), font);
+    }
+
+    return ret;
 }
 
-InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s) {
+InputMouseStatus UI::I::TrButton(const CE_NS Rect& r) {
     uint ret = 0;
     if (r.Contains(Input::mousePosition())) {
         ret = 0x10;
@@ -18,13 +25,11 @@ InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s) {
             if (r.Contains(Input::mouseDownPosition())) {
                 ret |= (uint)mst;
             }
+            else {
+                ret = 0;
+            }
         }
     }
-    std::cout << std::hex << ret << std::endl;
-    const auto col = (!ret) ? s.normal() :
-        ((ret == 0x10) ? s.hover() : s.pressed());
-    UI::Rect(r, col);
-
     return (InputMouseStatus)ret;
 }
 

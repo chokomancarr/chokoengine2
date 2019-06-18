@@ -28,13 +28,18 @@ void ChokoEditor::Main() {
 	ChokoLait::scene()->AddNewObject(o)->name("asdf1234");
 	ChokoLait::scene()->AddNewObject()->name("Player");
 
+	UIButtonStyle style(Color(0.1f, 1));
+	style.textNormal(Color::white());
+
 	while (ChokoLait::alive()) {
 		ChokoLait::Update();
-		ChokoLait::Paint(0, []() {
-			UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.2f));
+		ChokoLait::Paint(0, [&]() {
+			UI::defaultFont()->alignment(FontAlign::TopLeft);
+			UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.5f));
 			UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
 			EWindowManager::Draw();
-			UI::I::Button(Rect(300, 100, 80, 16), Color(0.1f, 0.7f));
+			UI::defaultFont()->alignment(FontAlign::MiddleCenter);
+			UI::I::Button(Rect(300, 100, 100, 20), style, "Click me!");
 		});
 	}
 }

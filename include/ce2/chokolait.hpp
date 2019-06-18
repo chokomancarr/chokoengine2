@@ -15,10 +15,12 @@
 
 #include "chokoengine.hpp"
 
+#include <functional>
+
 CE_BEGIN_NAMESPACE
 
 class ChokoLait {
-    typedef void(*emptyCallbackFunc)(void);
+    typedef std::function<void(void)> emptyCallbackFunc;
 
 	static bool initd;
 

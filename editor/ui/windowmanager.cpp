@@ -9,8 +9,14 @@ void EWindowManager::Init() {
 }
 
 void EWindowManager::LoadWindows() {
+	windows.push_back(std::make_shared<EW_Browser>());
+	windows.back()->position = Rect(0, 0, 450, 350);
+	windows.push_back(std::make_shared<EW_Browser>());
+	windows.back()->position = Rect(0, 351, 600, 249);
 	windows.push_back(std::make_shared<EW_Hierarchy>());
-	windows.back()->position = Rect(10, 10, 150, 400);
+	windows.back()->position = Rect(451, 0, 149, 350);
+	windows.push_back(std::make_shared<EW_Hierarchy>());
+	windows.back()->position = Rect(601, 0, 199, 600);
 }
 
 void EWindowManager::Draw() {
