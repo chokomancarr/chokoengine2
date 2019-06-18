@@ -235,8 +235,6 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	_Font::idbuf->Unbind();
 	_Font::vao->Unbind();
 	_Font::_prog->Unbind();
-
-	UI::TexQuad(CE_NS Rect(300, 300, 14 * 16, -14 * 16), font->GetGlyph(12, 0));
 }
 
 CE_END_NAMESPACE

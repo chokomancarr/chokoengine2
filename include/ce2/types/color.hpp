@@ -20,6 +20,8 @@ public:
     Color(const float r, const float g, const float b, const float a = 1);
     Color(const float c, const float a = 1);
 
+    Color operator +(const Color& c) const;
+    Color operator -(const Color& c) const;
     Color operator *(float f) const;
     Color operator *(const Vec2& v) const;
     Color operator /(float f) const;

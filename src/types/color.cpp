@@ -36,6 +36,24 @@ Color::Color(const float r, const float g, const float b, const float a)
 Color::Color(const float c, const float a)
         : _r(c), _g(c), _b(c), _a(a) {}
 
+Color Color::operator +(const Color& c) const {
+    return Color (
+        _r + c._r,
+        _g + c._g,
+        _b + c._b,
+        _a + c._a
+    );
+}
+
+Color Color::operator -(const Color& c) const {
+    return Color (
+        _r - c._r,
+        _g - c._g,
+        _b - c._b,
+        _a - c._a
+    );
+}
+
 Color Color::operator *(float f) const {
     return Color (
         _r * f,
