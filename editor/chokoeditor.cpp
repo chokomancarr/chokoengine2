@@ -31,7 +31,7 @@ void ChokoEditor::Main() {
 	while (ChokoLait::alive()) {
 		ChokoLait::Update();
 		ChokoLait::Paint(0, []() {
-			UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.2f));
+			//UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.2f));
 			UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
 			EWindowManager::Draw();
 			UI::Label(Rect(200, 50, 100, 20), "Hello World!!!!", Color::white());

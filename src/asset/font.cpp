@@ -65,8 +65,8 @@ GLuint _Font::CreateGlyph(uint sz, uint mask) {
     glBindTexture(GL_TEXTURE_2D, _glyphs[sz][mask].tex);
     std::vector<byte> pixels((sz + 2) * 16 * (sz + 2) * 16, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (sz + 2) * 16, (sz + 2) * 16, 0, GL_RED, GL_UNSIGNED_BYTE, pixels.data());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
@@ -82,12 +82,12 @@ GLuint _Font::CreateGlyph(uint sz, uint mask) {
         else {
             g.o2s[a] = _face->glyph->advance.x >> 6;
         }
-        g.off[a] = Vec2(_face->glyph->bitmap_left, sz - _face->glyph->bitmap_top);
+        g.off[a] = glm::ivec2(_face->glyph->bitmap_left, sz - _face->glyph->bitmap_top);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     if (!mask) {
-        g.o2s[(int)' '] = sz * 0.3f;
-        g.o2s[(int)'\t'] = sz * 0.9f;
+        g.o2s[(int)' '] = sz / 3;
+        g.o2s[(int)'\t'] = sz;
     }
     return g.tex;
 }

@@ -128,8 +128,8 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 }
 
 void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, Font font) {
-	if (!font) {
-		if (!_defaultFont) {
+	if (!font || !font->loaded()) {
+		if (!_defaultFont || !_defaultFont->loaded()) {
 			Debug::Warning("UI::Label", "Font provided is null!");
 			return;
 		}
@@ -200,10 +200,14 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 
 		Vec3 off = Vec3(p.off[cc].x, p.off[cc].y, 0);
 
-		font->poss[i] = Ds(Vec3(xpos - 2, ypos + fsz + 2, 1) + off);
-		font->poss[i + 1] = Ds(Vec3(xpos + fsz + 2, ypos + fsz + 2, 1) + off);
-		font->poss[i + 2] = Ds(Vec3(xpos - 2, ypos + 2, 1) + off);
-		font->poss[i + 3] = Ds(Vec3(xpos + fsz + 2, ypos + 2, 1) + off);
+		const auto xpos0 = xpos - 1;
+		const auto xpos1 = xpos + fsz + 1;
+		const auto ypos0 = ypos - 1;
+		const auto ypos1 = ypos + fsz + 1;
+		font->poss[i] = Ds(Vec3(xpos0, ypos1, 1) + off);
+		font->poss[i + 1] = Ds(Vec3(xpos1, ypos1, 1) + off);
+		font->poss[i + 2] = Ds(Vec3(xpos0, ypos0, 1) + off);
+		font->poss[i + 3] = Ds(Vec3(xpos1, ypos0, 1) + off);
 		font->cs[i] = font->cs[i + 1] = font->cs[i + 2] = font->cs[i + 3] = c;
 		xpos += p.o2s[cc];
 		if (c == (uint)' ' || c == (uint)'\t')
@@ -231,6 +235,8 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	_Font::idbuf->Unbind();
 	_Font::vao->Unbind();
 	_Font::_prog->Unbind();
+
+	UI::TexQuad(CE_NS Rect(300, 300, 14 * 16, -14 * 16), font->GetGlyph(12, 0));
 }
 
 CE_END_NAMESPACE
