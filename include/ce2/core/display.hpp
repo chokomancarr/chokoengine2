@@ -19,6 +19,8 @@ public:
 	static Rect fullscreenRect();
 
 	static void Resize(uint w, uint h, bool maximize = false);
+
+	friend class Input;
 };
 
 CE_END_NAMESPACE

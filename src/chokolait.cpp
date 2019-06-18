@@ -32,12 +32,15 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 }
 
 bool ChokoLait::alive() {
-	glfwPollEvents();
 	return !glfwWindowShouldClose(Display::_window);
 }
 
 void ChokoLait::Update(emptyCallbackFunc func) {
-
+	Input::PostLoop();
+	glfwPollEvents();
+	Input::PreLoop();
+	if (func)
+		func();
 }
 
 void ChokoLait::Paint(emptyCallbackFunc rendFunc, emptyCallbackFunc paintFunc) {

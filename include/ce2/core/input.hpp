@@ -8,14 +8,24 @@ CE_BEGIN_NAMESPACE
 
 class Input { CE_CLASS_COMMON
 
+	static CE_EXPORT Vec2 _mousePositionOld;
 	static CE_EXPORT Vec2 _mousePosition;
 	static CE_EXPORT Vec2 _mouseDownPosition;
 
-	static void Init();
+	static std::array<bool, 5> _mouseButtonStatesOld;
+	static std::array<bool, 5> _mouseButtonStates;
 
+	static bool Init();
+
+	static void PreLoop();
+	static void PostLoop();
+
+	static void _OnCursorMove(GLFWwindow*, double, double);
+	static void _OnMouseClick(GLFWwindow*, int, int, int);
 public:
 	CE_GET_ST_MEMBER(mousePosition);
 	CE_GET_ST_MEMBER(mouseDownPosition);
+	static Vec2 mouseDelta();
 
 	/* Returns the status of mouse button \p b
 	 */

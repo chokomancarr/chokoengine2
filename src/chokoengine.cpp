@@ -10,6 +10,7 @@ bool Engine::Init() {
 
 	TRYINIT(Debug);
 	TRYINIT(IO);
+	TRYINIT(Input);
 	TRYINIT(MVP);
 	TRYINIT(UI);
 

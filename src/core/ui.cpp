@@ -98,7 +98,7 @@ void UI::TexQuad(const CE_NS Rect& q, GLuint tex, Color col,
 	glUniform1i(texShad->Loc(0), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glUniform4f(texShad->Loc(1), col.r(), col.g(), col.b(), col.a() * _alpha);
+	glUniform4f(texShad->Loc(1), col.r, col.g, col.b, col.a * _alpha);
 	glUniform1f(texShad->Loc(2), mip);
 	_vao->Bind();
 	_quadElo->Bind();
@@ -118,7 +118,7 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 	UI::SetVao(4, quadPoss.data(), nullptr);
 
 	colShad->Bind();
-	glUniform4f(colShad->Loc(0), col.r(), col.g(), col.b(), col.a() * _alpha);
+	glUniform4f(colShad->Loc(0), col.r, col.g, col.b, col.a * _alpha);
 	_vao->Bind();
 	_quadElo->Bind();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -221,7 +221,7 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	_Font::_prog->Bind();
 	_Font::vao->Bind();
 	_Font::idbuf->Bind();
-	glUniform4f(_Font::_prog->Loc(0), col.r(), col.g(), col.b(), col.a() * _alpha);
+	glUniform4f(_Font::_prog->Loc(0), col.r, col.g, col.b, col.a * _alpha);
 	glUniform2f(_Font::_prog->Loc(2), 0, 0);
 	for (auto& m : mks) {
 		const GLuint tex = font->GetGlyph(fsz, 0);
