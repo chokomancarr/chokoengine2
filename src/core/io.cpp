@@ -32,7 +32,8 @@ bool IO::Init() {
 	_path = cpath;
 #else
 	_NSGetExecutablePath(cpath, (uint32_t*)&cpathsz);
-	_path = realpath(cpath, 0);
+	char cpath2[300];
+	_path = realpath(cpath, cpath2);
 #endif
 	_path = _path.substr(0, _path.find_last_of('/') + 1);
 

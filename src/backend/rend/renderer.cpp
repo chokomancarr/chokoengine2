@@ -45,7 +45,7 @@ bool Renderer::Init() {
 }
 
 void Renderer::Render(const Scene& scene) {
-    static std::vector<Camera> cameras;
+    std::vector<Camera> cameras;
 
     ScanObjects(scene->objects(), cameras);
 

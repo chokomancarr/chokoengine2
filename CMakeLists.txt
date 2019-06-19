@@ -66,6 +66,7 @@ set(LIBS
 if(MSVC)
     set(LIBS
         ${LIBS}
+	-Profile
     )
 elseif(APPLE)
     set(LIBS
@@ -122,7 +123,7 @@ generate_export_header(ChokoEngine)
 
 set_target_properties(ChokoEngine PROPERTIES PUBLIC_HEADER include/ce2/chokoengine.hpp)
 
-target_link_libraries(ChokoEngine -Profile ${LIBS})
+target_link_libraries(ChokoEngine ${LIBS})
 
 
 #------editor-------
@@ -145,4 +146,4 @@ set(LIBS
 	ChokoEngine
 )
 
-target_link_libraries(ChokoEditor -Profile ${LIBS})
+target_link_libraries(ChokoEditor ${LIBS})
