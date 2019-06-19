@@ -18,7 +18,7 @@ void ChokoEditor::Init() {
 }
 
 void ChokoEditor::Main() {
-	ChokoLait::Init("ChokoEditor", 800, 600);
+	ChokoLait::Init("ChokoEditor", 1000, 600);
 
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);
