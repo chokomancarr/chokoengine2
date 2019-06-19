@@ -20,7 +20,7 @@
 CE_BEGIN_NAMESPACE
 
 class ChokoLait {
-    typedef std::function<void(void)> emptyCallbackFunc;
+    typedef void(*emptyCallbackFunc)(void);
 
 	static bool initd;
 

@@ -8,7 +8,7 @@ void EW_SceneView::DrawMenu() {
 }
 
 bool EW_SceneView::Init() {
-	_target = RenderTarget::New(position.w() - 2, position.h() - 22, true);
+	_target = RenderTarget::New((uint)(position.w() - 2), (uint)(position.h() - 22), true);
 
 	auto o = ChokoLait::scene()->AddNewObject(ChokoLait::scene()->objects()[0]);
 	o->name("SceneView Camera");

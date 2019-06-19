@@ -232,13 +232,12 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	_Font::vao->Bind();
 	_Font::idbuf->Bind();
 	glUniform4f(_Font::_prog->Loc(0), col.r, col.g, col.b, col.a * _alpha);
-	glUniform2f(_Font::_prog->Loc(2), 0, 0);
 	for (auto& m : mks) {
 		const GLuint tex = font->GetGlyph(fsz, 0);
 		glUniform1i(_Font::_prog->Loc(1), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, tex);
-		glUniform1i(_Font::_prog->Loc(3), m);
+		glUniform1i(_Font::_prog->Loc(2), m);
 
 		glDrawElements(GL_TRIANGLES, 6 * usz, GL_UNSIGNED_INT, 0);
 	}

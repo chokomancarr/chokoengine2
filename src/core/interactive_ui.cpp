@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, const std::string& t, const Font& font) {
     const auto ret = TrButton(r);
     const auto col = (ret == InputMouseStatus::None) ? s.normal() :
-        ((ret == InputMouseStatus::Hover) ? s.hover() : s.pressed());
+        (((ret == InputMouseStatus::Hover) || (ret == InputMouseStatus::HoverUp)) ? s.hover() : s.pressed());
     Rect(r, col);
 
     if (!t.empty()) {
@@ -20,8 +20,7 @@ InputMouseStatus UI::I::TrButton(const CE_NS Rect& r) {
     if (r.Contains(Input::mousePosition())) {
         ret = 0x10;
         const auto mst = Input::mouseStatus(InputMouseButton::Left);
-        if ((mst == InputMouseStatus::Down)
-                || (mst == InputMouseStatus::Hold)) {
+        if (mst != InputMouseStatus::None) {
             if (r.Contains(Input::mouseDownPosition())) {
                 ret |= (uint)mst;
             }

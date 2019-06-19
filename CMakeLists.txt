@@ -122,7 +122,7 @@ generate_export_header(ChokoEngine)
 
 set_target_properties(ChokoEngine PROPERTIES PUBLIC_HEADER include/ce2/chokoengine.hpp)
 
-target_link_libraries(ChokoEngine ${LIBS})
+target_link_libraries(ChokoEngine -Profile ${LIBS})
 
 
 #------editor-------
@@ -132,6 +132,7 @@ set(SOURCES )
 
 add_subdirectory("editor")
 add_subdirectory("editor/res")
+add_subdirectory("editor/scene")
 add_subdirectory("editor/ui")
 add_subdirectory("editor/ui/windows")
 
@@ -144,4 +145,4 @@ set(LIBS
 	ChokoEngine
 )
 
-target_link_libraries(ChokoEditor ${LIBS})
+target_link_libraries(ChokoEditor -Profile ${LIBS})
