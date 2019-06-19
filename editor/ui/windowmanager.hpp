@@ -14,6 +14,7 @@ public:
 
 	static void Init();
 	static void LoadWindows();
+	static void Update();
 	static void Draw();
 };
 

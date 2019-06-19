@@ -5,6 +5,7 @@ CE_BEGIN_ED_NAMESPACE
 
 class EW_SceneView : public EWindow {
 	RenderTarget _target;
+	SceneObject _pivot;
 	Camera _camera;
 
 protected:
@@ -12,6 +13,8 @@ protected:
 
 public:
 	bool Init() override;
+
+	void Update() override;
 };
 
 CE_END_ED_NAMESPACE

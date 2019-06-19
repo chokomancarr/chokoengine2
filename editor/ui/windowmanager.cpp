@@ -20,6 +20,12 @@ void EWindowManager::LoadWindows() {
 	windows.back()->position = Rect(601, 0, 199, 600);
 }
 
+void EWindowManager::Update() {
+	for (auto& w : windows) {
+		w->Update();
+	}
+}
+
 void EWindowManager::Draw() {
 	for (auto& w : windows) {
 		w->Draw();

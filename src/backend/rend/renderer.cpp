@@ -68,12 +68,7 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam) {
 	glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
 
 	MVP::Switch(true);
-	/*
-	cam->object()->transform()->localRotation(
-		Quat::FromEuler(Vec3(Input::mousePosition().y * 180.f / Display::height() - 90.f, 0, 0)) *
-		Quat::FromEuler(Vec3(0, Input::mousePosition().x * 360.f / Display::width(), 0))
-	);
-	*/
+	
 	const auto& cwm = cam->object()->transform()->worldMatrix();
 	
 	MVP::Mul(cwm);

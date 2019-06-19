@@ -3,19 +3,29 @@
 CE_BEGIN_ED_NAMESPACE
 
 void EW_SceneView::DrawMenu() {
-	UI::Texture(Rect(position.x() + 1, position.y() + 21, position.w() - 2, position.h() - 22),
+	UI::Texture(Rect(position.x(), position.y() + 20, position.w(), position.h() - 20),
 		static_cast<Texture>(_target));
 }
 
 bool EW_SceneView::Init() {
-	_target = RenderTarget::New((uint)(position.w() - 2), (uint)(position.h() - 22), true);
+	_target = RenderTarget::New((uint)position.w(), (uint)(position.h() - 20), true);
 
-	auto o = ChokoLait::scene()->AddNewObject(ChokoLait::scene()->objects()[0]);
+	_pivot = ChokoLait::scene()->AddNewObject(ChokoLait::scene()->objects()[0]);
+	_pivot->name("SceneView Pivot");
+	auto o = ChokoLait::scene()->AddNewObject(_pivot);
 	o->name("SceneView Camera");
+	o->transform()->localPosition(Vec3(0, 0, -1));
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color::blue());
 	_camera->target(_target);
 	return true;
+}
+
+void EW_SceneView::Update() {
+	_pivot->transform()->localRotation(
+		Quat::FromEuler(Vec3(Input::mousePosition().y * 180.f / Display::height() - 90.f, 0, 0)) *
+		Quat::FromEuler(Vec3(0, Input::mousePosition().x * 360.f / Display::width(), 0))
+	);
 }
 
 CE_END_ED_NAMESPACE

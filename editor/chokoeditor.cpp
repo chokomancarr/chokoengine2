@@ -41,7 +41,9 @@ void ChokoEditor::Main() {
 	while (ChokoLait::alive()) {
 		static auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 		static std::chrono::milliseconds mso;
-		ChokoLait::Update();
+		ChokoLait::Update([]() {
+			EWindowManager::Update();
+		});
 		ChokoLait::Paint(0, paint);
 		ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 		_ms = (ms - mso).count();

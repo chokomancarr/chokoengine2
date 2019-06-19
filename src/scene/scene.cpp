@@ -30,8 +30,10 @@ _Scene::_Scene(const std::string& nm) : Object(nm), _objects({}) {}
 
 SceneObject _Scene::AddNewObject(const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
-    vec.push_back(SceneObject::New());
-    return vec.back();
+    auto o = SceneObject::New();
+    vec.push_back(o);
+    o->_parent = parent;
+    return o;
 }
 
 void _Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
@@ -43,6 +45,7 @@ void _Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
         }
     }
     _objects.push_back(o);
+    o->_parent = parent;
 }
 
 void _Scene::RemoveObject(const SceneObject& o) {
