@@ -11,6 +11,8 @@ public:
     Quat(float w, Vec3 v);
     Quat(float w, float x, float y, float z);
 
+	Quat operator *(const Quat& rhs);
+
 	Mat4x4 matrix() const;
 
 	Quat normalized();

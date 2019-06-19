@@ -10,6 +10,10 @@ Quat::Quat(float w, Vec3 v) : glm::quat(w, v) {}
 
 Quat::Quat(float w, float x, float y, float z) : glm::quat(w, x, y, z) {}
 
+Quat Quat::operator *(const Quat& rhs) {
+	return static_cast<Quat>((glm::quat)(*this) * (glm::quat)(rhs));
+}
+
 Mat4x4 Quat::matrix() const {
 	return glm::mat4_cast(*this);
 }
