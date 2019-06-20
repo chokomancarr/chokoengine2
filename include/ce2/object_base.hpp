@@ -10,6 +10,8 @@ protected:
 public:
     virtual ~Object() = default;
 
+    virtual size_t _object_id() const { return __COUNTER__; }
+
     CE_GET_SET_MEMBER(name);
 };
 

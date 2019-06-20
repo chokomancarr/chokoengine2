@@ -54,18 +54,19 @@ CE_OBJECT(Camera)
 
 CE_END_NAMESPACE
 
-#include "asset/font.hpp"
-#include "asset/shader.hpp"
-#include "asset/texture.hpp"
-#include "asset/rendertarget.hpp"
-
 #include "core/display.hpp"
 #include "core/input.hpp"
 #include "core/io.hpp"
 #include "core/mvp.hpp"
 #include "core/ui.hpp"
 
-#include "scene/object_base.hpp"
+#include "object_base.hpp"
+
+#include "asset/font.hpp"
+#include "asset/shader.hpp"
+#include "asset/texture.hpp"
+#include "asset/rendertarget.hpp"
+
 #include "scene/transform.hpp"
 #include "scene/scene.hpp"
 #include "scene/sceneobject.hpp"

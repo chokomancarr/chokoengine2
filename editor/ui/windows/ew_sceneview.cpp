@@ -23,7 +23,7 @@ bool EW_SceneView::Init() {
 
 void EW_SceneView::Update() {
 	_pivot->transform()->localRotation(
-		Quat::FromEuler(Vec3(Input::mousePosition().y * 180.f / Display::height() - 90.f, 0, 0)) *
+		Quat::FromEuler(Vec3(Math::Clamp(Input::mousePosition().y * 180.f / Display::height() - 90.f, -90.f, 90.f), 0, 0)) *
 		Quat::FromEuler(Vec3(0, Input::mousePosition().x * 360.f / Display::width(), 0))
 	);
 }

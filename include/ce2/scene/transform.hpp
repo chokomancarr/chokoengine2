@@ -8,7 +8,7 @@ CE_BEGIN_NAMESPACE
  * A Transform object cannot be created directly.
  * Use `SceneObject::New()->transform()` instead
  */
-class Transform { CE_OBJECT_COMMON
+class Transform { CE_CLASS_COMMON
     Transform();
     Transform& operator =(const Transform&) = default;
 

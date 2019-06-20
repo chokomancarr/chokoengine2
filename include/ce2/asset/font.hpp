@@ -7,7 +7,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Font { CE_OBJECT_COMMON
+class _Font : public Object { CE_OBJECT_COMMON
 
     static FT_Library _ftlib;
     static Shader _prog;

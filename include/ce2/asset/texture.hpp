@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Texture { CE_OBJECT_COMMON
+class _Texture : public Object { CE_OBJECT_COMMON
 protected: //allow rendertarget access
 	_Texture(uint w, uint h, bool hdr);
 

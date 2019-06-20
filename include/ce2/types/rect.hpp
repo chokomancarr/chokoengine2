@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class Rect { CE_OBJECT_COMMON
+class Rect {
     float _x, _y, _w, _h;
 
 public:
