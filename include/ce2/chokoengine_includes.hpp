@@ -32,6 +32,9 @@ CE_END_NAMESPACE
 
 CE_BEGIN_NAMESPACE
 
+class Object;
+typedef std::shared_ptr<Object> pObject;
+
 /* assets
  */
 CE_OBJECT(Font)
@@ -41,7 +44,6 @@ CE_OBJECT(RenderTarget)
 
 /* scene
  */
-class Object;
 class Transform;
 typedef Transform* pTransform;
 CE_OBJECT(Scene)

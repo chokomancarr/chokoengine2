@@ -134,6 +134,7 @@ set(SOURCES )
 add_subdirectory("editor")
 add_subdirectory("editor/res")
 add_subdirectory("editor/scene")
+add_subdirectory("editor/serial")
 add_subdirectory("editor/ui")
 add_subdirectory("editor/ui/windows")
 

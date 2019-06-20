@@ -20,7 +20,7 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camer
 void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	const auto ip = glm::inverse(MVP::projection());
 
-	auto& tar = cam->target();
+	const auto tar = cam->target();
 	skyShad->Bind();
 	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
 	glUniform2f(skyShad->Loc(1), tar->_width, tar->_height);
@@ -57,7 +57,7 @@ void Renderer::Render(const Scene& scene) {
 void Renderer::RenderCamera(const Scene& scene, const Camera& cam) {
     MVP::Clear();
     
-	auto& tar = cam->target();
+	const auto tar = cam->target();
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar->_fbo);
 	glViewport(0, 0, tar->_width, tar->_height);
 	if ((cam->_clearType == CameraClearType::Color)

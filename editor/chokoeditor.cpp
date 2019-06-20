@@ -1,6 +1,7 @@
 #include "chokoeditor.hpp"
-#include "parsers/json.hpp"
 #include <chrono>
+
+#include "serial/config/assets.cpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -19,6 +20,8 @@ void ChokoEditor::Init() {
 
 void ChokoEditor::Main() {
 	ChokoLait::Init("ChokoEditor", 1000, 600);
+
+	Export();
 
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);

@@ -20,12 +20,12 @@
 #define CE_OBJECT_COMMON\
 	CE_CLASS_COMMON\
 	public:\
-    virtual size_t _object_id() const override { return __COUNTER__; }\
+    static size_t _object_id() { return __COUNTER__; }\
 	private:
 #define CE_COMPONENT_COMMON\
 	CE_OBJECT_COMMON
 
-#define CE_GET_MEMBER(nm) const decltype(_ ## nm)& nm() const { return _ ## nm; }
+#define CE_GET_MEMBER(nm) decltype(_ ## nm) nm() const { return _ ## nm; }
 #define CE_SET_MEMBER(nm) void nm(const decltype(_ ## nm)& v) { _ ## nm = v; }
 #define CE_GET_SET_MEMBER(nm)\
     CE_GET_MEMBER(nm)\

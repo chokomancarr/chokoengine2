@@ -5,3 +5,5 @@
 
 #include "scene/sceneinfo.hpp"
 #include "ui/windowmanager.hpp"
+
+#include "serial/serializer.hpp"
