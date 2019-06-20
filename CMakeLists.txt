@@ -135,8 +135,10 @@ add_subdirectory("editor")
 add_subdirectory("editor/res")
 add_subdirectory("editor/scene")
 add_subdirectory("editor/serial")
+add_subdirectory("editor/serial/config")
 add_subdirectory("editor/ui")
 add_subdirectory("editor/ui/windows")
+add_subdirectory("editor/ui/windows/inspector")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
 

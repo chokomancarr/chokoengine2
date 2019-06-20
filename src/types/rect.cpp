@@ -8,16 +8,20 @@ Rect::Rect()
 Rect::Rect(float x, float y, float w, float h)
         : _x(x), _y(y), _w(w), _h(h) {}
 
-float Rect::area() const {
-    return _w * _w + _h * _h;
-}
-
 float Rect::x2() const {
     return _x + _w;
 }
 
 float Rect::y2() const {
     return _y + _h;
+}
+
+float Rect::area() const {
+	return _w * _w + _h * _h;
+}
+
+Rect Rect::operator +(const Rect& rhs) const {
+	return Rect(_x + rhs._x, _y + rhs._y, _w + rhs._w, _h + rhs._h);
 }
 
 bool Rect::Contains(const Vec2& v) const {

@@ -19,6 +19,8 @@ public:
 
     float area() const;
 
+	Rect operator +(const Rect& rhs) const;
+
     /* Checks if point \p v is inside this rect
      */
     bool Contains(const Vec2& v) const;

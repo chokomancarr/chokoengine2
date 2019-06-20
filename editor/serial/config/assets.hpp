@@ -2,8 +2,9 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-void ES_Assets::Register() {
-
-}
+class ES_Assets {
+public:
+	static void Register();
+};
 
 CE_END_ED_NAMESPACE

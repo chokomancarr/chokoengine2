@@ -13,3 +13,5 @@ public:
 };
 
 CE_END_ED_NAMESPACE
+
+#include "inspector/sceneobject.hpp"

@@ -1,8 +1,6 @@
 #include "chokoeditor.hpp"
 #include <chrono>
 
-#include "serial/config/assets.cpp"
-
 CE_BEGIN_ED_NAMESPACE
 
 long long _ms;
@@ -21,14 +19,13 @@ void ChokoEditor::Init() {
 void ChokoEditor::Main() {
 	ChokoLait::Init("ChokoEditor", 1000, 600);
 
-	Export();
-
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);
 	font->size(12);
 
 	EImages::Init();
 	EWindowManager::Init();
+	ESerializer::Init();
 
 	ChokoLait::scene()->sky(Texture::New(IO::path() + "res/sky.hdr"));
 	ChokoLait::scene()->AddNewObject()

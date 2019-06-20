@@ -144,6 +144,7 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 	//get the unicode string
 	auto ucs = StrExt::ToUnicode(str);
 	const auto usz = ucs.size();
+	font->SizeVec(usz);
 	std::vector<uint> mks = {};
 
 	//preload glyphs

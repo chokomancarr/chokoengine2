@@ -128,7 +128,7 @@ uint _Font::utf2unc(char*& c) {
 }
 
 _Font::_Font(const std::string& path) : _loaded(false), _size(12), _alignment(FontAlign::TopLeft), 
-		vecSize(0), poss({}), uvs({}), ids({}), cs({}) {
+		_glyphs(decltype(_glyphs)()), vecSize(0), poss(0), uvs(0), ids(0), cs(0) {
 	auto err = FT_New_Face(_ftlib, path.c_str(), 0, &_face);
 	if (err != FT_Err_Ok) {
 		Debug::Warning("_Font", "Freetype loader failed with error code " + std::to_string(err));
