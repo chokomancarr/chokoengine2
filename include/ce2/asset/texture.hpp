@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Texture : public Object { CE_OBJECT_COMMON
+class _Texture : public _Asset { CE_OBJECT_COMMON
 protected: //allow rendertarget access
 	_Texture(uint w, uint h, bool hdr);
 
@@ -23,6 +23,8 @@ public:
      * Supported formats: png, jpg, bmp, hdr
      */
 	_Texture(const std::string& path);
+
+    virtual ~_Texture() = default; //allow render targets etc to override
 
     CE_GET_MEMBER(width);
     CE_GET_MEMBER(height);

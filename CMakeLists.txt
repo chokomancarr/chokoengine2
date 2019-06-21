@@ -66,14 +66,14 @@ set(LIBS
 if(MSVC)
     set(LIBS
         ${LIBS}
-	-Profile
+		-Profile
     )
 elseif(APPLE)
     set(LIBS
         ${LIBS}
         dl
         pthread
-        util
+		util
     )
 else()
     set(LIBS
@@ -81,7 +81,8 @@ else()
         dl
         pthread
         rt
-        util
+		util
+		-Wl,-z,defs
     )
 endif()
 

@@ -32,6 +32,8 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 
 	_scene = Scene::New("New Scene");
 
+	Time::Reset();
+
 	return true;
 }
 
@@ -42,6 +44,7 @@ bool ChokoLait::alive() {
 void ChokoLait::Update(emptyCallbackFunc func) {
 	Input::PostLoop();
 	glfwPollEvents();
+	Time::Update();
 	Input::PreLoop();
 	if (func)
 		func();

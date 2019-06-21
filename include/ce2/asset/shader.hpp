@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Shader : public Object { CE_OBJECT_COMMON
+class _Shader : public _Asset { CE_OBJECT_COMMON
 
 	GLuint pointer;
 	std::vector<GLuint> pointers;

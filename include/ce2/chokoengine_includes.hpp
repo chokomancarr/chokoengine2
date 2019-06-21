@@ -37,6 +37,7 @@ typedef std::shared_ptr<Object> pObject;
 
 /* assets
  */
+CE_OBJECT(Asset)
 CE_OBJECT(Font)
 CE_OBJECT(Shader)
 CE_OBJECT(Texture)
@@ -48,11 +49,13 @@ class Transform;
 typedef Transform* pTransform;
 CE_OBJECT(Scene)
 CE_OBJECT(SceneObject)
-CE_OBJECT(Component)
 
 /* components
  */
+CE_OBJECT(Component)
 CE_OBJECT(Camera)
+CE_OBJECT(MeshFilter)
+CE_OBJECT(MeshModifier)
 
 CE_END_NAMESPACE
 
@@ -60,16 +63,14 @@ CE_END_NAMESPACE
 #include "core/input.hpp"
 #include "core/io.hpp"
 #include "core/mvp.hpp"
+#include "core/time.hpp"
 #include "core/ui.hpp"
 
 #include "object_base.hpp"
 
-#include "asset/font.hpp"
-#include "asset/shader.hpp"
-#include "asset/texture.hpp"
-#include "asset/rendertarget.hpp"
+#include "asset/asset.hpp"
 
 #include "scene/transform.hpp"
 #include "scene/scene.hpp"
-#include "scene/sceneobject.hpp"
+#include "scene/scene_object.hpp"
 #include "scene/component.hpp"
