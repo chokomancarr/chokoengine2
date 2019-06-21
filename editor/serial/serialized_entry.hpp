@@ -42,6 +42,8 @@ public:
 
     virtual ~_ESerializedEntry() = default;
 
+    std::string funcSignature;
+
     _rct (C::*getter)(void) const;
     void (C::*setter)(_rct);
 
