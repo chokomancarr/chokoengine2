@@ -18,6 +18,7 @@ bool EW_SceneView::Init() {
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color::blue());
 	_camera->target(_target);
+
 	return true;
 }
 

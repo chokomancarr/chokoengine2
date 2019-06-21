@@ -38,3 +38,5 @@ CMakeSettings.json
 
 #Sphinx
 _build/
+
+.DS_Store

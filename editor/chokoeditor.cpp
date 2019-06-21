@@ -1,4 +1,5 @@
 #include "chokoeditor.hpp"
+#include <functional>
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -12,7 +13,7 @@ void paint() {
 }
 
 void ChokoEditor::Init() {
-
+	
 }
 
 void ChokoEditor::Main() {

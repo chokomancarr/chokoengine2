@@ -32,13 +32,6 @@ typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned short ushort;
 
-typedef glm::tvec2<int, glm::highp> Int2;
-typedef glm::vec2 Vec2;
-typedef glm::tvec2<int, glm::highp> Int3;
-typedef glm::vec3 Vec3;
-typedef glm::tvec3<int, glm::highp> Int4;
-typedef glm::vec4 Vec4;
-
 CE_BEGIN_NAMESPACE
 
 class ChokoLait;

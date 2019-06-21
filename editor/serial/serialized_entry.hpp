@@ -38,10 +38,12 @@ public:
 template <typename C, typename T>
 class _ESerializedEntry : public ESerializedEntry {
 public:
+    typedef const T& _rct;
+
     virtual ~_ESerializedEntry() = default;
 
-    T (C::*getter)(void) const;
-    void (C::*setter)(const T&);
+    _rct (C::*getter)(void) const;
+    void (C::*setter)(_rct);
 
     C* get_ptr(const pObject& o) const {
         return std::dynamic_pointer_cast<C>(o).get();

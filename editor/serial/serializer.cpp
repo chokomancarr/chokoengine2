@@ -17,7 +17,7 @@ void ESerializer::AddEntry(const std::string& name, size_t id, pESerializedEntry
         entryGroups.push_back(ESerializedGroup(name, id));
         g = entryGroups.end() - 1;
     }
-
+    g->entries.push_back(entry);
 }
 
 CE_END_ED_NAMESPACE

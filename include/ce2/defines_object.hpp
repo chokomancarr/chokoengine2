@@ -25,7 +25,9 @@
 #define CE_COMPONENT_COMMON\
 	CE_OBJECT_COMMON
 
-#define CE_GET_MEMBER(nm) decltype(_ ## nm) nm() const { return _ ## nm; }
+/* Handy macros to add getters and setters
+ */
+#define CE_GET_MEMBER(nm) const decltype(_ ## nm)& nm() const { return _ ## nm; }
 #define CE_SET_MEMBER(nm) void nm(const decltype(_ ## nm)& v) { _ ## nm = v; }
 #define CE_GET_SET_MEMBER(nm)\
     CE_GET_MEMBER(nm)\
