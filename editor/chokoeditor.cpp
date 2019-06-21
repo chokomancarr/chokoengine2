@@ -1,5 +1,5 @@
 #include "chokoeditor.hpp"
-#include <functional>
+#include "parsers/mesh.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -22,6 +22,8 @@ void ChokoEditor::Main() {
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);
 	font->size(12);
+
+	Mesh m = MeshLoader::LoadObj(IO::path() + "res/cube.obj");
 
 	EImages::Init();
 	EWindowManager::Init();

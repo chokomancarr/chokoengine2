@@ -19,7 +19,7 @@ std::vector<std::string> StrExt::Split(const std::string& s, char c, bool rm) {
 	do {
 		pos = s.find_first_of(c, off);
 		if (!rm || pos > off) {
-			o.push_back(s.substr(off, pos - off + 1));
+			o.push_back(s.substr(off, pos - off));
 		}
 		off = pos + 1;
 	} while (pos != std::string::npos);

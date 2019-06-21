@@ -3,11 +3,11 @@
 CE_BEGIN_NAMESPACE
 
 class Time { CE_CLASS_COMMON
-    static uint64_t _millis0;
-    static uint64_t _millis;
-    static uint64_t _lastMillis;
-    static float _time;
-    static float _delta;
+    static CE_EXPORT uint64_t _millis0;
+    static CE_EXPORT uint64_t _millis;
+    static CE_EXPORT uint64_t _lastMillis;
+    static CE_EXPORT float _time;
+    static CE_EXPORT float _delta;
 
     static uint64_t GetTicks();
     static void Reset();

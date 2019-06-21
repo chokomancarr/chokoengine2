@@ -3,6 +3,7 @@ set(DIR src/asset)
 set(SOURCES
 	${SOURCES}
 	${DIR}/font.cpp
+	${DIR}/mesh.cpp
 	${DIR}/rendertarget.cpp
 	${DIR}/shader.cpp
 	${DIR}/texture.cpp

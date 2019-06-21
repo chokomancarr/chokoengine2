@@ -15,9 +15,9 @@ CE_BEGIN_NAMESPACE
  */
 typedef glm::tvec2<int, glm::highp> Int2;
 typedef glm::vec2 Vec2;
-typedef glm::tvec2<int, glm::highp> Int3;
+typedef glm::tvec3<int, glm::highp> Int3;
 typedef glm::vec3 Vec3;
-typedef glm::tvec3<int, glm::highp> Int4;
+typedef glm::tvec4<int, glm::highp> Int4;
 typedef glm::vec4 Vec4;
 
 class Color;
@@ -46,6 +46,7 @@ typedef std::shared_ptr<Object> pObject;
  */
 CE_OBJECT(Asset)
 CE_OBJECT(Font)
+CE_OBJECT(Mesh)
 CE_OBJECT(Shader)
 CE_OBJECT(Texture)
 CE_OBJECT(RenderTarget)
