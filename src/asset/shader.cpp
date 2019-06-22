@@ -130,10 +130,6 @@ _Shader::_Shader(const std::string& vert, const std::string& frag) {
 	pointer = pointers[0];
 }
 
-_Shader::operator bool() const {
-	return !!pointer;
-}
-
 void _Shader::AddUniform(const std::string& s) {
 	uniforms.push_back(glGetUniformLocation(pointer, s.c_str()));
 }

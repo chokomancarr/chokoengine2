@@ -1,4 +1,5 @@
 #pragma once
+#include "chokoengine.hpp"
 
 CE_BEGIN_NAMESPACE
 

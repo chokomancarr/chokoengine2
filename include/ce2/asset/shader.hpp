@@ -1,6 +1,9 @@
 #pragma once
 #include "chokoengine.hpp"
 
+#include "enums/shader_variable_type.hpp"
+#include "shader/shader_variable.hpp"
+
 CE_BEGIN_NAMESPACE
 
 class _Shader : public _Asset { CE_OBJECT_COMMON
@@ -21,8 +24,6 @@ class _Shader : public _Asset { CE_OBJECT_COMMON
 public:
 	_Shader();
 	_Shader(const std::string& vert, const std::string& frag);
-
-	operator bool() const;
 
 	void AddUniform(const std::string& s);
 	void AddUniforms(std::initializer_list<const std::string> ss);
