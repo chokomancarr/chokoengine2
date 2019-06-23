@@ -14,13 +14,13 @@ CE_BEGIN_NAMESPACE
 /* types
  */
 typedef glm::tvec2<int, glm::highp> Int2;
-typedef glm::vec2 Vec2;
 typedef glm::tvec3<int, glm::highp> Int3;
-typedef glm::vec3 Vec3;
 typedef glm::tvec4<int, glm::highp> Int4;
-typedef glm::vec4 Vec4;
 
 class Color;
+class Vec2;
+class Vec3;
+class Vec4;
 class Quat;
 class Rect;
 class Mat4x4;
@@ -28,6 +28,9 @@ class Mat4x4;
 CE_END_NAMESPACE
 
 #include "types/color.hpp"
+#include "types/vec2.hpp"
+#include "types/vec3.hpp"
+#include "types/vec4.hpp"
 #include "types/quat.hpp"
 #include "types/rect.hpp"
 #include "types/mat4x4.hpp"

@@ -32,8 +32,14 @@ void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	glUniform1i(skyShad->Loc(2), cam->orthographic());
 	glUniform1i(skyShad->Loc(3), 0);
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tar->_pointer);
+	glUniform1i(skyShad->Loc(5), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, tar->_depth);
+	glUniform1i(skyShad->Loc(6), 3);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, scene->sky()->_pointer);
-	glUniform1f(skyShad->Loc(4), 1);
+	glUniform1f(skyShad->Loc(7), 1);
 	emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	emptyVao->Unbind();
@@ -44,7 +50,7 @@ bool Renderer::Init() {
 	emptyVao = std::make_shared<_VertexObject>();
 
 	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
-		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inSky", "skyStrength" });
+		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inColor", "inNormal", "inDepth", "inSky", "skyStrength" });
 
 	return true;
 }
@@ -76,12 +82,15 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	MVP::Switch(true);
 	
 	const auto& cwm = cam->object()->transform()->worldMatrix();
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, tar->_width, tar->_height, cam->nearClip(), cam->farClip()));
 	MVP::Push();
 	MVP::Mul(cwm);
+
+	glDepthMask(false);
+	RenderSky(scene, cam);
+	glDepthMask(true);
+
 	for (auto& r : rends) {
 		r->_mesh->_vao->Bind();
 		for (size_t a = 0; a < r->_mesh->materialCount(); a++) {
@@ -95,9 +104,6 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 		}
 		r->_mesh->_vao->Unbind();
 	}
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	//RenderSky(scene, cam);
 
 	glViewport(0, 0, Display::width(), Display::height());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

@@ -37,11 +37,11 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 			));
 		}
 		else if (ss0 == "vn") {
-			_norms.push_back(glm::normalize(Vec3(
+			_norms.push_back(Vec3(
 				std::stof(ss[1]),
 				std::stof(ss[2]),
 				std::stof(ss[3])
-			)));
+			).normalized());
 		}
 		else if (ss0 == "vt") {
 			_uvs.push_back(Vec2(

@@ -33,27 +33,26 @@ void main () {
     //vec4 dCol = texture(inColor, uv);
     //vec4 nCol = texture(inNormal, uv);
     //float z = texture(inDepth, uv).x;
-	float z = 1;
     
-	float nClip = 0.01;
-    float fClip = 500.0;
+	/*
+	float nClip = 0.1;
+    float fClip = 100.0;
 
     float zLinear;
     if (isOrtho) zLinear = z;
-    else zLinear = (2 * nClip) / (fClip + nClip - z * (fClip - nClip));
+    else zLinear = (2 * nClip) / (fClip + nClip - (z * 2 - 1) * (fClip - nClip));
+	*/
 
-    vec4 dc = vec4(uv.x*2-1, uv.y*2-1, z*2-1, 1);
+    vec4 dc = vec4(uv.x*2-1, uv.y*2-1, 1, 1);
     vec4 wPos = _IP*dc;
     wPos /= wPos.w;
     vec4 wPos2 = _IP*vec4(uv.x*2-1, uv.y*2-1, -1, 1);
     wPos2 /= wPos2.w;
     vec3 fwd = normalize(wPos.xyz - wPos2.xyz);
 	
-    if (z >= 1) {
-		fragCol.rgb = skyColAt(inSky, fwd).rgb * skyStrength;
-        fragCol.a = 1;
-        return;
-    }
+	fragCol.rgb = skyColAt(inSky, fwd).rgb * skyStrength;
+    fragCol.a = 1;
+    return;
 }
 )";
 }

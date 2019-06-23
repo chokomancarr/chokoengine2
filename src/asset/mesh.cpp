@@ -86,7 +86,7 @@ void _Mesh::CalculateTangents() {
 		tC[n0] = tC[n1] = tC[n2] = true;
 	}
 	for (uint a = 0; a < vsz; a++) {
-		if (tC[a]) _tangents[a] = glm::normalize(_tangents[a]);
+		if (tC[a]) _tangents[a] = _tangents[a].normalized();
 	}
 }
 

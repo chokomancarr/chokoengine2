@@ -18,7 +18,7 @@ void Transform::UpdateParentMatrix() {
     if (!_object->parent())
         _worldMatrix = _localMatrix;
     else
-        _worldMatrix = _object->parent()->transform()->_worldMatrix * _localMatrix;
+        _worldMatrix = _localMatrix * _object->parent()->transform()->_worldMatrix;
     
     for (auto& c : _object->children()) {
         c->transform()->UpdateParentMatrix();

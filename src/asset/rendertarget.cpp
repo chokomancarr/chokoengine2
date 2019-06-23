@@ -9,7 +9,7 @@ _RenderTarget::_RenderTarget(uint w, uint h, bool hdr)
 		: _Texture(w, h, hdr) {
 	glGenTextures(1, &_depth);
 	glBindTexture(GL_TEXTURE_2D, _depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, (int)w, (int)h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, (int)w, (int)h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	SetTexParams<>(0, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
