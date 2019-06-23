@@ -53,6 +53,10 @@ void ChokoLait::Update(emptyCallbackFunc func) {
 void ChokoLait::Paint(emptyCallbackFunc rendFunc, emptyCallbackFunc paintFunc) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
 	Backend::Renderer::Render(_scene);
 
 	glDepthFunc(GL_ALWAYS);

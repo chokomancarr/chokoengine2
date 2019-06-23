@@ -4,7 +4,8 @@
 CE_BEGIN_NAMESPACE
 
 enum class ComponentType {
-	Camera
+	Camera,
+	MeshRenderer
 };
 
 CE_END_NAMESPACE

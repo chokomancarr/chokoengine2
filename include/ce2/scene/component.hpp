@@ -23,4 +23,4 @@ CE_END_NAMESPACE
 #define CE_COMPDEF(nm) _Component(ComponentType::nm, #nm)
 
 #include "comp/camera.hpp"
-#include "comp/mesh_filter.hpp"
+#include "comp/mesh_renderer.hpp"

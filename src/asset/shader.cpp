@@ -88,7 +88,7 @@ GLuint _Shader::FromVF(const std::string& vert, const std::string& frag) {
 }
 
 GLint _Shader::Loc(int i) {
-	return uniforms[i];
+	return variables[i]._location;
 }
 
 void _Shader::UpdatePointer() {
@@ -130,16 +130,6 @@ _Shader::_Shader(const std::string& vert, const std::string& frag) {
 	pointer = pointers[0];
 }
 
-void _Shader::AddUniform(const std::string& s) {
-	uniforms.push_back(glGetUniformLocation(pointer, s.c_str()));
-}
-
-void _Shader::AddUniforms(std::initializer_list<const std::string> ss) {
-	for (auto& s : ss) {
-		AddUniform(s);
-	}
-}
-
 void _Shader::SetOptions(const std::initializer_list<std::string>& nms) {
 	for (auto& v : options) {
 		v.second = std::find(nms.begin(), nms.end(), v.first) != nms.end();
@@ -155,6 +145,21 @@ void _Shader::SetOption(const std::string& nm, bool on) {
 		}
 	}
 	UpdatePointer();
+}
+
+void _Shader::AddUniform(const std::string& s, ShaderVariableType t) {
+	for (auto& v : variables) {
+		if (v.name() == s) return;
+	}
+	variables.push_back(ShaderVariable(s, t,
+		glGetUniformLocation(pointer, s.c_str())
+	));
+}
+
+void _Shader::AddUniforms(std::initializer_list<const std::string> ss) {
+	for (auto& s : ss) {
+		AddUniform(s, ShaderVariableType::Unknown);
+	}
 }
 
 void _Shader::Bind() {

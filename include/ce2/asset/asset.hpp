@@ -16,5 +16,6 @@ CE_END_NAMESPACE
 #include "asset/font.hpp"
 #include "asset/mesh.hpp"
 #include "asset/shader.hpp"
+#include "asset/material.hpp"
 #include "asset/texture.hpp"
 #include "asset/render_target.hpp"

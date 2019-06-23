@@ -7,13 +7,18 @@ CE_BEGIN_BK_NAMESPACE
 VertexObject Renderer::emptyVao;
 Shader Renderer::skyShad;
 
-void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camera>& cameras) {
+void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camera>& cameras,
+		std::vector<MeshRenderer>& rends) {
     for (auto& o : oo) {
         auto c = o->GetComponent<Camera>();
         if (!!c) {
             cameras.push_back(c);
         }
-        ScanObjects(o->children(), cameras);
+		auto r = o->GetComponent<MeshRenderer>();
+		if (!!r) {
+			rends.push_back(r);
+		}
+        ScanObjects(o->children(), cameras, rends);
     }
 }
 
@@ -46,15 +51,16 @@ bool Renderer::Init() {
 
 void Renderer::Render(const Scene& scene) {
     std::vector<Camera> cameras;
+	std::vector<MeshRenderer> rends;
 
-    ScanObjects(scene->objects(), cameras);
+	ScanObjects(scene->objects(), cameras, rends);
 
     for (auto& c : cameras) {
-        RenderCamera(scene, c);
+        RenderCamera(scene, c, rends);
     }
 }
 
-void Renderer::RenderCamera(const Scene& scene, const Camera& cam) {
+void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::vector<MeshRenderer> rends) {
     MVP::Clear();
     
 	const auto tar = cam->target();
@@ -71,11 +77,27 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam) {
 	
 	const auto& cwm = cam->object()->transform()->worldMatrix();
 	
-	MVP::Mul(cwm);
-	MVP::Push();
-	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, tar->_width, tar->_height, cam->nearClip(), cam->farClip()));
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	RenderSky(scene, cam);
+	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, tar->_width, tar->_height, cam->nearClip(), cam->farClip()));
+	MVP::Push();
+	MVP::Mul(cwm);
+	for (auto& r : rends) {
+		r->_mesh->_vao->Bind();
+		for (size_t a = 0; a < r->_mesh->materialCount(); a++) {
+			if (!r->_materials[a]) continue;
+			r->_materials[a]->SetUniform("_MVP", MVP::projection() * MVP::modelview());
+			r->_materials[a]->Bind();
+			r->_mesh->_elos[a]->Bind();
+			glDrawElements(GL_TRIANGLES, r->_mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
+			r->_mesh->_elos[a]->Unbind();
+			r->_materials[a]->Unbind();
+		}
+		r->_mesh->_vao->Unbind();
+	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//RenderSky(scene, cam);
 
 	glViewport(0, 0, Display::width(), Display::height());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

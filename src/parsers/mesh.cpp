@@ -97,6 +97,8 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 	m->texcoords(uvs);
 	m->triangles(tris);
 	m->matTriangles(mtris);
+	m->CalculateTangents();
+	m->Apply();
 	return m;
 }
 

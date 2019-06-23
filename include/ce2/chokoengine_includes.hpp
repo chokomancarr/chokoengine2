@@ -46,6 +46,7 @@ typedef std::shared_ptr<Object> pObject;
  */
 CE_OBJECT(Asset)
 CE_OBJECT(Font)
+CE_OBJECT(Material)
 CE_OBJECT(Mesh)
 CE_OBJECT(Shader)
 CE_OBJECT(Texture)
@@ -62,7 +63,7 @@ CE_OBJECT(SceneObject)
  */
 CE_OBJECT(Component)
 CE_OBJECT(Camera)
-CE_OBJECT(MeshFilter)
+CE_OBJECT(MeshRenderer)
 CE_OBJECT(MeshModifier)
 
 CE_END_NAMESPACE

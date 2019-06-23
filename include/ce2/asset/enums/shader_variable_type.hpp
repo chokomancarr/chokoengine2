@@ -4,6 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 enum class ShaderVariableType {
+	Unknown,
 	Float,
 	Int,
 	Vec2,

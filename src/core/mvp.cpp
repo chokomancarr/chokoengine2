@@ -74,7 +74,7 @@ Mat4x4 MVP::modelview() {
 		changedMv = false;
 		_mv = identity;
 		for (uint i = 0; i < MV.size(); i++) {
-			_mv = MV.c[i] * _mv;
+			_mv = _mv * MV.c[i];
 		}
 	}
 	return _mv;
@@ -85,7 +85,7 @@ Mat4x4 MVP::projection() {
 		changedP = false;
 		_p = identity;
 		for (uint i = 0; i < P.size(); i++) {
-			_p =P.c[i] * _p;
+			_p = _p * P.c[i];
 		}
 	}
 	return _p;

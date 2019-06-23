@@ -33,6 +33,9 @@
     CE_GET_MEMBER(nm)\
     CE_SET_MEMBER(nm)
 #define CE_SET_MEMBER_F(nm) void nm(const decltype(_ ## nm)& v);
+#define CE_GET_SET_MEMBER_F(nm)\
+    CE_GET_MEMBER(nm)\
+    CE_SET_MEMBER_F(nm)
 
 #define CE_GET_ST_MEMBER(nm) static const decltype(_ ## nm)& nm() { return _ ## nm; }
 #define CE_SET_ST_MEMBER(nm) static void nm(const decltype(_ ## nm)& v) { _ ## nm = v; }

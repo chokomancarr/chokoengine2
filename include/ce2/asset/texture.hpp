@@ -34,6 +34,7 @@ public:
 	bool loaded() const;
 
     friend class UI;
+	friend class _Material;
 };
 
 CE_END_NAMESPACE
