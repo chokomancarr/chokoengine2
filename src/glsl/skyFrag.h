@@ -28,12 +28,17 @@ vec4 skyColAt(sampler2D sky, vec3 dir) {
     return texture(sky, vec2(cx, sy + 0.5));
 }
 
+float fresnel(vec3 fwd, vec3 nrm) {
+	return pow(1-dot(-fwd, nrm), 5);
+}
+
 void main () {
     vec2 uv = gl_FragCoord.xy / screenSize;
-    vec4 dCol = texture(inColor, uv);
-    vec4 nCol = texture(inNormal, uv);
+    vec4 diffuse = texture(inColor, uv);
+    vec4 normal = texture(inNormal, uv);
+	vec4 specular = vec4(1, 1, 1, 0.2);
+	float gloss = 0.1;
     float z = texture(inDepth, uv).x;
-    
 	
 	float nClip = 0.1;
     float fClip = 100.0;
@@ -52,7 +57,11 @@ void main () {
 	
 	fragCol.rgb = skyColAt(inSky, fwd).rgb * skyStrength;
 	if (z < 1) {
-		fragCol.rgb = nCol.xyz;//dCol.rgb;
+		vec3 diffCol = skyColAt(inSky, normalize(normal.xyz)).rgb * diffuse.rgb * skyStrength;
+		vec3 refl = normalize(reflect(fwd, normal.xyz));
+        vec3 reflCol = skyColAt(inSky, refl).rgb * specular.rgb * skyStrength;
+		float fres = mix(fresnel(fwd, normal.xyz), 1, specular.a);
+		fragCol.rgb = mix(diffCol, reflCol, fres);
 	}
     fragCol.a = 1;
     return;

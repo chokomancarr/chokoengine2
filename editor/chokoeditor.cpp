@@ -31,13 +31,13 @@ void ChokoEditor::Main() {
 
 	m1 = Material::New();
 	m1->shader(shd);
-	m1->SetUniform("col", Color::red());
+	m1->SetUniform("col", Color(1, 0.7f, 0.7f));
 	m2 = Material::New();
 	m2->shader(shd);
-	m2->SetUniform("col", Color::green());
+	m2->SetUniform("col", Color(0.7f, 1, 0.7f));
 	m3 = Material::New();
 	m3->shader(shd);
-	m3->SetUniform("col", Color::blue());
+	m3->SetUniform("col", Color(0.7f, 0.7f, 1));
 
 	Mesh m = MeshLoader::LoadObj(IO::path() + "res/cube.obj");
 
