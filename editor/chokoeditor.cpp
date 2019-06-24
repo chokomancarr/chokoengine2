@@ -24,6 +24,8 @@ void ChokoEditor::Main() {
 	font->size(12);
 
 	Shader shd = Shader::New(IO::ReadFile(IO::path() + "res/color.vs"), IO::ReadFile(IO::path() + "res/color.fs"));
+	shd->AddUniform("_MV", ShaderVariableType::Matrix);
+	shd->AddUniform("_P", ShaderVariableType::Matrix);
 	shd->AddUniform("_MVP", ShaderVariableType::Matrix);
 	shd->AddUniform("col", ShaderVariableType::Vec4);
 

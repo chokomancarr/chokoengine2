@@ -74,10 +74,10 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 					triMap[mk] = triCnt;
 					verts.push_back(_verts[i3.x - 1]);
 					if (i3.y > -1) {
-						norms.push_back(_norms[i3.y - 1]);
-						if (i3.z > -1) {
-							uvs.push_back(_uvs[i3.z - 1]);
-						}
+						uvs.push_back(_uvs[i3.y - 1]);
+					}
+					if (i3.z > -1) {
+						norms.push_back(_norms[i3.z - 1]);
 					}
 					triCnt++;
 				}

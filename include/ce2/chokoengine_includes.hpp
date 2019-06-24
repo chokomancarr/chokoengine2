@@ -25,23 +25,6 @@ class Quat;
 class Rect;
 class Mat4x4;
 
-CE_END_NAMESPACE
-
-#include "types/color.hpp"
-#include "types/vec2.hpp"
-#include "types/vec3.hpp"
-#include "types/vec4.hpp"
-#include "types/quat.hpp"
-#include "types/rect.hpp"
-#include "types/mat4x4.hpp"
-#include "types/vertexbuffer.hpp"
-#include "types/vertexobject.hpp"
-#include "types/texturebuffer.hpp"
-
-#include "utils/math.hpp"
-
-CE_BEGIN_NAMESPACE
-
 class Object;
 typedef std::shared_ptr<Object> pObject;
 
@@ -70,6 +53,21 @@ CE_OBJECT(MeshRenderer)
 CE_OBJECT(MeshModifier)
 
 CE_END_NAMESPACE
+
+#include "types/color.hpp"
+#include "types/vec2.hpp"
+#include "types/vec3.hpp"
+#include "types/vec4.hpp"
+#include "types/quat.hpp"
+#include "types/rect.hpp"
+#include "types/mat4x4.hpp"
+#include "types/depth_texture.hpp"
+#include "types/vertexbuffer.hpp"
+#include "types/vertexobject.hpp"
+#include "types/texturebuffer.hpp"
+#include "types/framebuffer.hpp"
+
+#include "utils/math.hpp"
 
 #include "core/display.hpp"
 #include "core/input.hpp"

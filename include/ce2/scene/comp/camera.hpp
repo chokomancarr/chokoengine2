@@ -4,6 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 class _Camera : public _Component { CE_COMPONENT_COMMON
+	FrameBuffer _deferredBuffer;
 
 	RenderTarget _target;
 

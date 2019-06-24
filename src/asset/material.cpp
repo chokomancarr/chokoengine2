@@ -48,13 +48,13 @@ void _Material::shader(const Shader& s) {
 
 #define GETUNIFORM(type, enm, nm)\
 const type& _Material::GetUniform(const std::string& s, type nm) {\
-	_shader->AddUniform(s, ShaderVariableType::enm); /* make sure the variable exists */\
+	/*_shader->AddUniform(s, ShaderVariableType::enm);  make sure the variable exists */\
 	for (auto& v : _variables) {\
 		if (v.name() == s) {\
 			return v.val_##nm();\
 		}\
 	}\
-	assert(0); /* we should never reach here */\
+	Debug::Error("Material::GetUniform", "Uniform \"" + s + "\" is not in material!");\
 	return _variables[0].val_##nm();\
 }
 
@@ -68,13 +68,14 @@ GETUNIFORM(Texture, Texture, t);
 
 #define SETUNIFORM(type, enm, nm)\
 void _Material::SetUniform(const std::string& s, type nm) {\
-	_shader->AddUniform(s, ShaderVariableType::enm); /* make sure the variable exists */\
+	/*_shader->AddUniform(s, ShaderVariableType::enm);  make sure the variable exists */\
 	for (auto& v : _variables) {\
 		if (v.name() == s) {\
 			v.val_##nm(nm);\
 			return;\
 		}\
 	}\
+	Debug::Error("Material::GetUniform", "Uniform \"" + s + "\" is not in material!");\
 }
 
 SETUNIFORM(float, Float, f);

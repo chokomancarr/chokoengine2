@@ -5,6 +5,8 @@ CE_BEGIN_NAMESPACE
 
 class _Material : public _Asset { CE_OBJECT_COMMON
 
+	_Material (const _Material& rhs) = delete;
+
     Shader _shader;
 
 	std::vector<ShaderVariable> _variables;

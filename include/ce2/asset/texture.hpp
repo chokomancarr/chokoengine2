@@ -5,7 +5,6 @@ CE_BEGIN_NAMESPACE
 
 class _Texture : public _Asset { CE_OBJECT_COMMON
 protected: //allow rendertarget access
-	_Texture(uint w, uint h, bool hdr);
 
     GLuint _pointer;
 
@@ -18,6 +17,7 @@ protected: //allow rendertarget access
 
 public:
 	_Texture();
+	_Texture(uint w, uint h, bool hdr);
 
     /* Loads an image from the specified path
      * Supported formats: png, jpg, bmp, hdr
@@ -35,6 +35,7 @@ public:
 
     friend class UI;
 	friend class _Material;
+	friend class _FrameBuffer;
 };
 
 CE_END_NAMESPACE
