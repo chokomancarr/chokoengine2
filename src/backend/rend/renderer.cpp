@@ -2,6 +2,20 @@
 #include "glsl/minVert.h"
 #include "glsl/skyFrag.h"
 
+/* The renderer backend
+ *
+ * GBuffers:
+ *   Buffer 0:
+ *     R8, G8, B8  //Diffuse Color
+ *   Buffer 1:
+ *     X16, Y16    //Normal Map (Z = Y x X)
+ *   Buffer 2:
+ *     R8          //Metalness
+ *     G8          //Roughness
+ *     B8          //Occlusion
+ *     
+ */
+
 CE_BEGIN_BK_NAMESPACE
 
 VertexObject Renderer::_emptyVao;
@@ -84,7 +98,9 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 
 	auto& gbuf = cam->_deferredBuffer;
 	if (!gbuf) {
-		gbuf = FrameBuffer_New(tar->_width, tar->_height, 4);
+		gbuf = FrameBuffer_New(tar->_width, tar->_height, {
+			GL_RGBA, GL_RG16F, GL_RGBA, GL_RGBA
+		});
 	}
 	gbuf->Bind();
 	gbuf->Clear();
@@ -92,6 +108,7 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_CULL_FACE);
 
 	for (auto& r : rends) {
 		r->_mesh->_vao->Bind();
@@ -115,6 +132,8 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	glDisable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
 	glBlendFunc(GL_ONE, GL_ONE);
+	glDisable(GL_CULL_FACE);
+
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar->_fbo);
 
 	if ((cam->_clearType == CameraClearType::Color)

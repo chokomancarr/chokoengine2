@@ -9,6 +9,8 @@ class _Texture : public _Asset { CE_OBJECT_COMMON
 protected: //allow rendertarget access
     _Texture(std::nullptr_t);
 
+	_Texture(uint w, uint h, GLenum type, const TextureOptions& opts);
+
     GLuint _pointer;
 
     uint _width, _height;

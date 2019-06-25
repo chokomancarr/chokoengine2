@@ -36,7 +36,7 @@ void main () {
     vec2 uv = gl_FragCoord.xy / screenSize;
     vec4 diffuse = texture(inColor, uv);
     vec4 normal = texture(inNormal, uv);
-	vec4 specular = vec4(1, 1, 1, 0.1);
+	vec4 specular = vec4(1, 1, 1, 0.05);
 	float gloss = 0.2;
     float z = texture(inDepth, uv).x;
 	
@@ -59,10 +59,10 @@ void main () {
 	if (z < 1) {
 		vec3 diffCol = skyColAt(inSky, normalize(normal.xyz), 5).rgb * diffuse.rgb;
 		vec3 refl = normalize(reflect(fwd, normal.xyz));
-        vec3 reflCol = skyColAt(inSky, refl, gloss * 4).rgb * specular.rgb;
+        vec3 reflCol = skyColAt(inSky, refl, gloss * 5).rgb * specular.rgb;
 		float fres = mix(fresnel(fwd, normal.xyz), 1, specular.a);
         //fragCol.rgb = skyColAt(inSky, normalize(normal.xyz), (1-fres) * 5).rgb * diffuse.rgb;
-		fragCol.rgb = mix(diffCol, reflCol, fres) * skyStrength;
+		fragCol.rgb = mix(diffCol, reflCol, fres) * skyStrength * diffuse.a;
 	}
     fragCol.a = 1;
     return;

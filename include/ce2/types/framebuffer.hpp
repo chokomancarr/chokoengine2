@@ -11,6 +11,7 @@ class _FrameBuffer { CE_OBJECT_COMMON
 	_FrameBuffer(const _FrameBuffer&) = delete;
 public:
 	_FrameBuffer(uint w, uint h, int tn);
+	_FrameBuffer(uint w, uint h, std::vector<GLenum> types);
 	~_FrameBuffer();
 
 	CE_GET_MEMBER(pointer);
@@ -24,5 +25,6 @@ public:
 
 typedef std::shared_ptr<_FrameBuffer> FrameBuffer;
 FrameBuffer FrameBuffer_New(uint w, uint h, int tn);
+FrameBuffer FrameBuffer_New(uint w, uint h, std::vector<GLenum> types);
 
 CE_END_NAMESPACE

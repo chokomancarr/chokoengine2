@@ -28,18 +28,14 @@ void ChokoEditor::Main() {
 	shd->AddUniform("_P", ShaderVariableType::Matrix);
 	shd->AddUniform("_MVP", ShaderVariableType::Matrix);
 	shd->AddUniform("col", ShaderVariableType::Vec4);
+	shd->AddUniform("mainTex", ShaderVariableType::Texture);
 
 	const float f = 0.3;
 
 	m1 = Material::New();
 	m1->shader(shd);
 	m1->SetUniform("col", Color(1, f, f));
-	m2 = Material::New();
-	m2->shader(shd);
-	m2->SetUniform("col", Color(f, 1, f));
-	m3 = Material::New();
-	m3->shader(shd);
-	m3->SetUniform("col", Color(f, f, 1));
+	m1->SetUniform("mainTex", Texture::New(IO::path() + "res/monkey.jpg"));
 
 	Mesh m = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 
