@@ -11,7 +11,7 @@ Shader _Background::ggxBlurShad;
 Material _Background::ggxBlurMat;
 TextureBuffer _Background::noiseTex;
 
-#define SAMPLES 2000
+#define SAMPLES 1024
 
 void  _Background::Init() {
     //auto noise = Random::Hammersley(SAMPLES);
@@ -61,7 +61,7 @@ _Background::_Background(const std::string& path, int div) : _Texture(nullptr), 
     ggxBlurMat->SetUniform("mainTex", tmp0);
     for (int a = 1; a < div; a++) {
         RenderTarget target2 = RenderTarget::New(w, h, true);
-        ggxBlurMat->SetUniform("rough", a * 0.5f / div);
+        ggxBlurMat->SetUniform("rough", a * 1.f / div);
         ggxBlurMat->SetUniform("screenSize", Vec2(w, h));
         _RenderTarget::Blit(tmp0, target2, ggxBlurMat);
         mips[a - 1] = target2;

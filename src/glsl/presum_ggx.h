@@ -48,15 +48,16 @@ vec3 sampleGGX(vec2 rnd, vec3 nrm) {
 
 void main () {
 	vec2 uv = gl_FragCoord.xy / screenSize;
-	int off = int(gl_FragCoord.y + screenSize.y * gl_FragCoord.x);
+	float off = (gl_FragCoord.y + screenSize.y * gl_FragCoord.x) * 71;
 	
 	vec3 view = uv2xyz(uv);
 	
 	fragCol = vec4(0,0,0,0);
 	float weight = 0;
 	for (int a = 0; a < samples; ++a) {
-		int ni = int(mod(off + a * 371, 65534));
+		int ni = int(mod(off + a * 17, 65534));
 		vec2 rnd = texelFetch(noise, ni).xy;
+		
 
 		vec3 hv = sampleGGX(rnd, view);
 		vec3 lht = normalize(2 * dot(view, hv) * hv - view);
