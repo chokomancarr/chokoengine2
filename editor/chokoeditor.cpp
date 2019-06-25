@@ -29,30 +29,33 @@ void ChokoEditor::Main() {
 	shd->AddUniform("_MVP", ShaderVariableType::Matrix);
 	shd->AddUniform("col", ShaderVariableType::Vec4);
 
+	const float f = 0.3;
+
 	m1 = Material::New();
 	m1->shader(shd);
-	m1->SetUniform("col", Color(1, 0.7f, 0.7f));
+	m1->SetUniform("col", Color(1, f, f));
 	m2 = Material::New();
 	m2->shader(shd);
-	m2->SetUniform("col", Color(0.7f, 1, 0.7f));
+	m2->SetUniform("col", Color(f, 1, f));
 	m3 = Material::New();
 	m3->shader(shd);
-	m3->SetUniform("col", Color(0.7f, 0.7f, 1));
+	m3->SetUniform("col", Color(f, f, 1));
 
-	Mesh m = MeshLoader::LoadObj(IO::path() + "res/cube.obj");
+	Mesh m = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 
 	EImages::Init();
 	EWindowManager::Init();
 	ESerializer::Init();
 
-	ChokoLait::scene()->sky(static_cast<Texture>(Background::New(IO::path() + "res/sky.hdr", 5)));
+	ChokoLait::scene()->sky(static_cast<Texture>(Background::New(IO::path() + "res/sky.hdr", 6)));
 	ChokoLait::scene()->AddNewObject()
 		->name("__Editor_Cameras__");
 	auto o = ChokoLait::scene()->AddNewObject();
 	o->name("Player");
 	auto mr = o->AddComponent<MeshRenderer>();
 	mr->mesh(m);
-	mr->materials({ m1, m2, m3 });
+	//mr->materials({ m1, m2, m3 });
+	mr->materials({ m1 });
 
 	EWindowManager::LoadWindows();
 

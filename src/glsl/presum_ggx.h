@@ -11,8 +11,8 @@ uniform int samples;
 
 out vec4 fragCol;
 
-vec2 xyz2uv(vec3 r) {
-	vec2 refla = normalize(-vec2(dir.x, dir.z));
+vec2 xyz2uv(vec3 dir) {
+	vec2 refla = normalize(vec2(dir.x, dir.z));
     float cx = acos(refla.x)/(3.14159 * 2);
     cx = mix(1-cx, cx, sign(refla.y) * 0.5 + 0.5);
     float sy = asin(dir.y)/(3.14159);
@@ -21,10 +21,11 @@ vec2 xyz2uv(vec3 r) {
 
 vec3 uv2xyz(vec2 s) {
 	vec3 r;
+	r.y = sin((s.y - 0.5) * 3.14159);
 	r.x = cos(s.x * 2 * 3.14159);
 	r.z = sin(s.x * 2 * 3.14159);
-	r.y = sin((s.y - 0.5) * 3.14159);
 	r.xz *= sqrt(1 - r.y * r.y);
+	return r;
 }
 
 vec3 sampleGGX(vec2 rnd, vec3 nrm) {
@@ -47,17 +48,20 @@ vec3 sampleGGX(vec2 rnd, vec3 nrm) {
 
 void main () {
 	vec2 uv = gl_FragCoord.xy / screenSize;
-
+	int off = int(gl_FragCoord.y + screenSize.y * gl_FragCoord.x);
+	
 	vec3 view = uv2xyz(uv);
 	
 	fragCol = vec4(0,0,0,0);
+	float weight = 0;
 	for (int a = 0; a < samples; ++a) {
-		vec2 rnd = texelFetch(noise, a);
+		int ni = int(mod(off + a * 371, 65534));
+		vec2 rnd = texelFetch(noise, ni).xy;
+
 		vec3 hv = sampleGGX(rnd, view);
+		vec3 lht = normalize(2 * dot(view, hv) * hv - view);
 
-		float3 lht = 2 * dot(view, hv) * hv - view;
-
-		float ndl = saturate(dot(view, lht));
+		float ndl = clamp(dot(view, lht), 0, 1);
 		if (ndl > 0) {
 			fragCol += texture(mainTex, xyz2uv(lht)) * ndl;
 			weight += ndl;

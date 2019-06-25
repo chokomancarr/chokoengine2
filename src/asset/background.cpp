@@ -1,7 +1,7 @@
 #include "chokoengine.hpp"
 #include "texture_internal.hpp"
 #include "glsl/minVert.h"
-#include "glsl/blurFrag.h"
+#include "glsl/presum_ggx.h"
 
 CE_BEGIN_NAMESPACE
 
@@ -11,16 +11,28 @@ Shader _Background::ggxBlurShad;
 Material _Background::ggxBlurMat;
 TextureBuffer _Background::noiseTex;
 
+#define SAMPLES 2000
+
 void  _Background::Init() {
-    ggxBlurShad = Shader::New(glsl::minVert, glsl::blurFrag);
+    //auto noise = Random::Hammersley(SAMPLES);
+    std::vector<Vec2> noise(65535);
+    for (auto& n : noise) {
+        n = Vec2(rand() * 1.f / RAND_MAX, rand() * 1.f / RAND_MAX);
+    }
+    auto noiseBuf = VertexBuffer_New(true, 2, 65535, noise.data());
+    noiseTex = TextureBuffer::New(noiseBuf, GL_RG32F);
+
+    ggxBlurShad = Shader::New(glsl::minVert, glsl::presumGGX);
     ggxBlurShad->AddUniform("mainTex", ShaderVariableType::Texture);
-    ggxBlurShad->AddUniform("mul", ShaderVariableType::Float);
+    ggxBlurShad->AddUniform("rough", ShaderVariableType::Float);
     ggxBlurShad->AddUniform("screenSize", ShaderVariableType::Vec2);
-    ggxBlurShad->AddUniform("isY", ShaderVariableType::Int);
+    ggxBlurShad->AddUniform("noise", ShaderVariableType::Texture);
+    ggxBlurShad->AddUniform("samples", ShaderVariableType::Int);
 
     ggxBlurMat = Material::New();
     ggxBlurMat->shader(ggxBlurShad);
-    ggxBlurMat->SetUniform("mul", 1.f);
+    ggxBlurMat->SetUniform("noise", static_cast<Texture>(noiseTex));
+    ggxBlurMat->SetUniform("samples", (int)SAMPLES);
 
     initd = true;
 }
@@ -45,18 +57,15 @@ _Background::_Background(const std::string& path, int div) : _Texture(nullptr), 
     std::vector<RenderTarget> mips(div - 1, nullptr);
 
     Texture tmp0 = Texture::New(path, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true));
-    RenderTarget tmprt;
     uint w = _width / 2, h = _height / 2;
+    ggxBlurMat->SetUniform("mainTex", tmp0);
     for (int a = 1; a < div; a++) {
-        tmprt = RenderTarget::New(w, h, true);
         RenderTarget target2 = RenderTarget::New(w, h, true);
+        ggxBlurMat->SetUniform("rough", a * 0.5f / div);
         ggxBlurMat->SetUniform("screenSize", Vec2(w, h));
-        ggxBlurMat->SetUniform("isY", (int)0);
-        _RenderTarget::Blit(tmp0, tmprt, ggxBlurMat);
-        ggxBlurMat->SetUniform("isY", (int)1);
-        _RenderTarget::Blit(static_cast<Texture>(tmprt), target2, ggxBlurMat);
-        tmp0 = static_cast<Texture>(target2);
+        _RenderTarget::Blit(tmp0, target2, ggxBlurMat);
         mips[a - 1] = target2;
+        tmp0 = static_cast<Texture>(target2); //this is wrong, but it reduces noise for now
         w /= 2;
         h /= 2;
     }

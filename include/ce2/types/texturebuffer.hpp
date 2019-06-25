@@ -6,7 +6,7 @@ CE_BEGIN_NAMESPACE
 class _TextureBuffer : public _Texture { CE_OBJECT_COMMON
 	VertexBuffer _buffer;
 
-	_TextureBuffer(const _VertexObject&) = delete;
+	_TextureBuffer(const _TextureBuffer&) = delete;
 public:
 	_TextureBuffer(const VertexBuffer& buf, GLenum fmt);
 
@@ -15,7 +15,5 @@ public:
 	void Bind() const override;
 	void Unbind() const override;
 };
-
-TextureBuffer TextureBuffer_New(const VertexBuffer& buf, GLenum fmt);
 
 CE_END_NAMESPACE

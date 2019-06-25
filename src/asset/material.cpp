@@ -28,7 +28,7 @@ void _Material::Bind() {
 		case ShaderVariableType::Texture:
 			glUniform1i(v._location, tid);
 			glActiveTexture(GL_TEXTURE0 + tid);
-			glBindTexture(GL_TEXTURE_2D, v._val_t->_pointer);
+			v._val_t->Bind();
 			tid++;
 			break;
 		}

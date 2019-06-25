@@ -46,7 +46,7 @@ void UI::InitVao() {
 	_vao = VertexObject_New();
 	_vao->AddBuffer(_vboV);
 	_vao->AddBuffer(_vboU);
-	_tvbo = TextureBuffer_New(_vboV, GL_RGB32F);
+	_tvbo = TextureBuffer::New(_vboV, GL_RGB32F);
 	_quadElo = VertexBuffer_New(false, 1, 6, d, 0, GL_ELEMENT_ARRAY_BUFFER);
 }
 

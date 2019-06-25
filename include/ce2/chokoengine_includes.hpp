@@ -25,8 +25,6 @@ class Quat;
 class Rect;
 class Mat4x4;
 
-class _TextureBuffer;
-typedef std::shared_ptr<_TextureBuffer> TextureBuffer;
 class _VertexBuffer;
 typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
 class _VertexObject;
@@ -48,6 +46,8 @@ CE_OBJECT(Shader)
 CE_OBJECT(Texture)
 CE_OBJECT(Background)
 CE_OBJECT(RenderTarget)
+
+CE_OBJECT(TextureBuffer)
 
 /* scene
  */

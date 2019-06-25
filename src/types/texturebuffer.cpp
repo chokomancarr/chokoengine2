@@ -17,8 +17,4 @@ void _TextureBuffer::Unbind() const {
 	glBindTexture(GL_TEXTURE_BUFFER, 0);
 }
 
-TextureBuffer TextureBuffer_New(const VertexBuffer& buf, GLenum fmt) {
-	return std::make_shared<_TextureBuffer>(buf, fmt);
-}
-
 CE_END_NAMESPACE
