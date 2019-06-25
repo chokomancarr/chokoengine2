@@ -1,9 +1,10 @@
 #include "chokoengine.hpp"
 #include "texture_internal.hpp"
+#include "backend/rend/renderer.hpp"
 
 CE_BEGIN_NAMESPACE
 
-_RenderTarget::_RenderTarget() {}
+_RenderTarget::_RenderTarget() : _Texture(nullptr) {}
 
 _RenderTarget::_RenderTarget(uint w, uint h, bool hdr)
 		: _Texture(w, h, hdr) {
@@ -24,6 +25,21 @@ _RenderTarget::_RenderTarget(uint w, uint h, bool hdr)
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		Debug::Error("Render Target", "Could not create internal framebuffer: gl error " + std::to_string(status));
 	}
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+void _RenderTarget::Blit(const Texture& src, const RenderTarget& dst, const Material& mat) {
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dst->_fbo);
+	if (!!src) {
+		mat->SetUniform("mainTex", src);
+	}
+	mat->Bind();
+	Backend::Renderer::emptyVao()->Bind();
+	glViewport(0, 0, dst->_width, dst->_height);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	Backend::Renderer::emptyVao()->Unbind();
+	mat->Unbind();
+	glViewport(0, 0, Display::width(), Display::height());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 

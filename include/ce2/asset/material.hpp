@@ -34,6 +34,8 @@ public:
 	void SetUniform(const std::string& s, Vec4 v);
 	void SetUniform(const std::string& s, Mat4x4 m);
 	void SetUniform(const std::string& s, Texture t);
+
+	friend class _RenderTarget; //allow binding for blit
 };
 
 CE_END_NAMESPACE

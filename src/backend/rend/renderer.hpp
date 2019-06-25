@@ -4,7 +4,7 @@
 CE_BEGIN_BK_NAMESPACE
 
 class Renderer {
-	static VertexObject emptyVao;
+	static VertexObject _emptyVao;
 
 	static Shader skyShad;
 
@@ -13,6 +13,8 @@ class Renderer {
 	static void RenderSky(const Scene& scene, const Camera& cam);
 
 public:
+	CE_GET_ST_MEMBER(emptyVao);
+
 	static bool Init();
 
     static void Render(const Scene& scene);

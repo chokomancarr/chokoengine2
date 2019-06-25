@@ -97,6 +97,9 @@ Vec3 Vec3::back() {
 	return Vec3(0, 0, -1);
 }
 
-Vec3 operator* (const glm::mat3& m, const Vec3& v) { return *(Vec3*)&(m * *(glm::vec3*)&v.x); }
+Vec3 operator* (const glm::mat3& m, const Vec3& v) {
+	auto t = (m * *(glm::vec3*)&v.x);
+	return *(Vec3*)&t;
+}
 
 CE_END_NAMESPACE

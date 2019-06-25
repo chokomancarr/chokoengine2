@@ -18,7 +18,8 @@ Quat Quat::operator *(const Quat& rhs) {
 }
 
 Vec3 Quat::operator *(const Vec3& rhs) {
-	return FG((glm::quat)(*this) * TG(rhs));
+	auto t = (glm::quat)(*this) * TG(rhs);
+	return FG(t);
 }
 
 Mat4x4 Quat::matrix() const {

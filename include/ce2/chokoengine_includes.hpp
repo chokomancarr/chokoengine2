@@ -25,6 +25,16 @@ class Quat;
 class Rect;
 class Mat4x4;
 
+class _TextureBuffer;
+typedef std::shared_ptr<_TextureBuffer> TextureBuffer;
+class _VertexBuffer;
+typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
+class _VertexObject;
+typedef std::shared_ptr<_VertexObject> VertexObject;
+
+class Math;
+class Random;
+
 class Object;
 typedef std::shared_ptr<Object> pObject;
 
@@ -36,6 +46,7 @@ CE_OBJECT(Material)
 CE_OBJECT(Mesh)
 CE_OBJECT(Shader)
 CE_OBJECT(Texture)
+CE_OBJECT(Background)
 CE_OBJECT(RenderTarget)
 
 /* scene
@@ -61,13 +72,9 @@ CE_END_NAMESPACE
 #include "types/quat.hpp"
 #include "types/rect.hpp"
 #include "types/mat4x4.hpp"
-#include "types/depth_texture.hpp"
-#include "types/vertexbuffer.hpp"
-#include "types/vertexobject.hpp"
-#include "types/texturebuffer.hpp"
-#include "types/framebuffer.hpp"
 
 #include "utils/math.hpp"
+#include "utils/random.hpp"
 
 #include "core/display.hpp"
 #include "core/input.hpp"
@@ -79,6 +86,12 @@ CE_END_NAMESPACE
 #include "object_base.hpp"
 
 #include "asset/asset.hpp"
+
+#include "types/texturebuffer.hpp"
+#include "types/depth_texture.hpp"
+#include "types/vertexbuffer.hpp"
+#include "types/vertexobject.hpp"
+#include "types/framebuffer.hpp"
 
 #include "scene/transform.hpp"
 #include "scene/scene.hpp"

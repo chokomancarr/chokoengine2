@@ -4,7 +4,7 @@
 
 CE_BEGIN_BK_NAMESPACE
 
-VertexObject Renderer::emptyVao;
+VertexObject Renderer::_emptyVao;
 Shader Renderer::skyShad;
 
 void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camera>& cameras,
@@ -44,14 +44,14 @@ void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, scene->sky()->_pointer);
 	glUniform1f(skyShad->Loc(7), 1);
-	emptyVao->Bind();
+	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	emptyVao->Unbind();
+	_emptyVao->Unbind();
 	skyShad->Unbind();
 }
 
 bool Renderer::Init() {
-	emptyVao = std::make_shared<_VertexObject>();
+	_emptyVao = std::make_shared<_VertexObject>();
 
 	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
 		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inColor", "inNormal", "inDepth", "inSky", "skyStrength" });

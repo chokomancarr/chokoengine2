@@ -19,13 +19,13 @@ float length2(vec3 v) {
     return v.x*v.x + v.y*v.y + v.z*v.z;
 }
 
-vec4 skyColAt(sampler2D sky, vec3 dir) {
+vec4 skyColAt(sampler2D sky, vec3 dir, float lod) {
     vec2 refla = normalize(-vec2(dir.x, dir.z));
     float cx = acos(refla.x)/(3.14159 * 2);
     cx = mix(1-cx, cx, sign(refla.y) * 0.5 + 0.5);
     float sy = asin(dir.y)/(3.14159);
 
-    return texture(sky, vec2(cx, sy + 0.5));
+    return textureLod(sky, vec2(cx, sy + 0.5), lod);
 }
 
 float fresnel(vec3 fwd, vec3 nrm) {
@@ -36,7 +36,7 @@ void main () {
     vec2 uv = gl_FragCoord.xy / screenSize;
     vec4 diffuse = texture(inColor, uv);
     vec4 normal = texture(inNormal, uv);
-	vec4 specular = vec4(1, 1, 1, 0.2);
+	vec4 specular = vec4(1, 1, 1, 0);
 	float gloss = 0.1;
     float z = texture(inDepth, uv).x;
 	
@@ -55,13 +55,14 @@ void main () {
     wPos2 /= wPos2.w;
     vec3 fwd = normalize(wPos.xyz - wPos2.xyz);
 	
-	fragCol.rgb = skyColAt(inSky, fwd).rgb * skyStrength;
+	fragCol.rgb = skyColAt(inSky, fwd, 0).rgb;
 	if (z < 1) {
-		vec3 diffCol = skyColAt(inSky, normalize(normal.xyz)).rgb * diffuse.rgb * skyStrength;
+		vec3 diffCol = skyColAt(inSky, normalize(normal.xyz), 10).rgb * diffuse.rgb;
 		vec3 refl = normalize(reflect(fwd, normal.xyz));
-        vec3 reflCol = skyColAt(inSky, refl).rgb * specular.rgb * skyStrength;
+        vec3 reflCol = skyColAt(inSky, refl, 0).rgb * specular.rgb;
 		float fres = mix(fresnel(fwd, normal.xyz), 1, specular.a);
-		fragCol.rgb = mix(diffCol, reflCol, fres);
+        //fragCol.rgb = skyColAt(inSky, normalize(normal.xyz), fres * 5).rgb * diffuse.rgb;
+		fragCol.rgb = mix(diffCol, reflCol, fres) * skyStrength;
 	}
     fragCol.a = 1;
     return;

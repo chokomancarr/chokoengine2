@@ -18,4 +18,5 @@ CE_END_NAMESPACE
 #include "asset/shader.hpp"
 #include "asset/material.hpp"
 #include "asset/texture.hpp"
+#include "asset/background.hpp"
 #include "asset/render_target.hpp"

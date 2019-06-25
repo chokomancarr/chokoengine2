@@ -22,7 +22,6 @@ public:
 	void Unbind() const;
 };
 
-typedef std::shared_ptr<_VertexObject> VertexObject;
 VertexObject VertexObject_New();
 
 CE_END_NAMESPACE

@@ -2,6 +2,7 @@ set(DIR src/asset)
 
 set(SOURCES
 	${SOURCES}
+	${DIR}/background.cpp
 	${DIR}/font.cpp
 	${DIR}/material.cpp
 	${DIR}/mesh.cpp

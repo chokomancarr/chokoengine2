@@ -45,7 +45,7 @@ void ChokoEditor::Main() {
 	EWindowManager::Init();
 	ESerializer::Init();
 
-	ChokoLait::scene()->sky(Texture::New(IO::path() + "res/sky.hdr"));
+	ChokoLait::scene()->sky(static_cast<Texture>(Background::New(IO::path() + "res/sky.hdr", 5)));
 	ChokoLait::scene()->AddNewObject()
 		->name("__Editor_Cameras__");
 	auto o = ChokoLait::scene()->AddNewObject();
@@ -60,7 +60,6 @@ void ChokoEditor::Main() {
 
 	UIButtonStyle style(Color(0.1f, 1));
 	style.textNormal(Color::white());
-	
 	
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {
