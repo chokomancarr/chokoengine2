@@ -9,7 +9,6 @@ class _Texture : public _Asset { CE_OBJECT_COMMON
 protected: //allow rendertarget access
     _Texture(std::nullptr_t);
 
-	_Texture(uint w, uint h, GLenum type, const TextureOptions& opts);
 
     GLuint _pointer;
 
@@ -22,6 +21,8 @@ protected: //allow rendertarget access
 
 public:
 	_Texture(uint w, uint h, bool hdr);
+
+	_Texture(uint w, uint h, GLenum type, const TextureOptions& opts);
 
     /* Loads an image from the specified path
      * Supported formats: png, jpg, bmp, hdr

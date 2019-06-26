@@ -6,6 +6,16 @@ CE_BEGIN_NAMESPACE
 _Texture::_Texture(std::nullptr_t)
         : _pointer(0), _width(0), _height(0), _hdr(false) {}
 
+_Texture::_Texture(uint w, uint h, bool hdr)
+		: _width(w), _height(h), _channels(4), _hdr(hdr) {
+	glGenTextures(1, &_pointer);
+	glBindTexture(GL_TEXTURE_2D, _pointer);
+	std::vector<byte> data(w * h * 4);
+	glTexImage2D(GL_TEXTURE_2D, 0, hdr? GL_RGBA32F : GL_RGBA, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+	SetTexParams<>(0, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 _Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts) {
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
@@ -20,17 +30,7 @@ _Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts) {
 			) : GL_NEAREST,
 			(opts.linear) ?
 		GL_LINEAR : GL_NEAREST
-	);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-_Texture::_Texture(uint w, uint h, bool hdr)
-		: _width(w), _height(h), _channels(4), _hdr(hdr) {
-	glGenTextures(1, &_pointer);
-	glBindTexture(GL_TEXTURE_2D, _pointer);
-	std::vector<byte> data(w * h * 4);
-	glTexImage2D(GL_TEXTURE_2D, 0, hdr? GL_RGBA32F : GL_RGBA, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
-	SetTexParams<>(0, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+		);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 

@@ -8,12 +8,15 @@
  *   Buffer 0:
  *     R8, G8, B8  //Diffuse Color
  *   Buffer 1:
- *     X16, Y16    //Normal Map (Z = Y x X)
+ *     X16F, Y16F  //Normal Map (Z = Y x X)
  *   Buffer 2:
- *     R8          //Metalness
+ *     R8          //Flags 1
  *     G8          //Roughness
  *     B8          //Occlusion
- *     
+ *     A8          //Flags 2
+ *   Flags 1: (4 bits)
+ *     1           //metallic
+ *     2           //invert normal Z
  */
 
 CE_BEGIN_BK_NAMESPACE
@@ -53,11 +56,14 @@ void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
 	glUniform1i(skyShad->Loc(5), 2);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
 	glUniform1i(skyShad->Loc(6), 3);
 	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+	glUniform1i(skyShad->Loc(7), 4);
+	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, scene->sky()->_pointer);
-	glUniform1f(skyShad->Loc(7), 1);
+	glUniform1f(skyShad->Loc(8), 1);
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();
@@ -68,7 +74,7 @@ bool Renderer::Init() {
 	_emptyVao = std::make_shared<_VertexObject>();
 
 	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
-		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inColor", "inNormal", "inDepth", "inSky", "skyStrength" });
+		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "inSky", "skyStrength" });
 
 	return true;
 }
@@ -99,7 +105,7 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	auto& gbuf = cam->_deferredBuffer;
 	if (!gbuf) {
 		gbuf = FrameBuffer_New(tar->_width, tar->_height, {
-			GL_RGBA, GL_RG16F, GL_RGBA, GL_RGBA
+			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
 		});
 	}
 	gbuf->Bind();

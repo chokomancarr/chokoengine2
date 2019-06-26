@@ -8,8 +8,10 @@ uniform mat4 _P;
 uniform mat4 _MVP;
 
 out vec3 v2f_normal;
+out vec2 v2f_uv;
 
 void main(){
 	gl_Position = _MVP*vec4(pos, 1);
 	v2f_normal = normalize((_MV * vec4(normal, 0)).xyz);
+    v2f_uv = texCoord;
 }
