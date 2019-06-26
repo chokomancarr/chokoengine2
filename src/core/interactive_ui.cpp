@@ -38,7 +38,7 @@ InputMouseStatus UI::I::ButtonTr(const CE_NS Rect& r) {
     return (InputMouseStatus)ret;
 }
 
-std::string UI::I::TextField(const CE_NS Rect& r) {
+std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UITextFieldStyle& style) {
     bool active = textFieldCallers.Add();
 
     if (active) {
