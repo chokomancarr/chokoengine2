@@ -18,6 +18,10 @@ void EW_Hierarchy::DrawMenuObject(int& off, const std::vector<SceneObject>& oo, 
 }
 
 void EW_Hierarchy::DrawMenu() {
+	if (UI::I::ButtonTr(Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21))
+			== InputMouseStatus::HoverUp) {
+		ESceneInfo::selectedObject = nullptr;
+	}
     int off = 0;
     DrawMenuObject(off, ChokoLait::scene()->objects(), 0);
 }

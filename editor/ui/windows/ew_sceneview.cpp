@@ -14,7 +14,7 @@ bool EW_SceneView::Init() {
 	_pivot->name("SceneView Pivot");
 	auto o = ChokoLait::scene()->AddNewObject(_pivot);
 	o->name("SceneView Camera");
-	o->transform()->localPosition(Vec3(0, 0, -5));
+	o->transform()->localPosition(Vec3(0, 0, -3));
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0));
 	_camera->target(_target);
@@ -23,6 +23,7 @@ bool EW_SceneView::Init() {
 }
 
 void EW_SceneView::Update() {
+	/*
 	_pivot->transform()->localRotation(
 		Quat::FromEuler(Vec3(Math::Clamp(Input::mousePosition().y * 180.f / Display::height() - 90.f, -90.f, 90.f), 0, 0)) *
 		Quat::FromEuler(Vec3(0, 180.f + Input::mousePosition().x * 360.f / Display::width(), 0))
@@ -30,6 +31,7 @@ void EW_SceneView::Update() {
 	static float z = -5;
 	z = glm::clamp(z + Input::mouseDelta().y * 5 / Display::height(), -5.f, -2.f);
 	_camera->object()->transform()->localPosition(Vec3(0, 0, z));
+	*/
 }
 
 CE_END_ED_NAMESPACE

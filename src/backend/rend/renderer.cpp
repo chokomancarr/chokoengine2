@@ -63,7 +63,7 @@ void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	glUniform1i(skyShad->Loc(7), 4);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, scene->sky()->_pointer);
-	glUniform1f(skyShad->Loc(8), 1);
+	glUniform1f(skyShad->Loc(8), 1.5f);
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();

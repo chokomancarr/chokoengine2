@@ -10,6 +10,13 @@ void paint() {
 	//UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
 	EWindowManager::Draw();
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
+
+	static float met = 0;
+	met = UI::I::Slider(Rect(10, 500, 100, 20), Vec2(0, 1), met, Color::red());
+	m1->SetUniform("metallic", met);
+	static float rou = 0;
+	rou = UI::I::Slider(Rect(10, 530, 100, 20), Vec2(0, 1), rou, Color::blue());
+	m1->SetUniform("roughness", rou);
 }
 
 void ChokoEditor::Init() {
@@ -30,6 +37,8 @@ void ChokoEditor::Main() {
 	shd->AddUniform("col", ShaderVariableType::Vec4);
 	shd->AddUniform("diffuseTex", ShaderVariableType::Texture);
 	shd->AddUniform("occluTex", ShaderVariableType::Texture);
+	shd->AddUniform("metallic", ShaderVariableType::Float);
+	shd->AddUniform("roughness", ShaderVariableType::Float);
 
 	const float f = 0.3;
 
@@ -38,6 +47,8 @@ void ChokoEditor::Main() {
 	m1->SetUniform("col", Color(1));
 	m1->SetUniform("diffuseTex", Texture::New(IO::path() + "res/monkey_diffuse.jpg"));
 	m1->SetUniform("occluTex", Texture::New(IO::path() + "res/monkey_occlu.jpg"));
+	m1->SetUniform("metallic", 0.0f);
+	m1->SetUniform("roughness", 0.0f);
 
 	Mesh m = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 
