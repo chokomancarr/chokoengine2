@@ -4,5 +4,6 @@ set(SOURCES
 	${SOURCES}
 	${DIR}/math.cpp
 	${DIR}/random.cpp
+	${DIR}/unique_caller.cpp
 	PARENT_SCOPE
 )

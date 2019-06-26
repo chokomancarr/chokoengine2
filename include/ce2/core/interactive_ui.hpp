@@ -9,6 +9,9 @@ CE_BEGIN_NAMESPACE
  * but behave the same as their non-'Tr' counterparts
  */
 class UI::I { CE_CLASS_COMMON
+    static UniqueCallerList textFieldCallers;
+
+    static void PreLoop();
 
 public:
 
@@ -19,7 +22,7 @@ public:
 
     static InputMouseStatus ButtonTr(const CE_NS Rect& r);
 
-    static std::string TextField();
+    static std::string TextField(const CE_NS Rect& r);
 
     static float Slider(const CE_NS Rect& r, const Vec2& range, float value, const Color& color);
 

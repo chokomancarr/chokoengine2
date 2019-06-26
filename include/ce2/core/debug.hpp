@@ -11,6 +11,9 @@ public:
 	static void Message(const std::string& caller, const std::string& message);
 	static void Warning(const std::string& caller, const std::string& message);
 	static void Error(const std::string& caller, const std::string& message);
+
+	static std::vector<uintptr_t> StackTrace(uint count);
+	static uint StackTrace(uint count, uintptr_t* frames);
 };
 
 CE_END_NAMESPACE

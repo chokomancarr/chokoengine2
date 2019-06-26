@@ -1,4 +1,5 @@
 #include "chokoengine.hpp"
+#include <execinfo.h>
 
 CE_BEGIN_NAMESPACE
 
@@ -21,6 +22,24 @@ void Debug::Warning(const std::string& caller, const std::string& msg) {
 void Debug::Error(const std::string& caller, const std::string& msg) {
 	std::cerr << "[e] " + caller + ": " + msg + "\n";
 	std::flush(std::cout);
+}
+
+std::vector<uintptr_t> Debug::StackTrace(uint count) {
+	std::vector<uintptr_t> result(count, 0);
+#ifdef PLATFORM_WIN
+	CaptureStackBackTrace(0, count, (void**)result.data(), NULL);
+#else
+	backtrace((void**)result.data(), count);
+#endif
+	return result;
+}
+
+uint Debug::StackTrace(uint count, uintptr_t* result) {
+#ifdef PLATFORM_WIN
+	return CaptureStackBackTrace(0, count, (void**)result, NULL);
+#else
+	return backtrace((void**)result, count);
+#endif
 }
 
 CE_END_NAMESPACE

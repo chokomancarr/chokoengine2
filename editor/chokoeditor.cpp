@@ -17,6 +17,10 @@ void paint() {
 	static float rou = 0;
 	rou = UI::I::Slider(Rect(10, 530, 100, 20), Vec2(0, 1), rou, Color::blue());
 	m1->SetUniform("roughness", rou);
+
+	UI::I::TextField(Rect(700, 400, 100, 20));
+	UI::I::TextField(Rect(700, 430, 100, 20));
+	UI::I::TextField(Rect(700, 460, 100, 20));
 }
 
 void ChokoEditor::Init() {

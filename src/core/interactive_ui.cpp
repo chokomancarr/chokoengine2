@@ -2,6 +2,12 @@
 
 CE_BEGIN_NAMESPACE
 
+UniqueCallerList UI::I::textFieldCallers;
+
+void UI::I::PreLoop() {
+    textFieldCallers.Preloop();
+}
+
 InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, const std::string& t, const Font& font) {
     const auto ret = ButtonTr(r);
     const auto col = (ret == InputMouseStatus::None) ? s.normal() :
@@ -32,7 +38,19 @@ InputMouseStatus UI::I::ButtonTr(const CE_NS Rect& r) {
     return (InputMouseStatus)ret;
 }
 
-std::string UI::I::TextField() {
+std::string UI::I::TextField(const CE_NS Rect& r) {
+    bool active = textFieldCallers.Add();
+
+    if (active) {
+        if (Button(r, UIButtonStyle(Color::blue())) == InputMouseStatus::HoverUp) {
+            textFieldCallers.Clear();
+        }
+    }
+    else {
+        if (Button(r, UIButtonStyle(Color::green())) == InputMouseStatus::HoverUp) {
+            textFieldCallers.Set();
+        }
+    }
     return "";
 }
 

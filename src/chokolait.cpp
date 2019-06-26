@@ -27,7 +27,7 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 
 	initd = true;
 
-	glClearColor(1, 0, 0, 0);
+	glClearColor(0, 0, 0, 0);
 	glClearDepth(1);
 
 	_scene = Scene::New("New Scene");
@@ -46,6 +46,7 @@ void ChokoLait::Update(emptyCallbackFunc func) {
 	glfwPollEvents();
 	Time::Update();
 	Input::PreLoop();
+	UI::I::PreLoop();
 	if (func)
 		func();
 }

@@ -32,6 +32,7 @@ typedef std::shared_ptr<_VertexObject> VertexObject;
 
 class Math;
 class Random;
+class UniqueCallerList;
 
 class Object;
 typedef std::shared_ptr<Object> pObject;
@@ -75,6 +76,7 @@ CE_END_NAMESPACE
 
 #include "utils/math.hpp"
 #include "utils/random.hpp"
+#include "utils/unique_caller.hpp"
 
 #include "core/display.hpp"
 #include "core/input.hpp"
