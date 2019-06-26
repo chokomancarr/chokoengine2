@@ -6,7 +6,7 @@ CE_BEGIN_NAMESPACE
 class _Scene : public Object { CE_CLASS_COMMON
 	std::vector<SceneObject> _objects;
 	
-	Texture _sky;
+	Background _sky;
 
 	static void DoTree(std::string& s, const std::vector<SceneObject>& o, const std::vector<bool>& level);
 

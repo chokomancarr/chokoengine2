@@ -47,7 +47,7 @@ void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	skyShad->Bind();
 	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
 	glUniform2f(skyShad->Loc(1), tar->_width, tar->_height);
-	glUniform1i(skyShad->Loc(2), cam->orthographic());
+	glUniform1i(skyShad->Loc(2), cam->_orthographic);
 	glUniform1i(skyShad->Loc(3), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
@@ -62,8 +62,8 @@ void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
 	glUniform1i(skyShad->Loc(7), 4);
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, scene->sky()->_pointer);
-	glUniform1f(skyShad->Loc(8), 1.5f);
+	glBindTexture(GL_TEXTURE_2D, scene->_sky->_pointer);
+	glUniform1f(skyShad->Loc(8), scene->_sky->_brightness);
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();

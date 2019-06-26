@@ -37,7 +37,7 @@ void  _Background::Init() {
     initd = true;
 }
 
-_Background::_Background(const std::string& path, int div) : _Texture(nullptr), _layers(div) {
+_Background::_Background(const std::string& path, int div) : _Texture(nullptr), _layers(div), _brightness(1) {
     if (!initd)
         Init();
     

@@ -60,7 +60,7 @@ void main () {
     wPos2 /= wPos2.w;
     vec3 fwd = normalize(wPos.xyz - wPos2.xyz);
 	
-	fragCol.rgb = skyColAt(inSky, fwd, 0).rgb;
+	fragCol.rgb = skyColAt(inSky, fwd, 0).rgb * skyStrength;
 	if (z < 1) {
 		vec3 refl = normalize(reflect(fwd, normal));
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);

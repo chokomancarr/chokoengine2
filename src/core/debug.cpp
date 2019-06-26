@@ -1,5 +1,7 @@
 #include "chokoengine.hpp"
+#ifndef PLATFORM_WIN
 #include <execinfo.h>
+#endif
 
 CE_BEGIN_NAMESPACE
 
