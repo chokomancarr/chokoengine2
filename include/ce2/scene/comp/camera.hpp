@@ -19,6 +19,8 @@ class _Camera : public _Component { CE_COMPONENT_COMMON
 	float _clearDepth;
 	Color _clearColor;
 
+	std::vector<CameraEffect> _effects;
+
 	static bool Init();
 public:
 	_Camera();
@@ -54,6 +56,16 @@ public:
 	 * Color must be specified in clearType.
 	 */
 	CE_GET_SET_MEMBER(clearColor);
+
+	/* The list of effects applied to the final render
+	 * Effects are applied from front to back
+	 */
+	CE_GET_SET_MEMBER(effects);
+	/* Adds an effect at the back of the list
+	 */
+	void AddEffect(const CameraEffect& e);
 };
 
 CE_END_NAMESPACE
+
+#include "camera/effect_base.hpp"

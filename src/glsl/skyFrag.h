@@ -38,9 +38,7 @@ void main () {
     vec3 normal = texture(inGBuf1, uv).xyz;
 
 	vec4 gbuf2 = texture(inGBuf2, uv);
-	int flags1 = int(gbuf2.x * 8);
-	
-	float metallic = (mod(flags1, 2) > 0) ? 1 : 0;
+	float metallic = gbuf2.x;
 	float rough = gbuf2.y;
 	float occlu = gbuf2.z;
     float z = texture(inGBufD, uv).x;
@@ -64,7 +62,7 @@ void main () {
 	if (z < 1) {
 		vec3 refl = normalize(reflect(fwd, normal));
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);
-		vec3 diffCol = (1 - metallic) * skyColAt(inSky, (normal), 5).rgb * diffuse.rgb;
+		vec3 diffCol = skyColAt(inSky, normal, 5).rgb * diffuse.rgb;
         vec3 reflCol = skyColAt(inSky, refl, rough * 5).rgb * mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres));
 		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu;
         //fragCol.rgb = skyColAt(inSky, normalize(normal), (1-fres) * 5).rgb * diffuse.rgb;

@@ -31,7 +31,11 @@ Ref<T>& Ref<T>::operator =(const Ref<T>& rhs) {
 template <class T>
 T* Ref<T>::operator ->() const {
     if (!_object) {
-        Debug::Error("Object Reference", "Cannot deferefence: reference is empty!");
+        Debug::Error("Object Reference", "Cannot dereference: reference is empty!");
+        return nullptr;
+    }
+    else if (_object->_deleted) {
+        Debug::Error("Object Reference", "Cannot dereference: object is deleted!");
         return nullptr;
     }
     return _object.get();
@@ -39,7 +43,7 @@ T* Ref<T>::operator ->() const {
 
 template <class T>
 bool Ref<T>::operator !() const {
-    return !_object;
+    return !_object || _object->_deleted;
 }
 
 template <class T>

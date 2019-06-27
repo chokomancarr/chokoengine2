@@ -4,6 +4,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EW_Inspector : public EWindow {
+	Shader highlightShad;
 
 protected:
 	void DrawMenu() override;

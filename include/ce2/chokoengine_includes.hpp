@@ -61,6 +61,7 @@ CE_OBJECT(SceneObject)
  */
 CE_OBJECT(Component)
 CE_OBJECT(Camera)
+CE_OBJECT(CameraEffect)
 CE_OBJECT(MeshRenderer)
 CE_OBJECT(MeshModifier)
 

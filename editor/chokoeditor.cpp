@@ -6,7 +6,7 @@ CE_BEGIN_ED_NAMESPACE
 Material m1, m2, m3;
 
 void paint() {
-	//UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.5f));
+	UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.5f));
 	//UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
 	EWindowManager::Draw();
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
@@ -47,8 +47,8 @@ void ChokoEditor::Main() {
 	m1->SetUniform("occluTex", Texture::New(IO::path() + "res/metal_occlu.jpg"));
 	m1->SetUniform("normalness", 1.f);
 
-	Mesh m = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
-	//Mesh m = ProceduralMesh::UVSphere(20, 10, 1);
+	//Mesh m = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
+	Mesh m = ProceduralMesh::UVSphere(32, 16, 1);
 
 	EImages::Init();
 	EWindowManager::Init();
