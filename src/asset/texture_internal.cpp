@@ -45,13 +45,13 @@ bool Texture_I::FromJPG(const std::string& path, uint& w, uint& h, byte& channel
 	h = info.output_height;
 	channels = info.num_components;
 
-	data_size = w * h * 3;
+	data_size = w * h * channels;
 
 	data.resize(data_size);
 
 	while (info.output_scanline < h) {
 		// Enable jpeg_read_scanlines() to fill our jdata array
-		rowptr[0] = &data[3 * w * (h - info.output_scanline - 1)];
+		rowptr[0] = &data[channels * w * (h - info.output_scanline - 1)];
 
 		jpeg_read_scanlines(&info, rowptr, 1);
 	}

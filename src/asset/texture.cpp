@@ -66,11 +66,18 @@ _Texture::_Texture(const std::string& path, const TextureOptions& opts) : _hdr(f
 
     glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
-	if (_channels == 3)
+    if (_channels == 1) {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexImage2D(GL_TEXTURE_2D, 0, _hdr ? GL_R32F : GL_RED, _width, _height, 0, GL_RED, _hdr ? GL_FLOAT : GL_UNSIGNED_BYTE, data.data());
+    }
+    else if (_channels == 3)
         glTexImage2D(GL_TEXTURE_2D, 0, _hdr ? GL_RGB32F : GL_RGB, _width, _height, 0, rgb, _hdr ? GL_FLOAT : GL_UNSIGNED_BYTE, data.data());
-	else
+	else if (_channels == 4)
         glTexImage2D(GL_TEXTURE_2D, 0, _hdr ? GL_RGBA32F : GL_RGBA, _width, _height, 0, rgba, _hdr ? GL_FLOAT : GL_UNSIGNED_BYTE, data.data());
-	if (opts.mipmaps > 0) glGenerateMipmap(GL_TEXTURE_2D);
+	else {
+        Debug::Error("Texture", "Unexpected channel size " + std::to_string(_channels) + "!");
+    }
+    if (opts.mipmaps > 0) glGenerateMipmap(GL_TEXTURE_2D);
     const GLenum wraps[] = { GL_CLAMP_TO_EDGE, GL_REPEAT, GL_MIRRORED_REPEAT };
     SetTexParams<>(0,
         wraps[(int)opts.xwrap],

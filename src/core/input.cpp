@@ -51,4 +51,16 @@ InputMouseStatus Input::mouseStatus(InputMouseButton b) {
     }
 }
 
+bool Input::KeyDown(InputKey c) {
+    return false;
+}
+
+bool Input::KeyHold(InputKey c) {
+    return false;
+}
+
+bool Input::KeyUp(InputKey c) {
+    return false;
+}
+
 CE_END_NAMESPACE

@@ -12,6 +12,13 @@ CE_BEGIN_NAMESPACE
 class UI::I { CE_CLASS_COMMON
     static UniqueCallerList textFieldCallers;
 
+    static struct _TextFieldInfo {
+        bool editing;
+        uint cursor, cursor2;
+        std::string buffer;
+        float time;
+    } _textFieldInfo;
+
     static void PreLoop();
 
 public:

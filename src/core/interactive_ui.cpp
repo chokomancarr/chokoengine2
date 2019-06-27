@@ -4,6 +4,8 @@ CE_BEGIN_NAMESPACE
 
 UniqueCallerList UI::I::textFieldCallers;
 
+UI::I::_TextFieldInfo UI::I::_textFieldInfo = {};
+
 void UI::I::PreLoop() {
     textFieldCallers.Preloop();
 }
@@ -42,16 +44,26 @@ std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UI
     bool active = textFieldCallers.Add();
 
     if (active) {
-        if (Button(r, UIButtonStyle(Color::blue())) == InputMouseStatus::HoverUp) {
+        bool lmb = Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Down;
+        if ((lmb && (ButtonTr(r) == InputMouseStatus::None))
+            || (Input::KeyDown(InputKey::Escape))
+            || (Input::KeyDown(InputKey::Enter))) {
             textFieldCallers.Clear();
+            _textFieldInfo.editing = false;
+            return _textFieldInfo.buffer;
         }
+        
     }
     else {
         if (Button(r, UIButtonStyle(Color::green())) == InputMouseStatus::HoverUp) {
             textFieldCallers.Set();
+            _textFieldInfo.editing = true;
+            _textFieldInfo.cursor = _textFieldInfo.cursor2 = 0;
+            _textFieldInfo.buffer = s;
+            _textFieldInfo.time = 0;
         }
     }
-    return "";
+    return s;
 }
 
 float UI::I::Slider(const CE_NS Rect& r, const Vec2& range, float value, const Color& color) {
@@ -66,6 +78,7 @@ float UI::I::SliderTr(const CE_NS Rect& r, const Vec2& range, float value) {
     if (mst != InputMouseStatus::None) {
         if (r.Contains(Input::mouseDownPosition())) {
             value = Math::Lerp(range.x, range.y, Math::ILerp(r.x(), r.x2(), Input::mousePosition().x));
+            value = Math::Clamp(value, range.x, range.y);
         }
     }
     return value;

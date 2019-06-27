@@ -75,6 +75,7 @@ CE_END_NAMESPACE
 #include "types/mat4x4.hpp"
 
 #include "utils/math.hpp"
+#include "utils/procedural_mesh.hpp"
 #include "utils/random.hpp"
 #include "utils/unique_caller.hpp"
 
