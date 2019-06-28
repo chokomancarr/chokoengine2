@@ -15,8 +15,8 @@ class Input { CE_CLASS_COMMON
 	static std::array<bool, 5> _mouseButtonStatesOld;
 	static std::array<bool, 5> _mouseButtonStates;
 
-	static std::array<bool, 325> _keyStatesOld;
-	static std::array<bool, 325> _keyStates;
+	static std::array<bool, 350> _keyStatesOld;
+	static std::array<bool, 350> _keyStates;
 
 	static std::string _inputString;
 	static std::u32string _inputUnicodeString;

@@ -127,23 +127,19 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 	colShad->Unbind();
 }
 
-void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, Font font) {
+void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font) {
+	Label(rect, StrExt::ToUnicode(str), col, font);
+}
+
+void UI::Label(const CE_NS Rect& rect, const std::u32string& ucs, const Color& col, const Font& font) {
 	if (!font || !font->loaded()) {
-		if (!_defaultFont || !_defaultFont->loaded()) {
-			Debug::Warning("UI::Label", "Font provided is null!");
-			return;
-		}
-		font = _defaultFont;
+		Debug::Warning("UI::Label", "Invalid font!");
+		return;
 	}
 	const auto fsz = font->size();
-	const auto ssz = str.size();
-	if (!fsz || !ssz) return;
-	
-	byte align = (byte)font->alignment();
-
-	//get the unicode string
-	auto ucs = StrExt::ToUnicode(str);
 	const auto usz = ucs.size();
+	if (!fsz || !usz) return;
+
 	font->SizeVec(usz);
 	std::vector<uint> mks = {};
 
@@ -164,6 +160,7 @@ void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col,
 		strw += params[c & 0xff00].o2s[c & 0x00ff];
 	}
 
+	byte align = (byte)font->alignment();
 	//get the starting x
 	float xpos = 0;
 	switch (align & 0x0f) {

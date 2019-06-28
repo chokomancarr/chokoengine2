@@ -9,8 +9,8 @@ Vec2 Input::_mouseDownPosition;
 std::array<bool, 5> Input::_mouseButtonStatesOld = {};
 std::array<bool, 5> Input::_mouseButtonStates = {};
 
-std::array<bool, 325> Input::_keyStatesOld = {};
-std::array<bool, 325> Input::_keyStates = {};
+std::array<bool, 350> Input::_keyStatesOld = {};
+std::array<bool, 350> Input::_keyStates = {};
 
 std::string Input::_inputString;
 std::u32string Input::_inputUnicodeString;
@@ -48,7 +48,7 @@ void Input::_OnMouseClick(GLFWwindow*, int btn, int vl, int mod) {
 }
 
 void Input::_OnKeyPress(GLFWwindow*, int key, int, int act, int) {
-    if (key < 325) _keyStates[key] = (act == GLFW_PRESS);
+    if (key < 350) _keyStates[key] = (act == GLFW_PRESS);
 }
 
 void Input::_OnCharInput(GLFWwindow*, uint codepoint) {

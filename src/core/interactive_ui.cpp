@@ -29,7 +29,7 @@ InputMouseStatus UI::I::ButtonTr(const CE_NS Rect& r) {
 		ret = 0x10;
 		const auto mst = Input::mouseStatus(InputMouseButton::Left);
 		if (mst != InputMouseStatus::None) {
-			if (r.Contains(Input::mouseDownPosition())) {
+			if (Input::mousePosition() == Input::mouseDownPosition()) {
 				ret |= (uint)mst;
 			}
 			else {
@@ -103,7 +103,27 @@ std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UI
 			_textFieldInfo.buffer = StrExt::FromUnicode(_textFieldInfo.ubuffer);
 			_textFieldInfo.time = 0;
 		}
-		UI::Label(r, _textFieldInfo.buffer, Color::white());
+		
+		Label(r, _textFieldInfo.buffer, Color::white());
+
+		//move cursor (requires label data)
+		const auto lmbs = Input::mouseStatus(InputMouseButton::Left);
+		if (lmbs != InputMouseStatus::None) {
+			_textFieldInfo.cursor = _textFieldInfo.ubuffer.size();
+			for (size_t a = 0; a < _textFieldInfo.ubuffer.size(); a++) {
+				const auto x0 = _defaultFont->poss[a * 4].x;
+				const auto x1 = _defaultFont->poss[a * 4 + 1].x;
+				const auto ps = (((x0 + x1) / 2)
+					* 0.5f + 0.5f) * (float)Display::width();
+				if (Input::mousePosition().x < ps) {
+					_textFieldInfo.cursor = a;
+					break;
+				}
+			}
+			if (lmb) {
+				_textFieldInfo.cursor2 = _textFieldInfo.cursor;
+			}
+		}
 	}
 	else {
 		if (Button(r, UIButtonStyle(Color::green())) == InputMouseStatus::HoverUp) {
@@ -115,7 +135,7 @@ std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UI
 			_textFieldInfo.cursor2 = 0;
 			_textFieldInfo.time = 0;
 		}
-		UI::Label(r, s, Color::white());
+		Label(r, s, Color::white());
 	}
 	return s;
 }
