@@ -7,6 +7,7 @@ class _Camera : public _Component { CE_COMPONENT_COMMON
 	FrameBuffer _deferredBuffer;
 
 	RenderTarget _target;
+	std::array<RenderTarget, 3> _blitTargets;
 
 	bool _orthographic;
 	float _fov;

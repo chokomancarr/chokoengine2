@@ -2,43 +2,6 @@
 
 CE_BEGIN_NAMESPACE
 
-void _Material::Bind() {
-	_shader->Bind();
-	int tid = 0;
-	for (auto& v : _variables) {
-		switch (v._type) {
-		case ShaderVariableType::Float:
-			glUniform1f(v._location, v._val_f);
-			break;
-		case ShaderVariableType::Int:
-			glUniform1i(v._location, v._val_i);
-			break;
-		case ShaderVariableType::Vec2:
-			glUniform2f(v._location, v._val_v2.x, v._val_v2.y);
-			break;
-		case ShaderVariableType::Vec3:
-			glUniform3f(v._location, v._val_v3.x, v._val_v3.y, v._val_v3.z);
-			break;
-		case ShaderVariableType::Vec4:
-			glUniform4f(v._location, v._val_v4.x, v._val_v4.y, v._val_v4.z, v._val_v4.w);
-			break;
-		case ShaderVariableType::Matrix:
-			glUniformMatrix4fv(v._location, 1, false, &v._val_m[0][0]);
-			break;
-		case ShaderVariableType::Texture:
-			glUniform1i(v._location, tid);
-			glActiveTexture(GL_TEXTURE0 + tid);
-			v._val_t->Bind();
-			tid++;
-			break;
-		}
-	}
-}
-
-void _Material::Unbind() {
-	_shader->Unbind();
-}
-
 _Material::_Material() : _shader(nullptr), _variables({}) {}
 
 void _Material::shader(const Shader& s) {
@@ -85,5 +48,42 @@ SETUNIFORM(Vec3, Vec3, v3);
 SETUNIFORM(Vec4, Vec4, v4);
 SETUNIFORM(Mat4x4, Matrix, m);
 SETUNIFORM(Texture, Texture, t);
+
+void _Material::Bind() {
+	_shader->Bind();
+	int tid = 0;
+	for (auto& v : _variables) {
+		switch (v._type) {
+		case ShaderVariableType::Float:
+			glUniform1f(v._location, v._val_f);
+			break;
+		case ShaderVariableType::Int:
+			glUniform1i(v._location, v._val_i);
+			break;
+		case ShaderVariableType::Vec2:
+			glUniform2f(v._location, v._val_v2.x, v._val_v2.y);
+			break;
+		case ShaderVariableType::Vec3:
+			glUniform3f(v._location, v._val_v3.x, v._val_v3.y, v._val_v3.z);
+			break;
+		case ShaderVariableType::Vec4:
+			glUniform4f(v._location, v._val_v4.x, v._val_v4.y, v._val_v4.z, v._val_v4.w);
+			break;
+		case ShaderVariableType::Matrix:
+			glUniformMatrix4fv(v._location, 1, false, &v._val_m[0][0]);
+			break;
+		case ShaderVariableType::Texture:
+			glUniform1i(v._location, tid);
+			glActiveTexture(GL_TEXTURE0 + tid);
+			v._val_t->Bind();
+			tid++;
+			break;
+		}
+	}
+}
+
+void _Material::Unbind() {
+	_shader->Unbind();
+}
 
 CE_END_NAMESPACE

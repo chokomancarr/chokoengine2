@@ -8,15 +8,17 @@
  *   Buffer 0:
  *     R8, G8, B8  //Diffuse Color
  *   Buffer 1:
- *     X16F, Y16F  //Normal Map (Z = Y x X)
+ *     XYZ16       //Normal vector
  *   Buffer 2:
- *     R8          //Flags 1
+ *     R8          //Metalness
  *     G8          //Roughness
  *     B8          //Occlusion
- *     A8          //Flags 2
- *   Flags 1: (4 bits)
- *     1           //metallic
- *     2           //invert normal Z
+ *     A8          //Flags
+ * 
+ * Notes:
+ *   Computing Z from XY of normal map produces slight but noticeable artifacts, even in 32 bits
+ *     -> Maybe increasing the resolution in small values will fix this? Does it matter for floats?
+ *   Binary metalness parameter doesn't look very nice on borders (layered materials)
  */
 
 CE_BEGIN_BK_NAMESPACE
@@ -92,21 +94,25 @@ void Renderer::Render(const Scene& scene) {
 
 void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::vector<MeshRenderer> rends) {
 	const auto& tar = cam->target();
+	const auto _w = (!tar) ? Display::width() : tar->_width;
+	const auto _h = (!tar) ? Display::height() : tar->_height;
 
     MVP::Clear();
 	MVP::Switch(true);
-	const auto& cwm = cam->object()->transform()->worldMatrix();
-	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, tar->_width, tar->_height, cam->nearClip(), cam->farClip()));
+	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip()));
 	MVP::Push();
-	MVP::Mul(cwm);
+	MVP::Mul(cam->object()->transform()->worldMatrix());
 
-	glViewport(0, 0, tar->_width, tar->_height);
+	glViewport(0, 0, _w, _h);
 
 	auto& gbuf = cam->_deferredBuffer;
 	if (!gbuf) {
-		gbuf = FrameBuffer_New(tar->_width, tar->_height, {
+		gbuf = FrameBuffer_New(_w, _h, {
 			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
 		});
+		for (auto& t : cam->_blitTargets) {
+			t = RenderTarget::New(_w, _h, true, false);
+		}
 	}
 	gbuf->Bind();
 	gbuf->Clear();
@@ -140,7 +146,7 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	glBlendFunc(GL_ONE, GL_ONE);
 	glDisable(GL_CULL_FACE);
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar->_fbo);
+	cam->_blitTargets[0]->BindTarget();
 
 	if ((cam->_clearType == CameraClearType::Color)
 		|| (cam->_clearType == CameraClearType::ColorAndDepth))
@@ -151,7 +157,18 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 
 	RenderSky(scene, cam);
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	cam->_blitTargets[0]->UnbindTarget();
+
+	for (auto& e : cam->_effects) {
+		e->Apply(cam->_blitTargets[0], cam->_blitTargets[1], cam->_blitTargets[2], gbuf);
+	}
+
+	if (!tar) {
+		CE_NOT_IMPLEMENTED
+	}
+	else {
+		cam->_blitTargets[0]->Blit(tar, nullptr);
+	}
 
 	glViewport(0, 0, Display::width(), Display::height());
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

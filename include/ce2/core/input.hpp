@@ -18,6 +18,8 @@ class Input { CE_CLASS_COMMON
 	static std::array<bool, 325> _keyStatesOld;
 	static std::array<bool, 325> _keyStates;
 
+	static std::string _inputString;
+
 	static bool Init();
 
 	static void PreLoop();
@@ -25,6 +27,8 @@ class Input { CE_CLASS_COMMON
 
 	static void _OnCursorMove(GLFWwindow*, double, double);
 	static void _OnMouseClick(GLFWwindow*, int, int, int);
+	static void _OnKeyPress(GLFWwindow*, int, int, int, int);
+	static void _OnCharInput(GLFWwindow*, uint);
 public:
 	/* Screen coordinates of the pointer
 	 */
@@ -37,6 +41,11 @@ public:
 	/* Distance the pointer moved in screen coordinates
 	 */
 	static Vec2 mouseDelta();
+
+	/* Text input from the keyboard
+	 * Use Key* functions for individual key inputs
+	 */
+	CE_GET_ST_MEMBER(inputString);
 
 	/* Returns the status of mouse button \p b
 	 */

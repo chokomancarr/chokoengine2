@@ -60,10 +60,10 @@ _Background::_Background(const std::string& path, int div) : _Texture(nullptr), 
     uint w = _width / 2, h = _height / 2;
     ggxBlurMat->SetUniform("mainTex", tmp0);
     for (int a = 1; a < div; a++) {
-        RenderTarget target2 = RenderTarget::New(w, h, true);
+        RenderTarget target2 = RenderTarget::New(w, h, true, false);
         ggxBlurMat->SetUniform("rough", a * 1.f / div);
         ggxBlurMat->SetUniform("screenSize", Vec2(w, h));
-        _RenderTarget::Blit(tmp0, target2, ggxBlurMat);
+        tmp0->Blit(target2, ggxBlurMat);
         mips[a - 1] = target2;
         tmp0 = static_cast<Texture>(target2); //this is wrong, but it reduces noise for now
         w /= 2;

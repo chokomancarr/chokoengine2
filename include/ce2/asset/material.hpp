@@ -10,9 +10,6 @@ class _Material : public _Asset { CE_OBJECT_COMMON
     Shader _shader;
 
 	std::vector<ShaderVariable> _variables;
-
-	void Bind();
-	void Unbind();
 public:
     _Material();
 
@@ -35,7 +32,8 @@ public:
 	void SetUniform(const std::string& s, Mat4x4 m);
 	void SetUniform(const std::string& s, Texture t);
 
-	friend class _RenderTarget; //allow binding for blit
+	void Bind();
+	void Unbind();
 };
 
 CE_END_NAMESPACE

@@ -41,6 +41,11 @@ public:
     virtual void Bind() const;
     virtual void Unbind() const;
 
+	/* Copies the texture to the destination render target, applying the material
+     * If the material is null, the texture is copied directly
+	 */
+	void Blit(const RenderTarget& dst, const Material& mat);
+
     friend class UI;
 	friend class _Material;
 	friend class _FrameBuffer;

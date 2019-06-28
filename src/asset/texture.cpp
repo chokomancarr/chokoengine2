@@ -1,5 +1,6 @@
 #include "chokoengine.hpp"
 #include "texture_internal.hpp"
+#include "backend/chokoengine_backend.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -106,6 +107,27 @@ void _Texture::Bind() const {
 
 void _Texture::Unbind() const {
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void _Texture::Blit(const RenderTarget& dst, const Material& mat) {
+	dst->BindTarget();
+    glViewport(0, 0, dst->width(), dst->height());
+    Ref<_Texture> tex(std::static_pointer_cast<_Texture>(shared_from_this()));
+    glDisable(GL_BLEND);
+	if (!mat) {
+        UI::Texture(Rect(0, 0, Display::width(), Display::height()), tex);
+    }
+    else {
+		mat->SetUniform("mainTex", tex);
+        mat->Bind();
+        Backend::Renderer::emptyVao()->Bind();
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        Backend::Renderer::emptyVao()->Unbind();
+        mat->Unbind();
+	}
+    glEnable(GL_BLEND);
+	glViewport(0, 0, Display::width(), Display::height());
+	dst->UnbindTarget();
 }
 
 CE_END_NAMESPACE
