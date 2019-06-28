@@ -26,10 +26,10 @@ std::vector<std::string> StrExt::Split(const std::string& s, char c, bool rm) {
 	return o;
 }
 
-std::vector<uint> StrExt::ToUnicode(const std::string& s) {
+std::u32string StrExt::ToUnicode(const std::string& s) {
 #define MK(cc) uint(*(cc) & 63)
 	char* cc = (char*)s.data();
-	std::vector<uint> result = {};
+	std::u32string result = {};
 	for (uint a = 0; *cc > 0; a++) {
 		if (!((*cc >> 7) & 1)) {
 			result.push_back(*cc++);
@@ -55,6 +55,32 @@ std::vector<uint> StrExt::ToUnicode(const std::string& s) {
 	}
 	return result;
 #undef MK
+}
+
+std::string StrExt::FromUnicode(const std::u32string& s) {
+	std::string result;
+	result.reserve(s.size());
+	for (auto& i : s) {
+		if (i <= 0x7f) {
+			result.push_back(static_cast<char>(i));
+		}
+		else if (i <= 0x7ff) {
+			result.push_back(static_cast<char>(0xc0 | ((i >> 6) & 0x1f)));
+			result.push_back(static_cast<char>(0x80 | (i & 0x3f)));
+		}
+		else if (i <= 0xffff) {
+			result.push_back(static_cast<char>(0xe0 | ((i >> 12) & 0x0f)));
+			result.push_back(static_cast<char>(0x80 | ((i >> 6) & 0x3f)));
+			result.push_back(static_cast<char>(0x80 | (i & 0x3f)));
+		}
+		else {
+			result.push_back(static_cast<char>(0xf0 | ((i >> 18) & 0x07)));
+			result.push_back(static_cast<char>(0x80 | ((i >> 12) & 0x3f)));
+			result.push_back(static_cast<char>(0x80 | ((i >> 6) & 0x3f)));
+			result.push_back(static_cast<char>(0x80 | (i & 0x3f)));
+		}
+	}
+	return result;
 }
 
 CE_END_NAMESPACE

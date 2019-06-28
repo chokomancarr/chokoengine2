@@ -7,81 +7,135 @@ UniqueCallerList UI::I::textFieldCallers;
 UI::I::_TextFieldInfo UI::I::_textFieldInfo = {};
 
 void UI::I::PreLoop() {
-    textFieldCallers.Preloop();
+	textFieldCallers.Preloop();
 }
 
 InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, const std::string& t, const Font& font) {
-    const auto ret = ButtonTr(r);
-    const auto col = (ret == InputMouseStatus::None) ? s.normal() :
-        (((ret == InputMouseStatus::Hover) || (ret == InputMouseStatus::HoverUp)) ? s.hover() : s.pressed());
-    Rect(r, col);
+	const auto ret = ButtonTr(r);
+	const auto col = (ret == InputMouseStatus::None) ? s.normal() :
+		(((ret == InputMouseStatus::Hover) || (ret == InputMouseStatus::HoverUp)) ? s.hover() : s.pressed());
+	Rect(r, col);
 
-    if (!t.empty()) {
-        Label(r, t, s.textNormal(), font);
-    }
+	if (!t.empty()) {
+		Label(r, t, s.textNormal(), font);
+	}
 
-    return ret;
+	return ret;
 }
 
 InputMouseStatus UI::I::ButtonTr(const CE_NS Rect& r) {
-    uint ret = 0;
-    if (r.Contains(Input::mousePosition())) {
-        ret = 0x10;
-        const auto mst = Input::mouseStatus(InputMouseButton::Left);
-        if (mst != InputMouseStatus::None) {
-            if (r.Contains(Input::mouseDownPosition())) {
-                ret |= (uint)mst;
-            }
-            else {
-                ret = 0;
-            }
-        }
-    }
-    return (InputMouseStatus)ret;
+	uint ret = 0;
+	if (r.Contains(Input::mousePosition())) {
+		ret = 0x10;
+		const auto mst = Input::mouseStatus(InputMouseButton::Left);
+		if (mst != InputMouseStatus::None) {
+			if (r.Contains(Input::mouseDownPosition())) {
+				ret |= (uint)mst;
+			}
+			else {
+				ret = 0;
+			}
+		}
+	}
+	return (InputMouseStatus)ret;
 }
 
 std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UITextFieldStyle& style) {
-    bool active = textFieldCallers.Add();
+	bool active = textFieldCallers.Add();
 
-    if (active) {
-        bool lmb = Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Down;
-        if ((lmb && (ButtonTr(r) == InputMouseStatus::None))
-            || (Input::KeyDown(InputKey::Escape))
-            || (Input::KeyDown(InputKey::Enter))) {
-            textFieldCallers.Clear();
-            _textFieldInfo.editing = false;
-            return _textFieldInfo.buffer;
-        }
-        
-    }
-    else {
-        if (Button(r, UIButtonStyle(Color::green())) == InputMouseStatus::HoverUp) {
-            textFieldCallers.Set();
-            _textFieldInfo.editing = true;
-            _textFieldInfo.cursor = _textFieldInfo.cursor2 = 0;
-            _textFieldInfo.buffer = s;
-            _textFieldInfo.time = 0;
-        }
-    }
-    return s;
+	if (active) {
+		bool chg = false;
+		bool lmb = Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Down;
+		//check for quit
+		if ((lmb && (ButtonTr(r) == InputMouseStatus::None))
+			|| (Input::KeyDown(InputKey::Escape))
+			|| (Input::KeyDown(InputKey::Enter))) {
+			textFieldCallers.Clear();
+			_textFieldInfo.editing = false;
+			return _textFieldInfo.buffer;
+		}
+		//check for deletion
+		if (Input::KeyDown(InputKey::Backspace)) {
+			if (_textFieldInfo.cursor == _textFieldInfo.cursor2) { //remove 1 character
+				if (!!_textFieldInfo.cursor) {
+					_textFieldInfo.ubuffer = _textFieldInfo.ubuffer.substr(0, _textFieldInfo.cursor - 1) + _textFieldInfo.ubuffer.substr(_textFieldInfo.cursor);
+					_textFieldInfo.cursor--;
+					_textFieldInfo.cursor2--;
+				}
+			}
+			else { //remove all selected
+				_textFieldInfo.ubuffer = _textFieldInfo.ubuffer.substr(0, std::min(_textFieldInfo.cursor, _textFieldInfo.cursor2)) + _textFieldInfo.ubuffer.substr(std::max(_textFieldInfo.cursor, _textFieldInfo.cursor2));
+				_textFieldInfo.cursor2 = _textFieldInfo.cursor = std::min(_textFieldInfo.cursor, _textFieldInfo.cursor2);
+			}
+			chg = true;
+		}
+		//insert input string
+		const auto& istr = Input::inputUnicodeString();
+		const auto istrsz = istr.size();
+		if (istrsz > 0) {
+			if (_textFieldInfo.cursor == _textFieldInfo.cursor2) { //add string at position
+				_textFieldInfo.ubuffer = _textFieldInfo.ubuffer.substr(0, _textFieldInfo.cursor) + istr + _textFieldInfo.ubuffer.substr(_textFieldInfo.cursor);
+				_textFieldInfo.cursor += istrsz;
+				_textFieldInfo.cursor2 += istrsz;
+			}
+			else { //replace selection with string
+				const auto cmn = std::min(_textFieldInfo.cursor, _textFieldInfo.cursor2);
+				const auto cmx = std::max(_textFieldInfo.cursor, _textFieldInfo.cursor2);
+				_textFieldInfo.ubuffer = _textFieldInfo.ubuffer.substr(0, cmn) + istr + _textFieldInfo.ubuffer.substr(cmx);
+				_textFieldInfo.cursor2 = _textFieldInfo.cursor = cmn + istrsz;
+			}
+			chg = true;
+		}
+		//move cursor
+		if (Input::KeyDown(InputKey::LeftArrow)) {
+			_textFieldInfo.cursor = (uint)std::max((int)_textFieldInfo.cursor - 1, 0);
+			if (!Input::KeyHold(InputKey::LeftShift)) {
+				_textFieldInfo.cursor2 = _textFieldInfo.cursor;
+			}
+		}
+		if (Input::KeyDown(InputKey::RightArrow)) {
+			_textFieldInfo.cursor = std::min(_textFieldInfo.cursor + 1U, (uint)_textFieldInfo.ubuffer.size());
+			if (!Input::KeyHold(InputKey::LeftShift)) {
+				_textFieldInfo.cursor2 = _textFieldInfo.cursor;
+			}
+		}
+		if (chg) {
+			_textFieldInfo.buffer = StrExt::FromUnicode(_textFieldInfo.ubuffer);
+			_textFieldInfo.time = 0;
+		}
+		UI::Label(r, _textFieldInfo.buffer, Color::white());
+	}
+	else {
+		if (Button(r, UIButtonStyle(Color::green())) == InputMouseStatus::HoverUp) {
+			textFieldCallers.Set();
+			_textFieldInfo.editing = true;
+			_textFieldInfo.buffer = s;
+			_textFieldInfo.ubuffer = StrExt::ToUnicode(s);
+			_textFieldInfo.cursor = _textFieldInfo.ubuffer.size();
+			_textFieldInfo.cursor2 = 0;
+			_textFieldInfo.time = 0;
+		}
+		UI::Label(r, s, Color::white());
+	}
+	return s;
 }
 
 float UI::I::Slider(const CE_NS Rect& r, const Vec2& range, float value, const Color& color) {
-    Rect(r, color);
-    const auto v = SliderTr(r, range, value);
-    Rect(CE_NS Rect(r.x() + 1, r.y() + 1, (r.w() - 2) * Math::Clamp(Math::ILerp(range.x, range.y, value), 0.f, 1.f), r.h() - 2), Color::white());
-    return v;
+	Rect(r, color);
+	const auto v = SliderTr(r, range, value);
+	Rect(CE_NS Rect(r.x() + 1, r.y() + 1, (r.w() - 2) * Math::Clamp(Math::ILerp(range.x, range.y, value), 0.f, 1.f), r.h() - 2), Color::white());
+	return v;
 }
 
 float UI::I::SliderTr(const CE_NS Rect& r, const Vec2& range, float value) {
-    const auto mst = Input::mouseStatus(InputMouseButton::Left);
-    if (mst != InputMouseStatus::None) {
-        if (r.Contains(Input::mouseDownPosition())) {
-            value = Math::Lerp(range.x, range.y, Math::ILerp(r.x(), r.x2(), Input::mousePosition().x));
-            value = Math::Clamp(value, range.x, range.y);
-        }
-    }
-    return value;
+	const auto mst = Input::mouseStatus(InputMouseButton::Left);
+	if (mst != InputMouseStatus::None) {
+		if (r.Contains(Input::mouseDownPosition())) {
+			value = Math::Lerp(range.x, range.y, Math::ILerp(r.x(), r.x2(), Input::mousePosition().x));
+			value = Math::Clamp(value, range.x, range.y);
+		}
+	}
+	return value;
 }
 
 CE_END_NAMESPACE

@@ -13,6 +13,7 @@ std::array<bool, 325> Input::_keyStatesOld = {};
 std::array<bool, 325> Input::_keyStates = {};
 
 std::string Input::_inputString;
+std::u32string Input::_inputUnicodeString;
 
 bool Input::Init() {
     glfwSetCursorPosCallback(Display::_window, _OnCursorMove);
@@ -27,7 +28,6 @@ void Input::PreLoop() {
     if (mouseStatus(InputMouseButton::Left) == InputMouseStatus::Down) {
         _mouseDownPosition = _mousePosition;
     }
-
 }
 
 void Input::PostLoop() {
@@ -35,6 +35,7 @@ void Input::PostLoop() {
     _mouseButtonStatesOld = _mouseButtonStates;
     _keyStatesOld = _keyStates;
     _inputString.clear();
+    _inputUnicodeString.clear();
 }
 
 void Input::_OnCursorMove(GLFWwindow*, double x, double y) {
@@ -69,6 +70,7 @@ void Input::_OnCharInput(GLFWwindow*, uint codepoint) {
         _inputString.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
         _inputString.push_back(static_cast<char>(0x80 | (codepoint & 0x3f)));
     }
+    _inputUnicodeString.push_back(codepoint);
 }
 
 Vec2 Input::mouseDelta() {

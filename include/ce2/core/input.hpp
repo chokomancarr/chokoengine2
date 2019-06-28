@@ -19,6 +19,7 @@ class Input { CE_CLASS_COMMON
 	static std::array<bool, 325> _keyStates;
 
 	static std::string _inputString;
+	static std::u32string _inputUnicodeString;
 
 	static bool Init();
 
@@ -46,6 +47,10 @@ public:
 	 * Use Key* functions for individual key inputs
 	 */
 	CE_GET_ST_MEMBER(inputString);
+
+	/* Text input from the keyboard as unicode codepoints
+	 */
+	CE_GET_ST_MEMBER(inputUnicodeString);
 
 	/* Returns the status of mouse button \p b
 	 */

@@ -4,7 +4,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 MeshRenderer mr;
-Material m1, m2;
+Material ms[3];
 
 Background ss[3];
 
@@ -16,10 +16,11 @@ void paint() {
 
 	ChokoLait::scene()->sky()->brightness(UI::I::Slider(Rect(10, 190, 100, 20), Vec2(0, 3), ChokoLait::scene()->sky()->brightness(), Color::yellow()));
 
-	static bool um2 = false;
+	static int um2 = 1;
 	if(Input::KeyDown(InputKey::M)) {
-		mr->materials({ um2? m1 : m2 });
-		um2 = !um2;
+		mr->materials({ ms[um2++] });
+		if (um2 > 2)
+			um2 = 0;
 	}
 
 	static int us2 = 1;
@@ -28,6 +29,9 @@ void paint() {
 		if (us2 > 2)
 			us2 = 0;
 	}
+
+	static std::string s = "Hello";
+	s = UI::I::TextField(Rect(650, 300, 150, 20), s, UITextFieldStyle(Color::blue()));
 }
 
 void ChokoEditor::Init() {
@@ -57,25 +61,18 @@ void ChokoEditor::Main() {
 
 	TextureOptions opts(TextureWrap::Repeat, TextureWrap::Repeat, 5, true);
 
-	m1 = Material::New();
-	m1->shader(shd);
-	m1->SetUniform("col", Color(1));
-	m1->SetUniform("diffuseTex", Texture::New(IO::path() + "res/brick_diffuse.jpg", opts));
-	m1->SetUniform("normalTex", Texture::New(IO::path() + "res/brick_normal.jpg", opts));
-	m1->SetUniform("metalTex", Texture::New(IO::path() + "res/brick_metal.jpg", opts));
-	m1->SetUniform("roughTex", Texture::New(IO::path() + "res/brick_rough.jpg", opts));
-	m1->SetUniform("occluTex", Texture::New(IO::path() + "res/brick_occlu.jpg", opts));
-	m1->SetUniform("normalness", 1.f);
-
-	m2 = Material::New();
-	m2->shader(shd);
-	m2->SetUniform("col", Color(1));
-	m2->SetUniform("diffuseTex", Texture::New(IO::path() + "res/metal_diffuse.jpg", opts));
-	m2->SetUniform("normalTex", Texture::New(IO::path() + "res/metal_normal.jpg", opts));
-	m2->SetUniform("metalTex", Texture::New(IO::path() + "res/metal_metal.jpg", opts));
-	m2->SetUniform("roughTex", Texture::New(IO::path() + "res/metal_rough.jpg", opts));
-	m2->SetUniform("occluTex", Texture::New(IO::path() + "res/metal_occlu.jpg", opts));
-	m2->SetUniform("normalness", 1.f);
+	std::string tp[] = { "brick", "stone", "metal" };
+	for (int a = 0; a < 3; a++) {
+		auto& m1 = ms[a] = Material::New();
+		m1->shader(shd);
+		m1->SetUniform("col", Color(1));
+		m1->SetUniform("diffuseTex", Texture::New(IO::path() + "res/" + tp[a] + "_diffuse.jpg", opts));
+		m1->SetUniform("normalTex", Texture::New(IO::path() + "res/" + tp[a] + "_normal.jpg", opts));
+		m1->SetUniform("metalTex", Texture::New(IO::path() + "res/" + tp[a] + "_metal.jpg", opts));
+		m1->SetUniform("roughTex", Texture::New(IO::path() + "res/" + tp[a] + "_rough.jpg", opts));
+		m1->SetUniform("occluTex", Texture::New(IO::path() + "res/" + tp[a] + "_occlu.jpg", opts));
+		m1->SetUniform("normalness", 1.f);
+	}
 
 	//Mesh m = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 	Mesh m = ProceduralMesh::UVSphere(32, 16, 1);
@@ -96,7 +93,7 @@ void ChokoEditor::Main() {
 	mr = o->AddComponent<MeshRenderer>();
 	mr->mesh(m);
 	//mr->materials({ m1, m2, m3 });
-	mr->materials({ m1 });
+	mr->materials({ ms[0] });
 
 	EWindowManager::LoadWindows();
 

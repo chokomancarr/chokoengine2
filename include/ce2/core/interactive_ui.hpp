@@ -16,6 +16,7 @@ class UI::I { CE_CLASS_COMMON
         bool editing;
         uint cursor, cursor2;
         std::string buffer;
+        std::u32string ubuffer;
         float time;
     } _textFieldInfo;
 
