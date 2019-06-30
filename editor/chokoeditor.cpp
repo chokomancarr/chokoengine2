@@ -31,7 +31,7 @@ void paint() {
 	}
 
 	static std::string s = "Hello";
-	s = UI::I::TextField(Rect(650, 300, 150, 20), s, UITextFieldStyle(Color::blue()));
+	s = UI::I::TextField(Rect(Display::width() - 200, Display::height() - 30, 150, 20), s, UITextFieldStyle(Color::blue()));
 }
 
 void ChokoEditor::Init() {
@@ -74,8 +74,8 @@ void ChokoEditor::Main() {
 		m1->SetUniform("normalness", 1.f);
 	}
 
-	//Mesh m = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 	Mesh m = ProceduralMesh::UVSphere(32, 16, 1);
+	Mesh m2 = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 
 	EImages::Init();
 	EWindowManager::Init();
@@ -94,6 +94,11 @@ void ChokoEditor::Main() {
 	mr->mesh(m);
 	//mr->materials({ m1, m2, m3 });
 	mr->materials({ ms[0] });
+	auto mr2 = ChokoLait::scene()->AddNewObject()->AddComponent<MeshRenderer>();
+	mr2->object()->transform()->localPosition(Vec3(0.5f, 1, 0));
+	mr2->mesh(m2);
+	//mr->materials({ m1, m2, m3 });
+	mr2->materials({ ms[0] });
 
 	EWindowManager::LoadWindows();
 

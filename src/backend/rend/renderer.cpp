@@ -97,11 +97,12 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
-    MVP::Clear();
 	MVP::Switch(true);
+    MVP::Clear();
 	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip()));
 	MVP::Push();
 	MVP::Mul(cam->object()->transform()->worldMatrix());
+	MVP::Switch(false);
 
 	glViewport(0, 0, _w, _h);
 
@@ -123,6 +124,8 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	glEnable(GL_CULL_FACE);
 
 	for (auto& r : rends) {
+		MVP::Clear();
+		MVP::Mul(r->object()->transform()->worldMatrix());
 		r->_mesh->_vao->Bind();
 		for (size_t a = 0; a < r->_mesh->materialCount(); a++) {
 			if (!r->_materials[a]) continue;

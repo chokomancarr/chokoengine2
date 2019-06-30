@@ -26,7 +26,7 @@ void EW_SceneView::Update() {
 	
 	_pivot->transform()->localRotation(
 		//Quat::FromEuler(Vec3(Math::Clamp(Input::mousePosition().y * 180.f / Display::height() - 90.f, -90.f, 90.f), 0, 0)) *
-		Quat::FromEuler(Vec3(0, Time::time() * 30.f, 0))
+		Quat::FromEuler(Vec3(0, Time::time() * 15.f, 0))
 	);
 	/*
 	static float z = -5;

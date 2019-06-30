@@ -46,7 +46,7 @@ void MVP::Clear() {
 	}
 	else {
 		MV = stack();
-		P.push(Mat4x4(1));
+		MV.push(Mat4x4(1));
 		changedMv = true;
 	}
 }
