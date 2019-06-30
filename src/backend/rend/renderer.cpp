@@ -1,6 +1,7 @@
 #include "backend/chokoengine_backend.hpp"
 #include "glsl/minVert.h"
 #include "glsl/skyFrag.h"
+#include "glsl/pointLightFrag.h"
 
 /* The renderer backend
  *
@@ -25,80 +26,37 @@ CE_BEGIN_BK_NAMESPACE
 
 VertexObject Renderer::_emptyVao;
 Shader Renderer::skyShad;
+Shader Renderer::pointLightShad;
 
 void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camera>& cameras,
-		std::vector<MeshRenderer>& rends) {
-    for (auto& o : oo) {
-        auto c = o->GetComponent<Camera>();
-        if (!!c) {
-            cameras.push_back(c);
-        }
-		auto r = o->GetComponent<MeshRenderer>();
-		if (!!r) {
-			rends.push_back(r);
+		std::vector<Light>& lights, std::vector<MeshRenderer>& rends) {
+	for (auto& o : oo) {
+		for (auto& c : o->_components) {
+			switch(c->componentType) {
+			case ComponentType::Camera:
+				cameras.push_back(static_cast<Camera>(c));
+				break;
+			case ComponentType::Light:
+				lights.push_back(static_cast<Light>(c));
+				break;
+			case ComponentType::MeshRenderer:
+				rends.push_back(static_cast<MeshRenderer>(c));
+				break;
+			default:
+				break;
+			}
 		}
-        ScanObjects(o->children(), cameras, rends);
-    }
+		ScanObjects(o->children(), cameras, lights, rends);
+	}
 }
 
-void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
-	const auto ip = glm::inverse(MVP::projection());
-
-	const auto& tar = cam->_target;
-	const auto& gbuf = cam->_deferredBuffer;
-	skyShad->Bind();
-	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
-	glUniform2f(skyShad->Loc(1), tar->_width, tar->_height);
-	glUniform1i(skyShad->Loc(2), cam->_orthographic);
-	glUniform1i(skyShad->Loc(3), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
-	glUniform1i(skyShad->Loc(4), 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
-	glUniform1i(skyShad->Loc(5), 2);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
-	glUniform1i(skyShad->Loc(6), 3);
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
-	glUniform1i(skyShad->Loc(7), 4);
-	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, scene->_sky->_pointer);
-	glUniform1f(skyShad->Loc(8), scene->_sky->_brightness);
-	_emptyVao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	_emptyVao->Unbind();
-	skyShad->Unbind();
-}
-
-bool Renderer::Init() {
-	_emptyVao = std::make_shared<_VertexObject>();
-
-	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
-		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "inSky", "skyStrength" });
-
-	return true;
-}
-
-void Renderer::Render(const Scene& scene) {
-    std::vector<Camera> cameras;
-	std::vector<MeshRenderer> rends;
-
-	ScanObjects(scene->objects(), cameras, rends);
-
-    for (auto& c : cameras) {
-        RenderCamera(scene, c, rends);
-    }
-}
-
-void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::vector<MeshRenderer> rends) {
+void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::vector<Light> lights, const std::vector<MeshRenderer> rends) {
 	const auto& tar = cam->target();
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
 	MVP::Switch(true);
-    MVP::Clear();
+	MVP::Clear();
 	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip()));
 	MVP::Push();
 	MVP::Mul(cam->object()->transform()->worldMatrix());
@@ -160,6 +118,20 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 
 	RenderSky(scene, cam);
 
+	for (auto& l : lights) {
+		switch(l->_type) {
+		case LightType::Point:
+			RenderLight_Point(scene, l, cam);
+			break;
+		case LightType::Spot:
+			RenderLight_Spot(scene, l, cam);
+			break;
+		case LightType::Directional:
+			RenderLight_Directional(scene, l, cam);
+			break;
+		}
+	}
+
 	cam->_blitTargets[0]->UnbindTarget();
 
 	for (auto& e : cam->_effects) {
@@ -175,6 +147,102 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 
 	glViewport(0, 0, Display::width(), Display::height());
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
+	const auto ip = glm::inverse(MVP::projection());
+
+	const auto& tar = cam->_target;
+	const auto& gbuf = cam->_deferredBuffer;
+	skyShad->Bind();
+	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+	glUniform2f(skyShad->Loc(1), tar->_width, tar->_height);
+	glUniform1i(skyShad->Loc(2), cam->_orthographic);
+	glUniform1i(skyShad->Loc(3), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
+	glUniform1i(skyShad->Loc(4), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
+	glUniform1i(skyShad->Loc(5), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
+	glUniform1i(skyShad->Loc(6), 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+	glUniform1i(skyShad->Loc(7), 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, scene->_sky->_pointer);
+	glUniform1f(skyShad->Loc(8), scene->_sky->_brightness);
+	_emptyVao->Bind();
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	_emptyVao->Unbind();
+	skyShad->Unbind();
+}
+
+void Renderer::RenderLight_Point(const Scene& scene, const Light& l, const Camera& cam) {
+	const auto ip = glm::inverse(MVP::projection());
+	const auto& pos = l->object()->transform()->worldPosition();
+	const auto& tar = cam->_target;
+	const auto& gbuf = cam->_deferredBuffer;
+
+	pointLightShad->Bind();
+	glUniformMatrix4fv(pointLightShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+	glUniform2f(pointLightShad->Loc(1), tar->_width, tar->_height);
+	glUniform1i(pointLightShad->Loc(2), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
+	glUniform1i(pointLightShad->Loc(3), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
+	glUniform1i(pointLightShad->Loc(4), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
+	glUniform1i(pointLightShad->Loc(5), 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+	glUniform3f(pointLightShad->Loc(6), pos.x, pos.y, pos.z);
+	glUniform1f(pointLightShad->Loc(7), l->strength());
+	glUniform1f(pointLightShad->Loc(8), l->radius());
+	glUniform1f(pointLightShad->Loc(9), l->distance());
+	glUniform1i(pointLightShad->Loc(10), (int)l->falloff());
+	
+	_emptyVao->Bind();
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	_emptyVao->Unbind();
+	pointLightShad->Unbind();
+}
+
+void Renderer::RenderLight_Spot(const Scene& scene, const Light& l, const Camera& cam) {
+	CE_NOT_IMPLEMENTED;
+}
+
+void Renderer::RenderLight_Directional(const Scene& scene, const Light& l, const Camera& cam) {
+	CE_NOT_IMPLEMENTED;
+}
+
+bool Renderer::Init() {
+	_emptyVao = std::make_shared<_VertexObject>();
+
+	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
+		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "inSky", "skyStrength" });
+
+	(pointLightShad = Shader::New(glsl::minVert, glsl::pointLightFrag))
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightStr", "lightRad", "lightDst", "falloff" });
+
+	return true;
+}
+
+void Renderer::Render(const Scene& scene) {
+	std::vector<Camera> cameras;
+	std::vector<Light> lights;
+	std::vector<MeshRenderer> rends;
+
+	ScanObjects(scene->objects(), cameras, lights, rends);
+
+	for (auto& c : cameras) {
+		RenderCamera(scene, c, lights, rends);
+	}
 }
 
 CE_END_BK_NAMESPACE

@@ -28,8 +28,8 @@ public:
 
 	/* Adds a new component to the object
 	 */
-	template<class T>
-	T AddComponent();
+	template<class T, class... Args>
+	T AddComponent(Args&&... args);
 
 	/* Retrieves a component in the object
 	 */
@@ -45,4 +45,4 @@ public:
 
 CE_END_NAMESPACE
 
-#include "detail/sceneobject.inl"
+#include "detail/scene_object.inl"

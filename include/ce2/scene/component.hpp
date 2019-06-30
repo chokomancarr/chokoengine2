@@ -11,7 +11,7 @@ protected:
 public:
 	virtual ~_Component() = default;
 
-	const ComponentType type;
+	const ComponentType componentType;
 
 	SceneObject object();
 
@@ -23,4 +23,5 @@ CE_END_NAMESPACE
 #define CE_COMPDEF(nm) _Component(ComponentType::nm, #nm)
 
 #include "comp/camera.hpp"
+#include "comp/light.hpp"
 #include "comp/mesh_renderer.hpp"

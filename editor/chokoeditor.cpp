@@ -100,6 +100,10 @@ void ChokoEditor::Main() {
 	//mr->materials({ m1, m2, m3 });
 	mr2->materials({ ms[0] });
 
+	o = ChokoLait::scene()->AddNewObject();
+	o->AddComponent<Light>(LightType::Point);
+	o->transform()->localPosition(Vec3(1) * 5.f);
+
 	EWindowManager::LoadWindows();
 
 	std::cout << ChokoLait::scene()->Tree() << std::endl;

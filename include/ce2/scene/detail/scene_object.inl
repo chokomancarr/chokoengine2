@@ -3,9 +3,9 @@
 
 CE_BEGIN_NAMESPACE
 
-template<class T>
-T _SceneObject::AddComponent() {
-	auto nt = T::New();
+template<class T, class... Args>
+T _SceneObject::AddComponent(Args&&... args) {
+	auto nt = T::New(std::forward<Args>(args)...);
 	_components.push_back(static_cast<Component>(nt));
 	nt->_object = std::static_pointer_cast<_SceneObject>(shared_from_this());
 	return nt;

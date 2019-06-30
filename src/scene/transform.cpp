@@ -15,11 +15,17 @@ void Transform::UpdateLocalMatrix() {
 }
 
 void Transform::UpdateParentMatrix() {
-    if (!_object->parent())
+    if (!_object->parent()) {
         _worldMatrix = _localMatrix;
-    else
-        _worldMatrix = _localMatrix * _object->parent()->transform()->_worldMatrix;
-    
+        _worldPosition = _localPosition;
+    }
+    else {
+        const auto& pm = _object->parent()->transform()->_worldMatrix;
+        _worldMatrix = _localMatrix * pm;
+        Vec4 wpos = pm * Vec4(_localPosition, 1);
+        _worldPosition = Vec3(wpos.x, wpos.y, wpos.z) / wpos.w;
+    }
+
     for (auto& c : _object->children()) {
         c->transform()->UpdateParentMatrix();
     }

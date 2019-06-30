@@ -3,7 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 _Component::_Component(ComponentType t, const std::string& nm)
-		: Object(nm), type(t) {}
+		: Object(nm), componentType(t) {}
 
 SceneObject _Component::object() {
 	return _object.lock();
