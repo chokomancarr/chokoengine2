@@ -25,6 +25,15 @@ float fresnel(vec3 fwd, vec3 nrm) {
 	return pow(1-dot(-fwd, nrm), 5);
 }
 
+float ggx(vec3 n, vec3 h, float r) {
+    float NoH = dot(n,h);
+    float r2 = r * r;
+    float NoH2 = NoH * NoH;
+    float den = NoH2 * r2 + (1 - NoH2);
+	if (NoH <= 0) return 0;
+    return r2 / ( 3.14159 * den * den );
+}
+
 void main () {
 	vec2 uv = gl_FragCoord.xy / screenSize;
 	vec4 diffuse = texture(inGBuf0, uv);
@@ -45,9 +54,14 @@ void main () {
 	
 	fragCol.rgba = vec4(0, 0, 0, 0);
 	if (z < 1) {
+		float fres = mix(fresnel(fwd, normal), 1, 0.1);
 		vec3 p2l = lightPos - wPos.xyz;
 		vec3 p2li = normalize(p2l);
-		fragCol.rgb = vec3(1, 1, 1) * max(dot(p2li, normal), 0);
+		vec3 diffCol = diffuse.rgb * max(dot(p2li, normal), 0);
+		vec3 hv = normalize(p2l - fwd);
+		float reflStr = ggx(normal, hv, rough);
+		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres)) * reflStr;
+		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * occlu;
 	}
 	return;
 }
