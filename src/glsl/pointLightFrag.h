@@ -25,6 +25,10 @@ float fresnel(vec3 fwd, vec3 nrm) {
 	return pow(1-dot(-fwd, nrm), 5);
 }
 
+float closest_point(vec3 pos, vec3 dir, vec3 point) {
+	return dot(point - pos, dir);
+}
+
 float ggx(vec3 n, vec3 h, float r) {
     float NoH = dot(n,h);
     float r2 = r * r;
@@ -45,21 +49,26 @@ void main () {
 	float occlu = gbuf2.z;
 	float z = texture(inGBufD, uv).x;
 
-	vec4 dc = vec4(uv.x*2-1, uv.y*2-1, z*2-1, 1);
-	vec4 wPos = _IP*dc;
+	vec4 wPos = _IP * vec4(uv.x*2-1, uv.y*2-1, z*2-1, 1);
 	wPos /= wPos.w;
-	vec4 wPos2 = _IP*vec4(uv.x*2-1, uv.y*2-1, -1, 1);
+	vec4 wPos2 = _IP * vec4(uv.x*2-1, uv.y*2-1, -1, 1);
 	wPos2 /= wPos2.w;
 	vec3 fwd = normalize(wPos.xyz - wPos2.xyz);
 	
 	fragCol.rgba = vec4(0, 0, 0, 0);
 	if (z < 1) {
+		vec3 refl = normalize(reflect(fwd, normal));
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);
-		vec3 p2l = lightPos - wPos.xyz;
+		float lpn = closest_point(wPos.xyz, refl, lightPos);
+		vec3 pn = wPos.xyz + refl * lpn;
+		vec3 dpn = pn - lightPos;
+		dpn *= min(lightRad / length(dpn), 1);
+		pn = lightPos + dpn;
+		vec3 p2l = pn - wPos.xyz;
 		vec3 p2li = normalize(p2l);
 		vec3 diffCol = diffuse.rgb * max(dot(p2li, normal), 0);
-		vec3 hv = normalize(p2l - fwd);
-		float reflStr = ggx(normal, hv, rough);
+		vec3 hv = normalize(p2li - fwd);
+		float reflStr = (lpn > 0) ? ggx(normal, hv, rough) : 0;
 		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres)) * reflStr;
 		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * occlu;
 	}

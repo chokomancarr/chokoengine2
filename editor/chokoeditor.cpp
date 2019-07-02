@@ -8,6 +8,8 @@ Material ms[3];
 
 Background ss[3];
 
+Light lht;
+
 void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.5f));
 	//UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
@@ -15,6 +17,8 @@ void paint() {
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
 
 	ChokoLait::scene()->sky()->brightness(UI::I::Slider(Rect(10, 190, 100, 20), Vec2(0, 3), ChokoLait::scene()->sky()->brightness(), Color::yellow()));
+
+	lht->radius(UI::I::Slider(Rect(10, 210, 100, 20), Vec2(0, 2), lht->radius(), Color::yellow()));
 
 	static int um2 = 1;
 	if(Input::KeyDown(InputKey::M)) {
@@ -75,7 +79,7 @@ void ChokoEditor::Main() {
 	}
 
 	Mesh m = ProceduralMesh::UVSphere(32, 16, 1);
-	Mesh m2 = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
+	//Mesh m2 = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 
 	EImages::Init();
 	EWindowManager::Init();
@@ -86,6 +90,7 @@ void ChokoEditor::Main() {
 	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
 
 	ChokoLait::scene()->sky(ss[0]);
+	ChokoLait::scene()->sky()->brightness(0.1f);
 	ChokoLait::scene()->AddNewObject()
 		->name("__Editor_Cameras__");
 	auto o = ChokoLait::scene()->AddNewObject();
@@ -94,14 +99,16 @@ void ChokoEditor::Main() {
 	mr->mesh(m);
 	//mr->materials({ m1, m2, m3 });
 	mr->materials({ ms[0] });
-	auto mr2 = ChokoLait::scene()->AddNewObject()->AddComponent<MeshRenderer>();
-	mr2->object()->transform()->localPosition(Vec3(0.5f, 1, 0));
-	mr2->mesh(m2);
+	//auto mr2 = ChokoLait::scene()->AddNewObject()->AddComponent<MeshRenderer>();
+	//mr2->object()->transform()->localPosition(Vec3(0.5f, 1, 0));
+	//mr2->mesh(m2);
 	//mr->materials({ m1, m2, m3 });
-	mr2->materials({ ms[0] });
+	//mr2->materials({ ms[0] });
 
 	o = ChokoLait::scene()->AddNewObject();
-	o->AddComponent<Light>(LightType::Point);
+	lht = o->AddComponent<Light>(LightType::Point);
+	lht->strength(2);
+	lht->radius(1);
 	o->transform()->localPosition(Vec3(1) * 5.f);
 
 	EWindowManager::LoadWindows();
