@@ -23,6 +23,7 @@ bool EW_SceneView::Init() {
 	auto op = EDropdownMenu("Switch ortho/persp");
 	op.callback = ECallback(&Ops::ProjectionMode);
 	menus.back().items.push_back(op);
+	menus.push_back(EDropdownMenu("Object"));
 
 	return true;
 }
