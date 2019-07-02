@@ -134,6 +134,7 @@ target_link_libraries(ChokoEngine ${LIBS})
 set(SOURCES )
 
 add_subdirectory("editor")
+add_subdirectory("editor/hooks")
 add_subdirectory("editor/res")
 add_subdirectory("editor/scene")
 add_subdirectory("editor/serial")
@@ -141,6 +142,7 @@ add_subdirectory("editor/serial/config")
 add_subdirectory("editor/ui")
 add_subdirectory("editor/ui/windows")
 add_subdirectory("editor/ui/windows/inspector")
+add_subdirectory("editor/ui/windows/ops")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
 

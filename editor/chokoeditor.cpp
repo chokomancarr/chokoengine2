@@ -16,9 +16,9 @@ void paint() {
 	EWindowManager::Draw();
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
 
-	ChokoLait::scene()->sky()->brightness(UI::I::Slider(Rect(10, 190, 100, 20), Vec2(0, 3), ChokoLait::scene()->sky()->brightness(), Color::yellow()));
+	//ChokoLait::scene()->sky()->brightness(UI::I::Slider(Rect(10, 190, 100, 20), Vec2(0, 3), ChokoLait::scene()->sky()->brightness(), Color::yellow()));
 
-	lht->radius(UI::I::Slider(Rect(10, 210, 100, 20), Vec2(0, 2), lht->radius(), Color::yellow()));
+	//lht->radius(UI::I::Slider(Rect(10, 210, 100, 20), Vec2(0, 2), lht->radius(), Color::yellow()));
 
 	static int um2 = 1;
 	if(Input::KeyDown(InputKey::M)) {
@@ -49,6 +49,13 @@ void ChokoEditor::Main() {
 	UI::defaultFont(font);
 	font->size(12);
 
+	EImages::Init();
+	EWindowManager::Init();
+	ESerializer::Init();
+
+	ChokoLait::scene()->AddNewObject()
+		->name("__Editor_Cameras__");
+	/*
 	Shader shd = Shader::New(
 		IO::ReadFile(IO::path() + "res/shaders/standard_metallic.vs"),
 		IO::ReadFile(IO::path() + "res/shaders/standard_metallic.fs"));
@@ -81,18 +88,6 @@ void ChokoEditor::Main() {
 	Mesh m = ProceduralMesh::UVSphere(32, 16, 1);
 	//Mesh m2 = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
 
-	EImages::Init();
-	EWindowManager::Init();
-	ESerializer::Init();
-
-	ss[0] = Background::New(IO::path() + "res/sky.hdr", 6);
-	ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
-	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
-
-	ChokoLait::scene()->sky(ss[0]);
-	ChokoLait::scene()->sky()->brightness(0.1f);
-	ChokoLait::scene()->AddNewObject()
-		->name("__Editor_Cameras__");
 	auto o = ChokoLait::scene()->AddNewObject();
 	o->name("Player");
 	mr = o->AddComponent<MeshRenderer>();
@@ -110,6 +105,14 @@ void ChokoEditor::Main() {
 	lht->strength(2);
 	lht->radius(1);
 	o->transform()->localPosition(Vec3(1) * 5.f);
+	*/
+
+	ss[0] = Background::New(IO::path() + "res/sky.hdr", 6);
+	ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
+	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
+
+	ChokoLait::scene()->sky(ss[0]);
+	ChokoLait::scene()->sky()->brightness(1);
 
 	EWindowManager::LoadWindows();
 

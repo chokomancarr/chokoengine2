@@ -15,6 +15,10 @@ public:
 	bool Init() override;
 
 	void Update() override;
+
+	class Ops;
 };
 
 CE_END_ED_NAMESPACE
+
+#include "ops/ew_sceneview_ops.hpp"

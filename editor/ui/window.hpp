@@ -11,6 +11,8 @@ public:
 
 	Rect position;
 
+	std::vector<EDropdownMenu> menus;
+
 	virtual bool Init() = 0;
 	virtual void Update() {}
 	void Draw();

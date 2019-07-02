@@ -19,20 +19,29 @@ bool EW_SceneView::Init() {
 	_camera->clearColor(Color(0));
 	_camera->target(_target);
 
+	menus.push_back(EDropdownMenu("View"));
+	auto op = EDropdownMenu("Switch ortho/persp");
+	op.callback = ECallback(&Ops::ProjectionMode);
+	menus.back().items.push_back(op);
+
 	return true;
 }
 
 void EW_SceneView::Update() {
-	
+	/*
 	_pivot->transform()->localRotation(
 		//Quat::FromEuler(Vec3(Math::Clamp(Input::mousePosition().y * 180.f / Display::height() - 90.f, -90.f, 90.f), 0, 0)) *
 		Quat::FromEuler(Vec3(0, Time::time() * 15.f, 0))
 	);
-	/*
 	static float z = -5;
 	z = glm::clamp(z + Input::mouseDelta().y * 5 / Display::height(), -5.f, -2.f);
 	_camera->object()->transform()->localPosition(Vec3(0, 0, z));
 	*/
+	if (Input::KeyDown(InputKey::F)) {
+		auto args = ECallbackArgs();
+		args.Add(ECallbackArg("isOrtho", (int)(!_camera->orthographic())));
+		menus.back().items[0].callback(this, args);
+	}
 }
 
 CE_END_ED_NAMESPACE
