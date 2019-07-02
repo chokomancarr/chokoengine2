@@ -59,7 +59,7 @@ void main () {
 	if (z < 1) {
 		vec3 refl = normalize(reflect(fwd, normal));
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);
-		float lpn = closest_point(wPos.xyz, refl, lightPos);
+		float lpn = max(closest_point(wPos.xyz, refl, lightPos), 0);
 		vec3 pn = wPos.xyz + refl * lpn;
 		vec3 dpn = pn - lightPos;
 		dpn *= min(lightRad / length(dpn), 1);
@@ -68,9 +68,9 @@ void main () {
 		vec3 p2li = normalize(p2l);
 		vec3 diffCol = diffuse.rgb * max(dot(p2li, normal), 0);
 		vec3 hv = normalize(p2li - fwd);
-		float reflStr = (lpn > 0) ? ggx(normal, hv, rough) : 0;
-		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres)) * reflStr;
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * occlu;
+		float reflStr = ggx(normal, hv, rough);
+		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic) * reflStr;
+		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightStr * occlu;
 	}
 	return;
 }
