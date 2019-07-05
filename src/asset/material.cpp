@@ -27,6 +27,7 @@ GETUNIFORM(Vec2, Vec2, v2);
 GETUNIFORM(Vec3, Vec3, v3);
 GETUNIFORM(Vec4, Vec4, v4);
 GETUNIFORM(Mat4x4, Matrix, m);
+GETUNIFORM(Color, Color, v4);
 GETUNIFORM(Texture, Texture, t);
 
 #define SETUNIFORM(type, enm, nm)\
@@ -47,6 +48,7 @@ SETUNIFORM(Vec2, Vec2, v2);
 SETUNIFORM(Vec3, Vec3, v3);
 SETUNIFORM(Vec4, Vec4, v4);
 SETUNIFORM(Mat4x4, Matrix, m);
+SETUNIFORM(Color, Color, v4);
 SETUNIFORM(Texture, Texture, t);
 
 void _Material::Bind() {
@@ -67,6 +69,7 @@ void _Material::Bind() {
 			glUniform3f(v._location, v._val_v3.x, v._val_v3.y, v._val_v3.z);
 			break;
 		case ShaderVariableType::Vec4:
+		case ShaderVariableType::Color:
 			glUniform4f(v._location, v._val_v4.x, v._val_v4.y, v._val_v4.z, v._val_v4.w);
 			break;
 		case ShaderVariableType::Matrix:

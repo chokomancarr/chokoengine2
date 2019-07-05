@@ -116,15 +116,23 @@ void ChokoEditor::Main() {
 	*/
 
 	ss[0] = Background::New(IO::path() + "res/sky.hdr", 6);
-	//ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
-	//ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
+	ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
+	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
 
 	auto& sc = ChokoLait::scene();
 
 	//auto obj = Prefab::Load("test.prefab");
 	sc->sky(ss[0]);
 	sc->sky()->brightness(1);
-	//sc->AddObject(obj);
+
+	auto mat = (Material)EAssetList::Get(EAssetType::Material, "def.material");
+	auto m = (Mesh)EAssetList::Get(EAssetType::Mesh, "mesh/monkey.obj");
+	
+	auto o = sc->AddNewObject();
+	o->name("monkey");
+	mr = o->AddComponent<MeshRenderer>();
+	mr->mesh(m);
+	mr->materials({ mat });
 
 	EWindowManager::LoadWindows();
 

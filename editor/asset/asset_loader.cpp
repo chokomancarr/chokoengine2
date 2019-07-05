@@ -28,7 +28,9 @@ JsonObject EAssetLoader::LoadMeta(const std::string& path) {
 
 void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
     switch (t) {
+        CE_E_MKM(Material)
         CE_E_MKM(Mesh)
+        CE_E_MKM(Shader)
         CE_E_MKM(Texture)
     }
 }
@@ -39,14 +41,46 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
 
 Asset EAssetLoader::Load(const std::string& path, const EAssetType t) {
     switch (t) {
-        //CE_E_LD(Material)
+        CE_E_LD(Material)
         CE_E_LD(Mesh)
-        //CE_E_LD(Shader)
+        CE_E_LD(Shader)
         CE_E_LD(Texture)
     }
 }
 
 #define CE_E_IMPL(nm) nm EAssetLoader::Load ## nm(const std::string& path)
+
+CE_E_IMPL(Material) {
+    auto meta = LoadMeta(path);
+    auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+    if (data.group[0].key.string != "shader") {
+        Debug::Error("AssetLoader::Material", "shader entry missing!");
+        return nullptr;
+    }
+    auto shad = static_cast<Shader>(EAssetList::Get(EAssetType::Shader, data.group[0].value.string));
+    auto mat = Material::New();
+    mat->shader(shad);
+    for (auto& d : data.group) {
+        std::string vrnm = "";
+        JsonObject vrvl;
+        for (auto& d2 : d.value.group) {
+            if (d2.key.string == "name")
+                vrnm = d2.value.string;
+            else if (d2.key.string == "value")
+                vrvl = d2.value;
+        }
+        if (!vrnm.size()) continue;
+        #define CE_E_ME(tp) if (d.key.string == #tp) {\
+            mat->SetUniform(vrnm, vrvl.To ## tp());\
+        }
+        CE_E_ME(Float)
+        else CE_E_ME(Color)
+        else if (d.key.string == "Texture") {
+            mat->SetUniform(vrnm, static_cast<Texture>(EAssetList::Get(EAssetType::Texture, vrvl.string)));
+        }
+    }
+    return mat;
+}
 
 CE_E_IMPL(Mesh) {
     auto meta = LoadMeta(path);
@@ -60,13 +94,28 @@ CE_E_IMPL(Shader) {
     auto meta = LoadMeta(path);
     std::string vs, fs;
     auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+    JsonObject vrs;
     for (auto& d : data.group) {
-        if (d.key.string == "vertex")
+        if (d.key.string == "variables") {
+            vrs = d.value;
+        }
+        else if (d.key.string == "vertex") {
             vs = d.value.string;
-        else if (d.key.string == "fragment")
+        }
+        else if (d.key.string == "fragment") {
             fs = d.value.string;
+        }
     }
-    return Shader::New(vs, fs);
+    auto shd = Shader::New(vs, fs);
+    shd->RegisterStandardUniforms();
+    for (auto v : vrs.group) {
+        #define CE_E_SHV(nm) if (v.value.string == #nm) {\
+            shd->AddUniform(v.key.string, ShaderVariableType::nm);\
+        }
+        CE_E_SHV(Float)
+        else CE_E_SHV(Color)
+    }
+    return shd;
 }
 
 CE_E_IMPL(Texture) {

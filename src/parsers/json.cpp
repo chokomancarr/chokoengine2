@@ -117,4 +117,21 @@ bool JsonObject::ToBool() {
 	return false;
 }
 
+int JsonObject::ToInt() {
+	return std::stoi(string);
+}
+
+float JsonObject::ToFloat() {
+	return std::stof(string);
+}
+
+Color JsonObject::ToColor() {
+	return Color(
+		std::stof(list[0].string),
+		std::stof(list[1].string),
+		std::stof(list[2].string),
+		std::stof(list[3].string)
+	);
+}
+
 CE_END_NAMESPACE

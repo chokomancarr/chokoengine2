@@ -28,6 +28,9 @@ public:
 	static JsonObject ParseString(std::istringstream& ss);
 
 	bool ToBool();
+	int ToInt();
+	float ToFloat();
+	Color ToColor();
 	template <typename T>
 	T ToEnum(const std::initializer_list<std::string>& entries);
 };

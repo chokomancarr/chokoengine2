@@ -11,6 +11,7 @@ enum class ShaderVariableType {
 	Vec3,
 	Vec4,
 	Matrix,
+	Color,
 	Texture
 };
 

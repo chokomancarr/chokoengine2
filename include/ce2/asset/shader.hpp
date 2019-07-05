@@ -31,6 +31,8 @@ public:
 	void AddUniform(const std::string& s, ShaderVariableType t);
 	void AddUniforms(std::initializer_list<const std::string> ss);
 
+	void RegisterStandardUniforms();
+
 	void Bind();
 	void Unbind();
 

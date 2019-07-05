@@ -22,6 +22,7 @@ public:
 	const Vec3& GetUniform(const std::string& s, Vec3 v);
 	const Vec4& GetUniform(const std::string& s, Vec4 v);
 	const Mat4x4& GetUniform(const std::string& s, Mat4x4 m);
+	const Color& GetUniform(const std::string& s, Color c);
 	const Texture& GetUniform(const std::string& s, Texture t);
 
 	void SetUniform(const std::string& s, float f);
@@ -30,6 +31,7 @@ public:
 	void SetUniform(const std::string& s, Vec3 v);
 	void SetUniform(const std::string& s, Vec4 v);
 	void SetUniform(const std::string& s, Mat4x4 m);
+	void SetUniform(const std::string& s, Color c);
 	void SetUniform(const std::string& s, Texture t);
 
 	void Bind();

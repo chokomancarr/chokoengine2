@@ -162,6 +162,12 @@ void _Shader::AddUniforms(std::initializer_list<const std::string> ss) {
 	}
 }
 
+void _Shader::RegisterStandardUniforms() {
+	AddUniform("_MV", ShaderVariableType::Matrix);
+	AddUniform("_P", ShaderVariableType::Matrix);
+	AddUniform("_MVP", ShaderVariableType::Matrix);
+}
+
 void _Shader::Bind() {
 	glUseProgram(pointer);
 }
