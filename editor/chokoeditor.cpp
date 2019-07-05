@@ -37,7 +37,7 @@ void paint() {
 	static std::string s = "Hello";
 	s = UI::I::TextField(Rect(Display::width() - 200, Display::height() - 30, 150, 20), s, UITextFieldStyle(Color::blue()));
 
-	//UI::Texture(Rect(0, 0, Display::width(), Display::height()), (Texture)EAssetList::Get(EAssetType::Texture, "aa.jpg"));
+	UI::Texture(Rect(0, 0, 100, 100), (Texture)EAssetList::Get(EAssetType::Texture, "aa.jpg"));
 }
 
 std::string ChokoEditor::assetPath;

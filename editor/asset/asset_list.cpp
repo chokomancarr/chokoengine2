@@ -32,7 +32,10 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                     }
                     const auto mt = IO::ModTime(ffd + f);
                     if (it->modtime < mt) {
-                        Debug::Message("Asset List", "Reloading " + sig);
+                        Debug::Message("Asset List", "Updating " + sig);
+                        if (!IO::FileExists(ffd + f + ".meta")) {
+                            EAssetLoader::GenDefaultMeta(sig, (EAssetType)a);
+                        }
                         if (!!it->obj) {
                             it->obj = EAssetLoader::Load(sig, (EAssetType)a);
                             //it->obj->dirty(true);
@@ -55,6 +58,8 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 }
 
 void EAssetList::Init() {
+    _exts[(int)EAssetType::Mesh] = { "obj", "mesh" };
+    _exts[(int)EAssetType::Shader] = { "shader" };
     _exts[(int)EAssetType::Texture] = { "png", "jpg", "bmp" };
 }
 
