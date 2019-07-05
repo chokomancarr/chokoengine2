@@ -10,6 +10,7 @@ public:
 	static std::vector<std::string> Split(const std::string& s, char c, bool rmblank = false);
 	static std::u32string ToUnicode(const std::string& s);
 	static std::string FromUnicode(const std::u32string& s);
+	static std::string ExtensionOf(const std::string& s);
 };
 
 CE_END_NAMESPACE

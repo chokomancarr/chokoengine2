@@ -18,9 +18,22 @@ JsonObject JsonParser::Parse(std::string text) {
 		text = text.substr(3);
 	}
 	
-	text.erase(std::remove_if(text.begin(), text.end(), ::isspace), text.end());
+	std::string text2;
+	text2.reserve(text.size());
+	bool intext = false;
+	bool esc = false;
+	for (auto& c : text) {
+		if (c == '\\') esc = true;
+		else {
+			if (c == '\"' && !esc) intext = !intext;
+			if (intext || !::isspace(c)) {
+				text2.push_back(c);
+			}
+			esc = false;
+		}
+	}
 
-	std::istringstream ss(text);
+	std::istringstream ss(text2);
 
 	return JsonObject::ParseNext(ss);
 }
@@ -93,6 +106,15 @@ JsonObject JsonObject::ParseString(std::istringstream& ss) {
 		obj.string += s2;
 	} while (s2.back() == '\\');
 	return obj;
+}
+
+bool JsonObject::ToBool() {
+	if ((string == "true") || (string == "1"))
+		return true;
+	if ((string == "false") || (string == "0"))
+		return false;
+	Debug::Warning("JsonObject", "Value \"" + string + "\" cannot be casted to bool, assuming false!");
+	return false;
 }
 
 CE_END_NAMESPACE

@@ -40,6 +40,36 @@ bool IO::Init() {
 	return true;
 }
 
+std::vector<std::string> IO::ListFiles(const std::string& dir, const std::string& ext) {
+	if (dir == "") return std::vector<std::string>();
+	std::vector<std::string> names = {};
+	auto exts = ext.size();
+#ifdef PLATFORM_WIN
+	std::string search_path = folder + "/*" + ext;
+	WIN32_FIND_DATA fd;
+	HANDLE hFind = FindFirstFile(search_path.c_str(), &fd);
+	if (hFind != INVALID_HANDLE_VALUE) {
+		do {
+			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+				names.push_back(fd.cFileName);
+			}
+		} while (FindNextFile(hFind, &fd));
+		FindClose(hFind);
+	}
+#else
+	DIR* d = opendir(dir.c_str());
+	struct dirent* ep;
+	while ((ep = readdir(d))) {
+		std::string nm(ep->d_name);
+		if (ep->d_type == DT_REG) {
+			if (!exts || ((nm.size() > (exts + 1)) && (nm.substr(nm.size() - exts) == ext)))
+				names.push_back(nm);
+		}
+	}
+#endif
+	return names;
+}
+
 bool IO::FileExists(const std::string& path) {
 #ifdef PLATFORM_WIN
 	auto pathh = path;
@@ -49,6 +79,16 @@ bool IO::FileExists(const std::string& path) {
 #else
 	return (access(&path[0], F_OK) != -1);
 #endif
+}
+
+time_t IO::ModTime(const std::string& path) {
+#ifdef PLATFORM_WIN
+	#define stat _stat
+#endif
+	struct stat stt;
+	auto rt = stat(path.c_str(), &stt);
+	if (!!rt) return -1;
+	return stt.st_mtime;
 }
 
 std::string IO::ReadFile(const std::string& path) {
@@ -65,6 +105,34 @@ std::vector<unsigned char> IO::ReadFileBinary(const std::string& path) {
 
 void IO::RemoveFile(const std::string& path) {
 	::remove(path.c_str());
+}
+
+std::vector<std::string> IO::ListDirectories(const std::string& dir) {
+	std::vector<std::string> dirs = {};
+#ifdef PLATFORM_WIN
+	std::string search_path = folder + "/*";
+	WIN32_FIND_DATAW fd;
+	HANDLE hFind = FindFirstFileW(_tow(search_path).c_str(), &fd);
+	if (hFind != INVALID_HANDLE_VALUE) {
+		do {
+			if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && (hidden || !(fd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)) && (fd.cFileName[0] != '.')) {
+				dirs->push_back(_frw(fd.cFileName));
+			}
+		} while (::FindNextFileW(hFind, &fd));
+		::FindClose(hFind);
+	}
+#else
+	DIR* d = opendir(dir.c_str());
+	if (!d) return {};
+	struct dirent* ep;
+	while ((ep = readdir(d))) {
+		std::string nm(ep->d_name);
+		if (ep->d_type == DT_DIR && nm != "." && nm != "..") {
+			dirs.push_back(std::string(ep->d_name));
+		}
+	}
+#endif
+	return dirs;
 }
 
 CE_END_NAMESPACE

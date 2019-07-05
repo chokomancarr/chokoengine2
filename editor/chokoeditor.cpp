@@ -36,7 +36,11 @@ void paint() {
 
 	static std::string s = "Hello";
 	s = UI::I::TextField(Rect(Display::width() - 200, Display::height() - 30, 150, 20), s, UITextFieldStyle(Color::blue()));
+
+	//UI::Texture(Rect(0, 0, Display::width(), Display::height()), (Texture)EAssetList::Get(EAssetType::Texture, "aa.jpg"));
 }
+
+std::string ChokoEditor::assetPath;
 
 void ChokoEditor::Init() {
 	
@@ -49,9 +53,13 @@ void ChokoEditor::Main() {
 	UI::defaultFont(font);
 	font->size(12);
 
+	EAssetList::Init();
 	EImages::Init();
 	EWindowManager::Init();
 	ESerializer::Init();
+
+	assetPath = IO::path() + "project/assets/";
+	EAssetList::Rescan();
 
 	ChokoLait::scene()->AddNewObject()
 		->name("__Editor_Cameras__");
@@ -108,11 +116,15 @@ void ChokoEditor::Main() {
 	*/
 
 	ss[0] = Background::New(IO::path() + "res/sky.hdr", 6);
-	ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
-	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
+	//ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
+	//ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
 
-	ChokoLait::scene()->sky(ss[0]);
-	ChokoLait::scene()->sky()->brightness(1);
+	auto& sc = ChokoLait::scene();
+
+	//auto obj = Prefab::Load("test.prefab");
+	sc->sky(ss[0]);
+	sc->sky()->brightness(1);
+	//sc->AddObject(obj);
 
 	EWindowManager::LoadWindows();
 

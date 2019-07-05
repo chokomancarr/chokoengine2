@@ -23,8 +23,7 @@ public:
 	CE_GET_MEMBER(children);
 
 	CE_GET_MEMBER(parent);
-	
-	void parent(const SceneObject& p);
+	CE_SET_MEMBER_F(parent);
 
 	/* Adds a new component to the object
 	 */

@@ -8,6 +8,8 @@ class ChokoEditor {
 	static void Init();
 
 public:
+	static std::string assetPath;
+
 	static void Main();
 };
 

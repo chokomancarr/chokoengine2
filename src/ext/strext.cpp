@@ -83,4 +83,10 @@ std::string StrExt::FromUnicode(const std::u32string& s) {
 	return result;
 }
 
+std::string StrExt::ExtensionOf(const std::string& s) {
+	auto pd = s.find_last_of('.');
+	if (pd == std::string::npos) return "";
+	return s.substr(pd + 1);
+}
+
 CE_END_NAMESPACE

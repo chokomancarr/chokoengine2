@@ -26,6 +26,10 @@ public:
 
 	static JsonObject ParseNext(std::istringstream& ss);
 	static JsonObject ParseString(std::istringstream& ss);
+
+	bool ToBool();
+	template <typename T>
+	T ToEnum(const std::initializer_list<std::string>& entries);
 };
 
 class JsonPair {
@@ -37,3 +41,5 @@ public:
 };
 
 CE_END_NAMESPACE
+
+#include "detail/json.inl"

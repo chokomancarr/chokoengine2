@@ -12,6 +12,9 @@ CE_END_ED_NAMESPACE
 
 #include "ui/colors.hpp"
 
+#include "asset/asset_list.hpp"
+#include "asset/prefab.hpp"
+
 #include "scene/sceneinfo.hpp"
 
 #include "ui/dropdown_menu.hpp"
