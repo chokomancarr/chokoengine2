@@ -31,7 +31,9 @@ class _VertexObject;
 typedef std::shared_ptr<_VertexObject> VertexObject;
 
 class Math;
+class Procedurals;
 class Random;
+class Subprocess;
 class UniqueCallerList;
 
 class Object;
@@ -79,6 +81,7 @@ CE_END_NAMESPACE
 #include "utils/math.hpp"
 #include "utils/procedural_mesh.hpp"
 #include "utils/random.hpp"
+#include "utils/subprocess.hpp"
 #include "utils/unique_caller.hpp"
 
 #include "core/display.hpp"

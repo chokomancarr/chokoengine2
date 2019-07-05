@@ -63,57 +63,6 @@ void ChokoEditor::Main() {
 
 	ChokoLait::scene()->AddNewObject()
 		->name("__Editor_Cameras__");
-	/*
-	Shader shd = Shader::New(
-		IO::ReadFile(IO::path() + "res/shaders/standard_metallic.vs"),
-		IO::ReadFile(IO::path() + "res/shaders/standard_metallic.fs"));
-	shd->AddUniform("_MV", ShaderVariableType::Matrix);
-	shd->AddUniform("_P", ShaderVariableType::Matrix);
-	shd->AddUniform("_MVP", ShaderVariableType::Matrix);
-	shd->AddUniform("col", ShaderVariableType::Vec4);
-	shd->AddUniform("diffuseTex", ShaderVariableType::Texture);
-	shd->AddUniform("normalTex", ShaderVariableType::Texture);
-	shd->AddUniform("metalTex", ShaderVariableType::Texture);
-	shd->AddUniform("roughTex", ShaderVariableType::Texture);
-	shd->AddUniform("occluTex", ShaderVariableType::Texture);
-	shd->AddUniform("normalness", ShaderVariableType::Float);
-
-	TextureOptions opts(TextureWrap::Repeat, TextureWrap::Repeat, 5, true);
-
-	std::string tp[] = { "brick", "stone", "metal" };
-	for (int a = 0; a < 3; a++) {
-		auto& m1 = ms[a] = Material::New();
-		m1->shader(shd);
-		m1->SetUniform("col", Color(1));
-		m1->SetUniform("diffuseTex", Texture::New(IO::path() + "res/" + tp[a] + "_diffuse.jpg", opts));
-		m1->SetUniform("normalTex", Texture::New(IO::path() + "res/" + tp[a] + "_normal.jpg", opts));
-		m1->SetUniform("metalTex", Texture::New(IO::path() + "res/" + tp[a] + "_metal.jpg", opts));
-		m1->SetUniform("roughTex", Texture::New(IO::path() + "res/" + tp[a] + "_rough.jpg", opts));
-		m1->SetUniform("occluTex", Texture::New(IO::path() + "res/" + tp[a] + "_occlu.jpg", opts));
-		m1->SetUniform("normalness", 1.f);
-	}
-
-	Mesh m = ProceduralMesh::UVSphere(32, 16, 1);
-	//Mesh m2 = MeshLoader::LoadObj(IO::path() + "res/monkey.obj");
-
-	auto o = ChokoLait::scene()->AddNewObject();
-	o->name("Player");
-	mr = o->AddComponent<MeshRenderer>();
-	mr->mesh(m);
-	//mr->materials({ m1, m2, m3 });
-	mr->materials({ ms[0] });
-	//auto mr2 = ChokoLait::scene()->AddNewObject()->AddComponent<MeshRenderer>();
-	//mr2->object()->transform()->localPosition(Vec3(0.5f, 1, 0));
-	//mr2->mesh(m2);
-	//mr->materials({ m1, m2, m3 });
-	//mr2->materials({ ms[0] });
-
-	o = ChokoLait::scene()->AddNewObject();
-	lht = o->AddComponent<Light>(LightType::Point);
-	lht->strength(2);
-	lht->radius(1);
-	o->transform()->localPosition(Vec3(1) * 5.f);
-	*/
 
 	ss[0] = Background::New(IO::path() + "res/sky.hdr", 6);
 	ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
