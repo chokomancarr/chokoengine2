@@ -73,15 +73,7 @@ void ChokoEditor::Main() {
 	//auto obj = Prefab::Load("test.prefab");
 	sc->sky(ss[0]);
 	sc->sky()->brightness(1);
-
-	auto mat = (Material)EAssetList::Get(EAssetType::Material, "def.material");
-	auto m = (Mesh)EAssetList::Get(EAssetType::Mesh, "mesh/monkey.obj");
-	
-	auto o = sc->AddNewObject();
-	o->name("monkey");
-	mr = o->AddComponent<MeshRenderer>();
-	mr->mesh(m);
-	mr->materials({ mat });
+	sc->AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, "test.prefab"));
 
 	EWindowManager::LoadWindows();
 

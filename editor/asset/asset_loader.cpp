@@ -1,5 +1,4 @@
 #include "chokoeditor.hpp"
-#include "asset_loader.hpp"
 #include "parsers/mesh.hpp"
 #include "templates/meta/meta_common.hpp"
 
@@ -20,6 +19,42 @@ JsonObject EAssetLoader::LoadMeta(const std::string& path) {
     return obj;
 }
 
+SceneObject EAssetLoader::JsonToObject(const JsonObject& data) {
+    auto obj = SceneObject::New();
+    for (auto& g : data.group) {
+        const auto& k = g.key.string;
+        const auto& v = g.value;
+        if (k == "name") {
+            obj->name(v.string);
+        }
+        else if (k == "position") {
+            obj->transform()->localPosition(v.ToVec3());
+        }
+        else if (k == "rotation") {
+            obj->transform()->localRotation(v.ToQuat());
+        }
+        else if (k == "scale") {
+            obj->transform()->localScale(v.ToVec3());
+        }
+        else if (k == "components") {
+            for (auto& c : v.group) {
+                #define CE_E_SW(nm) if (c.key.string == #nm) {\
+                    Load ## nm(c.value, obj);\
+                }
+                CE_E_SW(MeshRenderer)
+            }
+        }
+        else if (k == "children") {
+            for (auto& c : v.group) {
+                if (c.key.string == "object") {
+                    JsonToObject(c.value)->parent(obj);
+                }
+            }
+        }
+    }
+    return obj;
+}
+
 #define CE_E_MKM(nm) case EAssetType::nm: {\
     std::ofstream strm(ChokoEditor::assetPath + path + ".meta");\
     strm << meta::nm;\
@@ -32,25 +67,25 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
         CE_E_MKM(Mesh)
         CE_E_MKM(Shader)
         CE_E_MKM(Texture)
+        CE_E_MKM(SceneObject)
     }
 }
 
 #define CE_E_LD(nm) case EAssetType::nm:\
-    return static_cast<Asset>(Load ## nm(path));\
+    return static_cast<Object>(Load ## nm(path));\
     break;
 
-Asset EAssetLoader::Load(const std::string& path, const EAssetType t) {
+Object EAssetLoader::Load(const std::string& path, const EAssetType t) {
     switch (t) {
         CE_E_LD(Material)
         CE_E_LD(Mesh)
         CE_E_LD(Shader)
         CE_E_LD(Texture)
+        CE_E_LD(SceneObject)
     }
 }
 
-#define CE_E_IMPL(nm) nm EAssetLoader::Load ## nm(const std::string& path)
-
-CE_E_IMPL(Material) {
+CE_E_AL_IMPL(Material) {
     auto meta = LoadMeta(path);
     auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
     if (data.group[0].key.string != "shader") {
@@ -82,7 +117,7 @@ CE_E_IMPL(Material) {
     return mat;
 }
 
-CE_E_IMPL(Mesh) {
+CE_E_AL_IMPL(Mesh) {
     auto meta = LoadMeta(path);
     auto ext = StrExt::ExtensionOf(path);
     if (ext == "obj") {
@@ -90,7 +125,7 @@ CE_E_IMPL(Mesh) {
     }
 }
 
-CE_E_IMPL(Shader) {
+CE_E_AL_IMPL(Shader) {
     auto meta = LoadMeta(path);
     std::string vs, fs;
     auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
@@ -118,7 +153,7 @@ CE_E_IMPL(Shader) {
     return shd;
 }
 
-CE_E_IMPL(Texture) {
+CE_E_AL_IMPL(Texture) {
     auto meta = LoadMeta(path);
     auto opts = TextureOptions();
     for (auto& g : meta.group) {
@@ -132,6 +167,15 @@ CE_E_IMPL(Texture) {
             opts.linear = g.value.ToBool();
     }
     return Texture::New(ChokoEditor::assetPath + path, opts);
+}
+
+CE_E_AL_IMPL(SceneObject) {
+    auto meta = LoadMeta(path);
+    auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+    if (data.group[0].key.string != "object") {
+        Debug::Error("AssetLoader::LoadPrefab", "Object entry missing!");
+    }
+    return JsonToObject(data.group[0].value);
 }
 
 CE_END_ED_NAMESPACE

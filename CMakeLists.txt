@@ -135,6 +135,7 @@ set(SOURCES )
 
 add_subdirectory("editor")
 add_subdirectory("editor/asset")
+add_subdirectory("editor/asset/parsers/comp")
 add_subdirectory("editor/hooks")
 add_subdirectory("editor/res")
 add_subdirectory("editor/scene")

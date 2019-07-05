@@ -5,7 +5,7 @@
 CE_BEGIN_NAMESPACE
 
 template <typename T>
-T JsonObject::ToEnum(const std::initializer_list<std::string>& entries) {
+T JsonObject::ToEnum(const std::initializer_list<std::string>& entries) const {
     int i = 0;
     for (auto& e : entries) {
         if (e == string)

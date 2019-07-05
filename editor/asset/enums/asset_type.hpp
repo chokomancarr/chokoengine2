@@ -9,6 +9,7 @@ enum class EAssetType {
     Mesh,
     Shader,
     Texture,
+    SceneObject,
     _COUNT,
     Unknown
 };

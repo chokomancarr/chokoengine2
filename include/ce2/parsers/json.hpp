@@ -27,12 +27,14 @@ public:
 	static JsonObject ParseNext(std::istringstream& ss);
 	static JsonObject ParseString(std::istringstream& ss);
 
-	bool ToBool();
-	int ToInt();
-	float ToFloat();
-	Color ToColor();
+	bool ToBool() const;
+	int ToInt() const;
+	float ToFloat() const;
+	Vec3 ToVec3() const;
+	Quat ToQuat() const;
+	Color ToColor() const;
 	template <typename T>
-	T ToEnum(const std::initializer_list<std::string>& entries);
+	T ToEnum(const std::initializer_list<std::string>& entries) const;
 };
 
 class JsonPair {

@@ -108,7 +108,7 @@ JsonObject JsonObject::ParseString(std::istringstream& ss) {
 	return obj;
 }
 
-bool JsonObject::ToBool() {
+bool JsonObject::ToBool() const {
 	if ((string == "true") || (string == "1"))
 		return true;
 	if ((string == "false") || (string == "0"))
@@ -117,15 +117,32 @@ bool JsonObject::ToBool() {
 	return false;
 }
 
-int JsonObject::ToInt() {
+int JsonObject::ToInt() const {
 	return std::stoi(string);
 }
 
-float JsonObject::ToFloat() {
+float JsonObject::ToFloat() const {
 	return std::stof(string);
 }
 
-Color JsonObject::ToColor() {
+Vec3 JsonObject::ToVec3() const {
+	return Vec3(
+		std::stof(list[0].string),
+		std::stof(list[1].string),
+		std::stof(list[2].string)
+	);
+}
+
+Quat JsonObject::ToQuat() const {
+	return Quat(
+		std::stof(list[0].string),
+		std::stof(list[1].string),
+		std::stof(list[2].string),
+		std::stof(list[3].string)
+	);
+}
+
+Color JsonObject::ToColor() const {
 	return Color(
 		std::stof(list[0].string),
 		std::stof(list[1].string),

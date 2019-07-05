@@ -18,3 +18,4 @@ CE_END_META_NAMESPACE
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
+#include "prefab.hpp"

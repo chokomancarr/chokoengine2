@@ -62,6 +62,7 @@ void EAssetList::Init() {
     _exts[(int)EAssetType::Mesh] = { "obj", "mesh" };
     _exts[(int)EAssetType::Shader] = { "shader" };
     _exts[(int)EAssetType::Texture] = { "png", "jpg", "bmp" };
+    _exts[(int)EAssetType::SceneObject] = { "prefab" };
 }
 
 void EAssetList::Rescan() {
@@ -75,13 +76,13 @@ void EAssetList::Rescan() {
     Debug::Message("AssetList", "Scanning complete.");
 }
 
-const Asset& EAssetList::Get(EAssetType t, const std::string& sig) {
+const Object& EAssetList::Get(EAssetType t, const std::string& sig) {
     auto& ar = _entries[(int)t];
     auto i = std::find_if(ar.begin(), ar.end(), [&](const _Entry& e) {
         return e.sig == sig;
     });
     if (i == ar.end()) {
-        static Asset a(nullptr);
+        static Object a(nullptr);
         return a;
     }
     if (!i->obj) {

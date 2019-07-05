@@ -9,7 +9,7 @@ class EAssetList { CE_CLASS_COMMON
         _Entry(const std::string& sig);
 
         std::string sig;
-        Asset obj;
+        Object obj;
         time_t modtime;
     };
     /* List of all asset data
@@ -27,7 +27,7 @@ public:
     
     static void Rescan();
 
-    static const Asset& Get(EAssetType t, const std::string& sig);
+    static const Object& Get(EAssetType t, const std::string& sig);
 };
 
 CE_END_ED_NAMESPACE
