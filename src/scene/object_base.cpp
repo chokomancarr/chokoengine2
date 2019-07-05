@@ -2,6 +2,6 @@
 
 CE_BEGIN_NAMESPACE
 
-Object::Object(const std::string& nm) : _name(nm) {}
+_Object::_Object(const std::string& nm) : _name(nm) {}
 
 CE_END_NAMESPACE

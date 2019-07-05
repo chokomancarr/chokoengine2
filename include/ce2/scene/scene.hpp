@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Scene : public Object { CE_CLASS_COMMON
+class _Scene : public _Object { CE_CLASS_COMMON
 	std::vector<SceneObject> _objects;
 	
 	Background _sky;

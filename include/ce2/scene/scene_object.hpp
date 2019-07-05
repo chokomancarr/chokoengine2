@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _SceneObject : public Object { CE_OBJECT_COMMON
+class _SceneObject : public _Object { CE_OBJECT_COMMON
 	Transform _transform;
 
 	std::vector<Component> _components;

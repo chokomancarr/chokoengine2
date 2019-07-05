@@ -2,15 +2,15 @@
 
 CE_BEGIN_NAMESPACE
 
-class Object : public std::enable_shared_from_this<Object> {
+class _Object : public std::enable_shared_from_this<_Object> {
 protected:
-    Object(const std::string& nm = "Unnamed Object");
+    _Object(const std::string& nm = "Unnamed Object");
 
     bool _deleted = false;
 
     std::string _name;
 public:
-    virtual ~Object() = default;
+    virtual ~_Object() = default;
 
     CE_GET_SET_MEMBER(name);
 

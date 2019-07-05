@@ -18,8 +18,8 @@ public:
 
     virtual ESerializedEntryType type() const = 0;
 
-    virtual std::string Get(pObject o) const = 0;
-    virtual void Set(pObject o, const std::string&) = 0;
+    virtual std::string Get(Object::_TpPtr o) const = 0;
+    virtual void Set(Object::_TpPtr o, const std::string&) = 0;
 };
 
 typedef std::shared_ptr<ESerializedEntry> pESerializedEntry;
@@ -47,7 +47,7 @@ public:
     _rct (C::*getter)(void) const;
     void (C::*setter)(_rct);
 
-    C* get_ptr(const pObject& o) const {
+    C* get_ptr(const Object::_TpPtr& o) const {
         return std::dynamic_pointer_cast<C>(o).get();
     }
 };
@@ -59,10 +59,10 @@ public:
         return ESerializedEntryType::Float;
     }
 
-    std::string Get(pObject o) const override {
+    std::string Get(Object::_TpPtr o) const override {
         return std::to_string((this->get_ptr(o)->*this->getter)());
     }
-    void Set(pObject o, const std::string& s) override {
+    void Set(Object::_TpPtr o, const std::string& s) override {
         (this->get_ptr(o)->*this->setter)(std::stof(s));
     }
 };

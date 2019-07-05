@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Asset : public Object { CE_OBJECT_COMMON
+class _Asset : public _Object { CE_OBJECT_COMMON
 protected:
     _Asset() = default;
 

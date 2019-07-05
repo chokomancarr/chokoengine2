@@ -26,7 +26,7 @@ void _Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const 
     }
 }
 
-_Scene::_Scene(const std::string& nm) : Object(nm), _objects({}) {}
+_Scene::_Scene(const std::string& nm) : _Object(nm), _objects({}) {}
 
 SceneObject _Scene::AddNewObject(const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;

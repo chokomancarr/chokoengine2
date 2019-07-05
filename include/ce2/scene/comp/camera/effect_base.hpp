@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _CameraEffect : public Object { CE_OBJECT_COMMON
+class _CameraEffect : public _Object { CE_OBJECT_COMMON
 
 public:
     /* The main apply effect function

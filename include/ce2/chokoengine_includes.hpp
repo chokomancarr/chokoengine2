@@ -36,8 +36,7 @@ class Random;
 class Subprocess;
 class UniqueCallerList;
 
-class Object;
-typedef std::shared_ptr<Object> pObject;
+CE_OBJECT(Object)
 
 /* assets
  */

@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Component : public Object { CE_OBJECT_COMMON
+class _Component : public _Object { CE_OBJECT_COMMON
 protected:
 	_Component(ComponentType t, const std::string& nm);
 
