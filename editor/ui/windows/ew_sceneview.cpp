@@ -10,9 +10,9 @@ void EW_SceneView::DrawMenu() {
 bool EW_SceneView::Init() {
 	_target = RenderTarget::New((uint)position.w(), (uint)(position.h() - 20), true, true);
 
-	_pivot = ChokoLait::scene()->AddNewObject(ChokoLait::scene()->objects()[0]);
+	_pivot = Scene::AddNewObject(Scene::objects()[0]);
 	_pivot->name("SceneView Pivot");
-	auto o = ChokoLait::scene()->AddNewObject(_pivot);
+	auto o = Scene::AddNewObject(_pivot);
 	o->name("SceneView Camera");
 	o->transform()->localPosition(Vec3(0, 0, -3));
 	_camera = o->AddComponent<Camera>();

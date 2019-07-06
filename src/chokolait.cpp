@@ -5,8 +5,6 @@ CE_BEGIN_NAMESPACE
 
 bool ChokoLait::initd = false;
 
-Scene ChokoLait::_scene = 0;
-
 Camera ChokoLait::mainCamera;
 
 bool ChokoLait::Init(const std::string& title, int w, int h) {
@@ -30,8 +28,6 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 	glClearColor(0, 0, 0, 0);
 	glClearDepth(1);
 
-	_scene = Scene::New("New Scene");
-
 	Time::Reset();
 
 	return true;
@@ -54,7 +50,7 @@ void ChokoLait::Update(emptyCallbackFunc func) {
 void ChokoLait::Paint(emptyCallbackFunc rendFunc, emptyCallbackFunc paintFunc) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Backend::Renderer::Render(_scene);
+	Backend::Renderer::Render();
 
 	if (paintFunc)
 		paintFunc();

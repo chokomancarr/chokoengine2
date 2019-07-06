@@ -39,7 +39,7 @@ public:
 	 */
 	void RemoveComponent(const Component& c);
 
-	friend class _Scene;
+	friend class Scene;
 };
 
 CE_END_NAMESPACE

@@ -24,12 +24,9 @@ class ChokoLait {
 
 	static bool initd;
 
-    static CE_EXPORT Scene _scene;
-
 	static CE_EXPORT Camera mainCamera;
+    
 public:
-    CE_GET_ST_MEMBER(scene);
-
     /* Initializes ChokoLait.
      * This function must be called before using any
      * ChokoLait or ChokoEngine API functions.

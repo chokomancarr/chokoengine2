@@ -54,9 +54,9 @@ CE_OBJECT(TextureBuffer)
 
 /* scene
  */
+class Scene;
 class Transform;
 typedef Transform* pTransform;
-CE_OBJECT(Scene)
 CE_OBJECT(SceneObject)
 
 /* components
@@ -67,6 +67,7 @@ CE_OBJECT(CameraEffect)
 CE_OBJECT(Light)
 CE_OBJECT(MeshRenderer)
 CE_OBJECT(MeshModifier)
+CE_OBJECT(Rig)
 
 CE_END_NAMESPACE
 

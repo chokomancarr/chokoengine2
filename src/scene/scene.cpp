@@ -2,7 +2,11 @@
 
 CE_BEGIN_NAMESPACE
 
-void _Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const std::vector<bool>& level) {
+std::vector<SceneObject> Scene::_objects;
+
+Background Scene::_sky;
+
+void Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const std::vector<bool>& level) {
     auto lvl2 = level;
     lvl2.push_back(true);
     auto sz = objs.size();
@@ -26,9 +30,7 @@ void _Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const 
     }
 }
 
-_Scene::_Scene(const std::string& nm) : _Object(nm), _objects({}) {}
-
-SceneObject _Scene::AddNewObject(const SceneObject& parent) {
+SceneObject Scene::AddNewObject(const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
     auto o = SceneObject::New();
     vec.push_back(o);
@@ -36,7 +38,7 @@ SceneObject _Scene::AddNewObject(const SceneObject& parent) {
     return o;
 }
 
-void _Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
+void Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
     for (auto& oo : vec) {
         if (oo == o) {
@@ -48,7 +50,7 @@ void _Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
     o->_parent = parent;
 }
 
-void _Scene::RemoveObject(const SceneObject& o) {
+void Scene::RemoveObject(const SceneObject& o) {
     auto& vec = (!o->parent())? _objects : o->_parent->_children;
     auto oo = std::find_if(vec.begin(), vec.end(), [&](const SceneObject& p) {
         return p == o;
@@ -61,10 +63,14 @@ void _Scene::RemoveObject(const SceneObject& o) {
     _objects.pop_back();
 }
 
-std::string _Scene::Tree() const {
-    std::string result = _name + "\n";
+std::string Scene::Tree() {
+    std::string result = "Scene Tree";
     DoTree(result, _objects, std::vector<bool>());
     return result;
+}
+
+void Scene::ClearObjects() {
+    _objects.clear();
 }
 
 CE_END_NAMESPACE

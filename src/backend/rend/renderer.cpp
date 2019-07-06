@@ -50,7 +50,7 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camer
 	}
 }
 
-void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::vector<Light> lights, const std::vector<MeshRenderer> rends) {
+void Renderer::RenderCamera(const Camera& cam, const std::vector<Light> lights, const std::vector<MeshRenderer> rends) {
 	const auto& tar = cam->target();
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
@@ -116,18 +116,18 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 		|| (cam->_clearType == CameraClearType::ColorAndDepth))
 		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
 
-	RenderSky(scene, cam);
+	RenderSky(cam);
 
 	for (auto& l : lights) {
 		switch(l->_type) {
 		case LightType::Point:
-			RenderLight_Point(scene, l, cam);
+			RenderLight_Point(l, cam);
 			break;
 		case LightType::Spot:
-			RenderLight_Spot(scene, l, cam);
+			RenderLight_Spot(l, cam);
 			break;
 		case LightType::Directional:
-			RenderLight_Directional(scene, l, cam);
+			RenderLight_Directional(l, cam);
 			break;
 		}
 	}
@@ -149,7 +149,7 @@ void Renderer::RenderCamera(const Scene& scene, const Camera& cam, const std::ve
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
+void Renderer::RenderSky(const Camera& cam) {
 	const auto ip = glm::inverse(MVP::projection());
 
 	const auto& tar = cam->_target;
@@ -172,15 +172,15 @@ void Renderer::RenderSky(const Scene& scene, const Camera& cam) {
 	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
 	glUniform1i(skyShad->Loc(7), 4);
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, scene->_sky->_pointer);
-	glUniform1f(skyShad->Loc(8), scene->_sky->_brightness);
+	glBindTexture(GL_TEXTURE_2D, Scene::_sky->_pointer);
+	glUniform1f(skyShad->Loc(8), Scene::_sky->_brightness);
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();
 	skyShad->Unbind();
 }
 
-void Renderer::RenderLight_Point(const Scene& scene, const Light& l, const Camera& cam) {
+void Renderer::RenderLight_Point(const Light& l, const Camera& cam) {
 	const auto ip = glm::inverse(MVP::projection());
 	const auto& pos = l->object()->transform()->worldPosition();
 	const auto& tar = cam->_target;
@@ -213,11 +213,11 @@ void Renderer::RenderLight_Point(const Scene& scene, const Light& l, const Camer
 	pointLightShad->Unbind();
 }
 
-void Renderer::RenderLight_Spot(const Scene& scene, const Light& l, const Camera& cam) {
+void Renderer::RenderLight_Spot(const Light& l, const Camera& cam) {
 	CE_NOT_IMPLEMENTED;
 }
 
-void Renderer::RenderLight_Directional(const Scene& scene, const Light& l, const Camera& cam) {
+void Renderer::RenderLight_Directional(const Light& l, const Camera& cam) {
 	CE_NOT_IMPLEMENTED;
 }
 
@@ -233,15 +233,15 @@ bool Renderer::Init() {
 	return true;
 }
 
-void Renderer::Render(const Scene& scene) {
+void Renderer::Render() {
 	std::vector<Camera> cameras;
 	std::vector<Light> lights;
 	std::vector<MeshRenderer> rends;
 
-	ScanObjects(scene->objects(), cameras, lights, rends);
+	ScanObjects(Scene::objects(), cameras, lights, rends);
 
 	for (auto& c : cameras) {
-		RenderCamera(scene, c, lights, rends);
+		RenderCamera(c, lights, rends);
 	}
 }
 

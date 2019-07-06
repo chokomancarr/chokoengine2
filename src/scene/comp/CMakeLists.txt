@@ -5,5 +5,6 @@ set(SOURCES
 	${DIR}/camera.cpp
 	${DIR}/light.cpp
 	${DIR}/mesh_renderer.cpp
+	${DIR}/rig.cpp
 	PARENT_SCOPE
 )

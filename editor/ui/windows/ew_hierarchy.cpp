@@ -23,7 +23,7 @@ void EW_Hierarchy::DrawMenu() {
 		ESceneInfo::selectedObject = nullptr;
 	}
     int off = 0;
-    DrawMenuObject(off, ChokoLait::scene()->objects(), 0);
+    DrawMenuObject(off, Scene::objects(), 0);
 }
 
 bool EW_Hierarchy::Init() {
