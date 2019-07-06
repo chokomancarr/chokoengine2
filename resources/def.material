@@ -1,0 +1,15 @@
+{
+  "shader":".internal/standard_metallic_color.shader",
+  "Color":{
+    "name":"color",
+    "value":[ "1", "1", "0.7", "1" ]
+  },
+  "Float":{
+    "name":"metallic",
+    "value":"0"
+  },
+  "Float":{
+    "name":"roughness",
+    "value":"0.2"
+  }
+}

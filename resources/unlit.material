@@ -1,0 +1,7 @@
+{
+  "shader":".internal/unlit_texture.shader",
+  "Texture":{
+    "name":"tex",
+    "value":"body.png"
+  }
+}
