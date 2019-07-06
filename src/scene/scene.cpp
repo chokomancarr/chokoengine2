@@ -30,6 +30,15 @@ void Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const s
     }
 }
 
+SceneObject Scene::DoFindByName(const std::vector<SceneObject>& oo, const std::string& nm) {
+    for (auto& o : oo) {
+        if (o->_name == nm) return o;
+        const auto& oc = DoFindByName(o->_children, nm);
+        if (!!oc) return oc;
+    }
+    return nullptr;
+}
+
 SceneObject Scene::AddNewObject(const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
     auto o = SceneObject::New();
@@ -71,6 +80,10 @@ std::string Scene::Tree() {
 
 void Scene::ClearObjects() {
     _objects.clear();
+}
+
+SceneObject Scene::FindByName(const std::string& nm) {
+    return DoFindByName(_objects, nm);
 }
 
 CE_END_NAMESPACE

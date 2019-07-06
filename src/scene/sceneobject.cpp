@@ -44,7 +44,10 @@ void _SceneObject::parent(const SceneObject& p) {
 
     /* Add to new parent
      */
+    _parent = p;
     p->_children.push_back(Ref<_SceneObject>(std::static_pointer_cast<_SceneObject>(shared_from_this())));
+
+    _transform.UpdateParentMatrix();
 }
 
 void _SceneObject::RemoveComponent(const Component& c) {

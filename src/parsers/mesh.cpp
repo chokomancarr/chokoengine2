@@ -146,7 +146,7 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 			for (uint32_t a = 0; a < fcnt; a++) {
 				uint8_t mid;
 				READ(mid);
-				if (msz < mid) {
+				if (msz <= mid) {
 					msz = mid + 1;
 					mtris.resize(msz);
 				}

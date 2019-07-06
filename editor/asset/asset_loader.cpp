@@ -198,6 +198,7 @@ CE_E_AL_IMPL(Shader) {
         }
         CE_E_SHV(Float)
         else CE_E_SHV(Color)
+        else CE_E_SHV(Texture)
     }
     return shd;
 }

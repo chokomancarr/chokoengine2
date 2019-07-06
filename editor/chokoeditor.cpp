@@ -85,6 +85,15 @@ void ChokoEditor::Main() {
 
 	std::cout << Scene::Tree() << std::endl;
 
+	const auto& mat = (Material)EAssetList::Get(EAssetType::Material, "unlit.material");
+
+	Scene::FindByName("body")->GetComponent<MeshRenderer>()->materials( {
+		mat,
+		mat,
+		mat,
+		mat
+	});
+
 	UIButtonStyle style(Color(0.1f, 1));
 	style.textNormal(Color::white());
 	

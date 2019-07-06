@@ -48,8 +48,8 @@ _Texture::_Texture(const std::string& path, const TextureOptions& opts) : _hdr(f
     else if (ss == "png") {
         if (!Texture_I::FromPNG(path, _width, _height, _channels, data))
             return;
-        rgb = GL_BGR;
-        rgba = GL_BGRA;
+        //rgb = GL_BGR;
+        //rgba = GL_BGRA;
     }
     else if (ss == "bmp") {
         if (!Texture_I::FromBMP(path, _width, _height, _channels, data))

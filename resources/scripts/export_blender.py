@@ -28,6 +28,7 @@ class CE_Exporter():
         def __init__(self, obj):
             self.obj = obj
             self.children = []
+            self.rig = None
     
     def execute(self):
         print("---------export start----------")
@@ -41,7 +42,11 @@ class CE_Exporter():
         for obj in self.scene.objects:
             if obj.type == 'MESH' or obj.type == 'ARMATURE':
                 if obj.parent:
-                    self.add_child_entry(object_entries, obj, obj.parent.name)
+                    if obj.parent.type != 'ARMATURE':
+                        self.add_child_entry(object_entries, obj, obj.parent.name)
+                    else:
+                        object_entries.append(self.object_entry(obj))
+                        object_entries[-1].rig = obj.parent
                 else:
                     object_entries.append(self.object_entry(obj))
         
@@ -83,6 +88,8 @@ class CE_Exporter():
             self.write(prefab_file, indent2 + '"name":"' + e.obj.name + '",\n')
             if e.obj.parent_type == "BONE":
                 self.write(prefab_file, indent2 + '"parent_bone":"' + e.obj.parent_bone + '",\n')
+            elif e.rig:
+                self.write(prefab_file, indent2 + '"rig":"' + e.rig.name + '",\n')
             poss = e.obj.location
             self.write(prefab_file, indent2 + '"position":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], poss[1]))
             rott = e.obj.rotation_quaternion

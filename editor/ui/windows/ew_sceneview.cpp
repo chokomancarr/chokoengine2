@@ -14,7 +14,7 @@ bool EW_SceneView::Init() {
 	_pivot->name("SceneView Pivot");
 	auto o = Scene::AddNewObject(_pivot);
 	o->name("SceneView Camera");
-	o->transform()->localPosition(Vec3(0, 0, -3));
+	o->transform()->localPosition(Vec3(0, 0, -5));
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0));
 	_camera->target(_target);
