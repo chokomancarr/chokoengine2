@@ -5,9 +5,9 @@ CE_BEGIN_NAMESPACE
 
 Mesh MeshLoader::LoadObj(const std::string& path) {
 	std::ifstream strm(path, std::ios::binary);
-	std::string s;
-	if (!strm) return Mesh();
+	if (!strm) return nullptr;
 
+	std::string s;
 	//pool
 	std::vector<Vec3> _verts;
 	std::vector<Vec3> _norms;
@@ -90,7 +90,91 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 		}
 	}
 
-	if (!verts.size() || !tris.size()) return Mesh();
+	if (!verts.size() || !tris.size()) return nullptr;
+	Mesh m = Mesh::New();
+	m->positions(verts);
+	m->normals(norms);
+	m->texcoords(uvs);
+	m->triangles(tris);
+	m->matTriangles(mtris);
+	m->CalculateTangents();
+	m->Apply();
+	return m;
+}
+
+#define READ(nm) strm.read((char*)&nm, sizeof(nm))
+
+Mesh MeshLoader::LoadMesh(const std::string& path) {
+	std::ifstream strm(path, std::ios::binary);
+	if (!strm) return nullptr;
+
+	std::string s;
+	std::vector<Vec3> verts;
+	std::vector<Vec3> norms;
+	std::vector<Vec2> uvs;
+	std::vector<Int3> tris;
+	std::vector<std::vector<Int3>> mtris(1);
+
+	std::getline(strm, s, '\0');
+	if (s != "ChokoEngine Mesh 20") {
+		Debug::Error("MeshLoader::LoadMesh", "Invalid file signature!");
+		return nullptr;
+	}
+
+	uint32_t vcnt = 0;
+	uint8_t msz = 1;
+	char c;
+	while (READ(c)) {
+		switch (c) {
+		case 'V': {
+			READ(vcnt);
+			verts.reserve(vcnt);
+			norms.reserve(vcnt);
+			for (uint32_t a = 0; a < vcnt; a++) {
+				Vec3 v, n;
+				READ(v);
+				READ(n);
+				verts.push_back(v);
+				norms.push_back(n);
+			}
+			break;
+		}
+		case 'F': {
+			uint32_t fcnt;
+			READ(fcnt);
+			tris.reserve(fcnt);
+			for (uint32_t a = 0; a < fcnt; a++) {
+				uint8_t mid;
+				READ(mid);
+				if (msz < mid) {
+					msz = mid + 1;
+					mtris.resize(msz);
+				}
+				Int3 tri;
+				READ(tri);
+				mtris[mid].push_back(tri);
+				tris.push_back(tri);
+			}
+			break;
+		}
+		case 'U': {
+			READ(c); //1
+			uvs.reserve(vcnt);
+			for (uint32_t a = 0; a < vcnt; a++) {
+				Vec2 uv;
+				READ(uv);
+				uvs.push_back(uv);
+			}
+			break;
+		}
+		default:
+			goto asdf;
+			break;
+		}
+	}
+	asdf:
+
+	if (!verts.size() || !tris.size()) return nullptr;
 	Mesh m = Mesh::New();
 	m->positions(verts);
 	m->normals(norms);

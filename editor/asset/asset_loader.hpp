@@ -18,11 +18,13 @@ class EAssetLoader { CE_CLASS_COMMON
 
     static SceneObject JsonToObject(const JsonObject& data);
 
+    static std::vector<Bone> LoadBones(const JsonObject& data);
 public:
     static void GenDefaultMeta(const std::string& path, const EAssetType t);
 
     static Object Load(const std::string& path, const EAssetType t);
 
+    CE_E_DEF(Armature);
     CE_E_DEF(Material);
     CE_E_DEF(Mesh);
     CE_E_DEF(Shader);

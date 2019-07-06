@@ -4,6 +4,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 enum class EAssetType {
+    Armature,
     Font,
     Material,
     Mesh,

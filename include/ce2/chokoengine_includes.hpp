@@ -41,6 +41,7 @@ CE_OBJECT(Object)
 /* assets
  */
 CE_OBJECT(Asset)
+CE_OBJECT(Armature)
 CE_OBJECT(Font)
 CE_OBJECT(Material)
 CE_OBJECT(Mesh)

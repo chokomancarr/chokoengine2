@@ -13,6 +13,7 @@ public:
 
 CE_END_NAMESPACE
 
+#include "asset/armature.hpp"
 #include "asset/font.hpp"
 #include "asset/mesh.hpp"
 #include "asset/shader.hpp"

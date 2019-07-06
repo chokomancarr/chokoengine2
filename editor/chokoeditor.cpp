@@ -73,7 +73,9 @@ void ChokoEditor::Main() {
 	//auto obj = Prefab::Load("test.prefab");
 	sc->sky(ss[0]);
 	sc->sky()->brightness(1);
-	sc->AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, "test.prefab"));
+	//sc->AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, "test.prefab"));
+
+	auto arm = (Armature)EAssetList::Get(EAssetType::Armature, "Armature.armature");
 
 	EWindowManager::LoadWindows();
 

@@ -58,6 +58,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 }
 
 void EAssetList::Init() {
+    _exts[(int)EAssetType::Armature] = { "armature" };
     _exts[(int)EAssetType::Material] = { "material" };
     _exts[(int)EAssetType::Mesh] = { "obj", "mesh" };
     _exts[(int)EAssetType::Shader] = { "shader" };

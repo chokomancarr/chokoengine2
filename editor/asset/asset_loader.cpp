@@ -55,6 +55,33 @@ SceneObject EAssetLoader::JsonToObject(const JsonObject& data) {
     return obj;
 }
 
+std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
+    std::vector<Bone> res;
+    res.reserve(data.group.size());
+    for (auto& g : data.group) {
+        Bone b(g.key.string);
+        for (auto& p : g.value.group) {
+            if (p.key.string == "head") {
+                b.base = p.value.ToVec3();
+            }
+            else if (p.key.string == "tail") {
+                b.length = p.value.ToVec3();
+            }
+            else if (p.key.string == "front") {
+                b.front = p.value.ToVec3();
+            }
+            else if (p.key.string == "connected") {
+                b.connected = p.value.ToBool();
+            }
+            else if (p.key.string == "children") {
+                b.children = LoadBones(p.value);
+            }
+        }
+        res.push_back(b);
+    }
+    return res;
+}
+
 #define CE_E_MKM(nm) case EAssetType::nm: {\
     std::ofstream strm(ChokoEditor::assetPath + path + ".meta");\
     strm << meta::nm;\
@@ -63,6 +90,7 @@ SceneObject EAssetLoader::JsonToObject(const JsonObject& data) {
 
 void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
     switch (t) {
+        CE_E_MKM(Armature)
         CE_E_MKM(Material)
         CE_E_MKM(Mesh)
         CE_E_MKM(Shader)
@@ -77,12 +105,28 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
 
 Object EAssetLoader::Load(const std::string& path, const EAssetType t) {
     switch (t) {
+        CE_E_LD(Armature)
         CE_E_LD(Material)
         CE_E_LD(Mesh)
         CE_E_LD(Shader)
         CE_E_LD(Texture)
         CE_E_LD(SceneObject)
+        default:
+            break;
     }
+    return nullptr;
+}
+
+CE_E_AL_IMPL(Armature) {
+    auto meta = LoadMeta(path);
+    auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+    if (data.group[0].key.string != "armature") {
+        Debug::Error("AssetLoader", "Armature entry missing!");
+        return nullptr;
+    }
+    auto arm = Armature::New();
+    arm->bones(LoadBones(data.group[0].value));
+    return arm;
 }
 
 CE_E_AL_IMPL(Material) {
@@ -123,6 +167,10 @@ CE_E_AL_IMPL(Mesh) {
     if (ext == "obj") {
         return MeshLoader::LoadObj(ChokoEditor::assetPath + path);
     }
+    else if (ext == "mesh") {
+        return MeshLoader::LoadMesh(ChokoEditor::assetPath + path);
+    }
+    assert(0);
 }
 
 CE_E_AL_IMPL(Shader) {
