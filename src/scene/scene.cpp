@@ -64,7 +64,7 @@ void Scene::RemoveObject(const SceneObject& o) {
 }
 
 std::string Scene::Tree() {
-    std::string result = "Scene Tree";
+    std::string result = "Scene Tree\n";
     DoTree(result, _objects, std::vector<bool>());
     return result;
 }

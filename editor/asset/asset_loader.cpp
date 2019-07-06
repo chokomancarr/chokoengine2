@@ -42,6 +42,7 @@ SceneObject EAssetLoader::JsonToObject(const JsonObject& data) {
                     Load ## nm(c.value, obj);\
                 }
                 CE_E_SW(MeshRenderer)
+                CE_E_SW(Rig)
             }
         }
         else if (k == "children") {

@@ -32,6 +32,7 @@ public:
     CE_E_DEF(SceneObject);
 
     CE_E_DEF_J(MeshRenderer);
+    CE_E_DEF_J(Rig);
 };
 
 #undef CE_E_DEF

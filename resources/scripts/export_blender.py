@@ -39,17 +39,26 @@ class CE_Exporter():
         object_entries = []
         
         for obj in self.scene.objects:
-            if obj.parent:
-                self.add_child_entry(object_entries, obj, obj.parent.name)
-            else:
-                object_entries.append(self.object_entry(obj))
+            if obj.type == 'MESH' or obj.type == 'ARMATURE':
+                if obj.parent:
+                    self.add_child_entry(object_entries, obj, obj.parent.name)
+                else:
+                    object_entries.append(self.object_entry(obj))
         
         self.cleandir(self.fd + self.fn + ".blend/")
 
         prefab_file = open(self.fd + self.fn + ".prefab", "wb")
-        self.write(prefab_file, "{\n")
-        self.export_entries(prefab_file, object_entries, "  ")
-        self.write(prefab_file, "}")
+        self.write(prefab_file, '{\n  "object":{\n')
+        indent2 = 4 * ' '
+        self.write(prefab_file, indent2 + '"name":"' + self.fn + '",\n')
+        self.write(prefab_file, indent2 + '"position":[ "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"rotation":[ "1", "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"scale":[ "1", "1", "1" ],\n')
+        self.write(prefab_file, indent2 + '"children":{\n')
+        
+        self.export_entries(prefab_file, object_entries, 6 * ' ')
+
+        self.write(prefab_file, indent2 + "}\n  }\n}")
         
         print ("-------export end--------")
 
@@ -75,11 +84,11 @@ class CE_Exporter():
             if e.obj.parent_type == "BONE":
                 self.write(prefab_file, indent2 + '"parent_bone":"' + e.obj.parent_bone + '",\n')
             poss = e.obj.location
-            self.write(prefab_file, indent2 + '"position":[ {:f}, {:f}, {:f} ],\n'.format(poss[0], poss[2], poss[1]))
+            self.write(prefab_file, indent2 + '"position":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], poss[1]))
             rott = e.obj.rotation_quaternion
-            self.write(prefab_file, indent2 + '"rotation":[ {:f}, {:f}, {:f}, {:f} ],\n'.format(rott[0], rott[1], rott[2], rott[3]))
+            self.write(prefab_file, indent2 + '"rotation":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[2], rott[3]))
             scll = e.obj.scale
-            self.write(prefab_file, indent2 + '"scale":[ {:f}, {:f}, {:f} ],\n'.format(scll[0], scll[2], scll[1]))
+            self.write(prefab_file, indent2 + '"scale":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
 
             if e.obj.type == 'MESH':
                 self.write(prefab_file, indent2 + '"components":{\n' + indent3 + '"MeshRenderer":{\n')
@@ -88,17 +97,20 @@ class CE_Exporter():
                 self.write(prefab_file, indent4 + '"materials":[\n')
                 self.write(prefab_file, indent5 + '"def.material"\n')
                 self.write(prefab_file, indent4 + ']\n')
-                self.write(prefab_file, indent3 + '},\n')
+                self.write(prefab_file, indent3 + '}\n')
                 self.export_mesh(self.fd + self.fn + '.blend/' + e.obj.name + '.mesh', e.obj)
             elif e.obj.type == 'ARMATURE':
                 self.write(prefab_file, indent2 + '"components":{\n' + indent3 + '"Rig":{\n')
-                self.write(prefab_file, indent4 + '"armature":"' + self.relfd + self.fn + '.blend/' + e.obj.name + '.armature' + '",\n')
-                self.write(prefab_file, indent3 + '},\n')
+                self.write(prefab_file, indent4 + '"armature":"' + self.relfd + self.fn + '.blend/' + e.obj.name + '.armature' + '"\n')
+                self.write(prefab_file, indent3 + '}\n')
                 self.export_armature(self.fd + self.fn + '.blend/' + e.obj.name + '.armature', e.obj)
 
             if len(e.children) > 0:
+                self.write(prefab_file, indent2 + '},\n')
                 self.write(prefab_file, indent2 + '"children":{\n')
                 self.export_entries(prefab_file, e.children, indent3)
+                self.write(prefab_file, indent2 + '}\n')
+            else:
                 self.write(prefab_file, indent2 + '}\n')
             if i < n:
                 self.write(prefab_file, indent + '},\n')
@@ -236,11 +248,11 @@ class CE_Exporter():
         indent3 = indent2 + 2 * " "
         self.write(file, indent + '"' + bone.name + '":{\n')
         vec = bone.head
-        self.write(file, indent2 + '"head":[ {:f}, {:f}, {:f} ],\n'.format(vec[0], vec[2], vec[1]))
-        vec = bone.tail
-        self.write(file, indent2 + '"tail":[ {:f}, {:f}, {:f} ],\n'.format(vec[0], vec[2], vec[1]))
+        self.write(file, indent2 + '"head":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
+        vec = bone.tail - vec
+        self.write(file, indent2 + '"tail":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
         vec = bone.z_axis
-        self.write(file, indent2 + '"front":[ {:f}, {:f}, {:f} ],\n'.format(vec[0], vec[2], vec[1]))
+        self.write(file, indent2 + '"front":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
         self.write(file, indent2 + '"connected":' + ('"1"' if bone.use_connect else '"0"'))
         nc = len(bone.children)
         if nc > 0:

@@ -83,6 +83,7 @@ const Object& EAssetList::Get(EAssetType t, const std::string& sig) {
         return e.sig == sig;
     });
     if (i == ar.end()) {
+        Debug::Error("AssetList", "Cannot find asset \"" + sig + "\" of type " + std::to_string((int)t) + "!");
         static Object a(nullptr);
         return a;
     }
