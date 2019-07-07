@@ -45,7 +45,7 @@ std::vector<std::string> IO::ListFiles(const std::string& dir, const std::string
 	std::vector<std::string> names = {};
 	auto exts = ext.size();
 #ifdef PLATFORM_WIN
-	std::string search_path = folder + "/*" + ext;
+	std::string search_path = dir + "/*" + ext;
 	WIN32_FIND_DATA fd;
 	HANDLE hFind = FindFirstFile(search_path.c_str(), &fd);
 	if (hFind != INVALID_HANDLE_VALUE) {
@@ -110,13 +110,14 @@ void IO::RemoveFile(const std::string& path) {
 std::vector<std::string> IO::ListDirectories(const std::string& dir) {
 	std::vector<std::string> dirs = {};
 #ifdef PLATFORM_WIN
-	std::string search_path = folder + "/*";
+	std::string search_path = dir + "/*";
 	WIN32_FIND_DATAW fd;
-	HANDLE hFind = FindFirstFileW(_tow(search_path).c_str(), &fd);
+	HANDLE hFind = FindFirstFileW(StrExt::Widen(search_path).c_str(), &fd);
 	if (hFind != INVALID_HANDLE_VALUE) {
 		do {
-			if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && (hidden || !(fd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)) && (fd.cFileName[0] != '.')) {
-				dirs->push_back(_frw(fd.cFileName));
+			std::string nm(StrExt::Unwiden(fd.cFileName));
+			if (!!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && nm != "." && nm != "..") {
+				dirs.push_back(nm);
 			}
 		} while (::FindNextFileW(hFind, &fd));
 		::FindClose(hFind);

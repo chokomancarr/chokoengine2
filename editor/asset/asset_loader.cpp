@@ -171,7 +171,7 @@ CE_E_AL_IMPL(Mesh) {
     else if (ext == "mesh") {
         return MeshLoader::LoadMesh(ChokoEditor::assetPath + path);
     }
-    assert(0);
+	exit(-1);
 }
 
 CE_E_AL_IMPL(Shader) {

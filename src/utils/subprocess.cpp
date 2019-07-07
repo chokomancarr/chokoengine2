@@ -3,6 +3,9 @@
 CE_BEGIN_NAMESPACE
 
 void Subprocess::Run(const std::string& program, const std::vector<std::string>& args, Subprocess::_CbFunc callback) {
+#ifdef PLATFORM_WIN
+	CE_NOT_IMPLEMENTED
+#else
     int pipe_fd[2];
     if (pipe(pipe_fd) == -1) return;
     auto pid = fork();
@@ -30,6 +33,7 @@ void Subprocess::Run(const std::string& program, const std::vector<std::string>&
             }
         }
     }
+#endif
 }
 
 CE_END_NAMESPACE

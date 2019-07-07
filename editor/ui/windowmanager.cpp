@@ -5,7 +5,7 @@ CE_BEGIN_ED_NAMESPACE
 std::vector<std::shared_ptr<EWindow>> EWindowManager::windows;
 
 void EWindowManager::Init() {
-
+	EW_SceneView::_Init();
 }
 
 void EWindowManager::LoadWindows() {

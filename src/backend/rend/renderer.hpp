@@ -12,7 +12,9 @@ class Renderer {
 
     static void ScanObjects(const std::vector<SceneObject>&, std::vector<Camera>&, std::vector<Light>&, std::vector<MeshRenderer>&);
 
-    static void RenderCamera(const Camera& cam, const std::vector<Light> lights, const std::vector<MeshRenderer> rends);
+	static void RenderMesh(const MeshRenderer& rend);
+
+    static void RenderCamera(const Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& rends);
 
 	static void RenderSky(const Camera&);
 

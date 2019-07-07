@@ -83,6 +83,7 @@ CE_END_NAMESPACE
 #include "utils/procedural_mesh.hpp"
 #include "utils/random.hpp"
 #include "utils/subprocess.hpp"
+#include "utils/transform_feedback.hpp"
 #include "utils/unique_caller.hpp"
 
 #include "core/display.hpp"

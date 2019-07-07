@@ -4,9 +4,9 @@
 CE_BEGIN_NAMESPACE
 
 class Scene { CE_CLASS_COMMON
-	static std::vector<SceneObject> _objects;
+	static CE_EXPORT std::vector<SceneObject> _objects;
 	
-	static Background _sky;
+	static CE_EXPORT Background _sky;
 
 	static void DoTree(std::string& s, const std::vector<SceneObject>& o, const std::vector<bool>& level);
 

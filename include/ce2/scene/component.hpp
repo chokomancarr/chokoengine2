@@ -15,6 +15,8 @@ public:
 
 	SceneObject object();
 
+	virtual void OnRenderCamera() {}
+
 	friend class _SceneObject; //allow set _object
 };
 

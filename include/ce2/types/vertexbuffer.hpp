@@ -25,6 +25,8 @@ public:
 	void Set(void* data, size_t len);
 	void Bind() const;
 	void Unbind() const;
+
+	friend class _TransformFeedback;
 };
 
 VertexBuffer VertexBuffer_New(bool isf, size_t dim, size_t num, void* data, size_t stride = 0, GLenum type = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_COPY);

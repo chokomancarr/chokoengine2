@@ -108,6 +108,7 @@ add_subdirectory("src/ext")
 add_subdirectory("src/parsers")
 add_subdirectory("src/scene")
 add_subdirectory("src/scene/comp")
+add_subdirectory("src/scene/comp/mesh")
 add_subdirectory("src/types")
 add_subdirectory("src/utils")
 
@@ -145,6 +146,7 @@ add_subdirectory("editor/ui")
 add_subdirectory("editor/ui/windows")
 add_subdirectory("editor/ui/windows/inspector")
 add_subdirectory("editor/ui/windows/ops")
+add_subdirectory("editor/ui/windows/sceneview")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
 

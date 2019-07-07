@@ -2,9 +2,28 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
+	for (auto& o : objs) {
+		for (auto& c : o->components()) {
+			const auto& f = EW_S_DrawCompList::funcs[typeid(*c.operator->()).hash_code()];
+			if (!f) continue;
+			f(c);
+		}
+		DoDrawScene(o->children());
+	}
+}
+
 void EW_SceneView::DrawMenu() {
 	UI::Texture(Rect(position.x(), position.y() + 20, position.w(), position.h() - 20),
 		static_cast<Texture>(_target));
+
+	DoDrawScene(Scene::objects());
+}
+
+bool EW_SceneView::_Init() {
+	EW_S_Rig::Init();
+
+	return true;
 }
 
 bool EW_SceneView::Init() {

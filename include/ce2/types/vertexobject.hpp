@@ -3,7 +3,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _VertexObject {
+class _VertexObject { CE_CLASS_COMMON
 	GLuint _pointer;
 	std::vector<VertexBuffer> _buffers;
 	int _bufferSize;
@@ -14,6 +14,7 @@ public:
 	~_VertexObject();
 
 	CE_GET_MEMBER(pointer);
+	CE_GET_MEMBER(buffers);
 	const VertexBuffer& buffer(int i) const;
 	CE_GET_MEMBER(bufferSize);
 

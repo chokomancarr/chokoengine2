@@ -50,7 +50,30 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camer
 	}
 }
 
-void Renderer::RenderCamera(const Camera& cam, const std::vector<Light> lights, const std::vector<MeshRenderer> rends) {
+void Renderer::RenderMesh(const MeshRenderer& rend) {
+	const auto& mesh = rend->_mesh;
+	if (!mesh) return;
+	const auto& MV = rend->object()->transform()->worldMatrix();
+	const auto& P = MVP::projection();
+	const auto& vao = (rend->_modifiers.size() > 0) ? rend->_modifiers.back()->result : mesh->_vao;
+
+	vao->Bind();
+	for (size_t a = 0; a < rend->_mesh->materialCount(); a++) {
+		const auto& mat = rend->_materials[a];
+		if (!mat) continue;
+		mat->SetUniform("_MV", MV);
+		mat->SetUniform("_P", P);
+		mat->SetUniform("_MVP", P * MV);
+		mat->Bind();
+		mesh->_elos[a]->Bind();
+		glDrawElements(GL_TRIANGLES, mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
+		mesh->_elos[a]->Unbind();
+		mat->Unbind();
+	}
+	vao->Unbind();
+}
+
+void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& rends) {
 	const auto& tar = cam->target();
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
@@ -82,21 +105,7 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light> lights, 
 	glEnable(GL_CULL_FACE);
 
 	for (auto& r : rends) {
-		MVP::Clear();
-		MVP::Mul(r->object()->transform()->worldMatrix());
-		r->_mesh->_vao->Bind();
-		for (size_t a = 0; a < r->_mesh->materialCount(); a++) {
-			if (!r->_materials[a]) continue;
-			r->_materials[a]->SetUniform("_MV", MVP::modelview());
-			r->_materials[a]->SetUniform("_P", MVP::projection());
-			r->_materials[a]->SetUniform("_MVP", MVP::projection() * MVP::modelview());
-			r->_materials[a]->Bind();
-			r->_mesh->_elos[a]->Bind();
-			glDrawElements(GL_TRIANGLES, r->_mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
-			r->_mesh->_elos[a]->Unbind();
-			r->_materials[a]->Unbind();
-		}
-		r->_mesh->_vao->Unbind();
+		RenderMesh(r);
 	}
 
 	gbuf->Unbind();
