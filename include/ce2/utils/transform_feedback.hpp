@@ -4,7 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 class _TransformFeedback { CE_CLASS_COMMON
-	VertexObject _vao;
+	VertexArray _vao;
 	std::vector<VertexBuffer> _outputs;
 	GLuint _program;
 	std::vector<GLint> _uniforms;

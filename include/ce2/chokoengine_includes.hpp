@@ -27,8 +27,8 @@ class Mat4x4;
 
 class _VertexBuffer;
 typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
-class _VertexObject;
-typedef std::shared_ptr<_VertexObject> VertexObject;
+class _VertexArray;
+typedef std::shared_ptr<_VertexArray> VertexArray;
 
 class Math;
 class Procedurals;
@@ -101,7 +101,7 @@ CE_END_NAMESPACE
 #include "types/texturebuffer.hpp"
 #include "types/depth_texture.hpp"
 #include "types/vertexbuffer.hpp"
-#include "types/vertexobject.hpp"
+#include "types/vertexarray.hpp"
 #include "types/framebuffer.hpp"
 
 #include "scene/transform.hpp"

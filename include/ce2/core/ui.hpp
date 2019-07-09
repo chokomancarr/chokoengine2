@@ -7,7 +7,7 @@ class UI { CE_CLASS_COMMON
 
     static CE_EXPORT uint _vboSz;
 	static CE_EXPORT VertexBuffer _vboV, _vboU;
-	static CE_EXPORT VertexObject _vao;
+	static CE_EXPORT VertexArray _vao;
 	static CE_EXPORT TextureBuffer _tvbo;
     static CE_EXPORT VertexBuffer _quadElo;
 

@@ -26,4 +26,13 @@ public:
     std::vector<Bone> children;
 };
 
+class _Bone { CE_CLASS_COMMON
+public:
+    _Bone(const Bone&, const std::string&);
+
+    const std::string sig;
+
+    float length;
+};
+
 CE_END_NAMESPACE

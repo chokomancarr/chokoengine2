@@ -65,8 +65,12 @@ Vec3 Vec3::cross(const Vec3& v) const {
 	);
 }
 
+float Vec3::length() const {
+	return std::sqrt(x*x + y*y + z*z);
+}
+
 Vec3 Vec3::normalized() const {
-	return (*this) / std::sqrt(x*x + y*y + z*z);
+	return (*this) / length();
 }
 
 std::string Vec3::str() const {

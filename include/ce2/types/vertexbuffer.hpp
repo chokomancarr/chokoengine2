@@ -11,6 +11,7 @@ class _VertexBuffer {
 	size_t _dim;
 	size_t _num;
 	GLenum _type;
+	GLenum _usage;
 public:
 	_VertexBuffer() = default;
 	_VertexBuffer(bool isf, size_t dim, size_t num, void* data, size_t stride = 0, GLenum type = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_COPY);

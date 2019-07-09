@@ -6,7 +6,7 @@ CE_BEGIN_NAMESPACE
 FT_Library _Font::_ftlib = nullptr;
 Shader _Font::_prog;
 uint _Font::vaoSz = 0;
-VertexObject _Font::vao;
+VertexArray _Font::vao;
 VertexBuffer _Font::idbuf;
 
 bool _Font::Init() {
@@ -95,7 +95,7 @@ GLuint _Font::CreateGlyph(uint sz, uint mask) {
 void _Font::InitVao(uint sz) {
 	vaoSz = sz * 4;
 
-	vao = VertexObject_New();
+	vao = VertexArray_New();
 	vao->AddBuffer(VertexBuffer_New(true, 3, vaoSz, nullptr, 0, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
 	vao->AddBuffer(VertexBuffer_New(false, 1, vaoSz, nullptr, 0, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW));
 

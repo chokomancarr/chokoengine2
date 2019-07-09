@@ -13,7 +13,7 @@ class _Font : public _Asset { CE_OBJECT_COMMON
     static Shader _prog;
 
 	static uint vaoSz;
-	static VertexObject vao;
+	static VertexArray vao;
 	static VertexBuffer idbuf;
     
     bool _loaded;

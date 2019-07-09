@@ -4,7 +4,7 @@
 CE_BEGIN_BK_NAMESPACE
 
 class Renderer {
-	static VertexObject _emptyVao;
+	static VertexArray _emptyVao;
 
 	static Shader skyShad;
 

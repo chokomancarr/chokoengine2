@@ -25,6 +25,7 @@ public:
 	float dot(const Vec3& v) const;
 	Vec3 cross(const Vec3& v) const;
 
+	float length() const;
 	Vec3 normalized() const;
 
 	std::string str() const;

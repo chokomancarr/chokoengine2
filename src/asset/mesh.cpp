@@ -8,7 +8,7 @@ void _Mesh::GenBuffers() {
 	_nrmVbo = VertexBuffer_New(true, 3, vsz, _normals.data());
 	_tanVbo = VertexBuffer_New(true, 3, vsz, _tangents.data());
 	_texVbo = VertexBuffer_New(true, 2, vsz, _texcoords.data());
-	_vao = VertexObject_New();
+	_vao = VertexArray_New();
 	_vao->AddBuffer(_posVbo);
 	_vao->AddBuffer(_nrmVbo);
 	_vao->AddBuffer(_tanVbo);

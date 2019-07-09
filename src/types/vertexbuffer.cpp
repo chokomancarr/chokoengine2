@@ -3,7 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 _VertexBuffer::_VertexBuffer(bool isf, size_t dim, size_t num, void* data, size_t stride, GLenum type, GLenum usage)
-	: _isfloat(isf), _dim(dim), _num(num), _type(type) {
+	: _isfloat(isf), _dim(dim), _num(num), _type(type), _usage(usage) {
 	glGenBuffers(1, &_pointer);
 	glBindBuffer(type, _pointer);
 	glBufferData(type, num * dim * 4, data, usage);
@@ -16,7 +16,10 @@ _VertexBuffer::~_VertexBuffer() {
 
 void _VertexBuffer::Set(void* data, size_t len) {
 	Bind();
-	glBufferSubData(_type, 0, len * _dim * 4, data);
+	if (len > _num)
+		glBufferData(_type, len * _dim * 4, data, _usage);
+	else
+		glBufferSubData(_type, 0, len * _dim * 4, data);
 	Unbind();
 }
 

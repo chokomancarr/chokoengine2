@@ -24,7 +24,7 @@
 
 CE_BEGIN_BK_NAMESPACE
 
-VertexObject Renderer::_emptyVao;
+VertexArray Renderer::_emptyVao;
 Shader Renderer::skyShad;
 Shader Renderer::pointLightShad;
 
@@ -255,7 +255,7 @@ void Renderer::RenderLight_Directional(const Light& l, const Camera& cam) {
 }
 
 bool Renderer::Init() {
-	_emptyVao = std::make_shared<_VertexObject>();
+	_emptyVao = std::make_shared<_VertexArray>();
 
 	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
 		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "inSky", "skyStrength" });

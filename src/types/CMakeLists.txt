@@ -13,6 +13,6 @@ set(SOURCES
 	${DIR}/vec3.cpp
 	${DIR}/vec4.cpp
 	${DIR}/vertexbuffer.cpp
-	${DIR}/vertexobject.cpp
+	${DIR}/vertexarray.cpp
 	PARENT_SCOPE
 )

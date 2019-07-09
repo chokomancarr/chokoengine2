@@ -25,7 +25,7 @@ class _Mesh : public _Asset { CE_OBJECT_COMMON
 	std::vector<ShapeKey> _shapeKeys;
 
 	VertexBuffer _posVbo, _nrmVbo, _tanVbo, _texVbo;
-	VertexObject _vao;
+	VertexArray _vao;
 	std::vector<VertexBuffer> _elos;
 
 	void GenBuffers();

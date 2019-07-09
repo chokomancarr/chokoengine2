@@ -8,7 +8,7 @@ CE_BEGIN_NAMESPACE
 
 uint UI::_vboSz;
 VertexBuffer UI::_vboV, UI::_vboU;
-VertexObject UI::_vao;
+VertexArray UI::_vao;
 TextureBuffer UI::_tvbo;
 VertexBuffer UI::_quadElo;
 
@@ -43,7 +43,7 @@ void UI::InitVao() {
 
 	_vboV = VertexBuffer_New(true, 3, _vboSz, nullptr);
 	_vboU = VertexBuffer_New(true, 2, _vboSz, nullptr);
-	_vao = VertexObject_New();
+	_vao = VertexArray_New();
 	_vao->AddBuffer(_vboV);
 	_vao->AddBuffer(_vboU);
 	_tvbo = TextureBuffer::New(_vboV, GL_RGB32F);
