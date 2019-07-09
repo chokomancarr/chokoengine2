@@ -23,10 +23,13 @@ public:
 	void Update() override;
 
 	class Ops;
+
+	class CaptureCallbacks;
 };
 
 CE_END_ED_NAMESPACE
 
 #include "ops/ew_sceneview_ops.hpp"
 
+#include "sceneview/callback_capture.hpp"
 #include "sceneview/draw_comp_list.hpp"

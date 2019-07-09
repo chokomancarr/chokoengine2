@@ -15,7 +15,32 @@ public:
 
 	SceneObject object();
 
-	virtual void OnRenderCamera() {}
+	/* Called right before rendering objects into G-buffers
+	 * This function will only be called if the component
+	 * is attached to the camera
+	 */
+	virtual void OnPreRender() {}
+
+	/* Called after rendering G-buffers, before renering
+	 * into the blit buffer
+	 * This function will only be called if the component
+	 * is attached to the camera
+	 */
+	virtual void OnPreBlit() {}
+
+	/* Called after rendering all effects to the blit buffer,
+	 * before copying to the target
+	 * This function will only be called if the component
+	 * is attached to the camera
+	 * Rendering in this function will target the blit buffer
+	 */
+	virtual void OnPostBlit() {}
+
+	/* Called after all rendering processes are completed
+	 * This function will only be called if the component
+	 * is attached to the camera
+	 */
+	virtual void OnPostRender() {}
 
 	friend class _SceneObject; //allow set _object
 };
@@ -28,3 +53,4 @@ CE_END_NAMESPACE
 #include "comp/light.hpp"
 #include "comp/mesh_renderer.hpp"
 #include "comp/rig.hpp"
+#include "comp/script.hpp"

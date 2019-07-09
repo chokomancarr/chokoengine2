@@ -74,6 +74,10 @@ void Renderer::RenderMesh(const MeshRenderer& rend) {
 }
 
 void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& rends) {
+	for (auto& c : cam->_object.lock()->_components) {
+		c->OnPreRender();
+	}
+	
 	const auto& tar = cam->target();
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
@@ -118,6 +122,10 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 
 	cam->_blitTargets[0]->BindTarget();
 
+	for (auto& c : cam->_object.lock()->_components) {
+		c->OnPreBlit();
+	}
+
 	if ((cam->_clearType == CameraClearType::Color)
 		|| (cam->_clearType == CameraClearType::ColorAndDepth))
 		glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
@@ -153,9 +161,11 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
 	}
 
+	cam->_blitTargets[0]->BindTarget();
 	for (auto& c : cam->_object.lock()->_components) {
-		
+		c->OnPostBlit();
 	}
+	cam->_blitTargets[0]->UnbindTarget();
 
 	if (!tar) {
 		CE_NOT_IMPLEMENTED
@@ -166,6 +176,10 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 
 	glViewport(0, 0, Display::width(), Display::height());
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	for (auto& c : cam->_object.lock()->_components) {
+		c->OnPostRender();
+	}
 }
 
 void Renderer::RenderSky(const Camera& cam) {

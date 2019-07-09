@@ -8,6 +8,7 @@ enum class ComponentType {
 	Light,
 	MeshRenderer,
 	Rig,
+	Script,
 	_COUNT
 };
 

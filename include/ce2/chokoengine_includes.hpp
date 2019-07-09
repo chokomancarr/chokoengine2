@@ -68,6 +68,7 @@ CE_OBJECT(Light)
 CE_OBJECT(MeshRenderer)
 CE_OBJECT(MeshModifier)
 CE_OBJECT(Rig)
+CE_OBJECT(Script)
 
 CE_END_NAMESPACE
 

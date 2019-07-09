@@ -15,8 +15,6 @@ void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 void EW_SceneView::DrawMenu() {
 	UI::Texture(Rect(position.x(), position.y() + 20, position.w(), position.h() - 20),
 		static_cast<Texture>(_target));
-
-	DoDrawScene(Scene::objects());
 }
 
 bool EW_SceneView::_Init() {
@@ -36,6 +34,8 @@ bool EW_SceneView::Init() {
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0));
 	_camera->target(_target);
+	auto cc = o->AddComponent<Ref<CaptureCallbacks>>();
+	cc->parent = this;
 
 	menus.push_back(EDropdownMenu("View"));
 	auto op = EDropdownMenu("Switch ortho/persp");
