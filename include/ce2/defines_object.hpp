@@ -5,7 +5,7 @@
 #define CE_OBJECT(nm)\
 	class _ ## nm;\
 	typedef Ref<_ ## nm> nm;\
-	typedef std::weak_ptr<_ ## nm> p ## nm;
+	typedef Ref_w<_ ## nm> p ## nm;
 
 /* The _COMMON tag must be appended at the start of every class
  * according to their type

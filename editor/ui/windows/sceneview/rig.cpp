@@ -3,7 +3,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 void EW_S_Rig::Init() {
-	EW_S_DrawCompList::funcs[typeid(_Rig).hash_code()] = &Draw;
+	EW_S_DrawCompList::funcs[(int)ComponentType::Rig] = &Draw;
 }
 
 void EW_S_Rig::Draw(const Component& rig) {

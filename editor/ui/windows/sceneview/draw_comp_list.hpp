@@ -7,7 +7,7 @@ class EW_S_DrawCompList {
 	typedef void(*_DrawFn)(const Component& c);
 
 public:
-	static std::unordered_map<size_t, _DrawFn> funcs;
+	static std::array<_DrawFn, (int)ComponentType::_COUNT> funcs;
 };
 
 CE_END_ED_NAMESPACE

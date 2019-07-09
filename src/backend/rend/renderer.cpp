@@ -143,8 +143,18 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 
 	cam->_blitTargets[0]->UnbindTarget();
 
+	int sw = 0;
 	for (auto& e : cam->_effects) {
-		e->Apply(cam->_blitTargets[0], cam->_blitTargets[1], cam->_blitTargets[2], gbuf);
+		e->Apply(cam->_blitTargets[sw], cam->_blitTargets[1-sw], cam->_blitTargets[2], gbuf);
+		sw = 1 - sw;
+	}
+
+	if (sw == 1) {
+		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
+	}
+
+	for (auto& c : cam->_object.lock()->_components) {
+		
 	}
 
 	if (!tar) {

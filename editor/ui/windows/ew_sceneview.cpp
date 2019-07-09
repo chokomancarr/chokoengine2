@@ -5,9 +5,8 @@ CE_BEGIN_ED_NAMESPACE
 void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 	for (auto& o : objs) {
 		for (auto& c : o->components()) {
-			const auto& f = EW_S_DrawCompList::funcs[typeid(*c.operator->()).hash_code()];
-			if (!f) continue;
-			f(c);
+			const auto& f = EW_S_DrawCompList::funcs[(int)c->componentType];
+			if (f) f(c);
 		}
 		DoDrawScene(o->children());
 	}
