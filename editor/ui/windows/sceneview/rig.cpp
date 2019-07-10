@@ -1,4 +1,5 @@
 #include "chokoeditor.hpp"
+#include "glsl/arm_bone.h"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -24,6 +25,8 @@ void EW_S_Rig::Init() {
 	_vao->AddBuffer(pbuf);
 
 	_elo = VertexBuffer_New(false, 3, 4, elms);
+
+	
 }
 
 void EW_S_Rig::Draw(const Component& rig) {

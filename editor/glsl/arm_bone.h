@@ -11,4 +11,15 @@ void main() {
     gl_Position = MVP * pos;
 }
 )";
+
+	const char armBoneFrag[] = R"(
+
+uniform vec4 color;
+
+out vec4 fragColor;
+
+void main() {
+	fragColor = color;
+}
+)";
 }
