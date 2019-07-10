@@ -256,7 +256,7 @@ class CE_Exporter():
         self.write(file, indent + '"' + bone.name + '":{\n')
         vec = bone.head
         self.write(file, indent2 + '"head":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
-        vec = bone.tail - vec
+        vec = bone.tail
         self.write(file, indent2 + '"tail":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
         vec = bone.z_axis
         self.write(file, indent2 + '"front":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
