@@ -78,6 +78,7 @@ std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
                 b.children = LoadBones(p.value);
             }
         }
+        b.length -= b.base;
         res.push_back(b);
     }
     return res;

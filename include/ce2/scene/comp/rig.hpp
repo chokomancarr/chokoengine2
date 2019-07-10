@@ -8,7 +8,7 @@ class _Rig : public _Component { CE_COMPONENT_COMMON
 
     std::vector<std::pair<SceneObject, _Bone>> _boneObjs;
 
-    void AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const std::string& path);
+    void AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, const std::string& path);
 
 public:
 	_Rig();

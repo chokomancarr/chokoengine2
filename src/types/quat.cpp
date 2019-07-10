@@ -67,12 +67,20 @@ Quat Quat::LookAt(const Vec3& tarr) {
 Quat Quat::LookAt(const Vec3& tarr, const Vec3& up) {
 	Vec3 tar = tarr.normalized();
 	Vec3 fw = Vec3(0, 0, 1);
-	Vec3 axis = tar.cross(fw);
-	float angle = Math::rad2deg * std::acos(Math::Clamp(tar.dot(fw), -1.f, 1.f));
-	Vec3 tr = axis.cross(fw);
-	if (tr.dot(tar) < 0) angle *= -1;
-	Quat q1 = FromAxisAngle(axis, angle);
-	if (abs(angle) < 0.000001f) q1 = Quat(1, 0, 0, 0);
+	Quat q1 = Quat::identity();
+	if (tar.z > 0.999f) { //no rotation required
+		;
+	}
+	else if (tar.z < -0.999f) { //inverse
+		q1 = FromAxisAngle(Vec3(0, 1, 0), 180.f);
+	}
+	else {
+		Vec3 axis = tar.cross(fw);
+		float angle = Math::rad2deg * std::acos(Math::Clamp(tar.dot(fw), -1.f, 1.f));
+		Vec3 tr = axis.cross(fw);
+		if (tr.dot(tar) < 0) angle *= -1;
+		q1 = FromAxisAngle(axis, angle);
+	}
 
 	Vec3 mup = q1 * Vec3::up();
 	Vec3 mrt = q1 * Vec3::right();
@@ -80,7 +88,6 @@ Quat Quat::LookAt(const Vec3& tarr, const Vec3& up) {
 	float angle2 = Math::rad2deg * std::acos(Math::Clamp(mrt.dot(rt), -1.f, 1.f));
 	if (mup.dot(rt) < 0) angle2 *= -1;
 	Quat q2 = FromAxisAngle(tar, angle2);
-	if (abs(angle2) < 0.000001f) q2 = Quat(1, 0, 0, 0);
 
 	return q2 * q1;
 }

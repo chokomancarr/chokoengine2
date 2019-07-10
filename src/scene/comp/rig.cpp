@@ -4,12 +4,27 @@ CE_BEGIN_NAMESPACE
 
 _Rig::_Rig() : CE_COMPDEF(Rig), _armature(nullptr), _boneObjs({}) {}
 
-void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const std::string& path) {
+void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, const std::string& path) {
     for (auto& b : bones) {
+        auto rot = Quat::LookAt(b.length, b.front);
+        if (std::isnan(rot.x) || std::isnan(rot.y) || std::isnan(rot.z) || std::isnan(rot.w)) {
+            rot = Quat::identity();
+        }
         auto obj = Scene::AddNewObject(parent);
+
         obj->name(b.name);
-        _boneObjs.push_back(std::pair<SceneObject, _Bone>(obj, _Bone(b, path)));
-        AddBones(obj, b.children, path + b.name + "/");
+        auto tr = obj->transform();
+        if (pbone) {
+            tr->localPosition(b.base + Vec3(0, 0, 1) * pbone->length);
+        }
+        else {
+            tr->localPosition(b.base);
+        }
+        tr->localRotation(rot);
+
+        const auto _bn = _Bone(b, path);
+        _boneObjs.push_back(std::pair<SceneObject, _Bone>(obj, _bn));
+        AddBones(obj, b.children, &_bn, path + b.name + "/");
     }
 }
 
@@ -24,7 +39,7 @@ void _Rig::armature(const Armature& arma) {
         _boneObjs.clear();
     }
     _armature = arma;
-    AddBones(object(), arma->bones(), "");
+    AddBones(object(), arma->bones(), nullptr, "");
 }
 
 CE_END_NAMESPACE

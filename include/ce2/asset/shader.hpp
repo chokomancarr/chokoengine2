@@ -18,8 +18,6 @@ class _Shader : public _Asset { CE_OBJECT_COMMON
 
 	static GLuint FromVF(const std::string& vert, const std::string& frag);
 
-	GLint Loc(int);
-
 	void UpdatePointer();
 public:
 	_Shader();
@@ -35,6 +33,8 @@ public:
 
 	void Bind();
 	void Unbind();
+
+	GLint Loc(int);
 
 	friend class UI;
 	friend class _Material;

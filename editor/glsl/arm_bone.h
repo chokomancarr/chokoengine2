@@ -2,12 +2,13 @@
 namespace glsl {
 	const char armBoneVert[] = R"(
 in vec3 position;
-in float len;
 
 uniform mat4 MVP;
+uniform float len;
 
 void main() {
-    vec4 pos = vec3(position * len, 1);
+	vec3 p3 = position * len;
+    vec4 pos = vec4(p3, 1);
     gl_Position = MVP * pos;
 }
 )";

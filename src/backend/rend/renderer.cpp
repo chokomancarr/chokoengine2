@@ -66,7 +66,7 @@ void Renderer::RenderMesh(const MeshRenderer& rend) {
 		mat->SetUniform("_MVP", P * MV);
 		mat->Bind();
 		mesh->_elos[a]->Bind();
-		glDrawElements(GL_TRIANGLES, mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
 		mesh->_elos[a]->Unbind();
 		mat->Unbind();
 	}

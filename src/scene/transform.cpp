@@ -21,7 +21,7 @@ void Transform::UpdateParentMatrix() {
     }
     else {
         const auto& pm = _object->parent()->transform()->_worldMatrix;
-        _worldMatrix = _localMatrix * pm;
+        _worldMatrix = pm * _localMatrix;
         Vec4 wpos = pm * Vec4(_localPosition, 1);
         _worldPosition = Vec3(wpos.x, wpos.y, wpos.z) / wpos.w;
     }

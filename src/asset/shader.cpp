@@ -87,10 +87,6 @@ GLuint _Shader::FromVF(const std::string& vert, const std::string& frag) {
 	return pointer;
 }
 
-GLint _Shader::Loc(int i) {
-	return variables[i]._location;
-}
-
 void _Shader::UpdatePointer() {
 	uint i = 0, j = 0;
 	for (auto& v : options) {
@@ -174,6 +170,10 @@ void _Shader::Bind() {
 
 void _Shader::Unbind() {
 	glUseProgram(0);
+}
+
+GLint _Shader::Loc(int i) {
+	return variables[i]._location;
 }
 
 CE_END_NAMESPACE
