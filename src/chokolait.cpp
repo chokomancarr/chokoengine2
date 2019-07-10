@@ -55,6 +55,8 @@ void ChokoLait::Paint(emptyCallbackFunc rendFunc, emptyCallbackFunc paintFunc) {
 	if (paintFunc)
 		paintFunc();
 
+	Scene::Update(Scene::_objects);
+
 	glfwSwapBuffers(Display::_window);
 }
 

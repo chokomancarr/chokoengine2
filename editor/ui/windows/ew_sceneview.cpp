@@ -15,8 +15,6 @@ void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 void EW_SceneView::DrawMenu() {
 	UI::Texture(Rect(position.x(), position.y() + 20, position.w(), position.h() - 20),
 		static_cast<Texture>(_target));
-
-	_camera->object()->transform()->localRotation(Quat::FromEuler(Vec3(0, Time::time() * 30, 0)));
 }
 
 bool EW_SceneView::_Init() {
@@ -32,7 +30,7 @@ bool EW_SceneView::Init() {
 	_pivot->name("SceneView Pivot");
 	auto o = Scene::AddNewObject(_pivot);
 	o->name("SceneView Camera");
-	o->transform()->localPosition(Vec3(0, 0, -35));
+	o->transform()->localPosition(Vec3(0, 0, -5));
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0));
 	_camera->target(_target);

@@ -15,6 +15,18 @@ public:
 
 	SceneObject object();
 
+	/* Called during the main logic loop
+ 	*/
+	virtual void OnUpdate() {}
+
+	/* Called during the main logic loop (2nd pass)
+	 */
+	virtual void OnLateUpdate() {}
+
+	/* Called during the physics loop
+	*/
+	virtual void OnPhysicsUpdate() {}
+
 	/* Called right before rendering objects into G-buffers
 	 * This function will only be called if the component
 	 * is attached to the camera

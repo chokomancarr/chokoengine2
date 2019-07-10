@@ -28,6 +28,8 @@ public:
     /* Adds a modifier at location \p index
      */
     void AddModifier(const MeshModifier& mod, int index = -1);
+
+	void OnUpdate() override;
 };
 
 CE_END_NAMESPACE

@@ -10,7 +10,9 @@ class Scene { CE_CLASS_COMMON
 
 	static void DoTree(std::string& s, const std::vector<SceneObject>& o, const std::vector<bool>& level);
 
-	static SceneObject DoFindByName(const std::vector<SceneObject>& o, const std::string& nm); 
+	static SceneObject DoFindByName(const std::vector<SceneObject>& o, const std::string& nm);
+
+	static void Update(const std::vector<SceneObject>& o);
 
 public:
 	CE_GET_ST_MEMBER(objects);

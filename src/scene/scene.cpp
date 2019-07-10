@@ -39,6 +39,15 @@ SceneObject Scene::DoFindByName(const std::vector<SceneObject>& oo, const std::s
     return nullptr;
 }
 
+void Scene::Update(const std::vector<SceneObject>& oo) {
+	for (auto& o : oo) {
+		for (auto& c : o->_components) {
+			c->OnUpdate();
+		}
+		Update(o->_children);
+	}
+}
+
 SceneObject Scene::AddNewObject(const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
     auto o = SceneObject::New();

@@ -31,8 +31,19 @@ void EW_S_Rig::Init() {
 }
 
 void EW_S_Rig::Draw(const Component& c) {
-	//if (c->object() != ESceneInfo::selectedObject)
-	//	return;
+	if (!ESceneInfo::selectedObject) return;
+	bool found = false;
+	auto o = ESceneInfo::selectedObject;
+	const auto& o2 = c->object();
+	do {
+		if (o == o2) {
+			found = true;
+			break;
+		}
+		o = o->parent();
+	} while (!!o);
+	if (!found)
+		return;
 	const auto& rig = static_cast<Rig>(c);
 	const auto& arm = (rig->armature());
 	if (!arm)
@@ -44,10 +55,10 @@ void EW_S_Rig::Draw(const Component& c) {
 	_boneProg->Bind();
 	const auto& P = MVP::projection();
 	for (auto& b : rig->boneObjs()) {
-		const auto& MV = b.first->transform()->worldMatrix();
+		const auto& MV = b.obj->transform()->worldMatrix();
 		glUniformMatrix4fv(_boneProg->Loc(0), 1, false, glm::value_ptr(P * MV));
-		glUniform1f(_boneProg->Loc(1), b.second.length);
-		if (b.first == ESceneInfo::selectedObject) {
+		glUniform1f(_boneProg->Loc(1), b.bone.length);
+		if (b.obj.lock() == ESceneInfo::selectedObject) {
 			glUniform4f(_boneProg->Loc(2), 1, 1, 0, 1);
 		}
 		else {

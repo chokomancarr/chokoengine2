@@ -28,11 +28,13 @@ public:
 
 class _Bone { CE_CLASS_COMMON
 public:
-    _Bone(const Bone&, const std::string&);
+    _Bone(const Bone&, const std::string&, const Mat4x4&);
 
     const std::string sig;
 
     float length;
+
+	Mat4x4 restMat;
 };
 
 CE_END_NAMESPACE

@@ -16,6 +16,8 @@ public:
 
     template <class T>
     friend class Ref;
+	template <class T>
+	friend class Ref_w;
     template <class T>
     friend void DeleteObject(Ref<T>& obj);
 };

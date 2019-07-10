@@ -6,7 +6,15 @@ CE_BEGIN_NAMESPACE
 class _Rig : public _Component { CE_COMPONENT_COMMON
     Armature _armature;
 
-    std::vector<std::pair<SceneObject, _Bone>> _boneObjs;
+	struct boneObjSt {
+		pSceneObject obj;
+		_Bone bone;
+
+		boneObjSt(const pSceneObject& o, const _Bone& b)
+			: obj(o), bone(b) {}
+	};
+    std::vector<boneObjSt> _boneObjs;
+	std::vector<Mat4x4> _matrices;
 
     void AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, const std::string& path);
 
@@ -20,6 +28,10 @@ public:
     /* The scene objects corresponding to each bone
      */
     CE_GET_MEMBER(boneObjs);
+
+	CE_GET_MEMBER(matrices);
+
+	void OnUpdate() override;
 };
 
 CE_END_NAMESPACE

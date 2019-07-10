@@ -9,8 +9,7 @@ _TransformFeedback::_TransformFeedback(const std::string& shader, std::initializ
 	glCompileShader(_shader);
 	int compile_result;
 	glGetShaderiv(_shader, GL_COMPILE_STATUS, &compile_result);
-	if (!compile_result)
-	{
+	if (!compile_result) {
 		int info_log_length = 0;
 		glGetShaderiv(_shader, GL_INFO_LOG_LENGTH, &info_log_length);
 		if (!!info_log_length) {

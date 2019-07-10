@@ -22,8 +22,8 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
         }
         tr->localRotation(rot);
 
-        const auto _bn = _Bone(b, path);
-        _boneObjs.push_back(std::pair<SceneObject, _Bone>(obj, _bn));
+        const auto _bn = _Bone(b, path, tr->worldMatrix());
+        _boneObjs.push_back(boneObjSt(pSceneObject(obj), _bn));
         AddBones(obj, b.children, &_bn, path + b.name + "/");
     }
 }
@@ -31,15 +31,28 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
 void _Rig::armature(const Armature& arma) {
     if (!!_armature) {
         for (auto& b : _boneObjs) {
-            if (b.first->components().size() > 0) {
-                Debug::Warning("Rig::armature (set)", "Deleting bone \"" + b.second.sig + " with components attached!");
+            if (b.obj->components().size() > 0) {
+                Debug::Warning("Rig::armature (set)", "Deleting bone \"" + b.bone.sig + " with components attached!");
             }
-            Scene::RemoveObject(b.first);
+            Scene::RemoveObject(b.obj.lock());
         }
         _boneObjs.clear();
     }
     _armature = arma;
     AddBones(object(), arma->bones(), nullptr, "");
+	const auto ib = object()->transform()->worldMatrix().inverse();
+	for (auto& b : _boneObjs) {
+		b.bone.restMat = ib * b.bone.restMat;
+	}
+	_matrices.resize(_boneObjs.size());
+}
+
+void _Rig::OnUpdate() {
+	const auto ib = object()->transform()->worldMatrix().inverse();
+	const auto& sz = _boneObjs.size();
+	for (size_t a = 0; a < sz; a++) {
+		_matrices[a] = ib * _boneObjs[a].obj->transform()->worldMatrix();
+	}
 }
 
 CE_END_NAMESPACE

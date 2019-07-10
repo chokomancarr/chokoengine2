@@ -20,4 +20,13 @@ void _MeshRenderer::AddModifier(const MeshModifier& mod, int index) {
 
 };
 
+void _MeshRenderer::OnUpdate() {
+	auto vao = &_mesh->_vao;
+	const auto& elo = &_mesh->_elos;
+	for (auto& m : _modifiers) {
+		m->Apply(*vao);
+		vao = &m->result;
+	}
+}
+
 CE_END_NAMESPACE

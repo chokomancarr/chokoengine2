@@ -13,9 +13,14 @@ class _MeshSkinModifier : _MeshModifier { CE_OBJECT_COMMON
 
 	static TransformFeedback _tfProg;
 
+	std::vector<Int4> _weightIds;
+	std::vector<Vec4> _weights;
+
 	static void InitProgs();
 
-	void Apply(const VertexArray& vao_in, const VertexBuffer& elo_in) override;
+	static void InitWeights();
+
+	void Apply(const VertexArray& vao_in) override;
 
 public:
 	_MeshSkinModifier();
