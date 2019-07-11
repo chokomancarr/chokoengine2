@@ -4,6 +4,7 @@ import os
 import sys
 import struct
 import shutil
+import itertools
 
 class CE_Exporter():
     SIGNATURE = "ChokoEngine Mesh 20"
@@ -33,7 +34,7 @@ class CE_Exporter():
     def execute(self):
         print("---------export start----------")
         if os.access(self.fd, os.W_OK) is False:
-            print("!permission denied : " + dirr)
+            print("!permission denied : " + self.fd)
             return False
         print ("!writing to: " + self.fd + self.fn + ".prefab")
         
@@ -111,6 +112,7 @@ class CE_Exporter():
                 self.write(prefab_file, indent4 + '"armature":"' + self.relfd + self.fn + '.blend/' + e.obj.name + '.armature' + '"\n')
                 self.write(prefab_file, indent3 + '}\n')
                 self.export_armature(self.fd + self.fn + '.blend/' + e.obj.name + '.armature', e.obj)
+                self.export_anim(self.fd + self.fn + '.blend/', e.obj)
 
             if len(e.children) > 0:
                 self.write(prefab_file, indent2 + '},\n')
@@ -270,6 +272,80 @@ class CE_Exporter():
         else:
             self.write(file, '\n')
         self.write(file, indent + ('}\n' if last else '},\n'))
+
+    def export_anim(self, path, arm):
+        arm.data.pose_position = "POSE"
+        _bones = arm.pose.bones
+
+        _fullnames = []
+        for b in _bones:
+            _fullnames.append(self.bonefullname(b))
+
+        for action in bpy.data.actions:
+            if len(action.fcurves) == 0:
+                continue
+            if action.id_root != "OBJECT":
+                continue
+
+            bones = []
+            fullnames = []
+            for b, f in zip(_bones, _fullnames):
+                for c in action.fcurves:
+                    if c.data_path.startswith('pose.bones["' + b.name + '"]'):
+                        bones.append(b)
+                        fullnames.append(f)
+                        break
+            if len(bones) == 0:
+                continue
+            
+            arm.animation_data.action = action
+            
+            frange = action.frame_range
+            fr0 = max(int(frange[0]), 0)
+            fr1 = max(int(frange[1]), 0)
+            
+            mats = [] #foreach frame { foreach bone { [T] [R] [S] } }
+            for f in range(fr0, fr1 + 1):
+                self.scene.frame_set(f)
+                mats.append([])
+                
+                for bn in bones:
+                    mat = self.bonelocalmat(bn)
+                    mats[f-fr0].append([mat.to_translation(), mat.to_quaternion(), mat.to_scale()])
+            
+            # ANIM bonelen2 framestart2 frameend2
+            # foreach bone [ name \0 (foreach frame [ Txyz12 Rwxyz16 Sxyz12 ]) ]
+
+            _path = path + arm.name + "_" + action.name + ".animclip"
+            print ("!writing to: " + _path)
+            file = open(_path, "wb")
+            self.write(file, "ANIM")
+            file.write(struct.pack("<H", len(bones)))
+            file.write(struct.pack("<HH", fr0, fr1))
+            
+            for i, bfn in enumerate(fullnames):
+                self.write(file, bfn + "\x00")
+                for m in mats:
+                    res = m[i][0]
+                    file.write(struct.pack("<fff", res[0], res[2], res[1]))
+                    res = m[i][1]
+                    file.write(struct.pack("<ffff", res[0], -res[1], -res[3], -res[2]))
+                    res = m[i][2]
+                    file.write(struct.pack("<fff", res[0], res[2], res[1]))
+            
+            file.close()
+
+    def bonefullname (self, bone):
+        if bone.parent:
+            return self.bonefullname(bone.parent) + "/" + bone.name
+        else:
+            return bone.name
+
+    def bonelocalmat (self, bone):
+        if bone.parent:
+            return bone.parent.matrix.inverted() * bone.matrix
+        else:
+            return bone.matrix
 
     def cleandir(self, path):
         if os.path.isdir(path):

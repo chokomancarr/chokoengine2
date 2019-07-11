@@ -30,6 +30,8 @@ typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
 class _VertexArray;
 typedef std::shared_ptr<_VertexArray> VertexArray;
 
+template <typename T>
+class Curve;
 class Math;
 class Procedurals;
 class Random;
@@ -81,6 +83,7 @@ CE_END_NAMESPACE
 #include "types/mat4x4.hpp"
 
 #include "utils/math.hpp"
+#include "utils/curve.hpp"
 #include "utils/procedural_mesh.hpp"
 #include "utils/random.hpp"
 #include "utils/subprocess.hpp"
