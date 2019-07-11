@@ -4,10 +4,10 @@
 CE_BEGIN_NAMESPACE
 
 template <typename T>
-Curve::Curve() : keys({}) {}
+Curve<T>::Curve() : keys({}) {}
 
 template <typename T>
-Curve::Curve(const std::vector<T>& k, float start, float end) {
+Curve<T>::Curve(const std::vector<T>& k, float start, float end) {
     const auto sz = k.size();
     keys.resize(sz);
     for (size_t a = 0; a < sz; a++) {
@@ -16,7 +16,7 @@ Curve::Curve(const std::vector<T>& k, float start, float end) {
 }
 
 template <typename T>
-void Curve::AddKey(float t, const T& k) {
+void Curve<T>::AddKey(float t, const T& k) {
     const auto& it = std::find_if(keys.begin(), keys.end(), [&](const T& v) {
         return v.first > t;
     });
@@ -24,7 +24,7 @@ void Curve::AddKey(float t, const T& k) {
 }
 
 template <typename T>
-T Eval(float t) {
+T Curve<T>::Eval(float t) {
     const auto& it = std::lower_bound(keys.begin(), keys.end(), _KeyTp(t, T()), [&](const _KeyTp& a, const _KeyTp& b) {
         return a.first < b.first;
     })

@@ -4,6 +4,8 @@
 CE_BEGIN_ED_NAMESPACE
 
 enum class EAssetType {
+	AnimClip,
+	AnimGraph,
     Armature,
     Font,
     Material,

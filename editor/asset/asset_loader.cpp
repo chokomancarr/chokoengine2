@@ -92,6 +92,7 @@ std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
 
 void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
     switch (t) {
+		CE_E_MKM(AnimClip)
         CE_E_MKM(Armature)
         CE_E_MKM(Material)
         CE_E_MKM(Mesh)
@@ -107,7 +108,8 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
 
 Object EAssetLoader::Load(const std::string& path, const EAssetType t) {
     switch (t) {
-        CE_E_LD(Armature)
+		CE_E_LD(AnimClip)
+		CE_E_LD(Armature)
         CE_E_LD(Material)
         CE_E_LD(Mesh)
         CE_E_LD(Shader)
@@ -117,6 +119,45 @@ Object EAssetLoader::Load(const std::string& path, const EAssetType t) {
             break;
     }
     return nullptr;
+}
+
+CE_E_AL_IMPL(AnimClip) {
+	auto meta = LoadMeta(path);
+	std::ifstream strm(ChokoEditor::assetPath + path, std::ios::binary);
+	char sig[5] = {};
+	strm.read(sig, 4);
+	if (!!std::strcmp(sig, "ANIM")) {
+		Debug::Error("AssetLoader", "AnimClip signature incorrect!");
+		return nullptr;
+	}
+	uint16_t n, r1, r2;
+	strm.read((char*)&n, 2);
+	strm.read((char*)&r1, 2);
+	strm.read((char*)&r2, 2);
+	std::vector<_AnimClip::Entry> es(n);
+	for (auto& e : es) {
+		std::getline(strm, e.signature, '\0');
+		std::vector<Vec3> poss, scls;
+		std::vector<Quat> rots;
+		for (uint16_t a = r1; a <= r2; a++) {
+			Vec3 v31;
+			strm.read((char*)&v31, sizeof(Vec3));
+			Quat q;
+			strm.read((char*)&q, sizeof(Quat));
+			Vec3 v32;
+			strm.read((char*)&v32, sizeof(Vec3));
+			poss.push_back(v31);
+			rots.push_back(q);
+			scls.push_back(v32);
+		}
+		e.positions = Curve<Vec3>(poss, r1, r2);
+		e.rotations = Curve<Quat>(rots, r1, r2);
+		e.scales = Curve<Vec3>(scls, r1, r2);
+	}
+	auto clip = AnimClip::New();
+	clip->entries(es);
+	clip->range(Int2(r1, r2));
+	return clip;
 }
 
 CE_E_AL_IMPL(Armature) {

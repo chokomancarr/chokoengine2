@@ -3,25 +3,12 @@
 
 CE_BEGIN_NAMESPACE
 
-class _AnimClipEntry { CE_OBJECT_COMMON
-	std::string signature;
-	
-
+class _AnimClip::Entry { CE_OBJECT_COMMON
 public:
-	_AnimClipEntry(string name, AnimKeyType type, uint cnt = 0, float* loc = 0) : name(name), type(type),
-		dim((type == AK_ShapeKey) ? 1 : ((type & 0x0f) == 0x01) ? 4 : 3) {
-		if (!!cnt) AddFrames(cnt, loc);
-	}
-
-	std::vector<std::pair<int, Vec4>> frames;
-	uint frameCount;
-
-	string name;
-	const AnimKeyType type;
-	const byte dim;
-
-	void AddFrames(uint cnt, float* loc);
-	Vec4 Eval(float t);
+	std::string signature;
+	Curve<Vec3> positions;
+	Curve<Quat> rotations;
+	Curve<Vec3> scales;
 };
 
 CE_END_NAMESPACE

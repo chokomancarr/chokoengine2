@@ -18,7 +18,7 @@ class _MeshSkinModifier : _MeshModifier { CE_OBJECT_COMMON
 
 	static void InitProgs();
 
-	static void InitWeights();
+	void InitWeights();
 
 	void Apply(const VertexArray& vao_in) override;
 

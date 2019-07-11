@@ -31,6 +31,8 @@ public:
 
 	CE_GET_MEMBER(matrices);
 
+	int BoneIndex(const std::string& sig);
+
 	void OnUpdate() override;
 };
 

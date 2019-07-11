@@ -27,7 +27,8 @@ public:
 
     /* Adds a modifier at location \p index
      */
-    void AddModifier(const MeshModifier& mod, int index = -1);
+	template <typename T>
+	void AddModifier(int index = -1);
 
 	void OnUpdate() override;
 };
@@ -35,3 +36,4 @@ public:
 CE_END_NAMESPACE
 
 #include "mesh/modifier_skin.hpp"
+#include "detail/mesh_renderer.inl"

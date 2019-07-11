@@ -24,6 +24,7 @@ public:
 
     static Object Load(const std::string& path, const EAssetType t);
 
+	CE_E_DEF(AnimClip);
     CE_E_DEF(Armature);
     CE_E_DEF(Material);
     CE_E_DEF(Mesh);

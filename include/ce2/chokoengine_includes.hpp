@@ -30,8 +30,6 @@ typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
 class _VertexArray;
 typedef std::shared_ptr<_VertexArray> VertexArray;
 
-template <typename T>
-class Curve;
 class Math;
 class Procedurals;
 class Random;
@@ -42,6 +40,8 @@ CE_OBJECT(Object)
 
 /* assets
  */
+CE_OBJECT(AnimClip)
+CE_OBJECT(AnimGraph)
 CE_OBJECT(Asset)
 CE_OBJECT(Armature)
 CE_OBJECT(Font)
@@ -69,6 +69,7 @@ CE_OBJECT(CameraEffect)
 CE_OBJECT(Light)
 CE_OBJECT(MeshRenderer)
 CE_OBJECT(MeshModifier)
+CE_OBJECT(MeshSkinModifier)
 CE_OBJECT(Rig)
 CE_OBJECT(Script)
 

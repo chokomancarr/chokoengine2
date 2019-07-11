@@ -6,16 +6,19 @@ CE_BEGIN_NAMESPACE
 TransformFeedback _MeshSkinModifier::_tfProg = 0;
 
 void _MeshSkinModifier::InitWeights() {
-	const auto& vc = _mesh->vertexCount;
+	const auto& mesh = parent->mesh();
+	const auto& vsz = mesh->vertexCount();
+
+	_weightIds.clear();
+	_weightIds.resize(vsz, Int4(-1));
+	_weights.clear();
+	_weights.resize(vsz, Vec4(0));
 
 	std::vector<uint> noweights;
-
-	weightIds = std::vector<Int4>(_mesh->vertexCount);
-	std::vector<SkinDats> dats(_mesh->vertexCount);
-	for (uint i = 0; i < _mesh->vertexCount; i++) {
+	for (size_t i = 0; i < vsz; i++) {
 		byte a = 0;
 		float tot = 0;
-		for (auto& g : _mesh->vertexGroupWeights[i]) {
+		for (auto& g : mesh->vertexGroups()) {
 			auto bn = armature->MapBone(_mesh->vertexGroups[g.first]);
 			if (!bn) continue;
 			weights[i][a].first = bn;
@@ -45,7 +48,7 @@ void _MeshSkinModifier::InitWeights() {
 	}
 
 	if (!!noweights.size())
-		Debug::Warning("SMR", std::to_string(noweights.size()) + " vertices in \"" + _mesh->name + "\" have no weights assigned!");
+		Debug::Warning("SMR", std::to_string(noweights.size()) + " vertices in \"" + mesh->name() + "\" have no weights assigned!");
 }
 
 void _MeshSkinModifier::Apply(const VertexArray& vao_in) {

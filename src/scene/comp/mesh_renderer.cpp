@@ -16,10 +16,6 @@ void _MeshRenderer::materials(const std::vector<Material>& m) {
 	_materials.resize(_mesh->materialCount(), nullptr);
 }
 
-void _MeshRenderer::AddModifier(const MeshModifier& mod, int index) {
-
-};
-
 void _MeshRenderer::OnUpdate() {
 	auto vao = &_mesh->_vao;
 	const auto& elo = &_mesh->_elos;
