@@ -23,7 +23,7 @@ public:
 	CE_GET_MEMBER(num);
 	CE_GET_MEMBER(type);
 
-	void Set(void* data, size_t len);
+	void Set(const void* data, size_t len);
 	void Bind() const;
 	void Unbind() const;
 

@@ -14,7 +14,7 @@ _VertexBuffer::~_VertexBuffer() {
 	glDeleteBuffers(1, &_pointer);
 }
 
-void _VertexBuffer::Set(void* data, size_t len) {
+void _VertexBuffer::Set(const void* data, size_t len) {
 	Bind();
 	if (len > _num)
 		glBufferData(_type, len * _dim * 4, data, _usage);

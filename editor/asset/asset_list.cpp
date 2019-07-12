@@ -25,14 +25,14 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                         return _e.sig == sig;
                     });
                     if (it == ent.end()) {
-                        Debug::Message("AssetList", "Registered \"" + sig + "\"");
+                        Debug::Message("AssetList", "\033[0;32m" "Registered \"" + sig + "\"" "\033[0m");
                         ent.push_back(_Entry(sig));
                         it = ent.end() - 1;
                         it->modtime = 0;
                     }
                     const auto mt = IO::ModTime(ffd + f);
                     if (it->modtime < mt) {
-                        Debug::Message("AssetList", "Updating " + sig);
+                        Debug::Message("AssetList", "\033[0;36m" "Updating " + sig + "\033[0m");
                         if (!IO::FileExists(ffd + f + ".meta")) {
                             EAssetLoader::GenDefaultMeta(sig, (EAssetType)a);
                         }
@@ -88,7 +88,7 @@ const Object& EAssetList::Get(EAssetType t, const std::string& sig) {
         return a;
     }
     if (!i->obj) {
-        Debug::Message("AssetList", "Loading \"" + i->sig + "\"");
+        Debug::Message("AssetList",  "\033[0;34m" "Loading \"" + i->sig + "\"" "\033[0m");
         i->obj = EAssetLoader::Load(i->sig, t);
     }
     return i->obj;

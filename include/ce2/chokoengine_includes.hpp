@@ -64,6 +64,7 @@ CE_OBJECT(SceneObject)
 /* components
  */
 CE_OBJECT(Component)
+CE_OBJECT(Animator)
 CE_OBJECT(Camera)
 CE_OBJECT(CameraEffect)
 CE_OBJECT(Light)

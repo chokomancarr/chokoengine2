@@ -47,12 +47,12 @@ void _Rig::armature(const Armature& arma) {
 	_matrices.resize(_boneObjs.size());
 }
 
-int _Rig::BoneIndex(const std::string& sig) {
+int _Rig::BoneIndex(const std::string& nm) {
 	auto it = std::find_if(_boneObjs.begin(), _boneObjs.end(), [&](const boneObjSt& o) {
-		return o.bone.sig == sig;
+		return o.obj->name() == nm;
 	});
 	if (it == _boneObjs.end()) {
-		Debug::Warning("Rig::BoneIndex", "No bone found with signature \"" + sig + "\"!");
+		Debug::Warning("Rig::BoneIndex", "No bone found with signature \"" + nm + "\"!");
 		return -1;
 	}
 	return (int)(it - _boneObjs.begin());

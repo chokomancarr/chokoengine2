@@ -3,13 +3,11 @@
 
 CE_BEGIN_NAMESPACE
 
-class _AnimGraph::_Transition {
-	pState _from, _to;
-
-
+class _AnimGraph::_Link : public _Object {
+	pNode _target;
 
 public:
-	_Transition();
+	_Link();
 };
 
 CE_END_NAMESPACE

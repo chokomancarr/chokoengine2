@@ -48,12 +48,22 @@ T* Ref_w<T>::operator ->() const {
 
 template <class T>
 bool Ref_w<T>::operator !() const {
-    return _object.expired() || _object->_deleted;
+    return _object.expired() || _object.lock()->_deleted;
+}
+
+template <class T>
+bool Ref_w<T>::operator ==(const Ref<T>& rhs) const {
+    return this->_object == rhs._object;
 }
 
 template <class T>
 bool Ref_w<T>::operator ==(const Ref_w<T>& rhs) const {
     return this->_object == rhs._object;
+}
+
+template <class T>
+bool Ref_w<T>::operator !=(const Ref<T>& rhs) const {
+    return this->_object != rhs._object;
 }
 
 template <class T>

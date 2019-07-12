@@ -4,11 +4,11 @@
 CE_BEGIN_NAMESPACE
 
 class _MeshSkinModifier : _MeshModifier { CE_OBJECT_COMMON
-	TextureBuffer _posBuf;
-	TextureBuffer _nrmBuf;
-	TextureBuffer _datBuf;
+	pRig _rig;
+	pMesh _mesh;
+	
 	TextureBuffer _matBuf;
-	TextureBuffer _shpBuf;
+	TextureBuffer _whtIdBuf;
 	TextureBuffer _whtBuf;
 
 	static TransformFeedback _tfProg;
@@ -18,6 +18,8 @@ class _MeshSkinModifier : _MeshModifier { CE_OBJECT_COMMON
 
 	static void InitProgs();
 
+	void InitResult(size_t);
+	void InitRig();
 	void InitWeights();
 
 	void Apply(const VertexArray& vao_in) override;

@@ -33,7 +33,11 @@ public:
 
 	bool operator !() const;
 
+	bool operator ==(const Ref<T>& rhs) const;
+
 	bool operator ==(const Ref_w<T>& rhs) const;
+
+	bool operator !=(const Ref<T>& rhs) const;
 
 	bool operator !=(const Ref_w<T>& rhs) const;
 

@@ -15,7 +15,7 @@ public:
     
     void AddKey(float t, const T& k);
 
-    T Eval(float t);
+    T Eval(float t) const;
 };
 
 CE_END_NAMESPACE

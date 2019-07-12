@@ -3,13 +3,11 @@
 
 CE_BEGIN_NAMESPACE
 
-class _AnimGraph::_State {
-	AnimClip _clip;
-
-public:
-	_State();
-
-	CE_GET_SET_MEMBER(clip);
+struct _AnimGraph::State {
+	bool inTransition;
+	pNode node;
+	pLink link;
+	std::vector<_Var> vars;
 };
 
 CE_END_NAMESPACE

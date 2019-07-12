@@ -4,6 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 enum class ComponentType {
+	Animator,
 	Camera,
 	Light,
 	MeshRenderer,

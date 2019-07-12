@@ -13,11 +13,15 @@ Quat::Quat(float w, Vec3 v) : glm::quat(w, TG(v)) {}
 
 Quat::Quat(float w, float x, float y, float z) : glm::quat(w, x, y, z) {}
 
-Quat Quat::operator *(const Quat& rhs) {
+Quat Quat::operator *(const Quat& rhs) const{
 	return static_cast<Quat>((glm::quat)(*this) * (glm::quat)(rhs));
 }
 
-Vec3 Quat::operator *(const Vec3& rhs) {
+Quat Quat::operator *(const float& rhs) const{
+	return static_cast<Quat>((glm::quat)(*this) * rhs);
+}
+
+Vec3 Quat::operator *(const Vec3& rhs) const{
 	auto t = (glm::quat)(*this) * TG(rhs);
 	return FG(t);
 }

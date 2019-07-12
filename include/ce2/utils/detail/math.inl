@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 
 template <typename T, typename F>
 T Math::Lerp(const T& a, const T& b, const F& t) {
-    return a + (b - a) * t;
+    return a * (1 - t) + b * t;
 }
 
 template <typename T>

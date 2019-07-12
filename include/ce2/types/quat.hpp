@@ -11,8 +11,9 @@ public:
     Quat(float w, Vec3 v);
     Quat(float w, float x, float y, float z);
 
-	Quat operator *(const Quat& rhs);
-	Vec3 operator *(const Vec3& rhs);
+	Quat operator *(const Quat& rhs) const;
+	Quat operator *(const float& rhs) const;
+	Vec3 operator *(const Vec3& rhs) const;
 
 	Mat4x4 matrix() const;
 

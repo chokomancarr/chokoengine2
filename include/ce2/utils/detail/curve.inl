@@ -20,14 +20,14 @@ void Curve<T>::AddKey(float t, const T& k) {
     const auto& it = std::find_if(keys.begin(), keys.end(), [&](const T& v) {
         return v.first > t;
     });
-    std::insert(it, k);
+    keys.insert(it, k);
 }
 
 template <typename T>
-T Curve<T>::Eval(float t) {
+T Curve<T>::Eval(float t) const{
     const auto& it = std::lower_bound(keys.begin(), keys.end(), _KeyTp(t, T()), [&](const _KeyTp& a, const _KeyTp& b) {
         return a.first < b.first;
-    })
+    });
     if (it == keys.begin()) return it->second;
     return Math::Lerp((it-1)->second, it->second, Math::ILerp((it-1)->first, it->first, t));
 }

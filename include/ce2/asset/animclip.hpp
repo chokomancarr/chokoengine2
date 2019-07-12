@@ -5,6 +5,7 @@ CE_BEGIN_NAMESPACE
 
 class _AnimClip : public _Asset { CE_OBJECT_COMMON
 public:
+    struct Value;
 	class Entry;
 
 private:
@@ -23,6 +24,7 @@ public:
 
 CE_END_NAMESPACE
 
+#include "animclip/animclip_value.hpp"
 #include "animclip/animclip_entry.hpp"
 
 /*
