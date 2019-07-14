@@ -11,6 +11,13 @@ CE_E_AL_IMPL_J(MeshRenderer) {
         if (k == "mesh") {
             mr->mesh(static_cast<Mesh>(EAssetList::Get(EAssetType::Mesh, v.string)));
         }
+		else if (k == "modifiers") {
+			for (auto& g : g.value.group) {
+				if (g.key.string == "skin") {
+					mr->AddModifier<MeshSkinModifier>();
+				}
+			}
+		}
         else if (k == "materials") {
             std::vector<Material> mats;
             for (auto& m : v.list) {

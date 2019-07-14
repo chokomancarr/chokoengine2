@@ -3,9 +3,8 @@
 
 CE_BEGIN_NAMESPACE
 
-class _MeshSkinModifier : _MeshModifier { CE_OBJECT_COMMON
+class _MeshSkinModifier : public _MeshModifier { CE_OBJECT_COMMON
 	pRig _rig;
-	pMesh _mesh;
 	
 	TextureBuffer _matBuf;
 	TextureBuffer _whtIdBuf;
@@ -26,6 +25,8 @@ class _MeshSkinModifier : _MeshModifier { CE_OBJECT_COMMON
 
 public:
 	_MeshSkinModifier();
+
+	CE_GET_SET_MEMBER(rig);
 };
 
 CE_END_NAMESPACE

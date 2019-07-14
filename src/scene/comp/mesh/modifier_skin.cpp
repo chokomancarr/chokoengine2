@@ -10,13 +10,12 @@ void _MeshSkinModifier::InitResult(size_t n) {
 	result->AddBuffer(VertexBuffer_New(true, 3, n, nullptr));
 	result->AddBuffer(VertexBuffer_New(true, 3, n, nullptr));
 	result->AddBuffer(VertexBuffer_New(true, 3, n, nullptr));
-	result->AddBuffer(VertexBuffer_New(true, 2, n, nullptr));
 }
 
 void _MeshSkinModifier::InitRig() {
-	auto p = parent->object();
-	while (!!(p = p->parent())) {
-		if (!!(_rig = p->GetComponent<Rig>())) {
+	auto p = parent->object()->parent();
+	for (auto& o : p->children()) {
+		if (!!(_rig = o->GetComponent<Rig>())) {
 			InitWeights();
 			_matBuf = TextureBuffer::New(VertexBuffer_New(true, 16, _rig->boneObjs().size(), nullptr), GL_RGBA32F);
 			return;
@@ -76,16 +75,16 @@ void _MeshSkinModifier::Apply(const VertexArray& vao_in) {
 	const auto num = vao_in->buffer(0)->num();
 	if (!result || result->buffer(0)->num() != num) {
 		InitResult(num);
+		result->AddBuffer(vao_in->buffer(3));
 	}
 
-	auto& mb = _matBuf->buffer();
-	mb->Set(_rig->matrices().data(), mb->num());
+	//auto& mb = _matBuf->buffer();
+	//mb->Set(_rig->matrices().data(), mb->num());
 
+	_tfProg->vao(vao_in);
 	_tfProg->outputs(result->buffers());
 	_tfProg->Bind();
-	vao_in->Bind();
 	_tfProg->Exec();
-	vao_in->Unbind();
 	_tfProg->Unbind();
 }
 

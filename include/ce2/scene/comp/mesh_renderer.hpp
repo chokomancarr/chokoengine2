@@ -28,7 +28,7 @@ public:
     /* Adds a modifier at location \p index
      */
 	template <typename T>
-	void AddModifier(int index = -1);
+	T AddModifier(int index = -1);
 
 	void OnUpdate() override;
 };

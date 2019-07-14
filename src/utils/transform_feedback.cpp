@@ -66,7 +66,7 @@ void _TransformFeedback::Unbind() {
 void _TransformFeedback::Exec(int n) {
 	glEnable(GL_RASTERIZER_DISCARD);
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, (n > 0) ? n : _vao->buffer(0)->num());
+	glDrawArrays(GL_POINTS, 0, (n > 0) ? n : _vao->buffer(0)->num() * 3);
 	glEndTransformFeedback();
 	glDisable(GL_RASTERIZER_DISCARD);
 	glFlush();

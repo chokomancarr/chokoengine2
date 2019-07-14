@@ -55,6 +55,7 @@ void Renderer::RenderMesh(const MeshRenderer& rend) {
 	if (!mesh) return;
 	const auto& MV = rend->object()->transform()->worldMatrix();
 	const auto& P = MVP::projection();
+
 	const auto& vao = (rend->_modifiers.size() > 0) ? rend->_modifiers.back()->result : mesh->_vao;
 
 	vao->Bind();

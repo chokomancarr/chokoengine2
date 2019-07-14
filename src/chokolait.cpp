@@ -43,8 +43,11 @@ void ChokoLait::Update(emptyCallbackFunc func) {
 	Time::Update();
 	Input::PreLoop();
 	UI::I::PreLoop();
+
 	if (func)
 		func();
+
+	Scene::Update(Scene::_objects);
 }
 
 void ChokoLait::Paint(emptyCallbackFunc rendFunc, emptyCallbackFunc paintFunc) {
@@ -54,8 +57,6 @@ void ChokoLait::Paint(emptyCallbackFunc rendFunc, emptyCallbackFunc paintFunc) {
 
 	if (paintFunc)
 		paintFunc();
-
-	Scene::Update(Scene::_objects);
 
 	glfwSwapBuffers(Display::_window);
 }
