@@ -78,8 +78,8 @@ void _MeshSkinModifier::Apply(const VertexArray& vao_in) {
 		result->AddBuffer(vao_in->buffer(3));
 	}
 
-	//auto& mb = _matBuf->buffer();
-	//mb->Set(_rig->matrices().data(), mb->num());
+	auto& mb = _matBuf->buffer();
+	mb->Set(_rig->matrices().data(), mb->num());
 
 	_tfProg->vao(vao_in);
 	_tfProg->outputs(result->buffers());

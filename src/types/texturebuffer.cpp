@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_TextureBuffer::_TextureBuffer(const VertexBuffer& buf, GLenum fmt) : _Texture(nullptr) {
+_TextureBuffer::_TextureBuffer(const VertexBuffer& buf, GLenum fmt) : _Texture(nullptr), _buffer(buf) {
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_BUFFER, _pointer);
 	glTexBuffer(GL_TEXTURE_BUFFER, fmt, buf->pointer());
