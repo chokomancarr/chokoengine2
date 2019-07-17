@@ -4,7 +4,7 @@ CE_BEGIN_NAMESPACE
 
 _Rig::_Rig() : CE_COMPDEF(Rig), _armature(nullptr), _boneObjs({}) {}
 
-void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, const std::string& path) {
+void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, int pi, const Mat4x4& ib) {
     for (auto& b : bones) {
         auto rot = Quat::LookAt(b.length, b.front);
         if (std::isnan(rot.x) || std::isnan(rot.y) || std::isnan(rot.z) || std::isnan(rot.w)) {
@@ -22,9 +22,9 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
         }
         tr->localRotation(rot);
 
-        const auto _bn = _Bone(b, path, tr->worldMatrix());
+        const auto _bn = _Bone(b, (pi == -1) ? "/" : (_boneObjs[pi].bone.sig + "/"), pi, ib * tr->worldMatrix());
         _boneObjs.push_back(boneObjSt(pSceneObject(obj), _bn));
-        AddBones(obj, b.children, &_bn, path + b.name + "/");
+        AddBones(obj, b.children, &_bn, (int)(_boneObjs.size()-1), ib);
     }
 }
 
@@ -39,11 +39,8 @@ void _Rig::armature(const Armature& arma) {
         _boneObjs.clear();
     }
     _armature = arma;
-    AddBones(object(), arma->bones(), nullptr, "");
 	const auto ib = object()->transform()->worldMatrix().inverse();
-	for (auto& b : _boneObjs) {
-		b.bone.restMat = ib * b.bone.restMat;
-	}
+    AddBones(object(), arma->bones(), nullptr, -1, ib);
 	_matrices.resize(_boneObjs.size());
 }
 
@@ -52,17 +49,19 @@ int _Rig::BoneIndex(const std::string& nm) {
 		return o.obj->name() == nm;
 	});
 	if (it == _boneObjs.end()) {
-		Debug::Warning("Rig::BoneIndex", "No bone found with signature \"" + nm + "\"!");
+		//Debug::Warning("Rig::BoneIndex", "No bone found with signature \"" + nm + "\"!");
 		return -1;
 	}
 	return (int)(it - _boneObjs.begin());
 }
 
 void _Rig::OnUpdate() {
-	const auto ib = object()->transform()->worldMatrix().inverse();
 	const auto& sz = _boneObjs.size();
 	for (size_t a = 0; a < sz; a++) {
-		_matrices[a] = ib * _boneObjs[a].obj->transform()->worldMatrix();
+        auto& bo = _boneObjs[a];
+        if (bo.bone.parentId == -1) bo.bone.currMat = bo.obj->transform()->localMatrix();
+        else bo.bone.currMat = _boneObjs[bo.bone.parentId].bone.currMat * bo.obj->transform()->localMatrix();
+		_matrices[a] = bo.bone.currMat * bo.bone.restMatI;
 	}
 }
 

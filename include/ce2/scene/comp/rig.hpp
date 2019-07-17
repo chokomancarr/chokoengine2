@@ -16,7 +16,7 @@ class _Rig : public _Component { CE_COMPONENT_COMMON
     std::vector<boneObjSt> _boneObjs;
 	std::vector<Mat4x4> _matrices;
 
-    void AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, const std::string& path);
+    void AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, int pi, const Mat4x4& ib);
 
 public:
 	_Rig();

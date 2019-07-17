@@ -47,6 +47,10 @@ void _TransformFeedback::AddUniforms(std::initializer_list<const char*> nms) {
 	}
 }
 
+GLint _TransformFeedback::Loc(int i) const {
+	return _uniforms[i];
+}
+
 void _TransformFeedback::Bind() {
 	glUseProgram(_program);
 	_vao->Bind();

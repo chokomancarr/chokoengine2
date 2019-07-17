@@ -30,7 +30,7 @@ void _MeshSkinModifier::InitWeights() {
 	const auto& vsz = mesh->vertexCount();
 
 	_weightIds.clear();
-	_weightIds.resize(vsz, Int4(-1));
+	_weightIds.resize(vsz, Int4(0));
 	_weights.clear();
 	_weights.resize(vsz, Vec4(0));
 
@@ -41,17 +41,19 @@ void _MeshSkinModifier::InitWeights() {
 		for (auto& g : mesh->vertexGroups()) {
 			auto bn = _rig->BoneIndex(g.name);
 			if (!bn) continue;
-			_weightIds[i][a] = bn;
-			tot += (_weights[i][a] = g.weights[i]);
-			if (++a == 4) break;
+			const auto w = g.weights[i];
+			if (w > 0) {
+				_weightIds[i][a] = bn;
+				tot += (_weights[i][a] = g.weights[i]);
+				if (++a == 4) break;
+			}
 		}
 		if (a == 0) {
 			noweights.push_back(i);
 		}
 		else {
 			while (a > 0) {
-				_weights[i][a - 1] /= tot;
-				a--;
+				_weights[i][--a] /= tot;
 			}
 		}
 	}
@@ -60,7 +62,7 @@ void _MeshSkinModifier::InitWeights() {
 		Debug::Warning("SMR", std::to_string(noweights.size()) + " vertices in \"" + mesh->name() + "\" have no weights assigned!");
 
 	_whtIdBuf = TextureBuffer::New(
-		VertexBuffer_New(true, 4, vsz, _weightIds.data()),
+		VertexBuffer_New(false, 4, vsz, _weightIds.data()),
 		GL_RGBA32I
 	);
 	_whtBuf = TextureBuffer::New(
@@ -84,6 +86,15 @@ void _MeshSkinModifier::Apply(const VertexArray& vao_in) {
 	_tfProg->vao(vao_in);
 	_tfProg->outputs(result->buffers());
 	_tfProg->Bind();
+	glUniform1i(_tfProg->Loc(1), 1);
+	glActiveTexture(GL_TEXTURE1);
+	_whtIdBuf->Bind();
+	glUniform1i(_tfProg->Loc(2), 2);
+	glActiveTexture(GL_TEXTURE2);
+	_whtBuf->Bind();
+	glUniform1i(_tfProg->Loc(3), 3);
+	glActiveTexture(GL_TEXTURE3);
+	_matBuf->Bind();
 	_tfProg->Exec();
 	_tfProg->Unbind();
 }
@@ -91,7 +102,7 @@ void _MeshSkinModifier::Apply(const VertexArray& vao_in) {
 _MeshSkinModifier::_MeshSkinModifier() : _matBuf(0), _whtIdBuf(0), _whtBuf(0) {
 	if (!_tfProg) {
 		(_tfProg = TransformFeedback_New(compute::skin_tf_mat, { "outPos", "outNrm", "outTgt" }))
-			->AddUniforms({ "params", "weightIds", "weights", "mats" });
+			->AddUniforms({ "params", "mids", "mws", "mats" });
 	}
 }
 

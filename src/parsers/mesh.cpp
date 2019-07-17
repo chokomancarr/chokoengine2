@@ -113,6 +113,7 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 	std::vector<Vec3> norms;
 	std::vector<Vec2> uvs;
 	std::vector<Int3> tris;
+	std::vector<_Mesh::VertexGroup> grps;
 	std::vector<std::vector<Int3>> mtris(1);
 
 	std::getline(strm, s, '\0');
@@ -167,6 +168,22 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 			}
 			break;
 		}
+		case 'G': {
+			uint8_t ng = 0;
+			READ(ng);
+			grps.resize(ng, _Mesh::VertexGroup(vcnt));
+			for (uint8_t g = 0; g < ng; g++) {
+				std::getline(strm, grps[g].name, '\0');
+			}
+			uint8_t gi = 0;
+			for (uint32_t a = 0; a < vcnt; a++) {
+				READ(ng);
+				for (uint8_t g = 0; g < ng; g++) {
+					READ(gi);
+					READ(grps[gi].weights[a]);
+				}
+			}
+		}
 		default:
 			goto asdf;
 			break;
@@ -181,6 +198,7 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 	m->texcoords(uvs);
 	m->triangles(tris);
 	m->matTriangles(mtris);
+	m->vertexGroups(grps);
 	m->CalculateTangents();
 	m->Apply();
 	return m;

@@ -4,6 +4,19 @@
 CE_BEGIN_NAMESPACE
 
 class _Mesh : public _Asset { CE_OBJECT_COMMON
+public:
+	struct VertexGroup {
+		std::string name;
+		std::vector<float> weights;
+
+		VertexGroup(size_t n) : name(""), weights(n) {}
+	};
+	struct ShapeKey {
+		std::string name;
+		std::vector<Vec3> _offset;
+	};
+
+private:
 	std::vector<Vec3> _positions;
 	std::vector<Vec3> _normals;
 	std::vector<Vec3> _tangents; 
@@ -12,16 +25,8 @@ class _Mesh : public _Asset { CE_OBJECT_COMMON
 	std::vector<Int3> _triangles;
 	std::vector<std::vector<Int3>> _matTriangles;
 
-	struct VertexGroup {
-		std::string name;
-		std::vector<float> weights;
-	};
 	std::vector<VertexGroup> _vertexGroups;
 
-	struct ShapeKey {
-		std::string name;
-		std::vector<Vec3> _offset;
-	};
 	std::vector<ShapeKey> _shapeKeys;
 
 	VertexBuffer _posVbo, _nrmVbo, _tanVbo, _texVbo;

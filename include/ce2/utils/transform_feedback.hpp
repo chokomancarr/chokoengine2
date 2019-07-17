@@ -14,6 +14,8 @@ public:
 	
 	void AddUniforms(std::initializer_list<const char*> nms);
 
+	GLint Loc(int i) const;
+
 	CE_GET_SET_MEMBER(vao);
 	CE_GET_SET_MEMBER(outputs);
 
