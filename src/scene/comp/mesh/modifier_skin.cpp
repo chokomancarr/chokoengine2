@@ -34,22 +34,28 @@ void _MeshSkinModifier::InitWeights() {
 	_weights.clear();
 	_weights.resize(vsz, Vec4(0));
 
-	std::vector<uint> noweights;
+	std::vector<int> bis = {};
+	const auto& grps = mesh->vertexGroups();
+	for (auto& g : grps) {
+		bis.push_back(_rig->BoneIndex(g.name));
+	}
+
+	uint noweights = 0;
 	for (size_t i = 0; i < vsz; i++) {
 		byte a = 0;
 		float tot = 0;
-		for (auto& g : mesh->vertexGroups()) {
-			auto bn = _rig->BoneIndex(g.name);
-			if (!bn) continue;
-			const auto w = g.weights[i];
+		for (size_t g = 0, n = grps.size(); g < n; g++) {
+			auto bn = bis[g];
+			if (bn == -1) continue;
+			const auto w = grps[g].weights[i];
 			if (w > 0) {
 				_weightIds[i][a] = bn;
-				tot += (_weights[i][a] = g.weights[i]);
+				tot += (_weights[i][a] = w);
 				if (++a == 4) break;
 			}
 		}
 		if (a == 0) {
-			noweights.push_back(i);
+			noweights++;
 		}
 		else {
 			while (a > 0) {
@@ -58,8 +64,9 @@ void _MeshSkinModifier::InitWeights() {
 		}
 	}
 
-	if (!!noweights.size())
-		Debug::Warning("SMR", std::to_string(noweights.size()) + " vertices in \"" + mesh->name() + "\" have no weights assigned!");
+	if (!!noweights) {
+		Debug::Warning("SMR", std::to_string(noweights) + " vertices in \"" + mesh->name() + "\" have no weights assigned!");
+	}
 
 	_whtIdBuf = TextureBuffer::New(
 		VertexBuffer_New(false, 4, vsz, _weightIds.data()),

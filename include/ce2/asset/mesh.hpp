@@ -13,7 +13,7 @@ public:
 	};
 	struct ShapeKey {
 		std::string name;
-		std::vector<Vec3> _offset;
+		std::vector<Vec3> offsets;
 	};
 
 private:

@@ -35,5 +35,7 @@ public:
 
 CE_END_NAMESPACE
 
-#include "mesh/modifier_skin.hpp"
 #include "detail/mesh_renderer.inl"
+
+#include "mesh/modifier_shape.hpp"
+#include "mesh/modifier_skin.hpp"
