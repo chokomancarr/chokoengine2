@@ -1,5 +1,5 @@
 #include "chokoengine.hpp"
-#include "compute/skin_tf_mat.h"
+#include "compute/shape_tf.h"
 
 CE_BEGIN_NAMESPACE
 
@@ -46,12 +46,10 @@ void _MeshShapeModifier::Apply(const VertexArray& vao_in) {
 		result->AddBuffer(vao_in->buffer(3));
 	}
 
-	auto& mb = _whtBuf->buffer();
-	mb->Set(_weights.data(), mb->num());
-
 	_tfProg->vao(vao_in);
 	_tfProg->outputs(result->buffers());
 	_tfProg->Bind();
+	glUniform1i(_tfProg->Loc(0), _weights.size());
 	glUniform1i(_tfProg->Loc(1), 1);
 	glActiveTexture(GL_TEXTURE1);
 	_shpBuf->Bind();
@@ -62,10 +60,31 @@ void _MeshShapeModifier::Apply(const VertexArray& vao_in) {
 	_tfProg->Unbind();
 }
 
+void _MeshShapeModifier::OnSetMesh(const Mesh& m) {
+	if (_weights.size() != m->shapeKeys().size()) {
+		InitWeights();
+	}
+}
+
+void _MeshShapeModifier::SetWeight(const std::string& nm, float v) {
+	const auto& shps = parent->mesh()->shapeKeys();
+	auto it = std::find_if(shps.begin(), shps.end(), [&](const _Mesh::ShapeKey& sk) {
+		return sk.name == nm;
+	});
+	if (it == shps.end()) return;
+	SetWeight((int)(it - shps.begin()), v);
+}
+
+void _MeshShapeModifier::SetWeight(int i, float v) {
+	_weights[i] = v;
+
+	_whtBuf->buffer()->Set(_weights.data(), _weights.size());
+}
+
 _MeshShapeModifier::_MeshShapeModifier() : _shpBuf(0), _whtBuf(0) {
 	if (!_tfProg) {
-		(_tfProg = TransformFeedback_New(compute::skin_tf_mat, { "outPos" }))
-			->AddUniforms({ "shps", "whts" });
+		(_tfProg = TransformFeedback_New(compute::shape_tf, { "outPos" }))
+			->AddUniforms({ "num", "shps", "whts" });
 	}
 }
 

@@ -106,6 +106,8 @@ void _MeshSkinModifier::Apply(const VertexArray& vao_in) {
 	_tfProg->Unbind();
 }
 
+void _MeshSkinModifier::OnSetMesh(const Mesh& m) {}
+
 _MeshSkinModifier::_MeshSkinModifier() : _matBuf(0), _whtIdBuf(0), _whtBuf(0) {
 	if (!_tfProg) {
 		(_tfProg = TransformFeedback_New(compute::skin_tf_mat, { "outPos", "outNrm", "outTgt" }))

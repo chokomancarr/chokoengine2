@@ -114,6 +114,7 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 	std::vector<Vec2> uvs;
 	std::vector<Int3> tris;
 	std::vector<_Mesh::VertexGroup> grps;
+	std::vector<_Mesh::ShapeKey> shps;
 	std::vector<std::vector<Int3>> mtris(1);
 
 	std::getline(strm, s, '\0');
@@ -184,6 +185,17 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 				}
 			}
 		}
+		case 'S': {
+			uint8_t ns = 0;
+			READ(ns);
+			shps.resize(ns);
+			for (uint8_t s = 0; s < ns; s++) {
+				auto& shp = shps[s];
+				std::getline(strm, shp.name, '\0');
+				shp.offsets.resize(vcnt);
+				strm.read((char*)shp.offsets.data(), vcnt * sizeof(Vec3));
+			}
+		}
 		default:
 			goto asdf;
 			break;
@@ -199,6 +211,7 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 	m->triangles(tris);
 	m->matTriangles(mtris);
 	m->vertexGroups(grps);
+	m->shapeKeys(shps);
 	m->CalculateTangents();
 	m->Apply();
 	return m;

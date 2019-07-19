@@ -11,6 +11,8 @@ protected:
 
 	virtual void Apply(const VertexArray& vao_in) = 0;
 
+	virtual void OnSetMesh(const Mesh& m) = 0;
+
 public:
     virtual ~_MeshModifier() = default;
 

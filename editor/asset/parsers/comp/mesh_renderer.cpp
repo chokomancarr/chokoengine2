@@ -13,7 +13,10 @@ CE_E_AL_IMPL_J(MeshRenderer) {
         }
 		else if (k == "modifiers") {
 			for (auto& g : g.value.group) {
-				if (g.key.string == "skin") {
+				if (g.key.string == "shape") {
+					mr->AddModifier<MeshShapeModifier>();
+				}
+				else if (g.key.string == "skin") {
 					mr->AddModifier<MeshSkinModifier>();
 				}
 			}

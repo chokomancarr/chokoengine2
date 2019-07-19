@@ -91,8 +91,9 @@ void ChokoEditor::Main() {
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {
 			EWindowManager::Update();
-			Scene::FindByName("body1")->transform()->localRotation(Quat::FromEuler(Vec3(0, std::cos(Time::time() * 2) * 20, 0)));
+			Scene::FindByName("body1")->transform()->localRotation(Quat::FromEuler(Vec3(0, std::cos(Time::time() * 2) * 10, 0)));
 			Scene::FindByName("head")->transform()->localRotation(Quat::FromEuler(Vec3(0, std::sin(Time::time() * 2) * 20, 0)));
+			static_cast<MeshShapeModifier>(Scene::FindByName("body")->GetComponent<MeshRenderer>()->modifiers()[0])->SetWeight(2, 1);
 		});
 		ChokoLait::Paint(0, paint);
 	}

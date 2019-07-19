@@ -23,6 +23,8 @@ class _MeshSkinModifier : public _MeshModifier { CE_OBJECT_COMMON
 
 	void Apply(const VertexArray& vao_in) override;
 
+	void OnSetMesh(const Mesh& m) override;
+
 public:
 	_MeshSkinModifier();
 
