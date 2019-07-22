@@ -20,20 +20,6 @@ void paint() {
 
 	//lht->radius(UI::I::Slider(Rect(10, 210, 100, 20), Vec2(0, 2), lht->radius(), Color::yellow()));
 
-	static int um2 = 1;
-	if(Input::KeyDown(InputKey::M)) {
-		mr->materials({ ms[um2++] });
-		if (um2 > 2)
-			um2 = 0;
-	}
-
-	static int us2 = 1;
-	if(Input::KeyDown(InputKey::B)) {
-		Scene::sky(ss[us2++]);
-		if (us2 > 2)
-			us2 = 0;
-	}
-
 	// static std::string s = "Hello";
 	// s = UI::I::TextField(Rect(Display::width() - 200, Display::height() - 30, 150, 20), s, UITextFieldStyle(Color::blue()));
 

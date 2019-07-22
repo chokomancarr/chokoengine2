@@ -89,4 +89,13 @@ std::string StrExt::ExtensionOf(const std::string& s) {
 	return s.substr(pd + 1);
 }
 
+float StrExt::ToFloat(const std::string& s, float def) {
+	try {
+		return std::stof(s);
+	}
+	catch (const std::logic_error&) {
+		return def;
+	}
+}
+
 CE_END_NAMESPACE

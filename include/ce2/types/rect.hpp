@@ -16,6 +16,11 @@ public:
     CE_GET_SET_MEMBER(h);
     float x2() const;
     float y2() const;
+    
+    /* Returns a sub-rect inside this rect
+     * parameters are offsets *into* the rect (padding)
+     */
+    Rect sub(float dx1, float dy1, float dx2, float dy2) const;
 
     float area() const;
 

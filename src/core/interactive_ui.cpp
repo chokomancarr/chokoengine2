@@ -44,6 +44,8 @@ std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UI
 	bool active = textFieldCallers.Add();
 
 	if (active) {
+		Rect(r, style.editing());
+
 		bool chg = false;
 		bool lmb = Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Down;
 		//check for quit
@@ -104,7 +106,7 @@ std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UI
 			_textFieldInfo.time = 0;
 		}
 		
-		Label(r, _textFieldInfo.buffer, Color::white());
+		Label(r, _textFieldInfo.buffer, style.textEditing());
 
 		//move cursor (requires label data)
 		const auto lmbs = Input::mouseStatus(InputMouseButton::Left);
@@ -126,7 +128,7 @@ std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UI
 		}
 	}
 	else {
-		if (Button(r, UIButtonStyle(Color::green())) == InputMouseStatus::HoverUp) {
+		if (Button(r, style.normal()) == InputMouseStatus::HoverUp) {
 			textFieldCallers.Set();
 			_textFieldInfo.editing = true;
 			_textFieldInfo.buffer = s;
@@ -135,7 +137,7 @@ std::string UI::I::TextField(const CE_NS Rect& r, const std::string& s, const UI
 			_textFieldInfo.cursor2 = 0;
 			_textFieldInfo.time = 0;
 		}
-		Label(r, s, Color::white());
+		Label(r, s, style.textNormal());
 	}
 	return s;
 }

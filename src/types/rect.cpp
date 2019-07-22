@@ -16,6 +16,10 @@ float Rect::y2() const {
     return _y + _h;
 }
 
+Rect Rect::sub(float dx1, float dy1, float dx2, float dy2) const {
+    return Rect(_x + dx1, _y + dy1, _w - dx1 - dx2, _h - dy1 - dy2);
+}
+
 float Rect::area() const {
 	return _w * _w + _h * _h;
 }

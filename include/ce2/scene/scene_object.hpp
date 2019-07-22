@@ -17,11 +17,20 @@ public:
 			const Quat& rot = Quat(1, 0, 0, 0),
 			const Vec3& scl = Vec3(1));
 
+	/* Transformation data of the object
+	 */
 	pTransform transform();
 
+	/* List of components attached to the object
+	 */
 	CE_GET_MEMBER(components);
+
+	/* List of sub-objects attached to the object
+	 */
 	CE_GET_MEMBER(children);
 
+	/* Parent object this object is attached to
+	 */
 	CE_GET_MEMBER(parent);
 	CE_SET_MEMBER_F(parent);
 
