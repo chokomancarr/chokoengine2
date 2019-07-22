@@ -9,6 +9,8 @@ void _Animator::graph(const AnimGraph& g) {
 
 }
 
+void _Animator::OnUpdate() {
 
+}
 
 CE_END_NAMESPACE

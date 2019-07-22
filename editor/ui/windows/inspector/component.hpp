@@ -20,6 +20,7 @@ public:
 
 CE_END_ED_NAMESPACE
 
-#define CE_E_BEGIN_DRAWCOMP(tp) void EW_I_Component::Draw ## tp(const Component& c, Rect& r) {\
+#define CE_E_BEGIN_DRAWCOMP(tp) void EW_I_Component::Draw ## tp(const Component& _c, Rect& r) {\
+    tp c = static_cast<tp>(_c);
 
 #define CE_E_END_DRAWCOMP }

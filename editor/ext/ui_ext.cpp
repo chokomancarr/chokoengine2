@@ -4,7 +4,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 float UI_Ext::TextFieldF(const Rect& r, const float& f) {
-    return StrExt::ToFloat(UI::I::TextField(r, std::to_string(f), Color(0.1f, 0.5f)), f);
+    return StrExt::ToFloat(UI::I::TextField(r, std::to_string(f), Color(0.2f, 0.8f)), f);
 }
 
 Vec3 UI_Ext::TextFieldV3(const Rect& r, const Vec3& v) {

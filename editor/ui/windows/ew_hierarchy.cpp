@@ -13,6 +13,10 @@ void EW_Hierarchy::DrawMenuObject(int& off, const std::vector<SceneObject>& oo, 
 		}
 		UI::Label(Rect(position.x() + 20 + 17 * level, position.y() + 20 + 17 * off, position.w() - 21 - 17 * level, 16), o->name(), Color::gray(0.8f));
 		off++;
+		
+		//
+		if (!!o->GetComponent<Rig>()) continue;
+
 		DrawMenuObject(off, o->children(), level + 1);
 	}
 }

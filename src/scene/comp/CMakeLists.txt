@@ -2,6 +2,7 @@ set(DIR src/scene/comp)
 
 set(SOURCES
 	${SOURCES}
+	${DIR}/animator.cpp
 	${DIR}/camera.cpp
 	${DIR}/light.cpp
 	${DIR}/mesh_renderer.cpp

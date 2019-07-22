@@ -81,7 +81,7 @@ void _MeshShapeModifier::SetWeight(int i, float v) {
 	_whtBuf->buffer()->Set(_weights.data(), _weights.size());
 }
 
-_MeshShapeModifier::_MeshShapeModifier() : _shpBuf(0), _whtBuf(0) {
+_MeshShapeModifier::_MeshShapeModifier() : _MeshModifier("Shape Keying"), _shpBuf(0), _whtBuf(0) {
 	if (!_tfProg) {
 		(_tfProg = TransformFeedback_New(compute::shape_tf, { "outPos" }))
 			->AddUniforms({ "num", "shps", "whts" });

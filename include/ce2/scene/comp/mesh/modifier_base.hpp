@@ -9,6 +9,8 @@ protected:
 
 	pMeshRenderer parent;
 
+	_MeshModifier(const std::string& nm) : _Object(nm) {}
+
 	virtual void Apply(const VertexArray& vao_in) = 0;
 
 	virtual void OnSetMesh(const Mesh& m) = 0;
