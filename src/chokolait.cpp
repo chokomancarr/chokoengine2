@@ -15,7 +15,7 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 	Display::Init();
 	Display::InitWindow(title, w, h);
 
-	if (!Engine::Init()) {
+	if (!ChokoEngine::Init()) {
 		return false;
 	}
 

@@ -1,4 +1,5 @@
 #include "chokoeditor.hpp"
+#include "ui/windows/inspector/status/comp/script.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

@@ -3,16 +3,20 @@
 CE_BEGIN_NAMESPACE
 
 class _Object : public std::enable_shared_from_this<_Object> {
+    static ChokoEngine::objectid _idCount;
+
 protected:
     _Object(const std::string& nm = "Unnamed Object");
 
     bool _deleted = false;
 
     std::string _name;
+    const ChokoEngine::objectid _id;
 public:
     virtual ~_Object() = default;
 
     CE_GET_SET_MEMBER(name);
+    CE_GET_MEMBER(id);
 
     template <class T>
     friend class Ref;

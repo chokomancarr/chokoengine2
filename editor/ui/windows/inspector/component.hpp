@@ -1,26 +1,29 @@
 #pragma once
 #include "chokoeditor.hpp"
 
+#define EW_IC_DRAWARGS const Component& _c, Rect& r, const pEW_I_Status& _status
+
 CE_BEGIN_ED_NAMESPACE
 
 class EW_I_Component {
-    typedef void (*_DrawFn)(const Component& c, Rect& r);
+    typedef void (*_DrawFn)(EW_IC_DRAWARGS);
 
     static std::array<_DrawFn, (size_t)ComponentType::_COUNT> _funcs;
 
-    static void DrawAnimator(const Component& c, Rect& r);
-    static void DrawCamera(const Component& c, Rect& r);
-    static void DrawMeshRenderer(const Component& c, Rect& r);
-    static void DrawRig(const Component& c, Rect& r);
-    static void DrawScript(const Component& c, Rect& r);
+    static void DrawAnimator(EW_IC_DRAWARGS);
+    static void DrawCamera(EW_IC_DRAWARGS);
+    static void DrawMeshRenderer(EW_IC_DRAWARGS);
+    static void DrawRig(EW_IC_DRAWARGS);
+    static void DrawScript(EW_IC_DRAWARGS);
 
 public:
-	static void Draw(const Component& c, Rect& r);
+	static void Draw(EW_IC_DRAWARGS);
 };
 
 CE_END_ED_NAMESPACE
 
-#define CE_E_BEGIN_DRAWCOMP(tp) void EW_I_Component::Draw ## tp(const Component& _c, Rect& r) {\
-    tp c = static_cast<tp>(_c);
+#define CE_E_BEGIN_DRAWCOMP(tp) void EW_I_Component::Draw ## tp(EW_IC_DRAWARGS) {\
+    tp c = static_cast<tp>(_c);\
+    auto status = std::static_pointer_cast<EW_IS_ ## tp>(_status);
 
 #define CE_E_END_DRAWCOMP }

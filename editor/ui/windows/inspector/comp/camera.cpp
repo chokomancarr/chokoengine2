@@ -1,5 +1,6 @@
 #include "chokoeditor.hpp"
 #include "ext/ui_ext.hpp"
+#include "ui/windows/inspector/status/comp/camera.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

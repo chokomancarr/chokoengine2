@@ -1,4 +1,5 @@
 #include "chokoeditor.hpp"
+#include "ui/windows/inspector/status/comp/meshrenderer.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -10,7 +11,7 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
     UI::Label(Rect(r.x() + 10, r.y(), r.w() * 0.33f, 16), "Modifiers", Color::white());
     r.y(r.y() + 17);
     for (auto& m : c->modifiers()) {
-        UI::Label(Rect(r.x() + 14, r.y(), r.w() * 0.33f, 16), m->name(), Color::white());
+        UI::Label(Rect(r.x() + 22, r.y(), r.w() - 28, 16), m->name(), Color::white());
         r.y(r.y() + 17);
     }
     dy = r.y() - y0;

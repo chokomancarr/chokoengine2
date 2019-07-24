@@ -149,6 +149,7 @@ add_subdirectory("editor/ui")
 add_subdirectory("editor/ui/windows")
 add_subdirectory("editor/ui/windows/inspector")
 add_subdirectory("editor/ui/windows/inspector/comp")
+add_subdirectory("editor/ui/windows/inspector/status")
 add_subdirectory("editor/ui/windows/ops")
 add_subdirectory("editor/ui/windows/sceneview")
 

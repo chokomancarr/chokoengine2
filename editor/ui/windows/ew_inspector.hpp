@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoeditor.hpp"
+#include "inspector/status/status_base.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -10,6 +11,8 @@ protected:
 	void DrawMenu() override;
 
 public:
+	static EW_I_Status::UMap statuses;
+
 	bool Init() override;
 };
 

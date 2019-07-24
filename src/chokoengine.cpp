@@ -2,8 +2,8 @@
 
 CE_BEGIN_NAMESPACE
 
-bool Engine::Init() {
-	Debug::Message("Engine", "engine says hello!");
+bool ChokoEngine::Init() {
+	Debug::Message("ChokoEngine", "engine says hello!");
 
 #define TRYINIT(nm)\
 	if (!nm::Init()) return false;
@@ -21,8 +21,8 @@ bool Engine::Init() {
 	return true;
 }
 
-void Engine::Cleanup() {
-	Debug::Message("Engine", "engine says byebye!");
+void ChokoEngine::Cleanup() {
+	Debug::Message("ChokoEngine", "engine says byebye!");
 }
 
 CE_END_NAMESPACE

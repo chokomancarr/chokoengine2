@@ -14,9 +14,9 @@
  * - component: components inheriting _Component
  */
 #define CE_CLASS_COMMON\
-	friend ChokoEngine::Engine;\
-	friend ChokoEngine::ChokoLait;\
-	friend ChokoEngine::Backend::Renderer;
+	friend ::ChokoEngine::ChokoEngine;\
+	friend ::ChokoEngine::ChokoLait;\
+	friend ::ChokoEngine::Backend::Renderer;
 #define CE_OBJECT_COMMON\
 	CE_CLASS_COMMON\
 	public:\
