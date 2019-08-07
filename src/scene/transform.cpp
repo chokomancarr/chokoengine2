@@ -49,6 +49,15 @@ void Transform::worldRotation(const Quat& q) {
     CE_NOT_IMPLEMENTED;
 }
 
+void Transform::localRotationEuler(const Vec3& v) {
+    _localRotation = Quat::FromEuler(v);
+    UpdateLocalMatrix();
+}
+
+void Transform::worldRotationEuler(const Vec3& q) {
+    CE_NOT_IMPLEMENTED;
+}
+
 void Transform::localScale(const Vec3& s) {
     _localScale = s;
     UpdateLocalMatrix();

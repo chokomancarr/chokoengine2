@@ -17,7 +17,9 @@ class Transform { CE_CLASS_COMMON
     Vec3 _localPosition;
     Vec3 _worldPosition;
     Quat _localRotation;
+    Vec3 _localRotationEuler;
     Quat _worldRotation;
+    Vec3 _worldRotationEuler;
     Vec3 _localScale;
 
     Mat4x4 _localMatrix;
@@ -30,10 +32,17 @@ public:
     CE_SET_MEMBER_F(localPosition);
     CE_GET_MEMBER(worldPosition);
     CE_SET_MEMBER_F(worldPosition);
+
     CE_GET_MEMBER(localRotation);
     CE_SET_MEMBER_F(localRotation);
     CE_GET_MEMBER(worldRotation);
     CE_SET_MEMBER_F(worldRotation);
+    
+    CE_GET_MEMBER(localRotationEuler);
+    CE_SET_MEMBER_F(localRotationEuler);
+    CE_GET_MEMBER(worldRotationEuler);
+    CE_SET_MEMBER_F(worldRotationEuler);
+
     CE_GET_MEMBER(localScale);
     CE_SET_MEMBER_F(localScale);
 

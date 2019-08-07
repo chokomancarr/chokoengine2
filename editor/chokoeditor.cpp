@@ -54,18 +54,9 @@ void ChokoEditor::Main() {
 	ss[1] = Background::New(IO::path() + "res/skyy.hdr", 6);
 	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
 
-	//auto obj = Prefab::Load("test.prefab");
 	Scene::sky(ss[0]);
 	Scene::sky()->brightness(1);
 	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, "aa/kcschan.prefab"));
-
-	/*
-	auto obj = Scene::AddNewObject();
-	obj->name("Armature");
-	obj->AddComponent<Rig>()->armature(
-		(Armature)EAssetList::Get(EAssetType::Armature, "Armature.armature")
-	);
-	*/
 
 	EWindowManager::LoadWindows();
 
@@ -77,9 +68,9 @@ void ChokoEditor::Main() {
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {
 			EWindowManager::Update();
-			Scene::FindByName("body1")->transform()->localRotation(Quat::FromEuler(Vec3(0, std::cos(Time::time() * 2) * 10, 0)));
-			Scene::FindByName("head")->transform()->localRotation(Quat::FromEuler(Vec3(0, std::sin(Time::time() * 2) * 20, 0)));
-			static_cast<MeshShapeModifier>(Scene::FindByName("body")->GetComponent<MeshRenderer>()->modifiers()[0])->SetWeight(2, 1);
+			//Scene::FindByName("body1")->transform()->localRotation(Quat::FromEuler(Vec3(0, std::cos(Time::time() * 2) * 10, 0)));
+			//Scene::FindByName("head")->transform()->localRotation(Quat::FromEuler(Vec3(0, std::sin(Time::time() * 2) * 20, 0)));
+			//static_cast<MeshShapeModifier>(Scene::FindByName("body")->GetComponent<MeshRenderer>()->modifiers()[0])->SetWeight(2, 1);
 		});
 		ChokoLait::Paint(0, paint);
 	}
