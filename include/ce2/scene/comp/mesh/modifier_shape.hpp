@@ -3,6 +3,11 @@
 
 CE_BEGIN_NAMESPACE
 
+/* Blends between shape keys of the mesh.
+ * Shape keys must be available in the mesh data.
+ * If the mesh is also animated, this modifier should
+ * normally be applied before the Skin Modifier.
+ */
 class _MeshShapeModifier : public _MeshModifier { CE_OBJECT_COMMON
 	TextureBuffer _shpBuf;
 	TextureBuffer _whtBuf;

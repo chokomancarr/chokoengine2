@@ -33,12 +33,12 @@ _FrameBuffer::_FrameBuffer(uint w, uint h, std::vector<GLenum> types)
 		_texs[a] = Texture::New(w, h, types[a], TextureOptions(
 			TextureWrap::Clamp, TextureWrap::Repeat, 0, false
 		));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, (bufs[a] = GL_COLOR_ATTACHMENT0 + a), GL_TEXTURE_2D, _texs[a]->_pointer, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, (bufs[a] = GL_COLOR_ATTACHMENT0 + (GLsizei)a), GL_TEXTURE_2D, _texs[a]->_pointer, 0);
 	}
 	_depth = DepthTexture_New(w, h);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depth->_pointer, 0);
 
-	glDrawBuffers(bufs.size(), bufs.data());
+	glDrawBuffers((GLsizei)bufs.size(), bufs.data());
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		Debug::Error("FrameBuffer", "gl error " + std::to_string(status));

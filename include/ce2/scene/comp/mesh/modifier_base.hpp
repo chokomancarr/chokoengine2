@@ -3,6 +3,8 @@
 
 CE_BEGIN_NAMESPACE
 
+/* A modifier applied to a mesh renderer
+ */
 class _MeshModifier : public _Object { CE_OBJECT_COMMON
 protected:
 	VertexArray result;

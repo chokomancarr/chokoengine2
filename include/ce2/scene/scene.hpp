@@ -3,6 +3,9 @@
 
 CE_BEGIN_NAMESPACE
 
+/* The Scene class contains the objects and
+ * details of the game world.
+ */
 class Scene { CE_CLASS_COMMON
 	static CE_EXPORT std::vector<SceneObject> _objects;
 	

@@ -1,6 +1,6 @@
 #pragma once
 #include "chokoeditor.hpp"
-#include "parsers/json.hpp"
+#include "ce2/parsers/json.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

@@ -3,6 +3,10 @@
 
 CE_BEGIN_NAMESPACE
 
+/* Transforms the mesh with a parent Rig.
+ * The mesh data must contain valid vertex weights
+ * for the bones of the rig.
+ */
 class _MeshSkinModifier : public _MeshModifier { CE_OBJECT_COMMON
 	pRig _rig;
 	

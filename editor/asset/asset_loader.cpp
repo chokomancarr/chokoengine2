@@ -1,5 +1,5 @@
 #include "chokoeditor.hpp"
-#include "parsers/mesh.hpp"
+#include "ce2/parsers/mesh.hpp"
 #include "templates/meta/meta_common.hpp"
 
 CE_BEGIN_ED_NAMESPACE

@@ -1,5 +1,5 @@
 #include "chokoengine.hpp"
-#include "parsers/mesh.hpp"
+#include "ce2/parsers/mesh.hpp"
 
 CE_BEGIN_NAMESPACE
 

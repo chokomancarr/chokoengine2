@@ -38,7 +38,7 @@ endif()
 endif()
 
 set(INC_DIRS
-	${PROJECT_SOURCE_DIR}/include/ce2
+	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/src
 	${GLFW3_INCLUDE_DIR}
 	${GLM_INCLUDE_DIR}

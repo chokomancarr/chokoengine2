@@ -1,5 +1,5 @@
 #include "chokoengine.hpp"
-#include "parsers/json.hpp"
+#include "ce2/parsers/json.hpp"
 #include <cctype>
 
 CE_BEGIN_NAMESPACE

@@ -1,6 +1,39 @@
 #pragma once
 #include "chokoengine.hpp"
 
+#ifdef PLATFORM_WIN
+#include "minimalwin.h"
+#else
+#include <unistd.h>
+#endif
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtx/quaternion.hpp"
+
+CE_BEGIN_NAMESPACE
+
+/* type extensions
+ */
+typedef unsigned char byte;
+typedef unsigned int uint;
+typedef unsigned long ulong;
+typedef unsigned short ushort;
+
+typedef glm::tvec2<int, glm::highp> Int2;
+typedef glm::tvec3<int, glm::highp> Int3;
+typedef glm::tvec4<int, glm::highp> Int4;
+
+CE_END_NAMESPACE
+
+/* engine headers
+*/
 #include "backend/chokoengine_backend_base.hpp"
 
 #include "core/debug.hpp"
@@ -11,12 +44,8 @@
 
 CE_BEGIN_NAMESPACE
 
-/* types
+/* class declarations
  */
-typedef glm::tvec2<int, glm::highp> Int2;
-typedef glm::tvec3<int, glm::highp> Int3;
-typedef glm::tvec4<int, glm::highp> Int4;
-
 class Color;
 class Vec2;
 class Vec3;
