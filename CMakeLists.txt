@@ -45,6 +45,7 @@ set(INC_DIRS
 	${GLEW_INCLUDE_DIR}
 	${JPEG_INCLUDE_DIR}
 	${FREETYPE_INCLUDE_DIRS}
+	${PROJECT_SOURCE_DIR}/chokoballs/include
 )
 if (MSVC)
     set(INC_DIRS
@@ -53,7 +54,15 @@ if (MSVC)
     )
 endif()
 
-set(LINK_DIRS )
+if (MSVC)
+    set(LINK_DIRS
+        ${PROJECT_SOURCE_DIR}/chokoballs/build/lib/Release
+    )
+else()
+    set(LINK_DIRS
+        ${PROJECT_SOURCE_DIR}/chokoballs/build/lib
+    )
+endif()
 
 set(LIBS
 	${OPENGL_gl_LIBRARY}
@@ -62,6 +71,7 @@ set(LIBS
 	${GLEW_LIBRARY}
 	${JPEG_LIBRARY}
 	${FREETYPE_LIBRARIES}
+	ChokoBalls
 )
 if(MSVC)
     set(LIBS
