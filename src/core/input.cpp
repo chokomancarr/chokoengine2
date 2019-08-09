@@ -6,6 +6,8 @@ Vec2 Input::_mousePositionOld;
 Vec2 Input::_mousePosition;
 Vec2 Input::_mouseDownPosition;
 
+Vec2 Input::_mouseScroll;
+
 std::array<bool, 5> Input::_mouseButtonStatesOld = {};
 std::array<bool, 5> Input::_mouseButtonStates = {};
 
@@ -18,6 +20,7 @@ std::u32string Input::_inputUnicodeString;
 bool Input::Init() {
     glfwSetCursorPosCallback(Display::_window, _OnCursorMove);
     glfwSetMouseButtonCallback(Display::_window, _OnMouseClick);
+	glfwSetScrollCallback(Display::_window, _OnMouseScroll);
     glfwSetInputMode(Display::_window, GLFW_STICKY_KEYS, true);
     glfwSetKeyCallback(Display::_window, _OnKeyPress);
     glfwSetCharCallback(Display::_window, _OnCharInput);
@@ -34,6 +37,7 @@ void Input::PostLoop() {
     _mousePositionOld = _mousePosition;
     _mouseButtonStatesOld = _mouseButtonStates;
     _keyStatesOld = _keyStates;
+	_mouseScroll = 0;
     _inputString.clear();
     _inputUnicodeString.clear();
 }
@@ -45,6 +49,10 @@ void Input::_OnCursorMove(GLFWwindow*, double x, double y) {
 void Input::_OnMouseClick(GLFWwindow*, int btn, int vl, int mod) {
     if (btn < 5)
         _mouseButtonStates[btn] = !!vl;
+}
+
+void Input::_OnMouseScroll(GLFWwindow*, double x, double y) {
+	_mouseScroll = Vec2((float)x, (float)y);
 }
 
 void Input::_OnKeyPress(GLFWwindow*, int key, int, int act, int) {

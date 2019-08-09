@@ -21,6 +21,9 @@ bool UI::matrixIsI;
 
 Font UI::_defaultFont;
 
+Rect UI::_stencilRect;
+std::vector<Rect> UI::_stencilRects;
+
 bool UI::Init() {
 	(colShad = Shader::New(glsl::uiColVert, glsl::uiColFrag))
 		->AddUniforms({ "col" });
@@ -242,6 +245,63 @@ void UI::Label(const CE_NS Rect& rect, const std::u32string& ucs, const Color& c
 	_Font::idbuf->Unbind();
 	_Font::vao->Unbind();
 	_Font::_prog->Unbind();
+}
+
+void UI::BeginStencil(const CE_NS Rect& rect) {
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_STENCIL_TEST);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glDepthMask(GL_FALSE);
+	glStencilFunc(GL_NEVER, 1, 0xFF);
+	glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP); // draw 1s on test fail (always)
+	glStencilMask(0xFF); // draw stencil pattern
+	glClear(GL_STENCIL_BUFFER_BIT); // needs mask=0xFF
+	Rect(rect, Color::white());
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDepthMask(GL_TRUE);
+	glStencilMask(0x0);
+	glStencilFunc(GL_EQUAL, 1, 0xFF);
+
+	_stencilRect = rect;
+	if (!_stencilRects.size()) {
+		_stencilRects.resize(1, rect);
+	}
+}
+
+void UI::PushStencil(const CE_NS Rect& rect) {
+	if (!_stencilRects.size()) BeginStencil(rect);
+	else {
+		_stencilRects.push_back(rect);
+		auto rt = _stencilRects[0];
+		for (size_t a = 1, ssz = _stencilRects.size(); a < ssz; a++) {
+			rt = rt.Intersection(_stencilRects[a]);
+		}
+		BeginStencil(rt);
+	}
+}
+
+void UI::PopStencil() {
+	_stencilRects.pop_back();
+	auto ssz = _stencilRects.size();
+	if (!ssz) {
+		EndStencil();
+	}
+	else {
+		auto rt = _stencilRects[0];
+		for (size_t a = 1; a < ssz; a++) {
+			rt = rt.Intersection(_stencilRects[a]);
+		}
+		BeginStencil(rt);
+	}
+}
+
+void UI::EndStencil() {
+	glDisable(GL_STENCIL_TEST);
+	glDisable(GL_DEPTH_TEST);
+
+	_stencilRects.clear();
 }
 
 CE_END_NAMESPACE

@@ -12,6 +12,8 @@ class Input { CE_CLASS_COMMON
 	static CE_EXPORT Vec2 _mousePosition;
 	static CE_EXPORT Vec2 _mouseDownPosition;
 
+	static CE_EXPORT Vec2 _mouseScroll;
+
 	static std::array<bool, 5> _mouseButtonStatesOld;
 	static std::array<bool, 5> _mouseButtonStates;
 
@@ -28,6 +30,7 @@ class Input { CE_CLASS_COMMON
 
 	static void _OnCursorMove(GLFWwindow*, double, double);
 	static void _OnMouseClick(GLFWwindow*, int, int, int);
+	static void _OnMouseScroll(GLFWwindow*, double, double);
 	static void _OnKeyPress(GLFWwindow*, int, int, int, int);
 	static void _OnCharInput(GLFWwindow*, uint);
 public:
@@ -42,6 +45,10 @@ public:
 	/* Distance the pointer moved in screen coordinates
 	 */
 	static Vec2 mouseDelta();
+
+	/* Distance the pointer scrolled
+	 */
+	CE_GET_ST_MEMBER(mouseScroll);
 
 	/* Text input from the keyboard
 	 * Use Key* functions for individual key inputs

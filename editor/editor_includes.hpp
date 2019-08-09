@@ -11,6 +11,7 @@ CE_END_ED_NAMESPACE
 #include "hooks/callback.hpp"
 
 #include "ui/colors.hpp"
+#include "ui/layout/ui_layout.hpp"
 
 #include "asset/asset_list.hpp"
 #include "asset/asset_loader.hpp"

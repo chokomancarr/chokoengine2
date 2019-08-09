@@ -56,4 +56,12 @@ bool Rect::Intersects(const Rect& r) const {
     );
 }
 
+Rect Rect::Intersection(const Rect& r) const {
+	const float ox = std::max(_x, r._x);
+	const float oy = std::max(_y, r._y);
+	const float p2x = std::min(x2(), r.x2());
+	const float p2y = std::min(y2(), r.y2());
+	return Rect(ox, oy, p2x - ox, p2y - oy);
+}
+
 CE_END_NAMESPACE
