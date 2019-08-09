@@ -104,8 +104,7 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 	gbuf->Bind();
 	gbuf->Clear();
 
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	glBlendFunc(GL_ONE, GL_ZERO);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_CULL_FACE);
 
@@ -115,8 +114,7 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 
 	gbuf->Unbind();
 
-	glEnable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_ALWAYS);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glDisable(GL_CULL_FACE);

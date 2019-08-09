@@ -28,6 +28,10 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 	glClearColor(0, 0, 0, 0);
 	glClearDepth(1);
 
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+
 	Time::Reset();
 
 	return true;

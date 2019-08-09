@@ -113,7 +113,7 @@ void _Texture::Blit(const RenderTarget& dst, const Material& mat) {
 	dst->BindTarget();
     glViewport(0, 0, dst->width(), dst->height());
     Ref<_Texture> tex(std::static_pointer_cast<_Texture>(shared_from_this()));
-    glDisable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ZERO);
 	if (!mat) {
         UI::Texture(Rect(0, 0, Display::width(), Display::height()), tex);
     }
@@ -125,7 +125,7 @@ void _Texture::Blit(const RenderTarget& dst, const Material& mat) {
         Backend::Renderer::emptyVao()->Unbind();
         mat->Unbind();
 	}
-    glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glViewport(0, 0, Display::width(), Display::height());
 	dst->UnbindTarget();
 }

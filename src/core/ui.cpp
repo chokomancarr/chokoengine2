@@ -248,10 +248,8 @@ void UI::Label(const CE_NS Rect& rect, const std::u32string& ucs, const Color& c
 }
 
 void UI::BeginStencil(const CE_NS Rect& rect) {
-	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_STENCIL_TEST);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glDepthMask(GL_FALSE);
 	glStencilFunc(GL_NEVER, 1, 0xFF);
@@ -298,8 +296,8 @@ void UI::PopStencil() {
 }
 
 void UI::EndStencil() {
-	glDisable(GL_STENCIL_TEST);
-	glDisable(GL_DEPTH_TEST);
+	glDepthFunc(GL_ALWAYS);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 
 	_stencilRects.clear();
 }
