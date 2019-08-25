@@ -2,16 +2,22 @@
 #include "chokoengine.hpp"
 
 #include "enums/shader_variable_type.hpp"
+#include "enums/shader_queue.hpp"
+#include "enums/shader_ztest.hpp"
+#include "enums/shader_blend.hpp"
 #include "shader/shader_variable.hpp"
 
 CE_BEGIN_NAMESPACE
 
 class _Shader : public _Asset { CE_OBJECT_COMMON
-
 	GLuint pointer;
 	std::vector<GLuint> pointers;
 	std::vector<ShaderVariable> variables;
 	std::vector<std::pair<std::string, bool>> options;
+
+	ShaderQueue _queue;
+	ShaderZTest _ztest;
+	ShaderBlend _blendSrc, _blendDst;
 
 	static bool LoadShader(GLenum shaderType, std::string source, GLuint& shader, std::string* err = nullptr);
 	static bool LinkShader(GLuint prog);
@@ -19,6 +25,9 @@ class _Shader : public _Asset { CE_OBJECT_COMMON
 	static GLuint FromVF(const std::string& vert, const std::string& frag);
 
 	void UpdatePointer();
+
+	void ApplyFlags();
+
 public:
 	_Shader();
 	_Shader(const std::string& vert, const std::string& frag);
@@ -31,10 +40,15 @@ public:
 
 	void RegisterStandardUniforms();
 
-	void Bind();
-	void Unbind();
+	void Bind() const;
+	void Unbind() const;
 
-	GLint Loc(int);
+	CE_GET_SET_MEMBER(queue);
+	CE_GET_SET_MEMBER(ztest);
+	CE_GET_SET_MEMBER(blendSrc);
+	CE_GET_SET_MEMBER(blendDst);
+
+	GLint Loc(int) const;
 
 	friend class UI;
 	friend class _Material;

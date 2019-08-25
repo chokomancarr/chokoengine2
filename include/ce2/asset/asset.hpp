@@ -13,13 +13,13 @@ public:
 
 CE_END_NAMESPACE
 
-#include "asset/animclip.hpp"
-#include "asset/animgraph.hpp"
-#include "asset/armature.hpp"
-#include "asset/font.hpp"
-#include "asset/mesh.hpp"
-#include "asset/shader.hpp"
-#include "asset/material.hpp"
-#include "asset/texture.hpp"
-#include "asset/background.hpp"
-#include "asset/render_target.hpp"
+#include "./animclip.hpp"
+#include "./animgraph.hpp"
+#include "./armature.hpp"
+#include "./font.hpp"
+#include "./mesh.hpp"
+#include "./shader.hpp"
+#include "./material.hpp"
+#include "./texture.hpp"
+#include "./background.hpp"
+#include "./render_target.hpp"

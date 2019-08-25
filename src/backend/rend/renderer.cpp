@@ -29,7 +29,7 @@ Shader Renderer::skyShad;
 Shader Renderer::pointLightShad;
 
 void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camera>& cameras,
-		std::vector<Light>& lights, std::vector<MeshRenderer>& rends) {
+		std::vector<Light>& lights, std::vector<MeshRenderer>& orends, std::vector<MeshRenderer>& trends) {
 	for (auto& o : oo) {
 		for (auto& c : o->_components) {
 			switch(c->componentType) {
@@ -39,14 +39,28 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camer
 			case ComponentType::Light:
 				lights.push_back(static_cast<Light>(c));
 				break;
-			case ComponentType::MeshRenderer:
-				rends.push_back(static_cast<MeshRenderer>(c));
+			case ComponentType::MeshRenderer: {
+				const auto r = static_cast<MeshRenderer>(c);
+				bool iso = false, ist = false;
+				for (auto& m : r->materials()) {
+					if (m->shader()->queue == ShaderQueue::Transparent) {
+						ist = true;
+					}
+					else {
+						iso = true;
+					}
+				}
+				if (iso)
+					orends.push_back(r);
+				if (ist)
+					trends.push_back(r);
 				break;
+			}
 			default:
 				break;
 			}
 		}
-		ScanObjects(o->children(), cameras, lights, rends);
+		ScanObjects(o->children(), cameras, lights, orends, trends);
 	}
 }
 
@@ -74,7 +88,7 @@ void Renderer::RenderMesh(const MeshRenderer& rend) {
 	vao->Unbind();
 }
 
-void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& rends) {
+void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& orends, const std::vector<MeshRenderer>& trends) {
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPreRender();
 	}
@@ -268,12 +282,12 @@ bool Renderer::Init() {
 void Renderer::Render() {
 	std::vector<Camera> cameras;
 	std::vector<Light> lights;
-	std::vector<MeshRenderer> rends;
+	std::vector<MeshRenderer> orends, trends;
 
-	ScanObjects(Scene::objects(), cameras, lights, rends);
+	ScanObjects(Scene::objects(), cameras, lights, orends, trends);
 
 	for (auto& c : cameras) {
-		RenderCamera(c, lights, rends);
+		RenderCamera(c, lights, orends, trends);
 	}
 }
 

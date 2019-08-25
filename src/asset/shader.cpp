@@ -97,6 +97,28 @@ void _Shader::UpdatePointer() {
 	pointer = pointers[j];
 }
 
+void _Shader::ApplyFlags() {
+	static const GLenum zt[] = {
+		GL_NEVER,
+		GL_ALWAYS,
+		GL_LESS,
+		GL_LEQUAL,
+		GL_EQUAL,
+		GL_GEQUAL,
+		GL_GREATER
+	};
+	glDepthFunc(zt[(int)_ztest]);
+	static const GLenum bl[] = {
+		GL_ZERO,
+		GL_ONE,
+		GL_SRC_ALPHA,
+		GL_DST_ALPHA,
+		GL_ONE_MINUS_SRC_ALPHA,
+		GL_ONE_MINUS_DST_ALPHA
+	};
+	glBlendFunc(bl[(int)_blendSrc], bl[(int)_blendDst]);
+}
+
 _Shader::_Shader() : pointer(0) {}
 
 _Shader::_Shader(const std::string& vert, const std::string& frag) {
@@ -164,15 +186,15 @@ void _Shader::RegisterStandardUniforms() {
 	AddUniform("_MVP", ShaderVariableType::Matrix);
 }
 
-void _Shader::Bind() {
+void _Shader::Bind() const {
 	glUseProgram(pointer);
 }
 
-void _Shader::Unbind() {
+void _Shader::Unbind() const {
 	glUseProgram(0);
 }
 
-GLint _Shader::Loc(int i) {
+GLint _Shader::Loc(int i) const {
 	return variables[i]._location;
 }
 

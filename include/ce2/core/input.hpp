@@ -1,5 +1,4 @@
 #pragma once
-#include "defines.hpp"
 #include "enums/input_key.hpp"
 #include "enums/input_mouse_button.hpp"
 #include "enums/input_mouse_status.hpp"

@@ -71,7 +71,7 @@ set(LIBS
 	${GLEW_LIBRARY}
 	${JPEG_LIBRARY}
 	${FREETYPE_LIBRARIES}
-	ChokoBalls
+	#ChokoBalls
 )
 if(MSVC)
     set(LIBS
