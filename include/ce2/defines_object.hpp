@@ -1,7 +1,5 @@
 #pragma once
 
-/* Use this to forward declare objects
- */
 #define CE_OBJECT(nm)\
 	class _ ## nm;\
 	typedef Ref<_ ## nm> nm;\

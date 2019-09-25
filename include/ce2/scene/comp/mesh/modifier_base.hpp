@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/modifier_type.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -11,7 +12,7 @@ protected:
 
 	pMeshRenderer parent;
 
-	_MeshModifier(const std::string& nm) : _Object(nm) {}
+	_MeshModifier(const std::string& nm, MeshModifierType t) : _Object(nm), type(t) {}
 
 	virtual void Apply(const VertexArray& vao_in) = 0;
 
@@ -19,6 +20,8 @@ protected:
 
 public:
     virtual ~_MeshModifier() = default;
+
+	const MeshModifierType type;
 
 	friend class _MeshRenderer;
 };

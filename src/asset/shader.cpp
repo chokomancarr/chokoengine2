@@ -108,20 +108,25 @@ void _Shader::ApplyFlags() {
 		GL_GREATER
 	};
 	glDepthFunc(zt[(int)_ztest]);
-	static const GLenum bl[] = {
-		GL_ZERO,
-		GL_ONE,
-		GL_SRC_ALPHA,
-		GL_DST_ALPHA,
-		GL_ONE_MINUS_SRC_ALPHA,
-		GL_ONE_MINUS_DST_ALPHA
-	};
-	glBlendFunc(bl[(int)_blendSrc], bl[(int)_blendDst]);
+	if (_queue == ShaderQueue::Opaque) {
+		glBlendFunc(GL_ONE, GL_ZERO);
+	}
+	else {
+		static const GLenum bl[] = {
+			GL_ZERO,
+			GL_ONE,
+			GL_SRC_ALPHA,
+			GL_DST_ALPHA,
+			GL_ONE_MINUS_SRC_ALPHA,
+			GL_ONE_MINUS_DST_ALPHA
+		};
+		glBlendFunc(bl[(int)_blendSrc], bl[(int)_blendDst]);
+	}
 }
 
-_Shader::_Shader() : pointer(0) {}
+_Shader::_Shader() : pointer(0), _queue(ShaderQueue::Opaque), _ztest(ShaderZTest::LessEqual), _blendSrc(ShaderBlend::SrcAlpha), _blendDst(ShaderBlend::OneMinusSrcAlpha) {}
 
-_Shader::_Shader(const std::string& vert, const std::string& frag) {
+_Shader::_Shader(const std::string& vert, const std::string& frag) : _Shader() {
 	uint vers = 1;
 	std::istringstream vstrm(vert);
 	std::string s;

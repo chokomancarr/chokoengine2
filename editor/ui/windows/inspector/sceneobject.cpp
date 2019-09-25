@@ -16,9 +16,9 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 
 	r.y(r.y() + 20);
 
-	CE_E_EDIT_V3(tr->, "Position", localPosition);
-	CE_E_EDIT_V3(tr->, "Rotation", localRotationEuler);
-	CE_E_EDIT_V3(tr->, "Scale", localScale);
+	CE_E_EDIT_V3_FV(tr->, "Position", localPosition);
+	CE_E_EDIT_V3_FV(tr->, "Rotation", localRotationEuler);
+	CE_E_EDIT_V3_FV(tr->, "Scale", localScale);
 
 	for (auto& c : o->components()) {
 		auto cstatus = status->components.Get<EW_IS_Component>(c->id());

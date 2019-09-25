@@ -43,7 +43,8 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camer
 				const auto r = static_cast<MeshRenderer>(c);
 				bool iso = false, ist = false;
 				for (auto& m : r->materials()) {
-					if (m->shader()->queue == ShaderQueue::Transparent) {
+					if (!m || !m->shader()) continue;
+					if (m->shader()->_queue == ShaderQueue::Transparent) {
 						ist = true;
 					}
 					else {
@@ -76,6 +77,7 @@ void Renderer::RenderMesh(const MeshRenderer& rend) {
 	for (size_t a = 0; a < rend->_mesh->materialCount(); a++) {
 		const auto& mat = rend->_materials[a];
 		if (!mat) continue;
+		mat->shader()->ApplyFlags();
 		mat->SetUniform("_MV", MV);
 		mat->SetUniform("_P", P);
 		mat->SetUniform("_MVP", P * MV);
@@ -122,7 +124,7 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_CULL_FACE);
 
-	for (auto& r : rends) {
+	for (auto& r : orends) {
 		RenderMesh(r);
 	}
 
@@ -140,8 +142,12 @@ void Renderer::RenderCamera(const Camera& cam, const std::vector<Light>& lights,
 	}
 
 	if ((cam->_clearType == CameraClearType::Color)
-		|| (cam->_clearType == CameraClearType::ColorAndDepth))
+			|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
+		float zero[4] = {};
 		glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
+		glClearBufferfv(GL_COLOR, 1, zero);
+		glClearBufferfv(GL_COLOR, 2, zero);
+	}
 	if ((cam->_clearType == CameraClearType::Depth)
 		|| (cam->_clearType == CameraClearType::ColorAndDepth))
 		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
