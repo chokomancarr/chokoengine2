@@ -42,6 +42,7 @@ void Transform::worldPosition(const Vec3& v) {
 
 void Transform::localRotation(const Quat& q) {
     _localRotation = q;
+    _localRotationEuler = Quat::ToEuler(q) * Math::rad2deg;
     UpdateLocalMatrix();
 }
 
@@ -50,6 +51,7 @@ void Transform::worldRotation(const Quat& q) {
 }
 
 void Transform::localRotationEuler(const Vec3& v) {
+    _localRotationEuler = v;
     _localRotation = Quat::FromEuler(v);
     UpdateLocalMatrix();
 }

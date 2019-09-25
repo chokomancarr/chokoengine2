@@ -21,6 +21,7 @@ public:
 
     static Quat identity();
 	static Quat FromEuler(const Vec3& e);
+	static Vec3 ToEuler(const Quat& q);
 	static Quat FromAxisAngle(Vec3 axis, float angle);
 	static Quat LookAt(const Vec3& tar);
 	static Quat LookAt(const Vec3& tar, const Vec3& up);

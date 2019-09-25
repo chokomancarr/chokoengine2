@@ -42,6 +42,10 @@ Quat Quat::FromEuler(const Vec3& e) {
 	return glm::quat(Math::deg2rad * TG(e));
 }
 
+Vec3 Quat::ToEuler(const Quat& q) {
+	return *(Vec3*)glm::value_ptr(glm::eulerAngles(q));
+}
+
 Quat Quat::FromAxisAngle(Vec3 axis, float angle) {
 	axis = axis.normalized();
 	float a = Math::deg2rad * angle;
