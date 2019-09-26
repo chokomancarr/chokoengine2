@@ -2,9 +2,28 @@
 
 CE_BEGIN_NAMESPACE
 
-void Subprocess::Run(const std::string& program, const std::vector<std::string>& args, Subprocess::_CbFunc callback) {
+int Subprocess::Run(const std::string& program, const std::vector<std::string>& args, Subprocess::_CbFunc callback) {
 #ifdef PLATFORM_WIN
-	CE_NOT_IMPLEMENTED
+	STARTUPINFO si = {};
+	PROCESS_INFORMATION pi;
+	si.cb = sizeof(si);
+	std::string cmd = "cmd /C \"" + program + "\"";
+	if (!CreateProcess("C:\\Windows\\System32\\cmd.exe", &cmd[0], NULL, NULL, FALSE, CREATE_NO_WINDOW, 0, 0, &si, &pi)) {
+		Debug::Warning("Subprocess::Run", "Could not create cmd process!");
+		return -1;
+	}
+	DWORD w;
+	do {
+		w = WaitForSingleObject(pi.hProcess, 100);
+	} while (w == WAIT_TIMEOUT);
+
+	DWORD dret;
+	GetExitCodeProcess(pi.hProcess, &dret);
+
+	CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
+
+	return (int)dret;
 #else
     int pipe_fd[2];
     if (pipe(pipe_fd) == -1) return;
@@ -20,7 +39,7 @@ void Subprocess::Run(const std::string& program, const std::vector<std::string>&
         dup2(pipe_fd[1], 1);
         setvbuf(stdout, nullptr, _IOLBF, 0);
         execv(program.c_str(), (char**)cargs.data());
-        exit(0);
+        exit(-5);
     }
     else {
         close(pipe_fd[1]);
@@ -32,6 +51,13 @@ void Subprocess::Run(const std::string& program, const std::vector<std::string>&
                 std::cout << "Child says " << std::string(data, dsz) << std::endl;
             }
         }
+		if (WIFEXITED(status)) {
+			return WEXITSTATUS(status);
+		}
+		else {
+			Debug::Warning("Subprocess::Run", "Child process terminated unexpectedly!");
+			return -2;
+		}
     }
 #endif
 }
