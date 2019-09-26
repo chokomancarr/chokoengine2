@@ -41,6 +41,7 @@ void ChokoEditor::Main() {
 
 	EAssetList::Init();
 	EImages::Init();
+	EIcons::Init();
 	EWindowManager::Init();
 	ESerializer::Init();
 

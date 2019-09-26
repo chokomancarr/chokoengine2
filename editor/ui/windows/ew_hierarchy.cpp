@@ -4,7 +4,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& oo, int level) {
-	const auto dx = 5 * level + 1;
+	const auto dx = 5 * level + 2;
 	float ol = 0;
 	for (auto& o : oo) {
 		auto st = EW_Inspector::statuses.Get<EW_IS_SceneObject>(o->id());
@@ -13,30 +13,33 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 			UIButtonStyle(Color(0.2f), Color(0.25f), Color(0.1f)) :
 			UIButtonStyle(Color(0, 0), Color(0.3f, 0.5f), Color(0.1f));
 		const bool hc = !!o->children().size();
-		bool nhe = true;
+		bool prs = false;
 		if (hc) {
-			auto hb = UI::I::Button(Rect(position.x() + dx, off, 16, 16), style);
-			nhe = (hb == InputMouseStatus::None);
+			auto hb = UI::I::ButtonTr(Rect(position.x() + dx, off, 16, 16));
+			prs = !!((int)(hb) & 0x0f);
 			if (hb == InputMouseStatus::HoverUp) {
 				st->expanded = !st->expanded;
 			}
 		}
-		if (nhe && UI::I::Button(Rect(position.x() + 1, off, position.w() - 2, 16), style)
+		if (!prs && UI::I::Button(Rect(position.x() + 1, off, position.w() - 2, 16), style)
 				== InputMouseStatus::HoverUp) {
 			ESceneInfo::selectedObject = o;
 			isa = true;
+		}
+		if (hc) {
+			UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[st->expanded ? "minus" : "plus"], Color(0.8f));
 		}
 		UI::Label(Rect(position.x() + dx + 17, off, position.w() - dx - 18, 16), o->name(), Color::gray(0.8f));
 		
 		if (level > 0) {
 			ol = off + 8;
-			UI::Rect(Rect(position.x() + dx - 2, ol, 5, 1), Color(0.7f, 0.3f));
+			UI::Rect(Rect(position.x() + dx - 4, ol, hc ? 5 : 15, 1), Color(0.7f, 0.3f));
 		}
 
 		const auto off0 = off += 17;
 		if (hc && st->expanded) {
 			auto ol = DrawMenuObject(off, o->children(), level + 1);
-			UI::Rect(Rect(position.x() + dx + 2, off0, 1, ol - off0), Color(0.7f, 0.3f));
+			UI::Rect(Rect(position.x() + dx, off0, 1, ol - off0), Color(0.7f, 0.3f));
 		}
 	}
 	return ol;

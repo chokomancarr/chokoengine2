@@ -6,6 +6,7 @@ class EWindow;
 
 CE_END_ED_NAMESPACE
 
+#include "res/icons.hpp"
 #include "res/images.hpp"
 
 #include "hooks/callback.hpp"

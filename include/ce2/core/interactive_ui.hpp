@@ -24,9 +24,14 @@ class UI::I { CE_CLASS_COMMON
 
 public:
     /* Draws a clickable button with dimensions \p r
-     * If a string is provided, a label is drawn inside the button
+     * The optional string is drawn inside the button
      */
     static InputMouseStatus Button(const CE_NS Rect& r, const UIButtonStyle& s, const std::string& t = "", const Font& font = _defaultFont);
+
+	/* Draws a clickable button with dimensions \p r
+	 * using texture \p t as the button
+	 */
+	static InputMouseStatus Button(const CE_NS Rect& r, const UIButtonStyle& s, const CE_NS Texture& t, const Color& c = Color::white());
 
     /* A clickable button with dimensions \p r
      */

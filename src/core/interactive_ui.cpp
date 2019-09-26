@@ -10,6 +10,17 @@ void UI::I::PreLoop() {
 	textFieldCallers.Preloop();
 }
 
+InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, const CE_NS Texture& t, const Color& c) {
+	const auto ret = ButtonTr(r);
+	const auto col = (ret == InputMouseStatus::None) ? s.normal() :
+		(((ret == InputMouseStatus::Hover) || (ret == InputMouseStatus::HoverUp)) ? s.hover() : s.pressed());
+	Rect(r, col);
+	
+	Texture(r, t, c);
+
+	return ret;
+}
+
 InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, const std::string& t, const Font& font) {
 	const auto ret = ButtonTr(r);
 	const auto col = (ret == InputMouseStatus::None) ? s.normal() :
