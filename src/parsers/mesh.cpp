@@ -90,7 +90,15 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 		}
 	}
 
-	if (!verts.size() || !tris.size()) return nullptr;
+	if (!verts.size()) {
+		Debug::Warning("Mesh Parser", "vertex count is zero!");
+		return nullptr;
+	}
+	if (!tris.size()) {
+		Debug::Warning("Mesh Parser", "face count is zero!");
+		return nullptr;
+	}
+
 	Mesh m = Mesh::New();
 	m->positions(verts);
 	m->normals(norms);
@@ -203,7 +211,15 @@ Mesh MeshLoader::LoadMesh(const std::string& path) {
 	}
 	asdf:
 
-	if (!verts.size() || !tris.size()) return nullptr;
+	if (!verts.size()) {
+		Debug::Warning("Mesh Parser", "vertex count is zero!");
+		return nullptr;
+	}
+	if (!tris.size()) {
+		Debug::Warning("Mesh Parser", "face count is zero!");
+		return nullptr;
+	}
+
 	Mesh m = Mesh::New();
 	m->positions(verts);
 	m->normals(norms);

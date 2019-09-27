@@ -56,10 +56,16 @@ void ChokoEditor::Main() {
 	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
 
 	Scene::sky(ss[0]);
-	Scene::sky()->brightness(0.1f);
-	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, "aa/kcschan.prefab"));
-	Scene::AddNewObject()->AddComponent<Light>(LightType::Spot)
-		->object()->transform()->localPosition(Vec3(-8, -7, -3));
+	Scene::sky()->brightness(0);
+	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab"));
+	Scene::objects().back()->transform()->localPosition(Vec3(1.5f, -1.5f, 2));
+	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, 185, 0));
+	auto& o = Scene::AddNewObject(Scene::FindByName("celing lamp"));
+	auto& l = o->AddComponent<Light>(LightType::Point);
+	l->distance(20);
+	l->strength(1);
+	l->color(Color(1, 0.9f, 0.7f));
+	o->transform()->localPosition(Vec3(0, -0.5f, 0));
 
 	EWindowManager::LoadWindows();
 

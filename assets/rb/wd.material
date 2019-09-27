@@ -1,0 +1,15 @@
+{
+  "shader":".internal/standard_specular.shader",
+  "Texture":{
+    "name":"diffuse",
+    "value":"rb/wd_df.png"
+  },
+  "Texture":{
+    "name":"specular_smoothness",
+    "value":"rb/wd_ss.png"
+  },
+  "Texture":{
+    "name":"occlusion",
+    "value":"rb/wd_ao.png"
+  }
+}

@@ -26,7 +26,7 @@ class UI { CE_CLASS_COMMON
 	static bool Init();
 
 	static void InitVao();
-	static void SetVao(uint sz, void* vts, void* uvs);
+	static void SetVao(uint sz, const void* vts, const void* uvs);
 
 	static float Dw(float f);
 	static float Dh(float f);
@@ -51,41 +51,57 @@ public:
 	 */
 	static void Rect(const CE_NS Rect& rect, const Color& color);
 
-	/* Draws a UTF-8 string within the provided dimensions.
+	/* Draws a straight line connecting two points
+	 */
+	static void Line(const Vec2& p1, const Vec2& p2, const Color& col);
+
+	/* Draws a UTF-8 string within the provided dimensions
 	 * The text will be abbreviated (The quick fox -> The q...)
-	 * if the text is longer than the width provided.
+	 * if the text is longer than the width provided
 	 */
 	static void Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font = _defaultFont);
 
-	/* Draws a unicode string within the provided dimensions.
+	/* Draws a unicode string within the provided dimensions
 	 * The text will be abbreviated (The quick fox -> The q...)
-	 * if the text is longer than the width provided.
+	 * if the text is longer than the width provided
 	 */
 	static void Label(const CE_NS Rect& rect, const std::u32string& str, const Color& col, const Font& font = _defaultFont);
 
-	/* Defines the area to limit subsequent drawings.
+	/* Defines the area to limit subsequent drawings
 	 */
 	static void BeginStencil(const CE_NS Rect& rect);
 
-	/* Adds a stencil layer.
-	 * This maintains an internal stack of Rects.
+	/* Defines the area to limit subsequent drawings
+	 * If \p useAlpha is true, the alpha channel controls visibility,
+	 * otherwise the red channel is used
+	 */
+	static void BeginStencil(const CE_NS Texture& tex, bool useAlpha);
+
+	/* Adds a stencil layer
+	 * This maintains an internal stack of Rects
+	 * If the previous stencil is a texture, it is removed
 	 */
 	static void PushStencil(const CE_NS Rect& rect);
 
-	/* Removes the topmost stencil layer.
+	/* Removes the topmost stencil layer
 	 */
 	static void PopStencil();
 
-	/* Clears all stencil layers.
+	/* Clears all stencil layers
 	 */
 	static void EndStencil();
 
-    /* Interactive UI elements.
+    /* Interactive UI elements
      * (see interactive_ui.hpp)
      */
     class I;
+	/* World-space UI elements
+	 * (see world_ui.hpp)
+	 */
+	class W;
 };
 
 CE_END_NAMESPACE
 
 #include "interactive_ui.hpp"
+#include "world_ui.hpp"

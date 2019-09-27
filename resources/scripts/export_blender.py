@@ -9,6 +9,7 @@ import itertools
 class CE_Exporter():
     SIGNATURE = "ChokoEngine Mesh 20"
 
+    is_28 = (bpy.app.version[1] >= 80);
     args = sys.argv[sys.argv.index("--") + 1:]
     scene = bpy.context.scene
     timeline_markers = bpy.context.scene.timeline_markers
@@ -40,9 +41,12 @@ class CE_Exporter():
             return False
         print ("!writing to: " + self.fd + self.fn + ".prefab")
         
+        #blender 2.8 does not arrange objects with dependancy
+        arranged_objs = self.arrange_objs(self.scene.objects)
+        
         object_entries = []
         
-        for obj in self.scene.objects:
+        for obj in arranged_objs:
             if obj.type == 'MESH' or obj.type == 'ARMATURE':
                 if obj.parent:
                     if obj.parent.type != 'ARMATURE':
@@ -136,10 +140,16 @@ class CE_Exporter():
         
         #apply modifiers
         bm = bmesh.new()
-        bm.from_mesh(obj.to_mesh(bpy.context.scene, False, 'PREVIEW'))
-        bpy.context.scene.objects.active = obj
+        if self.is_28:
+            bm.from_mesh(obj.to_mesh())
+            bpy.context.view_layer.objects.active = obj
+        else:
+            bm.from_mesh(obj.to_mesh(bpy.context.scene, False, 'PREVIEW'));
+            bpy.context.scene.objects.active = obj
         if bm.verts.layers.shape.keys():
             obj.modifiers.clear()
+            if self.is_28: #shape keys will be removed in 2.7x when calling to_mesh(,True,)
+                bpy.ops.object.shape_key_remove(all=True)
         obj.modifiers.new("EdgeSplit", 'EDGE_SPLIT')
         obj.modifiers["EdgeSplit"].split_angle = 1.0472 #60 degrees
         obj.modifiers["EdgeSplit"].use_edge_sharp = True
@@ -151,11 +161,17 @@ class CE_Exporter():
         vrts = [] #(vert_id, uv)
         loop2vrt = [] #int
         vrt2vert = [] #int
+        _vrts2 = []
+        vrts2 = []
         
         if m.uv_layers:
+            if len(m.uv_layers) > 1:
+                for uv2 in m.uv_layers[1].data:
+                    _vrts2.append(uv2.uv)
+                print (" exporting secondary UV maps")
             uid = 0
             vrtc = 0
-            for uvl in m.uv_layers[0].data:
+            for i, uvl in enumerate(m.uv_layers[0].data):
                 pr = (m.loops[uid].vertex_index, uvl.uv)
                 try:
                     vid = vrts.index(pr)
@@ -164,9 +180,12 @@ class CE_Exporter():
                     loop2vrt.append(vrtc)
                     vrt2vert.append(pr[0])
                     vrtc = vrtc + 1
+                    if _vrts2:
+                        vrts2.append(_vrts2[i])
                 else:
                     loop2vrt.append(vid)
                 uid = uid + 1
+        
         vrtsz = len(vrts)
 
         #write data
@@ -194,6 +213,9 @@ class CE_Exporter():
             file.write(struct.pack("<B", 1))
             for v in vrts:
                 file.write(struct.pack("<ff", v[1][0], v[1][1]))
+            if vrts2:
+                for v in vrts2:
+                    file.write(struct.pack("<ff", v[0], v[1]))
         
         #G size1 [groupName NULL array] (for each vert)[{groupSz1 [groupId1 groupWeight4 array]} array]
         if len(obj.vertex_groups) > 0:
@@ -235,7 +257,14 @@ class CE_Exporter():
                         file.write(struct.pack("<fff", delta[0], delta[2], delta[1]))
             
         file.close()
-    
+        
+    def arrange_objs(self, objs):
+        oo = []
+        for o in objs:
+            if o.parent == None:
+                self.do_arrange_objs(o, oo)
+        return oo;
+        
     def export_armature(self, path, arm):
         bones = []
         for b in arm.data.bones:

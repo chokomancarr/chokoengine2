@@ -10,6 +10,15 @@ void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 		}
 		DoDrawScene(o->children());
 	}
+	if (!!ESceneInfo::selectedObject) {
+		const auto& tr = ESceneInfo::selectedObject->transform();
+		const auto& pos = tr->worldPosition();
+		const auto& mat = _camera->lastViewProjectionMatrix();
+		UI::W::matrix(mat);
+		UI::W::Line(pos, pos + tr->right() * 0.3f, Color::red());
+		UI::W::Line(pos, pos + tr->up() * 0.3f, Color::green());
+		UI::W::Line(pos, pos + tr->forward() * 0.3f, Color::blue());
+	}
 }
 
 void EW_SceneView::DrawMenu() {

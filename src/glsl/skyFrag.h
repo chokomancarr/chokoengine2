@@ -8,6 +8,7 @@ uniform bool isOrtho;
 uniform sampler2D inGBuf0;
 uniform sampler2D inGBuf1;
 uniform sampler2D inGBuf2;
+uniform sampler2D inGBuf3;
 uniform sampler2D inGBufD;
 
 uniform sampler2D inSky;
@@ -36,11 +37,11 @@ void main () {
     vec2 uv = gl_FragCoord.xy / screenSize;
     vec4 diffuse = texture(inGBuf0, uv);
     vec3 normal = texture(inGBuf1, uv).xyz;
-
 	vec4 gbuf2 = texture(inGBuf2, uv);
 	float metallic = gbuf2.x;
 	float rough = gbuf2.y;
 	float occlu = gbuf2.z;
+    vec3 emit = texture(inGBuf3, uv).xyz;
     float z = texture(inGBufD, uv).x;
 	
 	float nClip = 0.1;
@@ -64,7 +65,7 @@ void main () {
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);
 		vec3 diffCol = skyColAt(inSky, normal, 5).rgb * diffuse.rgb;
         vec3 reflCol = skyColAt(inSky, refl, rough * 5).rgb * mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres));
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu;
+		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu + emit;
         //fragCol.rgb = skyColAt(inSky, normalize(normal), (1-fres) * 5).rgb * diffuse.rgb;
 	}
     fragCol.a = 1;

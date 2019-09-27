@@ -11,8 +11,15 @@ int Subprocess::Run(const std::string& program, const std::vector<std::string>& 
 	STARTUPINFO si = {};
 	PROCESS_INFORMATION pi;
 	si.cb = sizeof(si);
-	std::string cmd = "cmd /C \"" + program + "\"";
-	if (!CreateProcess("C:\\Windows\\System32\\cmd.exe", &cmd[0], NULL, NULL, FALSE, CREATE_NO_WINDOW, 0, 0, &si, &pi)) {
+	std::string cmd = "cmd /C \"\"" + program + "\" ";
+	for (auto& a : args) {
+		if (a[0] == '-' || a[0] == '\\')
+			cmd += " " + a;
+		else
+			cmd += " \"" + a + "\"";
+	}
+	cmd += "\"";
+	if (!CreateProcess("C:\\Windows\\System32\\cmd.exe", &cmd[0], NULL, NULL, FALSE, NULL, 0, 0, &si, &pi)) {
 		Debug::Warning("Subprocess::Run", "Could not create cmd process!");
 		return -1;
 	}

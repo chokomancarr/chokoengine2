@@ -20,6 +20,8 @@ class _Camera : public _Component { CE_COMPONENT_COMMON
 	float _clearDepth;
 	Color _clearColor;
 
+	Mat4x4 _lastViewProjectionMatrix;
+
 	std::vector<CameraEffect> _effects;
 
 	static bool Init();
@@ -57,6 +59,11 @@ public:
 	 * Color must be specified in clearType.
 	 */
 	CE_GET_SET_MEMBER(clearColor);
+
+	/* The last view projection matrix of this camera,
+	 * including camera transformations
+	 */
+	CE_GET_MEMBER(lastViewProjectionMatrix);
 
 	/* The list of effects applied to the final render
 	 * Effects are applied from front to back

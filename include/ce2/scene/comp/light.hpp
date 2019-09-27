@@ -12,6 +12,7 @@ class _Light : public _Component { CE_COMPONENT_COMMON
     float _strength;
     float _distance;
     float _radius;
+	Color _color;
 
 	RenderTarget _shadowTarget;
 
@@ -45,6 +46,9 @@ public:
      * Has no effect on direcional models
      */
     CE_GET_SET_MEMBER(radius);
+	/* Color of the light
+	 */
+	CE_GET_SET_MEMBER(color);
 
     /* Does the light casts shadow
 	 */

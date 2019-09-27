@@ -53,7 +53,7 @@ void UI::InitVao() {
 	_quadElo = VertexBuffer_New(false, 1, 6, d, 0, GL_ELEMENT_ARRAY_BUFFER);
 }
 
-void UI::SetVao(uint sz, void* vts, void* uvs) {
+void UI::SetVao(uint sz, const void* vts, const void* uvs) {
 	if (sz > _vboSz) {
 		_vboSz = sz;
 		InitVao();
@@ -128,6 +128,10 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 	_quadElo->Unbind();
 	_vao->Unbind();
 	colShad->Unbind();
+}
+
+void UI::Line(const Vec2& p1, const Vec2& p2, const Color& col) {
+
 }
 
 void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font) {

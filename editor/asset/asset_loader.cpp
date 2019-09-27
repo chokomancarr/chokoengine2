@@ -114,9 +114,11 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 	}
 }
 
-#define CE_E_LD(nm) case EAssetType::nm:\
-	return static_cast<Object>(Load ## nm(path));\
-	break;
+#define CE_E_LD(nm) case EAssetType::nm: {\
+	auto res = static_cast<Object>(Load ## nm(path));\
+	if (!res)\
+		Debug::Error("EAssetLoader", "Failed to load \"" + path + "\" (nullptr returned by loader)!");\
+	return res; }
 
 Object EAssetLoader::Load(const std::string& path, const EAssetType t) {
 	switch (t) {

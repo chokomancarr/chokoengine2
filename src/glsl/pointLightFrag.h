@@ -13,6 +13,7 @@ uniform vec3 lightPos;
 uniform float lightStr;
 uniform float lightRad;
 uniform float lightDst;
+uniform vec3 lightCol;
 uniform int falloff;
 
 out vec4 fragCol;
@@ -36,6 +37,13 @@ float ggx(vec3 n, vec3 h, float r) {
     float den = NoH2 * r2 + (1 - NoH2);
 	if (NoH <= 0) return 0;
     return r2 / ( 3.14159 * den * den );
+}
+
+float get_falloff(float d) {
+	float fall = max(1 - length(d) / lightDst, 0);
+	if (falloff == 0) return ceil(fall);
+	if (falloff == 1) return fall;
+	return fall * fall;
 }
 
 void main () {
@@ -70,7 +78,7 @@ void main () {
 		vec3 hv = normalize(p2li - fwd);
 		float reflStr = ggx(normal, hv, rough);
 		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic) * reflStr;
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightStr * occlu;
+		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightCol * lightStr * occlu * get_falloff(length(p2l));
 	}
 	return;
 }

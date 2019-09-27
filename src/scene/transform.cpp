@@ -65,4 +65,16 @@ void Transform::localScale(const Vec3& s) {
     UpdateLocalMatrix();
 }
 
+Vec3 Transform::forward() const {
+	return *(Vec3*)glm::value_ptr(_worldMatrix * Vec4(0, 0, 1, 0));
+}
+
+Vec3 Transform::right() const {
+	return *(Vec3*)glm::value_ptr(_worldMatrix * Vec4(1, 0, 0, 0));
+}
+
+Vec3 Transform::up() const {
+	return *(Vec3*)glm::value_ptr(_worldMatrix * Vec4(0, 1, 0, 0));
+}
+
 CE_END_NAMESPACE

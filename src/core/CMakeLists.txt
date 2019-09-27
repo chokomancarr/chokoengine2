@@ -10,5 +10,6 @@ set(SOURCES
 	${DIR}/mvp.cpp
 	${DIR}/time.cpp
 	${DIR}/ui.cpp
+	${DIR}/world_ui.cpp
 	PARENT_SCOPE
 )

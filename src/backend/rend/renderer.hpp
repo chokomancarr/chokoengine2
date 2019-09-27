@@ -11,11 +11,13 @@ class Renderer {
 	static Shader pointLightShad;
 	static Shader spotLightShad;
 
+	static bool InitLightShaders();
+
     static void ScanObjects(const std::vector<SceneObject>&, std::vector<Camera>&, std::vector<Light>&, std::vector<MeshRenderer>&, std::vector<MeshRenderer>&);
 
 	static void RenderMesh(const MeshRenderer& rend);
 
-    static void RenderCamera(const Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& orends, const std::vector<MeshRenderer>& trends);
+    static void RenderCamera(Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& orends, const std::vector<MeshRenderer>& trends);
 
 	static void RenderSky(const Camera&);
 

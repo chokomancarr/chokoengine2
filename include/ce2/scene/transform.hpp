@@ -49,6 +49,15 @@ public:
     CE_GET_MEMBER(localMatrix);
     CE_GET_MEMBER(worldMatrix);
 
+	Vec3 forward() const;
+	void forward(const Vec3&);
+
+	Vec3 right() const;
+	void right(const Vec3&);
+
+	Vec3 up() const;
+	void up(const Vec3&);
+
     friend class _SceneObject;
 };
 

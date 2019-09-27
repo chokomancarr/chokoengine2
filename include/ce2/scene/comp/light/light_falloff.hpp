@@ -6,8 +6,7 @@ CE_BEGIN_NAMESPACE
 enum class LightFalloff {
     Constant,
     Linear,
-    Inverse,
-    InverseSquared
+    Squared
 };
 
 CE_END_NAMESPACE
