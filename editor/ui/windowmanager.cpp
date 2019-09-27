@@ -14,6 +14,7 @@ void EWindowManager::LoadWindows() {
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Browser>());
 	windows.back()->position = Rect(0, 351, 750, 249);
+	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Hierarchy>());
 	windows.back()->position = Rect(601, 0, 149, 350);
 	windows.push_back(std::make_shared<EW_Inspector>());

@@ -1,6 +1,7 @@
 #pragma once
 #include "chokoeditor.hpp"
 #include "enums/asset_type.hpp"
+#include "enums/export_type.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -16,9 +17,9 @@ class EAssetList { CE_CLASS_COMMON
      */
     static std::array<std::vector<_Entry>, (int)EAssetType::_COUNT> _entries;
     static std::array<std::vector<std::string>, (int)EAssetType::_COUNT> _exts;
-    /* These files are not assets directly, but will probably generate stuff
+    /* These files are not assets directly, but will generate them
      */
-    
+    static std::array<std::vector<std::string>, (int)EExportType::_COUNT> _export_exts;
 
     static bool Scan_Fd(const std::string& fd);
 

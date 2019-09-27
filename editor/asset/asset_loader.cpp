@@ -1,5 +1,6 @@
 #include "chokoeditor.hpp"
 #include "ce2/parsers/mesh.hpp"
+#include "exporters/blender.hpp"
 #include "templates/meta/meta_common.hpp"
 
 CE_BEGIN_ED_NAMESPACE
@@ -84,7 +85,7 @@ std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
 	return res;
 }
 
-#define CE_E_MKM(nm) case EAssetType::nm: {\
+#define CE_E_MKM(t, nm) case t::nm: {\
 	std::ofstream strm(ChokoEditor::assetPath + path + ".meta");\
 	strm << meta::nm;\
 	break;\
@@ -92,13 +93,24 @@ std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
 
 void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
 	switch (t) {
-		CE_E_MKM(AnimClip)
-		CE_E_MKM(Armature)
-		CE_E_MKM(Material)
-		CE_E_MKM(Mesh)
-		CE_E_MKM(Shader)
-		CE_E_MKM(Texture)
-		CE_E_MKM(SceneObject)
+		CE_E_MKM(EAssetType, AnimClip)
+		CE_E_MKM(EAssetType, Armature)
+		CE_E_MKM(EAssetType, Material)
+		CE_E_MKM(EAssetType, Mesh)
+		CE_E_MKM(EAssetType, Shader)
+		CE_E_MKM(EAssetType, Texture)
+		CE_E_MKM(EAssetType, SceneObject)
+		default:
+			break;
+	}
+}
+
+void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) {
+	switch (t) {
+		CE_E_MKM(EExportType, Model)
+		CE_E_MKM(EExportType, Image)
+		default:
+			break;
 	}
 }
 
@@ -121,8 +133,24 @@ Object EAssetLoader::Load(const std::string& path, const EAssetType t) {
 	return nullptr;
 }
 
+#undef CE_E_LD
+#define CE_E_EX(nm) case EExportType::nm:\
+	Export ## nm(path);\
+	break;
+
+void EAssetLoader::Load(const std::string& path, const EExportType t) {
+	switch (t) {
+		CE_E_EX(Model)
+		CE_E_EX(Image)
+		default:
+			break;
+	}
+}
+
+#undef CE_E_EX
+
 CE_E_AL_IMPL(AnimClip) {
-	auto meta = LoadMeta(path);
+	const auto meta = LoadMeta(path);
 	std::ifstream strm(ChokoEditor::assetPath + path, std::ios::binary);
 	char sig[5] = {};
 	strm.read(sig, 4);
@@ -156,8 +184,8 @@ CE_E_AL_IMPL(AnimClip) {
 }
 
 CE_E_AL_IMPL(Armature) {
-	auto meta = LoadMeta(path);
-	auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+	const auto meta = LoadMeta(path);
+	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	if (data.group[0].key.string != "armature") {
 		Debug::Error("AssetLoader", "Armature entry missing!");
 		return nullptr;
@@ -168,8 +196,8 @@ CE_E_AL_IMPL(Armature) {
 }
 
 CE_E_AL_IMPL(Material) {
-	auto meta = LoadMeta(path);
-	auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+	const auto meta = LoadMeta(path);
+	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	if (data.group[0].key.string != "shader") {
 		Debug::Error("AssetLoader::Material", "shader entry missing!");
 		return nullptr;
@@ -200,21 +228,21 @@ CE_E_AL_IMPL(Material) {
 }
 
 CE_E_AL_IMPL(Mesh) {
-	auto meta = LoadMeta(path);
-	auto ext = StrExt::ExtensionOf(path);
+	const auto meta = LoadMeta(path);
+	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "obj") {
 		return MeshLoader::LoadObj(ChokoEditor::assetPath + path);
 	}
 	else if (ext == "mesh") {
 		return MeshLoader::LoadMesh(ChokoEditor::assetPath + path);
 	}
-	exit(-1);
+	abort(); //we should never get here
 }
 
 CE_E_AL_IMPL(Shader) {
-	auto meta = LoadMeta(path);
+	const auto meta = LoadMeta(path);
 	std::string vs, fs;
-	auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	JsonObject vrs;
 	for (auto& d : data.group) {
 		if (d.key.string == "variables") {
@@ -241,7 +269,7 @@ CE_E_AL_IMPL(Shader) {
 }
 
 CE_E_AL_IMPL(Texture) {
-	auto meta = LoadMeta(path);
+	const auto meta = LoadMeta(path);
 	auto opts = TextureOptions();
 	for (auto& g : meta.group) {
 		if (g.key.string == "xwrap")
@@ -257,12 +285,30 @@ CE_E_AL_IMPL(Texture) {
 }
 
 CE_E_AL_IMPL(SceneObject) {
-	auto meta = LoadMeta(path);
-	auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+	const auto meta = LoadMeta(path);
+	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	if (data.group[0].key.string != "object") {
 		Debug::Error("AssetLoader::LoadPrefab", "Object entry missing!");
 	}
 	return JsonToObject(data.group[0].value);
+}
+
+CE_E_AL_IMPL_EX(Model) {
+	const auto meta = LoadMeta(path);
+	const auto ext = StrExt::ExtensionOf(path);
+	if (ext == "blend") {
+		BlenderExporter::ExportBlend(ChokoEditor::assetPath + path, ChokoEditor::assetPath, ".exported/" + path + "/");
+	}
+	else abort(); //we should never get here
+}
+
+CE_E_AL_IMPL_EX(Image) {
+	const auto meta = LoadMeta(path);
+	const auto ext = StrExt::ExtensionOf(path);
+	if (ext == "psd") {
+		BlenderExporter::ExportImage(ChokoEditor::assetPath + path, ChokoEditor::assetPath + ".exported/" + path + "/");
+	}
+	else abort(); //we should never get here
 }
 
 CE_END_ED_NAMESPACE

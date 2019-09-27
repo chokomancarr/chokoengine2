@@ -4,11 +4,41 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EW_Browser : public EWindow {
+	class File {
+	public:
+		File(const std::string& nm = "") : name(nm) {}
+
+		std::string name;
+		Texture icon = nullptr;
+		std::vector<File> subfiles;
+	};
+	class Folder {
+	public:
+		Folder(const std::string& nm = "", const std::string& pth = "")
+				: name(nm), path(pth) {}
+
+		std::string name;
+		std::string path;
+		std::vector<Folder> children = {};
+		std::vector<File> files = {};
+		bool expanded = false;
+	};
+
+	std::string path;
+	Folder baseFd;
+	Folder* currentFd;
+
+	void ScanFolder(Folder& v);
+
+	float DrawFolder(float& off, Folder& fd, int level);
+	void DrawFiles();
+
 protected:
-	void DrawMenu() override {}
+	void DrawMenu() override;
 
 public:
-	bool Init() override { return true; }
+	bool Init() override;
+	void Refresh() override;
 
 };
 

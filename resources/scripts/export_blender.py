@@ -20,7 +20,7 @@ class CE_Exporter():
     
     rootfd = args[0]
     relfd = args[1]
-    fd = rootfd + relfd
+    fd = rootfd + relfd #put everything in here
     fn = args[2]
     
     frame_offset = 0
@@ -33,6 +33,8 @@ class CE_Exporter():
     
     def execute(self):
         print("---------export start----------")
+        self.cleandir(self.fd)
+
         if os.access(self.fd, os.W_OK) is False:
             print("!permission denied : " + self.fd)
             return False
@@ -50,8 +52,6 @@ class CE_Exporter():
                         object_entries[-1].rig = obj.parent
                 else:
                     object_entries.append(self.object_entry(obj))
-        
-        self.cleandir(self.fd + self.fn + ".blend/")
 
         prefab_file = open(self.fd + self.fn + ".prefab", "wb")
         self.write(prefab_file, '{\n  "object":{\n')
@@ -100,18 +100,18 @@ class CE_Exporter():
 
             if e.obj.type == 'MESH':
                 self.write(prefab_file, indent2 + '"components":{\n' + indent3 + '"MeshRenderer":{\n')
-                self.write(prefab_file, indent4 + '"mesh":"' + self.relfd + self.fn + '.blend/' + e.obj.name + '.mesh' + '",\n')
+                self.write(prefab_file, indent4 + '"mesh":"' + self.relfd + e.obj.name + '.mesh' + '",\n')
                 self.write(prefab_file, indent4 + '"modifiers":{},\n')
                 self.write(prefab_file, indent4 + '"materials":[\n')
                 self.write(prefab_file, indent5 + '"def.material"\n')
                 self.write(prefab_file, indent4 + ']\n')
                 self.write(prefab_file, indent3 + '}\n')
-                self.export_mesh(self.fd + self.fn + '.blend/' + e.obj.name + '.mesh', e.obj)
+                self.export_mesh(self.fd + e.obj.name + '.mesh', e.obj)
             elif e.obj.type == 'ARMATURE':
                 self.write(prefab_file, indent2 + '"components":{\n' + indent3 + '"Rig":{\n')
-                self.write(prefab_file, indent4 + '"armature":"' + self.relfd + self.fn + '.blend/' + e.obj.name + '.armature' + '"\n')
+                self.write(prefab_file, indent4 + '"armature":"' + self.relfd + e.obj.name + '.armature' + '"\n')
                 self.write(prefab_file, indent3 + '}\n')
-                self.export_armature(self.fd + self.fn + '.blend/' + e.obj.name + '.armature', e.obj)
+                self.export_armature(self.fd + e.obj.name + '.armature', e.obj)
                 self.export_anim(self.fd + self.fn + '.blend/', e.obj)
 
             if len(e.children) > 0:
@@ -350,7 +350,7 @@ class CE_Exporter():
     def cleandir(self, path):
         if os.path.isdir(path):
             shutil.rmtree(path)
-        os.mkdir(path)
+        os.makedirs(path)
 
     def write(self, file, str):
         file.write(str.encode())

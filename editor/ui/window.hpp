@@ -14,6 +14,7 @@ public:
 	std::vector<EDropdownMenu> menus;
 
 	virtual bool Init() = 0;
+	virtual void Refresh() {}
 	virtual void Update() {}
 	void Draw();
 };

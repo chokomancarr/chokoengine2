@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 #include "blender.hpp"
 
@@ -10,8 +9,22 @@ std::string BlenderExporter::exePath = "C:\\Program Files\\Blender Foundation\\B
 std::string BlenderExporter::exePath = "/usr/local/bin/blender";
 #endif
 
-void BlenderExporter::Export(const std::string& file, const std::string& dst_fd) {
-	std::string cmd("\"" + exePath + "\" \"" + file + "\" -b -P \"" + IO::path() + "/scripts/exporters/export_blender.py\" -- \"" + "\"\n");
+void BlenderExporter::ExportBlend(const std::string& file, const std::string& root_fd, const std::string& rel_fd) {
+	const auto p = file.find_last_of('/') + 1;
+	Subprocess::Run(exePath, {
+		file,
+		"-b",
+		"-P",
+		IO::path() + "scripts/exporters/export_blender.py",
+		"--",
+		root_fd,
+		rel_fd,
+		file.substr(p)
+	});
+}
+
+void BlenderExporter::ExportImage(const std::string& file, const std::string& dst_fd, const std::string& ext) {
+	
 }
 
 CE_END_ED_NAMESPACE

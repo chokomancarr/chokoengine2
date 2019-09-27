@@ -9,10 +9,12 @@ float EUILayout::BeginScroll(const Rect& r, EUILayout::ScrollState& st) {
 }
 
 void EUILayout::EndScroll(EUILayout::ScrollState& st, float o) {
-	st.max = o - st.off;
+	st.max = o - st.off - st.rng.y();
 	o -= st.rng.y();
 	if (st.max > st.rng.h()) {
-		st.off = Math::Clamp(st.off + 10 * Input::mouseScroll().y, st.rng.h() - st.max, 0.f);
+		float dy = (st.rng.Contains(Input::mousePosition())) ?
+			10 * Input::mouseScroll().y : 0;
+		st.off = Math::Clamp(st.off + dy, st.rng.h() - st.max, 0.f);
 	}
 	else st.off = 0;
 	UI::PopStencil();

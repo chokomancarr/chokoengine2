@@ -10,17 +10,19 @@ EAssetList::_Entry::_Entry(const std::string& sig)
 std::array<std::vector<EAssetList::_Entry>, (int)EAssetType::_COUNT> EAssetList::_entries = {};
 std::array<std::vector<std::string>, (int)EAssetType::_COUNT> EAssetList::_exts = {};
 
+std::array<std::vector<std::string>, (int)EExportType::_COUNT> EAssetList::_export_exts = {};
+
 bool EAssetList::Scan_Fd(const std::string& fd) {
     bool dirty = false;
     const auto ffd = ChokoEditor::assetPath + fd;
     auto fls = IO::ListFiles(ffd);
     for (auto& f : fls) {
-        auto ext = StrExt::ExtensionOf(f);
+        const auto ext = StrExt::ExtensionOf(f);
+        const auto sig = fd + f;
         for (int a = 0; a < (int)EAssetType::_COUNT; a++) {
             for (auto& e : _exts[a]) {
                 if (e == ext) {
                     auto& ent = _entries[a];
-                    const auto sig = fd + f;
                     auto it = std::find_if(ent.begin(), ent.end(), [&](const _Entry& _e) {
                         return _e.sig == sig;
                     });
@@ -47,6 +49,24 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                 }
             }
         }
+        for (int a = 0; a < (int)EExportType::_COUNT; a++) {
+            for (auto& e : _export_exts[a]) {
+                if (e == ext) {
+                    const auto mt = IO::ModTime(ffd + f);
+                    const auto mnm = ffd + f + ".meta";
+                    const auto mmt = IO::ModTime(mnm);
+                    if (mmt < mt) {
+                        Debug::Message("AssetList", "\033[0;36m" "Processing " + sig + "\033[0m");
+                        if (!IO::FileExists(mnm)) {
+                            EAssetLoader::GenDefaultMeta(sig, (EExportType)a);
+                        }
+                        EAssetLoader::Load(sig, (EExportType)a);
+                        dirty = true;
+                    }
+                    goto next;
+                }
+            }
+        }
         next:;
     }
 
@@ -64,6 +84,9 @@ void EAssetList::Init() {
     _exts[(int)EAssetType::Shader] = { "shader" };
     _exts[(int)EAssetType::Texture] = { "png", "jpg", "bmp" };
     _exts[(int)EAssetType::SceneObject] = { "prefab" };
+
+    _export_exts[(int)EExportType::Model] = { "blend" };
+    _export_exts[(int)EExportType::Image] = { "psd" };
 }
 
 void EAssetList::Rescan() {

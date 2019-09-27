@@ -84,8 +84,26 @@ std::string StrExt::FromUnicode(const std::u32string& s) {
 }
 
 std::string StrExt::ExtensionOf(const std::string& s) {
-	auto pd = s.find_last_of('.');
+	const auto pd = s.find_last_of('.');
 	if (pd == std::string::npos) return "";
+	return s.substr(pd + 1);
+}
+
+std::string StrExt::RemoveExt(const std::string& s) {
+	const auto pd = s.find_last_of('.');
+	if (pd == std::string::npos) return s;
+	return s.substr(0, pd);
+}
+
+std::string StrExt::FolderOf(const std::string& s) {
+	const auto pd = s.find_last_of('/');
+	if (pd == std::string::npos) return "";
+	return s.substr(0, pd + 1);
+}
+
+std::string StrExt::RemoveFd(const std::string& s) {
+	const auto pd = s.find_last_of('/');
+	if (pd == std::string::npos) return s;
 	return s.substr(pd + 1);
 }
 

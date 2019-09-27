@@ -3,6 +3,10 @@
 CE_BEGIN_NAMESPACE
 
 int Subprocess::Run(const std::string& program, const std::vector<std::string>& args, Subprocess::_CbFunc callback) {
+    Debug::Message("Subprocess", "Executing " + program);
+    for (int a = 0; a < args.size(); a++) {
+        Debug::Message("Subprocess", " With arg[" + std::to_string(a) + "]=" + args[a]);
+    }
 #ifdef PLATFORM_WIN
 	STARTUPINFO si = {};
 	PROCESS_INFORMATION pi;
@@ -26,29 +30,35 @@ int Subprocess::Run(const std::string& program, const std::vector<std::string>& 
 	return (int)dret;
 #else
     int pipe_fd[2];
-    if (pipe(pipe_fd) == -1) return;
+    if (callback && pipe(pipe_fd) == -1) return -2;
     auto pid = fork();
-    if (pid < 0) return;
+    if (pid < 0) return -3;
     else if (!pid) {
         std::vector<const char*> cargs(1, program.c_str());
         for (auto& a : args) {
             cargs.push_back(a.c_str());
         }
         cargs.push_back(nullptr);
-        close(pipe_fd[0]);
-        dup2(pipe_fd[1], 1);
+        if (callback) {
+            close(pipe_fd[0]);
+            dup2(pipe_fd[1], 1);
+        }
         setvbuf(stdout, nullptr, _IOLBF, 0);
         execv(program.c_str(), (char**)cargs.data());
         exit(-5);
     }
     else {
-        close(pipe_fd[1]);
+        if (callback) {
+            close(pipe_fd[1]);
+        }
         char data[100];
         int status;
         while (!waitpid(pid, &status, WNOHANG)) {
-            size_t dsz;
-            if ((int)(dsz = read(pipe_fd[0], data, 100)) > 0){
-                std::cout << "Child says " << std::string(data, dsz) << std::endl;
+            if (callback) {
+                size_t dsz;
+                if ((int)(dsz = read(pipe_fd[0], data, 100)) > 0){
+                    std::cout << "Child says " << std::string(data, dsz) << std::endl;
+                }
             }
         }
 		if (WIFEXITED(status)) {
@@ -56,7 +66,7 @@ int Subprocess::Run(const std::string& program, const std::vector<std::string>& 
 		}
 		else {
 			Debug::Warning("Subprocess::Run", "Child process terminated unexpectedly!");
-			return -2;
+			return -10;
 		}
     }
 #endif

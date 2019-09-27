@@ -58,6 +58,7 @@ std::vector<std::string> IO::ListFiles(const std::string& dir, const std::string
 	}
 #else
 	DIR* d = opendir(dir.c_str());
+	if (!d) return {};
 	struct dirent* ep;
 	while ((ep = readdir(d))) {
 		std::string nm(ep->d_name);
