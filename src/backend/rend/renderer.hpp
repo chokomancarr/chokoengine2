@@ -9,6 +9,7 @@ class Renderer {
 	static Shader skyShad;
 
 	static Shader pointLightShad;
+	static Shader spotLightShad;
 
     static void ScanObjects(const std::vector<SceneObject>&, std::vector<Camera>&, std::vector<Light>&, std::vector<MeshRenderer>&, std::vector<MeshRenderer>&);
 

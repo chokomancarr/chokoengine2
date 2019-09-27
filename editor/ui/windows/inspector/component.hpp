@@ -12,6 +12,7 @@ class EW_I_Component {
 
     static void DrawAnimator(EW_IC_DRAWARGS);
     static void DrawCamera(EW_IC_DRAWARGS);
+    static void DrawLight(EW_IC_DRAWARGS);
     static void DrawMeshRenderer(EW_IC_DRAWARGS);
     static void DrawRig(EW_IC_DRAWARGS);
     static void DrawScript(EW_IC_DRAWARGS);

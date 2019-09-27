@@ -50,6 +50,14 @@ public:
      * The value is clamped between \p range
      */
     static float SliderTr(const CE_NS Rect& r, const Vec2& range, float value);
+
+    /* Draws a toggle button
+     */
+    static bool Toggle(const CE_NS Rect& r, bool val, const Color& color);
+
+    /* A toggle button
+     */
+    static bool ToggleTr(const CE_NS Rect& r, bool val);
 };
 
 CE_END_NAMESPACE

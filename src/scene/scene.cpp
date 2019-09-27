@@ -50,7 +50,7 @@ void Scene::Update(const std::vector<SceneObject>& oo) {
 
 SceneObject Scene::AddNewObject(const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
-    auto o = SceneObject::New();
+    auto o = SceneObject::New("New Object");
     vec.push_back(o);
     o->_parent = parent;
     return o;

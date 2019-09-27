@@ -18,6 +18,7 @@ void EW_SceneView::DrawMenu() {
 }
 
 bool EW_SceneView::_Init() {
+	EW_S_Light::Init();
 	EW_S_Rig::Init();
 
 	return true;

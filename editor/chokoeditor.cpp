@@ -56,8 +56,10 @@ void ChokoEditor::Main() {
 	ss[2] = Background::New(IO::path() + "res/skyyy.hdr", 6);
 
 	Scene::sky(ss[0]);
-	Scene::sky()->brightness(1);
+	Scene::sky()->brightness(0.1f);
 	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, "aa/kcschan.prefab"));
+	Scene::AddNewObject()->AddComponent<Light>(LightType::Spot)
+		->object()->transform()->localPosition(Vec3(-8, -7, -3));
 
 	EWindowManager::LoadWindows();
 

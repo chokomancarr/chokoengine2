@@ -5,7 +5,7 @@ CE_BEGIN_ED_NAMESPACE
 std::array<EW_I_Component::_DrawFn, (size_t)ComponentType::_COUNT> EW_I_Component::_funcs = {
     DrawAnimator,
     DrawCamera,
-    nullptr,
+    DrawLight,
     DrawMeshRenderer,
     DrawRig,
     DrawScript

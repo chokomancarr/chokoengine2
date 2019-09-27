@@ -171,4 +171,15 @@ float UI::I::SliderTr(const CE_NS Rect& r, const Vec2& range, float value) {
 	return value;
 }
 
+bool UI::I::Toggle(const CE_NS Rect& r, bool val, const Color& color) {
+	Rect(r, color);
+	if (val) Rect(r.sub(3, 3, 3, 3), Color::white());
+	return ToggleTr(r, val);
+}
+
+bool UI::I::ToggleTr(const CE_NS Rect& r, bool val) {
+	if (ButtonTr(r) == InputMouseStatus::HoverUp) return !val;
+	else return val;
+}
+
 CE_END_NAMESPACE

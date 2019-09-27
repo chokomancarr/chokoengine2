@@ -12,4 +12,5 @@ public:
 
 CE_END_ED_NAMESPACE
 
+#include "light.hpp"
 #include "rig.hpp"
