@@ -23,6 +23,8 @@ class Renderer {
 	static void RenderLight_Spot(const Light&, const Camera&);
 	static void RenderLight_Directional(const Light&, const Camera&);
 
+	static void RenderLightProbe(const LightProbe&);
+
 public:
 	CE_GET_ST_MEMBER(emptyVao);
 

@@ -7,6 +7,7 @@ enum class ComponentType {
 	Animator,
 	Camera,
 	Light,
+	LightProbe,
 	MeshRenderer,
 	Rig,
 	Script,
