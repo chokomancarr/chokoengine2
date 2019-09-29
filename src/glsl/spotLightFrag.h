@@ -17,6 +17,11 @@ uniform float lightDst;
 uniform int falloff;
 uniform float lightAngleCos;
 
+uniform sampler2D shadowTex;
+uniform mat4 _LP;
+uniform float shadowStr;
+uniform float shadowBias;
+
 out vec4 fragCol;
 
 float length2(vec3 v) {
@@ -67,10 +72,14 @@ void main () {
 		vec3 hv = normalize(p2li - fwd);
 		float reflStr = ggx(normal, hv, rough);
 		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic) * reflStr;
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightStr * occlu;
-		fragCol.rgb = vec3(1, 1, 1) * (dot(-p2li, lightDir) > lightAngleCos ? 1.0 : 0.0);
+
+		vec4 pl = _LP * wPos;
+		pl /= pl.w;
+		float sz = texture(shadowTex, pl.xy * 0.5 + 0.5).r;
+		float not_shadow = ((sz * 2 - 1) >= pl.z - shadowBias) ? 1 : (1 - shadowStr);
+
+		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightStr * not_shadow * occlu * (dot(-p2li, lightDir) > lightAngleCos ? 1.0 : 0.0);
 	}
-	return;
 }
 )";
 }

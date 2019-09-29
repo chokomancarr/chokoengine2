@@ -4,26 +4,30 @@ CE_BEGIN_ED_NAMESPACE
 
 void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 	for (auto& o : objs) {
+		if (o == ESceneInfo::selectedObject) continue;
 		for (auto& c : o->components()) {
 			const auto& f = EW_S_DrawCompList::funcs[(int)c->componentType];
 			if (f) f(c);
 		}
 		DoDrawScene(o->children());
 	}
-	if (!!ESceneInfo::selectedObject) {
-		const auto& tr = ESceneInfo::selectedObject->transform();
-		const auto& pos = tr->worldPosition();
-		const auto& mat = _camera->lastViewProjectionMatrix();
-		UI::W::matrix(mat);
-		UI::W::Line(pos, pos + tr->right() * 0.3f, Color::red());
-		UI::W::Line(pos, pos + tr->up() * 0.3f, Color::green());
-		UI::W::Line(pos, pos + tr->forward() * 0.3f, Color::blue());
-	}
 }
 
 void EW_SceneView::DrawMenu() {
-	UI::Texture(Rect(position.x(), position.y() + 20, position.w(), position.h() - 20),
-		static_cast<Texture>(_target));
+	const Rect& r = Rect(position.x(), position.y() + 20, position.w(), position.h() - 20);
+	glBlendFunc(GL_ONE, GL_ZERO);
+	UI::Texture(r, static_cast<Texture>(_target));
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	if (r.Contains(Input::mouseDownPosition())) {
+		static float x = 0;
+		static float y = 0;
+		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Hold) {
+			x -= Input::mouseDelta().y;
+			y -= Input::mouseDelta().x;
+			_pivot->transform()->localRotationEuler(Vec3(x, y, 0));
+		}
+	}
 }
 
 bool EW_SceneView::_Init() {
@@ -40,7 +44,7 @@ bool EW_SceneView::Init() {
 	_pivot->name("SceneView Pivot");
 	auto o = Scene::AddNewObject(_pivot);
 	o->name("SceneView Camera");
-	o->transform()->localPosition(Vec3(0, 0, -5));
+	o->transform()->localPosition(Vec3(0, 0, 5));
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0));
 	_camera->target(_target);

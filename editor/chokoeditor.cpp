@@ -58,14 +58,32 @@ void ChokoEditor::Main() {
 	Scene::sky(ss[0]);
 	Scene::sky()->brightness(0);
 	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab"));
-	Scene::objects().back()->transform()->localPosition(Vec3(1.5f, -1.5f, 2));
-	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, 185, 0));
+	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
+	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
+	/*
 	auto& o = Scene::AddNewObject(Scene::FindByName("celing lamp"));
 	auto& l = o->AddComponent<Light>(LightType::Point);
 	l->distance(20);
 	l->strength(1);
 	l->color(Color(1, 0.9f, 0.7f));
 	o->transform()->localPosition(Vec3(0, -0.5f, 0));
+	*/
+	auto& o = Scene::AddNewObject(Scene::FindByName("celing lamp"));
+	auto& l = o->AddComponent<Light>(LightType::Spot);
+	l->distance(20);
+	l->strength(1);
+	l->color(Color(1, 0.9f, 0.7f));
+	l->shadow(true);
+	l->shadowBias(0.01f);
+	o->transform()->localPosition(Vec3(0, -0.7f, 0));
+	o->transform()->localRotationEuler(Vec3(90, 0, 0));
+
+	auto& o2 = Scene::AddNewObject(Scene::FindByName("rabbit house pillar lamp.001"));
+	auto& l2 = o2->AddComponent<Light>(LightType::Point);
+	l2->distance(10);
+	l2->strength(0.1f);
+	l2->color(Color(1, 0.7f, 0.3f));
+	o2->transform()->localPosition(Vec3(0.4f, 0, 0));
 
 	EWindowManager::LoadWindows();
 

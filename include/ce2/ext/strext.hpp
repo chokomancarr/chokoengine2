@@ -15,6 +15,7 @@ public:
 	static std::string FolderOf(const std::string& s);
 	static std::string RemoveFd(const std::string& s);
 
+	static int ToInt(const std::string& s, int def = 0);
 	static float ToFloat(const std::string& s, float def = 0);
 };
 

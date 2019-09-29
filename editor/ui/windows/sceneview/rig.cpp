@@ -8,7 +8,7 @@ VertexBuffer EW_S_Rig::_elo;
 Shader EW_S_Rig::_boneProg;
 
 void EW_S_Rig::Init() {
-	EW_S_DrawCompList::funcs[(int)ComponentType::Rig] = &Draw;
+	EW_S_DrawCompList::activeFuncs[(int)ComponentType::Rig] = &DrawActive;
 
 	const float t = 0.2f;
 	float poss[] = {
@@ -30,20 +30,7 @@ void EW_S_Rig::Init() {
 		->AddUniforms({ "MVP", "len", "color" });
 }
 
-void EW_S_Rig::Draw(const Component& c) {
-	if (!ESceneInfo::selectedObject) return;
-	bool found = false;
-	auto o = ESceneInfo::selectedObject;
-	const auto& o2 = c->object();
-	do {
-		if (o == o2) {
-			found = true;
-			break;
-		}
-		o = o->parent();
-	} while (!!o);
-	if (!found)
-		return;
+void EW_S_Rig::DrawActive(const Component& c) {
 	const auto& rig = static_cast<Rig>(c);
 	const auto& arm = (rig->armature());
 	if (!arm)

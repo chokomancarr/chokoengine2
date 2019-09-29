@@ -11,7 +11,7 @@ class EW_S_Rig {
 public:
 	static void Init();
 
-	static void Draw(const Component& rig);
+	static void DrawActive(const Component& rig);
 };
 
 CE_END_ED_NAMESPACE

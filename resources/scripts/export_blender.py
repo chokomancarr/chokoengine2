@@ -1,15 +1,17 @@
-import bpy
+import bpy as bpy
 import bmesh
+import itertools
 import os
 import sys
 import struct
 import shutil
-import itertools
+from shutil import copyfile
 
 class CE_Exporter():
     SIGNATURE = "ChokoEngine Mesh 20"
 
-    is_28 = (bpy.app.version[1] >= 80);
+    is_28 = (bpy.app.version[1] >= 80)
+    
     args = sys.argv[sys.argv.index("--") + 1:]
     scene = bpy.context.scene
     timeline_markers = bpy.context.scene.timeline_markers
@@ -40,6 +42,9 @@ class CE_Exporter():
             print("!permission denied : " + self.fd)
             return False
         print ("!writing to: " + self.fd + self.fn + ".prefab")
+        
+        #shared meshes break the exporter for now
+        bpy.ops.object.make_single_user(type='ALL', object=True, obdata=True)
         
         #blender 2.8 does not arrange objects with dependancy
         arranged_objs = self.arrange_objs(self.scene.objects)
@@ -96,9 +101,9 @@ class CE_Exporter():
             elif e.rig:
                 self.write(prefab_file, indent2 + '"rig":"' + e.rig.name + '",\n')
             poss = e.obj.location
-            self.write(prefab_file, indent2 + '"position":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], poss[1]))
-            rott = e.obj.rotation_quaternion
-            self.write(prefab_file, indent2 + '"rotation":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[2], rott[3]))
+            self.write(prefab_file, indent2 + '"position":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
+            rott = e.obj.rotation_euler.to_quaternion()
+            self.write(prefab_file, indent2 + '"rotation":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
             scll = e.obj.scale
             self.write(prefab_file, indent2 + '"scale":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
 
@@ -107,6 +112,8 @@ class CE_Exporter():
                 self.write(prefab_file, indent4 + '"mesh":"' + self.relfd + e.obj.name + '.mesh' + '",\n')
                 self.write(prefab_file, indent4 + '"modifiers":{},\n')
                 self.write(prefab_file, indent4 + '"materials":[\n')
+                for i in range(len(e.obj.data.materials)):
+                    self.write(prefab_file, indent5 + '"def.material",\n')
                 self.write(prefab_file, indent5 + '"def.material"\n')
                 self.write(prefab_file, indent4 + ']\n')
                 self.write(prefab_file, indent3 + '}\n')
@@ -154,7 +161,12 @@ class CE_Exporter():
         obj.modifiers["EdgeSplit"].split_angle = 1.0472 #60 degrees
         obj.modifiers["EdgeSplit"].use_edge_sharp = True
         obj.modifiers.new("Triangulate", 'TRIANGULATE')
-        m = obj.to_mesh(bpy.context.scene, True, 'PREVIEW')
+        if self.is_28:
+            while (len(obj.modifiers) > 0):
+                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=obj.modifiers[0].name)
+            m = obj.to_mesh();
+        else:
+            m = obj.to_mesh(bpy.context.scene, True, 'PREVIEW')
         
         #extract and clean vertex data
         verts = m.vertices
@@ -185,6 +197,9 @@ class CE_Exporter():
                 else:
                     loop2vrt.append(vid)
                 uid = uid + 1
+        else:
+            for i in range(len(verts)):
+                vrts.append((i, 0))
         
         vrtsz = len(vrts)
 
@@ -197,15 +212,20 @@ class CE_Exporter():
         file.write(struct.pack("<i", vrtsz))
         for vrt in vrts:
             v = verts[vrt[0]]
-            file.write(struct.pack("<fff", v.co[0], v.co[2], v.co[1]))
-            file.write(struct.pack("<fff", v.normal[0], v.normal[2], v.normal[1]))
+            file.write(struct.pack("<fff", v.co[0], v.co[2], -v.co[1]))
+            file.write(struct.pack("<fff", v.normal[0], v.normal[2], -v.normal[1]))
         
         #F size4 [{material1 3xface4} array]
         self.write(file, "F")
         file.write(struct.pack("<i", len(m.polygons)))
-        for poly in m.polygons:
-            file.write(struct.pack("<B", poly.material_index))
-            file.write(struct.pack("<iii", loop2vrt[poly.loop_indices[0]], loop2vrt[poly.loop_indices[2]], loop2vrt[poly.loop_indices[1]]))
+        if m.uv_layers:
+            for poly in m.polygons:
+                file.write(struct.pack("<B", poly.material_index))
+                file.write(struct.pack("<iii", loop2vrt[poly.loop_indices[0]], loop2vrt[poly.loop_indices[1]], loop2vrt[poly.loop_indices[2]]))
+        else:
+            for poly in m.polygons:
+                file.write(struct.pack("<B", poly.material_index))
+                file.write(struct.pack("<iii", poly.loop_indices[0], poly.loop_indices[1], poly.loop_indices[2]))
         
         #U size1 [uv04 array] ([uv14 array])
         if m.uv_layers:
@@ -254,7 +274,7 @@ class CE_Exporter():
                     for vt in vrt2vert:
                         v = bm.verts[vert2bvt[vt]]
                         delta = v[val] - v.co
-                        file.write(struct.pack("<fff", delta[0], delta[2], delta[1]))
+                        file.write(struct.pack("<fff", delta[0], delta[2], -delta[1]))
             
         file.close()
         
@@ -264,6 +284,11 @@ class CE_Exporter():
             if o.parent == None:
                 self.do_arrange_objs(o, oo)
         return oo;
+    
+    def do_arrange_objs(self, o, oo):
+        oo.append(o)
+        for c in o.children:
+            self.do_arrange_objs(c, oo)
         
     def export_armature(self, path, arm):
         bones = []
@@ -286,11 +311,11 @@ class CE_Exporter():
         indent3 = indent2 + 2 * " "
         self.write(file, indent + '"' + bone.name + '":{\n')
         vec = bone.head
-        self.write(file, indent2 + '"head":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
+        self.write(file, indent2 + '"head":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
         vec = bone.tail
-        self.write(file, indent2 + '"tail":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
+        self.write(file, indent2 + '"tail":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
         vec = bone.z_axis
-        self.write(file, indent2 + '"front":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], vec[1]))
+        self.write(file, indent2 + '"front":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
         self.write(file, indent2 + '"connected":' + ('"1"' if bone.use_connect else '"0"'))
         nc = len(bone.children)
         if nc > 0:
@@ -356,11 +381,11 @@ class CE_Exporter():
                 self.write(file, bfn + "\x00")
                 for m in mats:
                     res = m[i][0]
-                    file.write(struct.pack("<fff", res[0], res[2], res[1]))
+                    file.write(struct.pack("<fff", res[0], res[2], -res[1]))
                     res = m[i][1]
-                    file.write(struct.pack("<ffff", res[0], -res[1], -res[3], -res[2]))
+                    file.write(struct.pack("<ffff", res[0], res[1], res[3], -res[2]))
                     res = m[i][2]
-                    file.write(struct.pack("<fff", res[0], res[2], res[1]))
+                    file.write(struct.pack("<fff", res[0], res[2], -res[1]))
             
             file.close()
 

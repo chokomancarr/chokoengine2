@@ -27,6 +27,9 @@
 #define CE_E_EDIT_F(pr, lbl, nm)\
 	CE_E_EDIT_ST(F, pr, lbl, nm, CE_E_GETVAL, CE_E_SETVAL(pr nm, res_ ## nm))
 
+#define CE_E_EDIT_I_FV(pr, lbl, nm)\
+	CE_E_EDIT_ST(I, pr, lbl, nm, CE_E_GETVAL_FV, CE_E_SETVAL_FV(pr nm, res_ ## nm))
+
 #define CE_E_EDIT_F_FV(pr, lbl, nm)\
 	CE_E_EDIT_ST(F, pr, lbl, nm, CE_E_GETVAL_FV, CE_E_SETVAL_FV(pr nm, res_ ## nm))
 

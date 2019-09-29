@@ -8,6 +8,7 @@ class EW_S_DrawCompList {
 
 public:
 	static std::array<_DrawFn, (int)ComponentType::_COUNT> funcs;
+	static std::array<_DrawFn, (int)ComponentType::_COUNT> activeFuncs;
 };
 
 CE_END_ED_NAMESPACE

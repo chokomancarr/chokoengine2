@@ -60,6 +60,12 @@ void Transform::worldRotationEuler(const Vec3& q) {
     CE_NOT_IMPLEMENTED;
 }
 
+void Transform::Rotate(const Vec3& v, TransformSpace sp) {
+	_localRotation = _localRotation * Quat::FromEuler(v * Math::deg2rad);
+	_localRotationEuler = Quat::ToEuler(_localRotation) * Math::rad2deg;
+	UpdateLocalMatrix();
+}
+
 void Transform::localScale(const Vec3& s) {
     _localScale = s;
     UpdateLocalMatrix();

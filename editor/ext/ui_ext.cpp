@@ -3,6 +3,10 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+int UI_Ext::TextFieldI(const Rect& r, const int& i) {
+	return StrExt::ToInt(UI::I::TextField(r, std::to_string(i), Color(0.2f, 0.8f)), i);
+}
+
 float UI_Ext::TextFieldF(const Rect& r, const float& f) {
     return StrExt::ToFloat(UI::I::TextField(r, std::to_string(f), Color(0.2f, 0.8f)), f);
 }

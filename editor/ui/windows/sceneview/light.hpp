@@ -9,6 +9,7 @@ public:
 	static void Init();
 
 	static void Draw(const Component& lht);
+	static void DrawActive(const Component& lht);
 };
 
 CE_END_ED_NAMESPACE

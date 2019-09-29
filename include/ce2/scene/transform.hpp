@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/transform_space.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -42,6 +43,8 @@ public:
     CE_SET_MEMBER_F(localRotationEuler);
     CE_GET_MEMBER(worldRotationEuler);
     CE_SET_MEMBER_F(worldRotationEuler);
+
+	void Rotate(const Vec3& v, TransformSpace sp = TransformSpace::Self);
 
     CE_GET_MEMBER(localScale);
     CE_SET_MEMBER_F(localScale);

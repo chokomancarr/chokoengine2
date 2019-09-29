@@ -107,6 +107,15 @@ std::string StrExt::RemoveFd(const std::string& s) {
 	return s.substr(pd + 1);
 }
 
+int StrExt::ToInt(const std::string& s, int def) {
+	try {
+		return std::stoi(s);
+	}
+	catch (const std::logic_error&) {
+		return def;
+	}
+}
+
 float StrExt::ToFloat(const std::string& s, float def) {
 	try {
 		return std::stof(s);

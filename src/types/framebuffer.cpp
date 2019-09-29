@@ -67,10 +67,6 @@ void _FrameBuffer::Unbind() const {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-FrameBuffer FrameBuffer_New(uint w, uint h, int tn) {
-    return std::make_shared<_FrameBuffer>(w, h, tn);
-}
-
 FrameBuffer FrameBuffer_New(uint w, uint h, std::vector<GLenum> types) {
 	return std::make_shared<_FrameBuffer>(w, h, types);
 }

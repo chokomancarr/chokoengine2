@@ -65,11 +65,10 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camer
 	}
 }
 
-void Renderer::RenderMesh(const MeshRenderer& rend) {
+void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 	const auto& mesh = rend->_mesh;
 	if (!mesh) return;
 	const auto& MV = rend->object()->transform()->worldMatrix();
-	const auto& P = MVP::projection();
 
 	const auto& vao = (rend->_modifiers.size() > 0) ? rend->_modifiers.back()->result : mesh->_vao;
 
@@ -94,8 +93,8 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPreRender();
 	}
-	
-	const auto& tar = cam->target();
+
+	const auto& tar = cam->_target;
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
@@ -104,9 +103,8 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip()));
 	MVP::Push();
 	MVP::Mul(cam->object()->transform()->worldMatrix().inverse());
-	MVP::Switch(false);
 
-	cam->_lastViewProjectionMatrix = MVP::projection();
+	const auto& ip = (cam->_lastViewProjectionMatrix = MVP::projection()).inverse();
 
 	glViewport(0, 0, _w, _h);
 
@@ -127,17 +125,17 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 	glEnable(GL_CULL_FACE);
 
 	for (auto& r : orends) {
-		RenderMesh(r);
+		RenderMesh(r, cam->_lastViewProjectionMatrix);
 	}
 
 	gbuf->Unbind();
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthFunc(GL_ALWAYS);
 	glBlendFunc(GL_ONE, GL_ONE);
+	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
 
-	cam->_blitTargets[0]->BindTarget();
+	const auto& btar = cam->_blitTargets[0];
+	btar->BindTarget();
 
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPreBlit();
@@ -145,10 +143,7 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 
 	if ((cam->_clearType == CameraClearType::Color)
 			|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
-		float zero[4] = {};
 		glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
-		glClearBufferfv(GL_COLOR, 1, zero);
-		glClearBufferfv(GL_COLOR, 2, zero);
 	}
 	if ((cam->_clearType == CameraClearType::Depth)
 		|| (cam->_clearType == CameraClearType::ColorAndDepth))
@@ -162,7 +157,7 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 			RenderLight_Point(l, cam);
 			break;
 		case LightType::Spot:
-			RenderLight_Spot(l, cam);
+			RenderLight_Spot(l, cam, ip, btar, orends);
 			break;
 		case LightType::Directional:
 			RenderLight_Directional(l, cam);
@@ -170,7 +165,7 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 		}
 	}
 
-	cam->_blitTargets[0]->UnbindTarget();
+	btar->UnbindTarget();
 
 	int sw = 0;
 	for (auto& e : cam->_effects) {
@@ -182,18 +177,13 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
 	}
 
-	cam->_blitTargets[0]->BindTarget();
+	btar->BindTarget();
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();
 	}
-	cam->_blitTargets[0]->UnbindTarget();
+	btar->UnbindTarget();
 
-	if (!tar) {
-		CE_NOT_IMPLEMENTED
-	}
-	else {
-		cam->_blitTargets[0]->Blit(tar, nullptr);
-	}
+	btar->Blit(tar, nullptr);
 
 	glViewport(0, 0, Display::width(), Display::height());
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
