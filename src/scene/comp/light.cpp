@@ -19,7 +19,7 @@ void _Light::GenShadowMap() {
 }
 
 _Light::_Light(LightType t) : CE_COMPDEF(Light), _type(t), _falloff(LightFalloff::Squared),
-        _strength(1), _distance(10), _radius(0), _angle(30), _color(Color::white()), shadowBuffer_Cube(nullptr), shadowBuffer_2D(nullptr), _shadow(false),
+        _strength(1), _distance(10), _radius(0.1f), _angle(30), _color(Color::white()), shadowBuffer_Cube(nullptr), shadowBuffer_2D(nullptr), _shadow(false),
         _shadowDistance(50), _shadowStrength(1), _shadowBias(0.01f), _shadowResolution(512), _shadowOnly(false) {}
 
 void _Light::type(const LightType& t) {

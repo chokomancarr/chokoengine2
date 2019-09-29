@@ -83,14 +83,14 @@ void ChokoEditor::Main() {
 	l->shadowBias(0.01f);
 	o->transform()->localPosition(Vec3(0, -0.7f, 0));
 	o->transform()->localRotationEuler(Vec3(90, 0, 0));
-
+	*/
 	auto& o2 = Scene::AddNewObject(Scene::FindByName("rabbit house pillar lamp.001"));
 	auto& l2 = o2->AddComponent<Light>(LightType::Point);
 	l2->distance(10);
 	l2->strength(0.5f);
 	l2->color(Color(1, 0.7f, 0.3f));
 	o2->transform()->localPosition(Vec3(0.4f, 0, 0));
-	*/
+	
 	const auto& cmap = CubeMap::New(256, GL_RGBA, TextureOptions(), 0);
 	const auto& o3 = Scene::AddNewObject();
 	const auto& mr3 = o3->AddComponent<MeshRenderer>();

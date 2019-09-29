@@ -7,7 +7,7 @@ CE_BEGIN_BK_NAMESPACE
 
 bool Renderer::InitLightShaders() {
 	(pointLightShad = Shader::New(glsl::minVert, glsl::pointLightFrag))
-		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightStr", "lightRad", "lightDst", "lightCol", "falloff", "shadowMap" });
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightStr", "lightRad", "lightDst", "lightCol", "falloff", "shadowMap", "shadowStr", "shadowBias" });
 
 	(spotLightShad = Shader::New(glsl::minVert, glsl::spotLightFrag))
 		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightDir", "lightStr", "lightRad", "lightDst", "lightAngleCos", "falloff", "shadowTex", "_LP", "shadowStr", "shadowBias" });
@@ -46,9 +46,16 @@ void Renderer::RenderLight_Point(const Light& l, const Camera& cam, const Mat4x4
 	const auto& col = l->color();
 	glUniform3f(pointLightShad->Loc(10), col.r, col.g, col.b);
 	glUniform1i(pointLightShad->Loc(11), (int)l->_falloff);
-	glUniform1i(pointLightShad->Loc(12), 4);
-	glActiveTexture(GL_TEXTURE4);
-	l->shadowBuffer_Cube->_maps[0]->Bind();
+	if (l->_shadow) {
+		glUniform1i(pointLightShad->Loc(12), 4);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, l->shadowBuffer_Cube->_depth->_pointer);
+		glUniform1f(pointLightShad->Loc(13), l->_shadowStrength);
+		glUniform1f(pointLightShad->Loc(14), l->_shadowBias);
+	}
+	else {
+		glUniform1f(pointLightShad->Loc(13), 0);
+	}
 
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -57,12 +64,12 @@ void Renderer::RenderLight_Point(const Light& l, const Camera& cam, const Mat4x4
 }
 #pragma optimize( "", off )
 void Renderer::RenderLight_Point_Shadow(const Light& l) {
-	const auto& _p = glm::perspectiveFov<float>(90 * Math::deg2rad, l->_shadowResolution, l->_shadowResolution, 0.01f, l->_distance);
+	const auto& _p = glm::perspectiveFov<float>(90 * Math::deg2rad, l->_shadowResolution, l->_shadowResolution, l->_radius, l->_distance);
 	const Vec3 rs[] = {
 		Vec3(180, 90, 0),
 		Vec3(180, -90, 0),
 		Vec3(-90, 0, 90),
-		Vec3(90, 0, -90),
+		Vec3(90, 0, 0),
 		Vec3(180, 0, 0),
 		Vec3(180, 180, 0)
 	};

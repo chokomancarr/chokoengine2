@@ -16,6 +16,8 @@ uniform float lightDst;
 uniform vec3 lightCol;
 uniform int falloff;
 uniform samplerCube shadowMap;
+uniform float shadowStr;
+uniform float shadowBias;
 
 out vec4 fragCol;
 
@@ -45,6 +47,17 @@ float get_falloff(float d) {
 	if (falloff == 0) return ceil(fall);
 	if (falloff == 1) return fall;
 	return fall * fall;
+}
+
+float vec2depth(vec3 v)
+{
+    vec3 va = abs(v);
+    float mv = max(va.x, max(va.y, va.z));
+
+    float f = lightDst;
+    float n = lightRad;
+    float nv = (f+n) / (f-n) - (2*f*n)/(f-n)/mv;
+    return (nv + 1.0) * 0.5;
 }
 
 void main () {
@@ -79,9 +92,14 @@ void main () {
 		vec3 hv = normalize(p2li - fwd);
 		float reflStr = ggx(normal, hv, rough);
 		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic) * reflStr;
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightCol * lightStr * occlu * get_falloff(length(p2l));
 
-		fragCol.rgb = texture(shadowMap, normal.xyz).xyz;
+		float pz = vec2depth(p2l);
+		float sz = texture(shadowMap, -p2li.xyz).r;
+
+		float not_shadow = (sz >= pz - shadowBias) ? 1 : (1 - shadowStr);
+
+		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightCol * lightStr * occlu * get_falloff(length(p2l)) * not_shadow;
+		//fragCol.rgb = texture(shadowMap, -p2li.xyz).rgb;
 	}
 	return;
 }
