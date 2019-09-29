@@ -17,6 +17,7 @@ class ShaderVariable {
 	Vec4 _val_v4;
 	Mat4x4 _val_m;
 	Texture _val_t;
+	CubeMap _val_cm;
 
 public:
     CE_GET_MEMBER(name);
@@ -29,6 +30,7 @@ public:
 	CE_GET_SET_MEMBER(val_v4);
 	CE_GET_SET_MEMBER(val_m);
 	CE_GET_SET_MEMBER(val_t);
+	CE_GET_SET_MEMBER(val_cm);
 
     friend _Shader;
 	friend _Material;

@@ -11,7 +11,7 @@ Background ss[3];
 Light lht;
 
 void paint() {
-	UI::Texture(Display::fullscreenRect(), EImages::background, Color::gray(0.5f));
+	UI::Texture(Display::fullscreenRect(), EImages::background, Color(0.5f));
 	//UI::Texture(Rect(Display::width() * 0.5f - 64, Display::height() * 0.5f - 64, 128, 128), EImages::logo);
 	EWindowManager::Draw();
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
@@ -57,17 +57,23 @@ void ChokoEditor::Main() {
 
 	Scene::sky(ss[0]);
 	Scene::sky()->brightness(0);
+	//*
 	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab"));
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
+	
+	const auto& cl = Scene::FindByName("celing lamp");
+	if (!!cl) {
+		auto& o = Scene::AddNewObject(cl);
+		auto& l = o->AddComponent<Light>(LightType::Point);
+		l->distance(20);
+		l->strength(1);
+		l->shadow(true);
+		l->shadowBias(0.01f);
+		l->color(Color(1, 0.9f, 0.7f));
+		o->transform()->localPosition(Vec3(0, -0.7f, 0));
+	}
 	/*
-	auto& o = Scene::AddNewObject(Scene::FindByName("celing lamp"));
-	auto& l = o->AddComponent<Light>(LightType::Point);
-	l->distance(20);
-	l->strength(1);
-	l->color(Color(1, 0.9f, 0.7f));
-	o->transform()->localPosition(Vec3(0, -0.5f, 0));
-	*/
 	auto& o = Scene::AddNewObject(Scene::FindByName("celing lamp"));
 	auto& l = o->AddComponent<Light>(LightType::Spot);
 	l->distance(20);
@@ -81,9 +87,20 @@ void ChokoEditor::Main() {
 	auto& o2 = Scene::AddNewObject(Scene::FindByName("rabbit house pillar lamp.001"));
 	auto& l2 = o2->AddComponent<Light>(LightType::Point);
 	l2->distance(10);
-	l2->strength(0.1f);
+	l2->strength(0.5f);
 	l2->color(Color(1, 0.7f, 0.3f));
 	o2->transform()->localPosition(Vec3(0.4f, 0, 0));
+	*/
+	const auto& cmap = CubeMap::New(256, GL_RGBA, TextureOptions(), 0);
+	const auto& o3 = Scene::AddNewObject();
+	const auto& mr3 = o3->AddComponent<MeshRenderer>();
+	mr3->mesh(ProceduralMesh::UVSphere(20, 10, 1));
+	//const auto& mt3 = Material::New();
+	//mt3->shader((Shader)EAssetList::Get(EAssetType::Shader, ".internal/unlit_cubemap.shader"));
+	//mt3->SetUniform("map", cmap);
+	//mr3->materials({mt3});
+	mr3->materials({ (Material)EAssetList::Get(EAssetType::Material, "def.material") });
+	o3->AddComponent<LightProbe>();
 
 	EWindowManager::LoadWindows();
 

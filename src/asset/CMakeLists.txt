@@ -7,6 +7,7 @@ set(SOURCES
 	${DIR}/armature.cpp
 	${DIR}/armature_bone.cpp
 	${DIR}/background.cpp
+	${DIR}/cubemap.cpp
 	${DIR}/font.cpp
 	${DIR}/material.cpp
 	${DIR}/mesh.cpp

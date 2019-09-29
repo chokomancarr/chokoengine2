@@ -15,6 +15,7 @@ class _Light : public _Component { CE_COMPONENT_COMMON
 	float _angle;
 	Color _color;
 
+	FrameBufferCube shadowBuffer_Cube;
 	FrameBuffer shadowBuffer_2D;
 
     bool _shadow;
@@ -25,6 +26,7 @@ class _Light : public _Component { CE_COMPONENT_COMMON
     bool _shadowOnly;
 
 	static bool Init();
+	void GenShadowMap();
 public:
     /* Constructs light of specified type with default settings
      */
@@ -32,7 +34,7 @@ public:
 
     /* Type of the light model
      */
-    CE_GET_SET_MEMBER(type);
+    CE_GET_SET_MEMBER_F(type);
     /* Intensity falloff model
      * Has no effect on directional models
      */

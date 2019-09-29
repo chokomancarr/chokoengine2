@@ -58,7 +58,7 @@ float EW_Browser::DrawFolder(float& off, Folder& fd, int level) {
 	if (hc) {
 		UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[fd.expanded ? "minus" : "plus"], Color(0.8f));
 	}
-	UI::Label(Rect(position.x() + dx + 17, off, mw - dx - 18, 16), fd.name, Color::gray(0.8f));
+	UI::Label(Rect(position.x() + dx + 17, off, mw - dx - 18, 16), fd.name, Color(0.8f));
 	
 	if (level > 0) {
 		ol = off + 8;

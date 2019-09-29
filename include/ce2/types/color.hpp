@@ -17,7 +17,7 @@ public:
     static Color blue();
     static Color yellow();
     static Color cyan();
-	static Color gray(float f);
+	static Color gray();
 };
 
 CE_END_NAMESPACE

@@ -12,7 +12,8 @@ enum class ShaderVariableType {
 	Vec4,
 	Matrix,
 	Color,
-	Texture
+	Texture,
+	CubeMap
 };
 
 CE_END_NAMESPACE

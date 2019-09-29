@@ -22,4 +22,5 @@ CE_END_NAMESPACE
 #include "./material.hpp"
 #include "./texture.hpp"
 #include "./background.hpp"
+#include "./cubemap.hpp"
 #include "./render_target.hpp"

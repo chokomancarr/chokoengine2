@@ -50,6 +50,7 @@ SETUNIFORM(Vec4, Vec4, v4);
 SETUNIFORM(Mat4x4, Matrix, m);
 SETUNIFORM(Color, Color, v4);
 SETUNIFORM(Texture, Texture, t);
+SETUNIFORM(CubeMap, CubeMap, cm);
 
 void _Material::Bind() {
 	_shader->Bind();
@@ -79,6 +80,12 @@ void _Material::Bind() {
 			glUniform1i(v._location, tid);
 			glActiveTexture(GL_TEXTURE0 + tid);
 			v._val_t->Bind();
+			tid++;
+			break;
+		case ShaderVariableType::CubeMap:
+			glUniform1i(v._location, tid);
+			glActiveTexture(GL_TEXTURE0 + tid);
+			v._val_cm->Bind();
 			tid++;
 			break;
 		}

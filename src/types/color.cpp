@@ -34,8 +34,8 @@ Color Color::yellow() {
 Color Color::cyan() {
     return Color(0, 1, 1);
 }
-Color Color::gray(float f) {
-	return Color(f, f, f);
+Color Color::gray() {
+	return Color(0.5f);
 }
 
 CE_END_NAMESPACE

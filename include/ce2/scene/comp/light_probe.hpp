@@ -11,7 +11,7 @@ class _LightProbe : public _Component { CE_COMPONENT_COMMON
     LightProbeUpdateFrequency _updateFrequency;
     int _resolution;
     
-	RenderTarget _target;
+	FrameBufferCube _fbo;
 
 	static bool Init();
 public:
@@ -35,6 +35,8 @@ public:
     /* The resolution of the computed data
      */
     CE_GET_SET_MEMBER_F(resolution);
+
+	void Render();
 };
 
 CE_END_NAMESPACE

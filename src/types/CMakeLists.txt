@@ -4,7 +4,9 @@ set(SOURCES
 	${SOURCES}
 	${DIR}/color.cpp
 	${DIR}/depth_texture.cpp
+	${DIR}/depth_cubemap.cpp
 	${DIR}/framebuffer.cpp
+	${DIR}/cube_framebuffer.cpp
 	${DIR}/mat4x4.cpp
 	${DIR}/quat.cpp
 	${DIR}/rect.cpp

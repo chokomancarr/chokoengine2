@@ -11,20 +11,27 @@ class Renderer {
 	static Shader pointLightShad;
 	static Shader spotLightShad;
 
+	static std::vector<Camera> cameras;
+	static std::vector<Light> lights;
+	static std::vector<MeshRenderer> orends, trends;
+
 	static bool InitLightShaders();
 
-    static void ScanObjects(const std::vector<SceneObject>&, std::vector<Camera>&, std::vector<Light>&, std::vector<MeshRenderer>&, std::vector<MeshRenderer>&);
+    static void ScanObjects(const std::vector<SceneObject>&);
 
 	static void RenderMesh(const MeshRenderer& rend, const Mat4x4& P);
 
-    static void RenderCamera(Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& orends, const std::vector<MeshRenderer>& trends);
+    static void RenderCamera(Camera& cam);
+
+	static void RenderProbe_CubeMap(const CubeMap&);
 
 	static void RenderSky(const Camera&);
 
-	static void RenderLight_Point(const Light&, const Camera&);
+	static void RenderLight_Point(const Light&, const Camera&, const Mat4x4& ip, const RenderTarget&);
+	static void RenderLight_Point_Shadow(const Light&);
 	
-	static void RenderLight_Spot(const Light&, const Camera&, const Mat4x4& ip, const RenderTarget&, const std::vector<MeshRenderer>& orends);
-	static Mat4x4 RenderLight_Spot_Shadow(const Light&, const std::vector<MeshRenderer>& orends);
+	static void RenderLight_Spot(const Light&, const Camera&, const Mat4x4& ip, const RenderTarget&);
+	static Mat4x4 RenderLight_Spot_Shadow(const Light&);
 
 	static void RenderLight_Directional(const Light&, const Camera&);
 

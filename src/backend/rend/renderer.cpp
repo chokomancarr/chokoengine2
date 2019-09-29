@@ -24,12 +24,16 @@
 CE_BEGIN_BK_NAMESPACE
 
 VertexArray Renderer::_emptyVao;
+
 Shader Renderer::skyShad;
 Shader Renderer::pointLightShad;
 Shader Renderer::spotLightShad;
 
-void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camera>& cameras,
-		std::vector<Light>& lights, std::vector<MeshRenderer>& orends, std::vector<MeshRenderer>& trends) {
+std::vector<Camera> Renderer::cameras;
+std::vector<Light> Renderer::lights;
+std::vector<MeshRenderer> Renderer::orends, Renderer::trends;
+
+void Renderer::ScanObjects(const std::vector<SceneObject>& oo) {
 	for (auto& o : oo) {
 		for (auto& c : o->_components) {
 			switch(c->componentType) {
@@ -61,7 +65,7 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo, std::vector<Camer
 				break;
 			}
 		}
-		ScanObjects(o->children(), cameras, lights, orends, trends);
+		ScanObjects(o->children());
 	}
 }
 
@@ -89,7 +93,7 @@ void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 	vao->Unbind();
 }
 
-void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const std::vector<MeshRenderer>& orends, const std::vector<MeshRenderer>& trends) {
+void Renderer::RenderCamera(Camera& cam) {
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPreRender();
 	}
@@ -154,10 +158,10 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 	for (auto& l : lights) {
 		switch(l->_type) {
 		case LightType::Point:
-			RenderLight_Point(l, cam);
+			RenderLight_Point(l, cam, ip, btar);
 			break;
 		case LightType::Spot:
-			RenderLight_Spot(l, cam, ip, btar, orends);
+			RenderLight_Spot(l, cam, ip, btar);
 			break;
 		case LightType::Directional:
 			RenderLight_Directional(l, cam);
@@ -177,6 +181,8 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
 	}
 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	btar->BindTarget();
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();
@@ -186,7 +192,6 @@ void Renderer::RenderCamera(Camera& cam, const std::vector<Light>& lights, const
 	btar->Blit(tar, nullptr);
 
 	glViewport(0, 0, Display::width(), Display::height());
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostRender();
@@ -237,14 +242,15 @@ bool Renderer::Init() {
 }
 
 void Renderer::Render() {
-	std::vector<Camera> cameras;
-	std::vector<Light> lights;
-	std::vector<MeshRenderer> orends, trends;
+	cameras.clear();
+	lights.clear();
+	orends.clear();
+	trends.clear();
 
-	ScanObjects(Scene::objects(), cameras, lights, orends, trends);
+	ScanObjects(Scene::objects());
 
 	for (auto& c : cameras) {
-		RenderCamera(c, lights, orends, trends);
+		RenderCamera(c);
 	}
 }
 

@@ -73,6 +73,7 @@ CE_OBJECT(AnimClip)
 CE_OBJECT(AnimGraph)
 CE_OBJECT(Asset)
 CE_OBJECT(Armature)
+CE_OBJECT(CubeMap)
 CE_OBJECT(Font)
 CE_OBJECT(Material)
 CE_OBJECT(Mesh)
@@ -137,9 +138,11 @@ CE_END_NAMESPACE
 
 #include "types/texturebuffer.hpp"
 #include "types/depth_texture.hpp"
+#include "types/depth_cubemap.hpp"
 #include "types/vertexbuffer.hpp"
 #include "types/vertexarray.hpp"
 #include "types/framebuffer.hpp"
+#include "types/cube_framebuffer.hpp"
 
 #include "scene/transform.hpp"
 #include "scene/scene.hpp"

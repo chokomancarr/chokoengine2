@@ -3,14 +3,14 @@
 
 CE_BEGIN_NAMESPACE
 
-class _FrameBuffer { CE_OBJECT_COMMON
-	GLuint _pointer;
+class _FrameBuffer {
+	CE_OBJECT_COMMON
+		GLuint _pointer;
 	std::vector<Texture> _texs;
 	DepthTexture _depth;
 
 	_FrameBuffer(const _FrameBuffer&) = delete;
 public:
-	_FrameBuffer(uint w, uint h, int tn);
 	_FrameBuffer(uint w, uint h, std::vector<GLenum> types);
 	~_FrameBuffer();
 

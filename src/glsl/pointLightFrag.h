@@ -15,6 +15,7 @@ uniform float lightRad;
 uniform float lightDst;
 uniform vec3 lightCol;
 uniform int falloff;
+uniform samplerCube shadowMap;
 
 out vec4 fragCol;
 
@@ -79,6 +80,8 @@ void main () {
 		float reflStr = ggx(normal, hv, rough);
 		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic) * reflStr;
 		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightCol * lightStr * occlu * get_falloff(length(p2l));
+
+		fragCol.rgb = texture(shadowMap, normal.xyz).xyz;
 	}
 	return;
 }

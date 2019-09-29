@@ -33,6 +33,7 @@ public:
 	void SetUniform(const std::string& s, Mat4x4 m);
 	void SetUniform(const std::string& s, Color c);
 	void SetUniform(const std::string& s, Texture t);
+	void SetUniform(const std::string& s, CubeMap c);
 
 	void Bind();
 	void Unbind();
