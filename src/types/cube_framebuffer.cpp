@@ -14,9 +14,10 @@ _FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types)
 	}
 	_depth = DepthCubeMap_New(r);
 
-	glGenFramebuffers(6, _pointers.data());
 	for (int f = 0; f < 6; f++) {
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _pointers[f]);
+		GLuint fbo;
+		glGenFramebuffers(1, &fbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 		for (size_t a = 0; a < types.size(); a++) {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, bufs[a], GL_TEXTURE_CUBE_MAP_POSITIVE_X + f, _maps[a]->_pointer, 0);
 		}
@@ -26,12 +27,15 @@ _FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types)
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
 			Debug::Error("FrameBuffer", "gl error " + std::to_string(status));
 		}
+		//this is not good, but will do for now
+		//pass null textures to prevent double cleanup
+		_pointers[f] = RenderTarget::FromPtr(new _RenderTarget(_depth->_reso, _depth->_reso, 0, 0, fbo));
 	}
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-_FrameBufferCube::~_FrameBufferCube() {
-	glDeleteFramebuffers(6, _pointers.data());
+const CubeMap& _FrameBufferCube::map(int i) {
+	return _maps[i];
 }
 
 void _FrameBufferCube::Clear() const {
@@ -44,7 +48,7 @@ void _FrameBufferCube::Clear() const {
 }
 
 void _FrameBufferCube::Bind(CubeMapFace f) const {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _pointers[(int)f]);
+	_pointers[(int)f]->BindTarget();
 }
 
 void _FrameBufferCube::Unbind() const {

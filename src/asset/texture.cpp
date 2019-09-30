@@ -7,6 +7,9 @@ CE_BEGIN_NAMESPACE
 _Texture::_Texture(std::nullptr_t)
         : _pointer(0), _width(0), _height(0), _hdr(false) {}
 
+_Texture::_Texture(uint w, uint h, GLuint ptr)
+        : _pointer(ptr), _width(w), _height(h), _hdr(false) {}
+
 _Texture::_Texture(uint w, uint h, bool hdr)
 		: _width(w), _height(h), _channels(4), _hdr(hdr) {
 	glGenTextures(1, &_pointer);

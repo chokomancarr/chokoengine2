@@ -1,6 +1,7 @@
 #include "backend/chokoengine_backend.hpp"
 #include "glsl/minVert.h"
 #include "glsl/skyFrag.h"
+#include "glsl/probeLightFrag.h"
 
 /* The renderer backend
  *
@@ -28,10 +29,12 @@ VertexArray Renderer::_emptyVao;
 Shader Renderer::skyShad;
 Shader Renderer::pointLightShad;
 Shader Renderer::spotLightShad;
+Shader Renderer::probeShad;
 
 std::vector<Camera> Renderer::cameras;
 std::vector<Light> Renderer::lights;
 std::vector<MeshRenderer> Renderer::orends, Renderer::trends;
+std::vector<LightProbe> Renderer::probes;
 
 void Renderer::ScanObjects(const std::vector<SceneObject>& oo) {
 	for (auto& o : oo) {
@@ -61,6 +64,9 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo) {
 					trends.push_back(r);
 				break;
 			}
+			case ComponentType::LightProbe:
+				probes.push_back(static_cast<LightProbe>(c));
+				break;
 			default:
 				break;
 			}
@@ -93,8 +99,8 @@ void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 	vao->Unbind();
 }
 
-void Renderer::RenderScene(const RenderTarget& tar, const Mat4x4& p, FrameBuffer& gbuf
-		, std::function<void()> preBlit) {
+void Renderer::RenderScene(const RenderTarget& tar, const Mat4x4& p, const FrameBuffer& gbuf
+		, std::function<void()> preBlit, bool useProbes) {
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
@@ -102,11 +108,6 @@ void Renderer::RenderScene(const RenderTarget& tar, const Mat4x4& p, FrameBuffer
 
 	glViewport(0, 0, _w, _h);
 
-	if (!gbuf) {
-		gbuf = FrameBuffer_New(_w, _h, {
-			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
-		});
-	}
 	gbuf->Bind();
 	gbuf->Clear();
 
@@ -128,10 +129,13 @@ void Renderer::RenderScene(const RenderTarget& tar, const Mat4x4& p, FrameBuffer
 
 	if (preBlit) preBlit();
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	if (useProbes) {
+		for (auto& p : probes) {
+			ApplyLightProbe(p, _w, _h, gbuf, ip);
+		}
+	}
 	RenderSky(_w, _h, gbuf, ip);
-
+	
 	for (auto& l : lights) {
 		switch(l->_type) {
 		case LightType::Point:
@@ -147,6 +151,8 @@ void Renderer::RenderScene(const RenderTarget& tar, const Mat4x4& p, FrameBuffer
 	}
 
 	tar->UnbindTarget();
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Renderer::RenderCamera(Camera& cam) {
@@ -161,11 +167,14 @@ void Renderer::RenderCamera(Camera& cam) {
 	const auto& p = cam->_lastViewProjectionMatrix = glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip())
 		* cam->object()->transform()->worldMatrix().inverse();
 
-	glViewport(0, 0, _w, _h);
-
 	auto& gbuf = cam->_deferredBuffer;
 	auto& btar = cam->_blitTargets[0];
-
+	
+	if (!gbuf) {
+		gbuf = FrameBuffer_New(_w, _h, {
+			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
+		});
+	}
 	if (!btar) {
 		for (auto& t : cam->_blitTargets) {
 			t = RenderTarget::New(_w, _h, true, false);
@@ -184,7 +193,7 @@ void Renderer::RenderCamera(Camera& cam) {
 		for (auto& c : cam->_object.lock()->_components) {
 			c->OnPreBlit();
 		}
-	});
+	}, true);
 
 	int sw = 0;
 	for (auto& e : cam->_effects) {
@@ -244,6 +253,8 @@ bool Renderer::Init() {
 
 	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
 		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "inSky", "skyStrength" });
+	(probeShad = Shader::New(glsl::minVert, glsl::probeLightFrag))
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "cubemap", "skyStrength" });
 
 	return !!skyShad && InitLightShaders();
 }
@@ -253,8 +264,15 @@ void Renderer::Render() {
 	lights.clear();
 	orends.clear();
 	trends.clear();
+	probes.clear();
 
 	ScanObjects(Scene::objects());
+
+	for (auto& p : probes) {
+		if (p->_dirty || (p->updateFrequency() == LightProbeUpdateFrequency::Realtime)) {
+			RenderLightProbe(p);
+		}
+	}
 
 	for (auto& c : cameras) {
 		RenderCamera(c);

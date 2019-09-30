@@ -9,9 +9,20 @@ class _LightProbe : public _Component { CE_COMPONENT_COMMON
     Vec3 _center;
     Vec3 _area;
     LightProbeUpdateFrequency _updateFrequency;
+    bool _dirty;
     int _resolution;
+
+    float _nearClip;
+    float _farClip;
+
+    FrameBuffer _deferredBuffer;
     
 	FrameBufferCube _fbo;
+
+    CameraClearType _clearType;
+
+    Color _clearColor;
+    float _clearDepth;
 
 	static bool Init();
 public:
@@ -30,11 +41,20 @@ public:
      */
     CE_GET_SET_MEMBER(area);
     /* The frequency to recompute the lighting
+     * If the dirty parameter is true, the probe
+     * will be recomputed regardless of this value
      */
     CE_GET_SET_MEMBER(updateFrequency);
+    /* Should the probe be recomputed on the next frame
+     * This flag overrides the updateFrequency parameter
+     * This flag is reset to false when recomputed
+     */
+    CE_GET_SET_MEMBER(dirty);
     /* The resolution of the computed data
      */
     CE_GET_SET_MEMBER_F(resolution);
+
+    const CubeMap& result();
 
 	void Render();
 };

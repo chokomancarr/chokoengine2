@@ -46,17 +46,19 @@ void ChokoEditor::Main() {
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
 	
+	/*
 	const auto& cl = Scene::FindByName("celing lamp");
 	if (!!cl) {
 		const auto& o = Scene::AddNewObject(cl);
 		const auto& l = o->AddComponent<Light>(LightType::Point);
 		l->distance(20);
 		l->strength(1);
-		l->shadow(true);
+		//l->shadow(true);
+		l->shadowStrength(0.7f);
 		l->shadowBias(0.01f);
 		l->color(Color(1, 0.9f, 0.7f));
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
-	}
+	}*/
 	/*
 	auto& o = Scene::AddNewObject(Scene::FindByName("celing lamp"));
 	auto& l = o->AddComponent<Light>(LightType::Spot);
@@ -72,19 +74,24 @@ void ChokoEditor::Main() {
 	const auto& l2 = o2->AddComponent<Light>(LightType::Point);
 	l2->distance(10);
 	l2->strength(0.5f);
+	//l2->shadow(true);
+	l2->shadowStrength(0.5f);
+	l2->shadowBias(0.01f);
 	l2->color(Color(1, 0.7f, 0.3f));
 	o2->transform()->localPosition(Vec3(0.4f, 0, 0));
 	
-	const auto& cmap = CubeMap::New(256, GL_RGBA, TextureOptions(), 0);
 	const auto& o3 = Scene::AddNewObject();
+	o3->transform()->localPosition(Vec3(1, 0, 1));
+	const auto& pr = o3->AddComponent<LightProbe>();
+	pr->resolution(128);
+	pr->updateFrequency(LightProbeUpdateFrequency::Realtime);
 	const auto& mr3 = o3->AddComponent<MeshRenderer>();
-	mr3->mesh(ProceduralMesh::UVSphere(20, 10, 0.5f));
-	//const auto& mt3 = Material::New();
-	//mt3->shader((Shader)EAssetList::Get(EAssetType::Shader, ".internal/unlit_cubemap.shader"));
-	//mt3->SetUniform("map", cmap);
-	//mr3->materials({mt3});
-	mr3->materials({ (Material)EAssetList::Get(EAssetType::Material, "def.material") });
-	o3->AddComponent<LightProbe>();
+	mr3->mesh(ProceduralMesh::UVSphere(20, 10, 1));
+	const auto& mt3 = Material::New();
+	mt3->shader((Shader)EAssetList::Get(EAssetType::Shader, ".internal/unlit_cubemap.shader"));
+	mt3->SetUniform("map", pr->result());
+	mr3->materials({mt3});
+	//mr3->materials({ (Material)EAssetList::Get(EAssetType::Material, "def.material") });
 
 	EWindowManager::LoadWindows();
 

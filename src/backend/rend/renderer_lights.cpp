@@ -45,14 +45,15 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 	const auto& col = l->color();
 	glUniform3f(pointLightShad->Loc(10), col.r, col.g, col.b);
 	glUniform1i(pointLightShad->Loc(11), (int)l->_falloff);
+	glUniform1i(pointLightShad->Loc(12), 4);
+	glActiveTexture(GL_TEXTURE4);
 	if (l->_shadow) {
-		glUniform1i(pointLightShad->Loc(12), 4);
-		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, l->shadowBuffer_Cube->_depth->_pointer);
 		glUniform1f(pointLightShad->Loc(13), l->_shadowStrength);
 		glUniform1f(pointLightShad->Loc(14), l->_shadowBias);
 	}
 	else {
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		glUniform1f(pointLightShad->Loc(13), 0);
 	}
 
@@ -60,6 +61,8 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();
 	pointLightShad->Unbind();
+
+
 }
 #pragma optimize( "", off )
 void Renderer::RenderLight_Point_Shadow(const Light& l) {
@@ -67,7 +70,7 @@ void Renderer::RenderLight_Point_Shadow(const Light& l) {
 	const Vec3 rs[] = {
 		Vec3(180, 90, 0),
 		Vec3(180, -90, 0),
-		Vec3(-90, 0, 90),
+		Vec3(-90, 0, 0),
 		Vec3(90, 0, 0),
 		Vec3(180, 0, 0),
 		Vec3(180, 180, 0)
@@ -138,8 +141,8 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	glUniform1f(spotLightShad->Loc(10), l->_distance);
 	glUniform1f(spotLightShad->Loc(11), std::cos(l->_angle * Math::deg2rad));
 	glUniform1i(spotLightShad->Loc(12), (int)l->_falloff);
+	glUniform1i(spotLightShad->Loc(13), 4);
 	if (l->_shadow) {
-		glUniform1i(spotLightShad->Loc(13), 4);
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, l->shadowBuffer_2D->_depth->_pointer);
 		glUniformMatrix4fv(spotLightShad->Loc(14), 1, GL_FALSE, &pShad[0][0]);

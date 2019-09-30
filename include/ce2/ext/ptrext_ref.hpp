@@ -10,7 +10,7 @@ public:
 	typedef std::shared_ptr<T> _TpPtr;
 
 private:
-	Ref(_TpPtr o);
+	Ref(const _TpPtr& o);
 
 	_TpPtr _object;
 
@@ -36,6 +36,13 @@ public:
 	bool operator !=(const Ref<T>& rhs) const;
 
 	CE_GET_MEMBER(object);
+
+	/* Construct a reference from an allocated pointer
+	 * WARNING: risk of dangling pointer
+	 * You should not use this function
+	 * unless you know what you are doing
+	 */
+	static Ref FromPtr(T*);
 
 	friend T;
 	template <class U>

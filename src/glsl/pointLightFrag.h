@@ -93,11 +93,14 @@ void main () {
 		float reflStr = ggx(normal, hv, rough);
 		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic) * reflStr;
 
-		float pz = vec2depth(p2l);
-		float sz = texture(shadowMap, -p2li.xyz).r;
-
-		float not_shadow = (sz >= pz - shadowBias) ? 1 : (1 - shadowStr);
-
+		float not_shadow = 1;
+		
+		if (shadowStr > 0) {
+			float pz = vec2depth(p2l);
+			float sz = texture(shadowMap, -p2li.xyz).r;
+			not_shadow = (sz >= pz - shadowBias) ? 1 : (1 - shadowStr);
+		}
+		
 		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightCol * lightStr * occlu * get_falloff(length(p2l)) * not_shadow;
 		//fragCol.rgb = texture(shadowMap, -p2li.xyz).rgb;
 	}

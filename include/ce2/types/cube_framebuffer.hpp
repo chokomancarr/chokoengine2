@@ -4,14 +4,13 @@
 CE_BEGIN_NAMESPACE
 
 class _FrameBufferCube {CE_OBJECT_COMMON
-	std::array<GLuint, 6> _pointers;
+	std::array<RenderTarget, 6> _pointers;
 	std::vector<CubeMap> _maps;
 	DepthCubeMap _depth;
 
 	_FrameBufferCube(const _FrameBufferCube&) = delete;
 public:
 	_FrameBufferCube(uint r, std::vector<GLenum> types);
-	~_FrameBufferCube();
 
 	const CubeMap& map(int i);
 	CE_GET_MEMBER(depth);

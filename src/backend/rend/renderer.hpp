@@ -10,10 +10,12 @@ class Renderer {
 
 	static Shader pointLightShad;
 	static Shader spotLightShad;
+	static Shader probeShad;
 
 	static std::vector<Camera> cameras;
 	static std::vector<Light> lights;
 	static std::vector<MeshRenderer> orends, trends;
+	static std::vector<LightProbe> probes;
 
 	static bool InitLightShaders();
 
@@ -21,7 +23,7 @@ class Renderer {
 
 	static void RenderMesh(const MeshRenderer& rend, const Mat4x4& P);
 
-	static void RenderScene(const RenderTarget& tar, const Mat4x4& p, FrameBuffer& gbuf, std::function<void()> preBlit);
+	static void RenderScene(const RenderTarget& tar, const Mat4x4& p, const FrameBuffer& gbuf, std::function<void()> preBlit, bool useProbes);
 
     static void RenderCamera(Camera& cam);
 
@@ -38,6 +40,8 @@ class Renderer {
 	static void RenderLight_Directional(const Light&, const Camera&);
 
 	static void RenderLightProbe(const LightProbe&);
+
+	static void ApplyLightProbe(const LightProbe&, int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip);
 
 public:
 	CE_GET_ST_MEMBER(emptyVao);

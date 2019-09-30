@@ -4,6 +4,9 @@
 
 CE_BEGIN_NAMESPACE
 
+_RenderTarget::_RenderTarget(uint w, uint h, GLuint tex, GLuint depth, GLuint fbo)
+		: _Texture(w, h, tex), _depth(depth), _fbo(fbo) {}
+
 _RenderTarget::_RenderTarget(uint w, uint h, bool hdr, bool d)
 		: _Texture(w, h, hdr), _depth(0) {
 	if (d) {
@@ -26,6 +29,10 @@ _RenderTarget::_RenderTarget(uint w, uint h, bool hdr, bool d)
 		Debug::Error("Render Target", "Could not create framebuffer: gl error " + std::to_string(status));
 	}
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+_RenderTarget::~_RenderTarget() {
+	glDeleteFramebuffers(1, &_fbo);
 }
 
 void _RenderTarget::BindTarget() const {
