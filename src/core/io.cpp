@@ -11,6 +11,8 @@
 #include <sys/stat.h>
 #include <termios.h>
 #include <unistd.h>
+#include <pwd.h>
+#include <uuid/uuid.h>
 #ifdef PLATFORM_MAC
 #include <mach-o/dyld.h>
 #endif
@@ -19,6 +21,7 @@
 CE_BEGIN_NAMESPACE
 
 std::string IO::_path;
+std::string IO::_userPath;
 
 bool IO::Init() {
 	const int cpathsz = 200;
@@ -27,7 +30,14 @@ bool IO::Init() {
 	GetModuleFileName(NULL, cpath, cpathsz);
 	_path = cpath;
 	std::replace(_path.begin(), _path.end(), '\\', '/');
-#elif defined(PLATFORM_LNX)
+	
+	WCHAR wpath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, wpath))) {
+		_userPath = StrExt::Unwiden(wpath);
+	}
+	else return false;
+#else
+#if defined(PLATFORM_LNX)
 	readlink("/proc/self/exe", cpath, 200);
 	_path = cpath;
 #else
@@ -36,6 +46,9 @@ bool IO::Init() {
 	_path = realpath(cpath, cpath2);
 #endif
 	_path = _path.substr(0, _path.find_last_of('/') + 1);
+	struct passwd *pw = getpwuid(getuid());
+	_userPath = std::string(pw->pw_dir) + "/";
+#endif
 
 	return true;
 }

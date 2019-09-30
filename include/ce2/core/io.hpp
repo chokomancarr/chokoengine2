@@ -5,10 +5,19 @@ CE_BEGIN_NAMESPACE
 
 class IO { CE_CLASS_COMMON
 	static CE_EXPORT std::string _path;
+	static CE_EXPORT std::string _userPath;
 
 	static bool Init();
 public:
+	/* Directory of the current executable
+	 */
 	CE_GET_ST_MEMBER(path);
+	
+	/* Directory of the local user
+	 * For windows, it is usually <drive>:/Users/<username>/
+	 * For unix, it is equivalent to ~/
+	 */
+	CE_GET_ST_MEMBER(userPath);
 
 	/* Returns all files in directory \p dir,
 	 * optionally with an extension filter

@@ -93,33 +93,19 @@ void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 	vao->Unbind();
 }
 
-void Renderer::RenderCamera(Camera& cam) {
-	for (auto& c : cam->_object.lock()->_components) {
-		c->OnPreRender();
-	}
-
-	const auto& tar = cam->_target;
+void Renderer::RenderScene(const RenderTarget& tar, const Mat4x4& p, FrameBuffer& gbuf
+		, std::function<void()> preBlit) {
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
-	MVP::Switch(true);
-	MVP::Clear();
-	MVP::Mul(glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip()));
-	MVP::Push();
-	MVP::Mul(cam->object()->transform()->worldMatrix().inverse());
-
-	const auto& ip = (cam->_lastViewProjectionMatrix = MVP::projection()).inverse();
+	const auto& ip = p.inverse();
 
 	glViewport(0, 0, _w, _h);
 
-	auto& gbuf = cam->_deferredBuffer;
 	if (!gbuf) {
 		gbuf = FrameBuffer_New(_w, _h, {
 			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
 		});
-		for (auto& t : cam->_blitTargets) {
-			t = RenderTarget::New(_w, _h, true, false);
-		}
 	}
 	gbuf->Bind();
 	gbuf->Clear();
@@ -129,7 +115,7 @@ void Renderer::RenderCamera(Camera& cam) {
 	glEnable(GL_CULL_FACE);
 
 	for (auto& r : orends) {
-		RenderMesh(r, cam->_lastViewProjectionMatrix);
+		RenderMesh(r, p);
 	}
 
 	gbuf->Unbind();
@@ -138,38 +124,67 @@ void Renderer::RenderCamera(Camera& cam) {
 	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
 
-	const auto& btar = cam->_blitTargets[0];
-	btar->BindTarget();
+	tar->BindTarget();
 
-	for (auto& c : cam->_object.lock()->_components) {
-		c->OnPreBlit();
-	}
+	if (preBlit) preBlit();
 
-	if ((cam->_clearType == CameraClearType::Color)
-			|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
-		glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
-	}
-	if ((cam->_clearType == CameraClearType::Depth)
-		|| (cam->_clearType == CameraClearType::ColorAndDepth))
-		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	RenderSky(cam);
+	RenderSky(_w, _h, gbuf, ip);
 
 	for (auto& l : lights) {
 		switch(l->_type) {
 		case LightType::Point:
-			RenderLight_Point(l, cam, ip, btar);
+			RenderLight_Point(l, gbuf, ip, tar);
 			break;
 		case LightType::Spot:
-			RenderLight_Spot(l, cam, ip, btar);
+			RenderLight_Spot(l, gbuf, ip, tar);
 			break;
 		case LightType::Directional:
-			RenderLight_Directional(l, cam);
+			//RenderLight_Directional(l, cam);
 			break;
 		}
 	}
 
-	btar->UnbindTarget();
+	tar->UnbindTarget();
+}
+
+void Renderer::RenderCamera(Camera& cam) {
+	for (auto& c : cam->_object.lock()->_components) {
+		c->OnPreRender();
+	}
+
+	const auto& tar = cam->_target;
+	const auto _w = (!tar) ? Display::width() : tar->_width;
+	const auto _h = (!tar) ? Display::height() : tar->_height;
+
+	const auto& p = cam->_lastViewProjectionMatrix = glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip())
+		* cam->object()->transform()->worldMatrix().inverse();
+
+	glViewport(0, 0, _w, _h);
+
+	auto& gbuf = cam->_deferredBuffer;
+	auto& btar = cam->_blitTargets[0];
+
+	if (!btar) {
+		for (auto& t : cam->_blitTargets) {
+			t = RenderTarget::New(_w, _h, true, false);
+		}
+	}
+
+	RenderScene(btar, p, gbuf, [&]() {
+		if ((cam->_clearType == CameraClearType::Color)
+				|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
+			glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
+		}
+		if ((cam->_clearType == CameraClearType::Depth)
+			|| (cam->_clearType == CameraClearType::ColorAndDepth))
+			glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
+
+		for (auto& c : cam->_object.lock()->_components) {
+			c->OnPreBlit();
+		}
+	});
 
 	int sw = 0;
 	for (auto& e : cam->_effects) {
@@ -181,13 +196,9 @@ void Renderer::RenderCamera(Camera& cam) {
 		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
 	}
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	btar->BindTarget();
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();
 	}
-	btar->UnbindTarget();
 
 	btar->Blit(tar, nullptr);
 
@@ -198,15 +209,11 @@ void Renderer::RenderCamera(Camera& cam) {
 	}
 }
 
-void Renderer::RenderSky(const Camera& cam) {
-	const auto ip = glm::inverse(MVP::projection());
-
-	const auto& tar = cam->_target;
-	const auto& gbuf = cam->_deferredBuffer;
+void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip) {
 	skyShad->Bind();
 	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
-	glUniform2f(skyShad->Loc(1), tar->_width, tar->_height);
-	glUniform1i(skyShad->Loc(2), cam->_orthographic);
+	glUniform2f(skyShad->Loc(1), w, h);
+	glUniform1i(skyShad->Loc(2), false); //is_ortho
 	glUniform1i(skyShad->Loc(3), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);

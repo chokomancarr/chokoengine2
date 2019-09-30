@@ -2,9 +2,12 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+class EPaths;
 class EWindow;
 
 CE_END_ED_NAMESPACE
+
+#include "editor_paths.hpp"
 
 #include "res/icons.hpp"
 #include "res/images.hpp"

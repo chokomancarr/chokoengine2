@@ -14,9 +14,8 @@ bool Renderer::InitLightShaders() {
 	return !!pointLightShad && !!spotLightShad;
 }
 
-void Renderer::RenderLight_Point(const Light& l, const Camera& cam, const Mat4x4& ip, const RenderTarget& tar) {
+void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar) {
 	const auto& pos = l->object()->transform()->worldPosition();
-	const auto& gbuf = cam->_deferredBuffer;
 
 	if (l->_shadow) {
 		RenderLight_Point_Shadow(l);
@@ -106,10 +105,9 @@ void Renderer::RenderLight_Point_Shadow(const Light& l) {
 	glDisable(GL_CULL_FACE);
 }
 
-void Renderer::RenderLight_Spot(const Light& l, const Camera& cam, const Mat4x4& ip, const RenderTarget& tar) {
+void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar) {
 	const auto& pos = l->object()->transform()->worldPosition();
 	const auto& fwd = l->object()->transform()->forward();
-	const auto& gbuf = cam->_deferredBuffer;
 
 	Mat4x4 pShad;
 	if (l->_shadow) {

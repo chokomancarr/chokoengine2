@@ -21,16 +21,18 @@ class Renderer {
 
 	static void RenderMesh(const MeshRenderer& rend, const Mat4x4& P);
 
+	static void RenderScene(const RenderTarget& tar, const Mat4x4& p, FrameBuffer& gbuf, std::function<void()> preBlit);
+
     static void RenderCamera(Camera& cam);
 
 	static void RenderProbe_CubeMap(const CubeMap&);
 
-	static void RenderSky(const Camera&);
+	static void RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip);
 
-	static void RenderLight_Point(const Light&, const Camera&, const Mat4x4& ip, const RenderTarget&);
+	static void RenderLight_Point(const Light&, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget&);
 	static void RenderLight_Point_Shadow(const Light&);
 	
-	static void RenderLight_Spot(const Light&, const Camera&, const Mat4x4& ip, const RenderTarget&);
+	static void RenderLight_Spot(const Light&, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget&);
 	static Mat4x4 RenderLight_Spot_Shadow(const Light&);
 
 	static void RenderLight_Directional(const Light&, const Camera&);
