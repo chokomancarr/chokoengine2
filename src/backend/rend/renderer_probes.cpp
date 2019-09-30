@@ -63,7 +63,7 @@ void Renderer::ApplyLightProbe(const LightProbe& lp, int w, int h, const FrameBu
 	glUniform1i(probeShad->Loc(7), 5);
 	glActiveTexture(GL_TEXTURE5);
 	lp->_fbo->_maps[0]->Bind();
-	glUniform1f(probeShad->Loc(8), 1);
+	glUniform1f(probeShad->Loc(8), lp->_strength);
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();

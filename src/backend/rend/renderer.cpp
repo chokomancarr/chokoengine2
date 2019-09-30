@@ -256,7 +256,7 @@ bool Renderer::Init() {
 	(probeShad = Shader::New(glsl::minVert, glsl::probeLightFrag))
 		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "cubemap", "skyStrength" });
 
-	return !!skyShad && InitLightShaders();
+	return !!skyShad && !!probeShad && InitLightShaders();
 }
 
 void Renderer::Render() {

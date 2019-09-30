@@ -46,34 +46,24 @@ void ChokoEditor::Main() {
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
 	
-	/*
+	
 	const auto& cl = Scene::FindByName("celing lamp");
 	if (!!cl) {
 		const auto& o = Scene::AddNewObject(cl);
 		const auto& l = o->AddComponent<Light>(LightType::Point);
 		l->distance(20);
 		l->strength(1);
-		//l->shadow(true);
+		l->shadow(true);
 		l->shadowStrength(0.7f);
 		l->shadowBias(0.01f);
 		l->color(Color(1, 0.9f, 0.7f));
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
-	}*/
-	/*
-	auto& o = Scene::AddNewObject(Scene::FindByName("celing lamp"));
-	auto& l = o->AddComponent<Light>(LightType::Spot);
-	l->distance(20);
-	l->strength(1);
-	l->color(Color(1, 0.9f, 0.7f));
-	l->shadow(true);
-	l->shadowBias(0.01f);
-	o->transform()->localPosition(Vec3(0, -0.7f, 0));
-	o->transform()->localRotationEuler(Vec3(90, 0, 0));
-	*/
+	}
+	
 	const auto& o2 = Scene::AddNewObject(Scene::FindByName("rabbit house pillar lamp.001"));
 	const auto& l2 = o2->AddComponent<Light>(LightType::Point);
 	l2->distance(10);
-	l2->strength(0.5f);
+	l2->strength(1);
 	//l2->shadow(true);
 	l2->shadowStrength(0.5f);
 	l2->shadowBias(0.01f);

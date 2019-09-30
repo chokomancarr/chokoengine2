@@ -13,7 +13,7 @@ _CubeMap::_CubeMap(uint res, GLenum type, const TextureOptions& opts, int div) :
 		std::vector<Color> cols(res * res, cs[a]);
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + a, 0, type, (int)res, (int)res, 0, GL_RGBA, GL_FLOAT, cols.data());
 	}
-	SetTexParams<GL_TEXTURE_CUBE_MAP>(0,
+	SetTexParams<GL_TEXTURE_CUBE_MAP>(-1,
 		GL_CLAMP_TO_EDGE,
 		GL_CLAMP_TO_EDGE,
 		(opts.linear) ? (

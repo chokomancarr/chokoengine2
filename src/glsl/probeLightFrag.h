@@ -20,7 +20,7 @@ float length2(vec3 v) {
 }
 
 vec4 mapColAt(vec3 dir, float lod) {
-    return textureLod(cubemap, dir, 10);
+    return textureLod(cubemap, dir, lod);
 }
 
 float fresnel(vec3 fwd, vec3 nrm) {
@@ -51,8 +51,7 @@ void main () {
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);
 		vec3 diffCol = mapColAt(normal, 5).rgb * diffuse.rgb;
         vec3 reflCol = mapColAt(refl, rough * 5).rgb * mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres));
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu + emit;
-        //fragCol.rgb = mapColAt(normalize(normal), (1-fres) * 5).rgb * diffuse.rgb;
+		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu;
 	}
     fragCol.a = 1;
     return;

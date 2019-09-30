@@ -9,7 +9,7 @@ bool _LightProbe::Init() {
 _LightProbe::_LightProbe() : CE_COMPDEF(LightProbe), _strength(1), _center({})
 		, _area(50, 50, 50), _updateFrequency(LightProbeUpdateFrequency::OnStart)
 		, _dirty(true), _resolution(0), _nearClip(0.1f), _farClip(20), _deferredBuffer(nullptr)
-		, _fbo(nullptr), _clearType(CameraClearType::ColorAndDepth), _clearColor(0), _clearDepth(1) {
+		, _fbo(nullptr), _clearType(CameraClearType::ColorAndDepth), _clearColor(0, 0), _clearDepth(1) {
 	resolution(256);
 }
 

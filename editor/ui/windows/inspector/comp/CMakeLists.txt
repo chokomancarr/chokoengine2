@@ -5,6 +5,7 @@ set(SOURCES
 	${DIR}/animator.cpp
 	${DIR}/camera.cpp
 	${DIR}/light.cpp
+	${DIR}/lightprobe.cpp
 	${DIR}/meshrenderer.cpp
 	${DIR}/rig.cpp
 	${DIR}/script.cpp

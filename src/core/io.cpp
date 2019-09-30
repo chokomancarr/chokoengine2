@@ -30,6 +30,7 @@ bool IO::Init() {
 	GetModuleFileName(NULL, cpath, cpathsz);
 	_path = cpath;
 	std::replace(_path.begin(), _path.end(), '\\', '/');
+	_path = _path.substr(0, _path.find_last_of('/') + 1);
 	
 	WCHAR wpath[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, wpath))) {

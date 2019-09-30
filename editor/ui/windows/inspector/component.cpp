@@ -6,7 +6,7 @@ std::array<EW_I_Component::_DrawFn, (size_t)ComponentType::_COUNT> EW_I_Componen
     DrawAnimator,
     DrawCamera,
     DrawLight,
-	nullptr,
+	DrawLightProbe,
     DrawMeshRenderer,
     DrawRig,
     DrawScript
