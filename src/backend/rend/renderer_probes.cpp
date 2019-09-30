@@ -68,6 +68,10 @@ void Renderer::ApplyLightProbe(const LightProbe& lp, int w, int h, const FrameBu
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();
 	probeShad->Unbind();
+
+	lp->_fbo->_maps[0]->Bind();
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	lp->_fbo->_maps[0]->Unbind();
 }
 
 CE_END_BK_NAMESPACE

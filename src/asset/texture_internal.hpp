@@ -5,7 +5,8 @@ CE_BEGIN_NAMESPACE
 
 template<GLenum T = GL_TEXTURE_2D>
 void SetTexParams(int mp = 0, GLenum ws = GL_CLAMP_TO_EDGE, GLenum wt = GL_CLAMP_TO_EDGE, GLenum mn = GL_LINEAR, GLenum mg = GL_LINEAR) {
-	glTexParameteri(T, GL_TEXTURE_MAX_LEVEL, mp);
+	//glTexParameteri(T, GL_TEXTURE_MAX_LEVEL, mp);
+	glTexParameteri(T, GL_TEXTURE_MAX_LOD, mp);
 	glTexParameteri(T, GL_TEXTURE_WRAP_S, ws);
 	glTexParameteri(T, GL_TEXTURE_WRAP_T, wt);
 	glTexParameteri(T, GL_TEXTURE_MIN_FILTER, mn);

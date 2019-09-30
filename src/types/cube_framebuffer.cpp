@@ -8,7 +8,7 @@ _FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types)
 	std::vector<GLenum> bufs(types.size());
 	for (size_t a = 0; a < types.size(); a++) {
 		_maps[a] = CubeMap::New(r, types[a], TextureOptions(
-			TextureWrap::Clamp, TextureWrap::Clamp, 0, false
+			TextureWrap::Clamp, TextureWrap::Clamp, 10, true
 		), 0);
 		bufs[a] = GL_COLOR_ATTACHMENT0 + (GLsizei)a;
 	}

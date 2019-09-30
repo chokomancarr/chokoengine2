@@ -20,7 +20,7 @@ float length2(vec3 v) {
 }
 
 vec4 mapColAt(vec3 dir, float lod) {
-    return texture(cubemap, dir);
+    return textureLod(cubemap, dir, 10);
 }
 
 float fresnel(vec3 fwd, vec3 nrm) {
