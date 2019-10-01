@@ -205,11 +205,13 @@ void Renderer::RenderCamera(Camera& cam) {
 		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
 	}
 
+	btar->Blit(tar, nullptr);
+
+	tar->BindTarget();
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();
 	}
-
-	btar->Blit(tar, nullptr);
+	tar->UnbindTarget();
 
 	glViewport(0, 0, Display::width(), Display::height());
 

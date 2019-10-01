@@ -1,7 +1,8 @@
 #pragma once
 #include "chokoeditor.hpp"
+#include "ext/ui_ext.hpp"
 
-#define EW_IC_DRAWARGS const Component& _c, Rect& r, const pEW_I_Status& _status
+#define EW_IC_DRAWARGS const Component& _c, UI_Ext::Layout::InfoSt& lt, const pEW_I_Status& _status
 
 CE_BEGIN_ED_NAMESPACE
 

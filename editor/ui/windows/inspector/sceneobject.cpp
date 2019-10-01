@@ -16,18 +16,20 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 
 	r.y(r.y() + 20);
 
+	static UI_Ext::Layout::InfoSt lt = {};
+	UI_Ext::Layout::BeginLayout(r.sub(2, 0, 2, 0), lt);
+
+	UI_Ext::Layout::Push("Transform", lt);
+
 	CE_E_EDIT_V3_FV(tr->, "Position", localPosition);
 	CE_E_EDIT_V3_FV(tr->, "Rotation", localRotationEuler);
 	CE_E_EDIT_V3_FV(tr->, "Scale", localScale);
 
+	UI_Ext::Layout::Pop(lt);
+
 	for (auto& c : o->components()) {
 		auto cstatus = status->components.Get<EW_IS_Component>(c->id());
-		float y0 = r.y() + 17;
-	    UI::Rect(Rect(r.x() + 2, r.y(), r.w() - 4, 17), Color(0.1f, 0.7f));
-		UI::Rect(Rect(r.x() + 2, y0, r.w() - 4, cstatus->height), Color(0.1f, 0.3f));
-		EW_I_Component::Draw(c, r, cstatus);
-		cstatus->height = r.y() - y0;
-		r.y(r.y() + 2);
+		EW_I_Component::Draw(c, lt, cstatus);
 	}
 }
 

@@ -243,10 +243,13 @@ CE_E_AL_IMPL(Mesh) {
 
 CE_E_AL_IMPL(Shader) {
 	const auto meta = LoadMeta(path);
-	std::string vs, fs;
+	std::string nm, vs, fs;
 	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	JsonObject vrs;
 	for (auto& d : data.group) {
+		if (d.key.string == "name") {
+			nm = d.value.string;
+		}
 		if (d.key.string == "variables") {
 			vrs = d.value;
 		}
@@ -258,6 +261,7 @@ CE_E_AL_IMPL(Shader) {
 		}
 	}
 	auto shd = Shader::New(vs, fs);
+	shd->name(nm);
 	shd->RegisterStandardUniforms();
 	for (auto v : vrs.group) {
 		#define CE_E_SHV(nm) if (v.value.string == #nm) {\
