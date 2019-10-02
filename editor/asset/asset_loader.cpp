@@ -119,6 +119,7 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 	if (!res)\
 		Debug::Error("EAssetLoader", "Failed to load \"" + path + "\" (nullptr returned by loader)!");\
 	res->assetSignature(path);\
+	res->name(StrExt::RemoveExt(StrExt::RemoveFd(path)));\
 	return res; }
 
 Asset EAssetLoader::Load(const std::string& path, const EAssetType t) {

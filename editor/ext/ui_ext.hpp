@@ -4,8 +4,16 @@
 CE_BEGIN_ED_NAMESPACE
 
 class UI_Ext {
+	static int _maxLayer;
+	static int _currentLayer;
 
+	static Input::State _inputState;
 public:
+
+	static void PreLoop();
+	
+	static void IncLayer();
+
 	static int TextFieldI(const Rect& r, const int& s);
 
 	static float TextFieldF(const Rect& r, const float& s);

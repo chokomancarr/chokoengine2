@@ -42,9 +42,9 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 			}
 		}
 		for (auto& m : mats) {
-			UI_Ext::Layout::Block(m->name(), lt, [&]() {
+			UI_Ext::Layout::Block(m->name() + " (Material)", lt, [&]() {
 				CE_E_LBL("shader");
-				UI::Label(CE_E_VL_RECT, m->shader()->name, Color(0.7f));
+				UI::Label(CE_E_VL_RECT, m->shader()->name(), Color(0.7f));
 				CE_E_INC_Y();
 				for (auto& v : m->variables()) {
 					switch (v.type()) {

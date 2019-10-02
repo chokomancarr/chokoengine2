@@ -3,6 +3,29 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+int UI_Ext::_maxLayer = 0;
+int UI_Ext::_currentLayer = 0;
+Input::State UI_Ext::_inputState = {};
+
+void UI_Ext::PreLoop() {
+    _maxLayer = _currentLayer;
+    _currentLayer = 0;
+    _inputState = Input::state();
+    if (_maxLayer > 0) {
+        Input::Clear();
+    }
+}
+
+void UI_Ext::IncLayer() {
+    _currentLayer++;
+    if (_currentLayer == _maxLayer) {
+        Input::state(_inputState);
+    }
+    else {
+        Input::Clear();
+    }
+}
+
 int UI_Ext::TextFieldI(const Rect& r, const int& i) {
 	return StrExt::ToInt(UI::I::TextField(r, std::to_string(i), Color(0.2f, 0.8f)), i);
 }

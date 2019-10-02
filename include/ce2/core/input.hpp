@@ -7,21 +7,6 @@ CE_BEGIN_NAMESPACE
 
 class Input { CE_CLASS_COMMON
 
-	static CE_EXPORT Vec2 _mousePositionOld;
-	static CE_EXPORT Vec2 _mousePosition;
-	static CE_EXPORT Vec2 _mouseDownPosition;
-
-	static CE_EXPORT Vec2 _mouseScroll;
-
-	static std::array<bool, 5> _mouseButtonStatesOld;
-	static std::array<bool, 5> _mouseButtonStates;
-
-	static std::array<bool, 350> _keyStatesOld;
-	static std::array<bool, 350> _keyStates;
-
-	static std::string _inputString;
-	static std::u32string _inputUnicodeString;
-
 	static bool Init();
 
 	static void PreLoop();
@@ -32,31 +17,60 @@ class Input { CE_CLASS_COMMON
 	static void _OnMouseScroll(GLFWwindow*, double, double);
 	static void _OnKeyPress(GLFWwindow*, int, int, int, int);
 	static void _OnCharInput(GLFWwindow*, uint);
+
 public:
+	class State {
+	public:
+		State();
+
+		Vec2 mousePositionOld;
+		Vec2 mousePosition;
+		Vec2 mouseDownPosition;
+
+		Vec2 mouseScroll;
+
+		std::array<bool, 5> mouseButtonStatesOld;
+		std::array<bool, 5> mouseButtonStates;
+
+		std::array<bool, 350> keyStatesOld;
+		std::array<bool, 350> keyStates;
+
+		std::string inputString;
+		std::u32string inputUnicodeString;
+	};
+
+private:
+	static State _state;
+
+public:
+	CE_GET_SET_ST_MEMBER(state);
+
+	static void Clear();
+
 	/* Screen coordinates of the pointer
 	 */
-	CE_GET_ST_MEMBER(mousePosition);
+	static const Vec2& mousePosition();
 	
 	/* Screen coordinates where the mouse is last pressed
 	 */
-	CE_GET_ST_MEMBER(mouseDownPosition);
+	static const Vec2& mouseDownPosition();
 
 	/* Distance the pointer moved in screen coordinates
 	 */
-	static Vec2 mouseDelta();
+	static const Vec2& mouseDelta();
 
 	/* Distance the pointer scrolled
 	 */
-	CE_GET_ST_MEMBER(mouseScroll);
+	static const Vec2& mouseScroll();
 
 	/* Text input from the keyboard
 	 * Use Key* functions for individual key inputs
 	 */
-	CE_GET_ST_MEMBER(inputString);
+	static const std::string& inputString();
 
 	/* Text input from the keyboard as unicode codepoints
 	 */
-	CE_GET_ST_MEMBER(inputUnicodeString);
+	static const std::u32string& inputUnicodeString();
 
 	/* Returns the status of mouse button \p b
 	 */
