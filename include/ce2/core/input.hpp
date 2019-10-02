@@ -40,7 +40,7 @@ public:
 	};
 
 private:
-	static State _state;
+	static CE_EXPORT State _state;
 
 public:
 	CE_GET_SET_ST_MEMBER(state);

@@ -14,6 +14,7 @@ CE_E_EDIT_TG_FV(c->, "Shadows", shadow);
 CE_E_EDIT_I_FV(c->, " Resolution", shadowResolution);
 CE_E_EDIT_F_FV(c->, " Strength", shadowStrength);
 CE_E_EDIT_F_FV(c->, " Bias", shadowBias);
+CE_E_EDIT_I_FV(c->, " Samples", shadowSamples);
 CE_E_END_DRAWCOMP
 
 CE_END_ED_NAMESPACE

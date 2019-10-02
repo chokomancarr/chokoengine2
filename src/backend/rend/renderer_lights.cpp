@@ -1,13 +1,14 @@
 #include "backend/chokoengine_backend.hpp"
 #include "glsl/minVert.h"
 #include "glsl/pointLightFrag.h"
+#include "glsl/pointLightFrag_s.h"
 #include "glsl/spotLightFrag.h"
 
 CE_BEGIN_BK_NAMESPACE
 
 bool Renderer::InitLightShaders() {
-	(pointLightShad = Shader::New(glsl::minVert, glsl::pointLightFrag))
-		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightStr", "lightRad", "lightDst", "lightCol", "falloff", "shadowMap", "shadowStr", "shadowBias" });
+	(pointLightShad = Shader::New(glsl::minVert, glsl::pointLightFrag_Soft))
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightStr", "lightRad", "lightDst", "lightCol", "falloff", "shadowMap", "shadowStr", "shadowBias", "shadowSmps" });
 
 	(spotLightShad = Shader::New(glsl::minVert, glsl::spotLightFrag))
 		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightDir", "lightStr", "lightRad", "lightDst", "lightAngleCos", "falloff", "shadowTex", "_LP", "shadowStr", "shadowBias" });
@@ -56,6 +57,7 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		glUniform1f(pointLightShad->Loc(13), 0);
 	}
+	glUniform1i(pointLightShad->Loc(15), l->_shadowSamples);
 
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);

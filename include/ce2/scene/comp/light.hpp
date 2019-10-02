@@ -24,6 +24,8 @@ class _Light : public _Component { CE_COMPONENT_COMMON
 	float _shadowBias;
 	int _shadowResolution;
     bool _shadowOnly;
+	bool _softShadows;
+	int _shadowSamples;
     Mat4x4 _lastShadowMatrix;
 
 	static bool Init();
@@ -82,6 +84,13 @@ public:
 	 * shadowStrength can be > 1 in this case
 	 */
     CE_GET_SET_MEMBER(shadowOnly);
+	/* Generate soft shadows
+	 * Requires multiple samples for good results
+	 */
+	CE_GET_SET_MEMBER(softShadows);
+	/* The number of samples to average for soft shadows
+	 */
+	CE_GET_SET_MEMBER(shadowSamples);
     /* The last matrix used for shadow mapping
      * Does not apply for point models
      */
