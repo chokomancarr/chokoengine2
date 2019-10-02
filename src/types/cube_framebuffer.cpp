@@ -2,13 +2,13 @@
 
 CE_BEGIN_NAMESPACE
 
-_FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types) 
+_FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types, int div) 
 		: _maps(types.size(), nullptr), _depth(nullptr), _lastUpdated(0) {
 
 	std::vector<GLenum> bufs(types.size());
 	for (size_t a = 0; a < types.size(); a++) {
 		_maps[a] = CubeMap::New(r, types[a], TextureOptions(
-			TextureWrap::Clamp, TextureWrap::Clamp, 10, true
+			TextureWrap::Clamp, TextureWrap::Clamp, div, true
 		), 0);
 		bufs[a] = GL_COLOR_ATTACHMENT0 + (GLsizei)a;
 	}
@@ -27,7 +27,8 @@ _FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types)
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
 			Debug::Error("FrameBuffer", "gl error " + std::to_string(status));
 		}
-		//this is not good, but will do for now
+		//we have to use fromptr to construct from private function
+		//this is not good design-wise, but will do for now
 		//pass null textures to prevent double cleanup
 		_pointers[f] = RenderTarget::FromPtr(new _RenderTarget(_depth->_reso, _depth->_reso, 0, 0, fbo));
 	}

@@ -100,14 +100,14 @@ void EAssetList::Rescan() {
     Debug::Message("AssetList", "Scanning complete.");
 }
 
-const Object& EAssetList::Get(EAssetType t, const std::string& sig) {
+const Asset& EAssetList::Get(EAssetType t, const std::string& sig) {
     auto& ar = _entries[(int)t];
     auto i = std::find_if(ar.begin(), ar.end(), [&](const _Entry& e) {
         return e.sig == sig;
     });
     if (i == ar.end()) {
         Debug::Error("AssetList", "Cannot find asset \"" + sig + "\" of type " + std::to_string((int)t) + "!");
-        static Object a(nullptr);
+        static Asset a(nullptr);
         return a;
     }
     if (!i->obj) {

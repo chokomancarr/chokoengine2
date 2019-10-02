@@ -16,6 +16,13 @@ TextureBuffer _CubeMap::noiseTex;
 void _CubeMap::Init() {
 	(ggxBlurShad = Shader::New(glsl::minVert, glsl::presumGGXCube))
 		->AddUniforms({ "cubemap", "rough", "screenSize", "noise", "samples", "face", "dirx", "diry", "level" });
+	std::vector<Vec2> noise(65535);
+    for (auto& n : noise) {
+        n = Vec2(rand() * 1.f / RAND_MAX, rand() * 1.f / RAND_MAX);
+    }
+    const auto& noiseBuf = VertexBuffer_New(true, 2, 65535, noise.data());
+    noiseTex = TextureBuffer::New(noiseBuf, GL_RG32F);
+	initd = true;
 }
 
 _CubeMap::_CubeMap(uint res, GLenum type, const TextureOptions& opts, int div) : _Texture(nullptr), _layers(div) {
@@ -102,6 +109,7 @@ void _CubeMap::ComputeGlossMipmaps() {
 		SetTexParams<GL_TEXTURE_CUBE_MAP>(-1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		res /= 2;
 	}
 }
 

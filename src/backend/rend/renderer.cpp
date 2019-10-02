@@ -273,6 +273,7 @@ void Renderer::Render() {
 	for (auto& p : probes) {
 		if (p->_dirty || (p->updateFrequency() == LightProbeUpdateFrequency::Realtime)) {
 			RenderLightProbe(p);
+			p->_dirty = false;
 		}
 	}
 

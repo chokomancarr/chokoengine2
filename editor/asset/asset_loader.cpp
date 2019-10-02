@@ -115,12 +115,13 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 }
 
 #define CE_E_LD(nm) case EAssetType::nm: {\
-	auto res = static_cast<Object>(Load ## nm(path));\
+	auto res = static_cast<Asset>(Load ## nm(path));\
 	if (!res)\
 		Debug::Error("EAssetLoader", "Failed to load \"" + path + "\" (nullptr returned by loader)!");\
+	res->assetSignature(path);\
 	return res; }
 
-Object EAssetLoader::Load(const std::string& path, const EAssetType t) {
+Asset EAssetLoader::Load(const std::string& path, const EAssetType t) {
 	switch (t) {
 		CE_E_LD(AnimClip)
 		CE_E_LD(Armature)

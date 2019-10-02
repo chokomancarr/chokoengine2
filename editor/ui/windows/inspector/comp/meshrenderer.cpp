@@ -4,53 +4,10 @@
 #include "ext/ui_ext.hpp"
 
 CE_BEGIN_ED_NAMESPACE
-/*
-CE_E_BEGIN_DRAWCOMP(MeshRenderer)
-	static float dy = 0;
-	const float y0 = r.y() + 17;
-	UI::Rect(Rect(r.x() + 4, r.y(), r.w() - 8, 17), Color(0.1f, 0.7f));
-	UI::Rect(Rect(r.x() + 4, y0, r.w() - 8, dy), Color(0.1f, 0.3f));
-	UI::Label(Rect(r.x() + 10, r.y(), r.w() * 0.33f, 16), "Modifiers", Color::white());
-	r.y(r.y() + 17);
-	for (auto& m : c->modifiers()) {
-		UI::Label(Rect(r.x() + 22, r.y(), r.w() - 28, 16), m->name(), Color::white());
-		r.y(r.y() + 17);
-		switch (m->type) {
-			case MeshModifierType::Shape: {
-				auto md = static_cast<MeshShapeModifier>(m);
-				const auto& ss = c->mesh()->shapeKeys();
-				for (size_t a = 0, n = ss.size(); a < n; a++) {
-					auto& w = md->weights()[a];
-					CE_E_EDIT_ST(F, , ss[a].name, w, CE_E_GETVAL,
-						md->SetWeight(a, Math::Clamp<float>(res_w, 0, 1)));
-				}
-				break;
-			}
-			default:
-				break;
-		}
-	}
-	dy = r.y() - y0;
-	r.y(r.y() + 1);
-	static float dy2 = 0;
-	const float y1 = r.y() + 17;
-	UI::Rect(Rect(r.x() + 4, r.y(), r.w() - 8, 17), Color(0.1f, 0.7f));
-	UI::Rect(Rect(r.x() + 4, y1, r.w() - 8, dy2), Color(0.1f, 0.3f));
-	UI::Label(Rect(r.x() + 10, r.y(), r.w() * 0.33f, 16), "Materials", Color::white());
-	r.y(r.y() + 17);
-	for (auto& m : c->materials()) {
-		UI::Label(Rect(r.x() + 22, r.y(), r.w() - 28, 16), m->shader()->name(), Color::white());
-		r.y(r.y() + 17);
-	}
-	dy2 = r.y() - y1;
-	r.y(r.y() + 1);
-CE_E_END_DRAWCOMP
-*/
 
 CE_E_BEGIN_DRAWCOMP(MeshRenderer)
-	auto& mods = c->modifiers();
 	UI_Ext::Layout::Block("Modifiers", lt, [&]() {
-		for (auto& m : mods) {
+		for (auto& m : c->modifiers()) {
 			UI_Ext::Layout::Block(m->name(), lt, [&]() {
 				switch (m->type) {
 				case MeshModifierType::Shape: {
@@ -70,6 +27,49 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 		}
 
 		UI::I::Button(Rect(lt.x + 2, lt.y, lt.w - 4, 16), UIButtonStyle(0.2f), "Add");
+		lt.y += 17;
+	});
+	UI_Ext::Layout::Block("Materials", lt, [&]() { //tmp
+		std::vector<Material> mats(0);
+		for (auto& m : c->materials()) {
+			CE_E_LBL("slot");
+			UI::Label(CE_E_VL_RECT, m->assetSignature(), Color(1));
+			CE_E_INC_Y();
+			if (std::find_if(mats.begin(), mats.end(), [&](const Material& m2) {
+				return m2 == m;
+			}) == mats.end()) {
+				mats.push_back(m);
+			}
+		}
+		for (auto& m : mats) {
+			UI_Ext::Layout::Block(m->name(), lt, [&]() {
+				CE_E_LBL("shader");
+				UI::Label(CE_E_VL_RECT, m->shader()->name, Color(0.7f));
+				CE_E_INC_Y();
+				for (auto& v : m->variables()) {
+					switch (v.type()) {
+					case ShaderVariableType::Float: {
+						CE_E_EDIT_F_FV(v., v.name(), val_f);
+						break;
+					}
+					case ShaderVariableType::Color: {
+						CE_E_LBL(v.name());
+						UI::Rect(CE_E_VL_RECT, v.val_v4());
+						CE_E_INC_Y();
+						break;
+					}
+					case ShaderVariableType::Texture: {
+						CE_E_LBL(v.name());
+						UI::Texture(Rect(lt.x + lt.w - 17, lt.y, 16, 16), v.val_t());
+						CE_E_INC_Y();
+						break;
+					}
+					default:
+						break;
+					}
+				}
+			});
+		}
 	});
 CE_E_END_DRAWCOMP
 

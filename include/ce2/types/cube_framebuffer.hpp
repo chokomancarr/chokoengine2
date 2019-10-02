@@ -12,7 +12,7 @@ class _FrameBufferCube {CE_OBJECT_COMMON
 
 	_FrameBufferCube(const _FrameBufferCube&) = delete;
 public:
-	_FrameBufferCube(uint r, std::vector<GLenum> types);
+	_FrameBufferCube(uint r, std::vector<GLenum> types, int div = 0);
 
 	const CubeMap& map(int i);
 	CE_GET_MEMBER(depth);

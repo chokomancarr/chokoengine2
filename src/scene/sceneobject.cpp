@@ -3,7 +3,8 @@
 CE_BEGIN_NAMESPACE
 
 _SceneObject::_SceneObject(const std::string& nm, 
-        const Vec3& pos, const Quat& rot, const Vec3& scl) : _Object(nm) {
+        const Vec3& pos, const Quat& rot, const Vec3& scl) : _Asset() {
+    _name = nm;
 	_transform._object = this;
 }
 

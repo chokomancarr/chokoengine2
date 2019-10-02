@@ -3,7 +3,10 @@
 
 CE_BEGIN_NAMESPACE
 
-class _SceneObject : public _Object { CE_OBJECT_COMMON
+/* Objects in a scene
+ * This is technically an asset because of prefabs
+ */
+class _SceneObject : public _Asset { CE_OBJECT_COMMON
 	Transform _transform;
 
 	std::vector<Component> _components;

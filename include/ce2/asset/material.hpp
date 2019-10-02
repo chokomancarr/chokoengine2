@@ -16,6 +16,8 @@ public:
     CE_GET_MEMBER(shader);
     CE_SET_MEMBER_F(shader);
 
+	CE_GET_SET_MEMBER_MUT(variables);
+
 	const float& GetUniform(const std::string& s, float f);
 	const int& GetUniform(const std::string& s, int i);
 	const Vec2& GetUniform(const std::string& s, Vec2 v);

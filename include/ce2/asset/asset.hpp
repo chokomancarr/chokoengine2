@@ -5,10 +5,13 @@ CE_BEGIN_NAMESPACE
 
 class _Asset : public _Object { CE_OBJECT_COMMON
 protected:
-    _Asset() = default;
+    _Asset();
 
+    std::string _assetSignature;
 public:
     virtual ~_Asset() = default;
+
+    CE_GET_SET_MEMBER(assetSignature);
 };
 
 CE_END_NAMESPACE

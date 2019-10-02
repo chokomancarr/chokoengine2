@@ -2,6 +2,7 @@ set(DIR src/asset)
 
 set(SOURCES
 	${SOURCES}
+	${DIR}/asset.cpp
 	${DIR}/animclip.cpp
 	${DIR}/animgraph.cpp
 	${DIR}/armature.cpp

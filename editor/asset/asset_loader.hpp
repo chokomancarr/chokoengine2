@@ -27,7 +27,7 @@ public:
 
     static void GenDefaultMeta(const std::string& path, const EExportType t);
 
-    static Object Load(const std::string& path, const EAssetType t);
+    static Asset Load(const std::string& path, const EAssetType t);
 
     static void Load(const std::string& path, const EExportType t);
 

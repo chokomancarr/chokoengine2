@@ -25,8 +25,12 @@
 
 /* Handy macros to add getters and setters
  */
+#define CE_GET_MEMBER_MUT(nm) decltype(_ ## nm)& nm() { return _ ## nm; }
 #define CE_GET_MEMBER(nm) const decltype(_ ## nm)& nm() const { return _ ## nm; }
 #define CE_SET_MEMBER(nm) void nm(const decltype(_ ## nm)& v) { _ ## nm = v; }
+#define CE_GET_SET_MEMBER_MUT(nm)\
+    CE_GET_MEMBER_MUT(nm)\
+    CE_SET_MEMBER(nm)
 #define CE_GET_SET_MEMBER(nm)\
     CE_GET_MEMBER(nm)\
     CE_SET_MEMBER(nm)

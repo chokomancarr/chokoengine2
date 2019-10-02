@@ -31,6 +31,7 @@ void UI_Ext::Layout::Block(const std::string& title, InfoSt& st, std::function<v
 	auto& blk = pblk->children.Get(pblk->i++);
 	blk.i = 0;
 	st.x += 2;
+	st.y += 1;
 	st.w -= 4;
 	
 	UI::Rect(Rect(st.x, st.y, st.w, 17), Color(0.1f, 0.7f));
@@ -48,9 +49,9 @@ void UI_Ext::Layout::Block(const std::string& title, InfoSt& st, std::function<v
 	if (blk.expanded) {
 		f();
 	}
-	blk.h = st.y - blk.y0 + 1;
-	st.y += 2;
+	blk.h = st.y - blk.y0;
 	st.x -= 2;
+	st.y += 1;
 	st.w += 4;
 	st.current = pblk;
 }
