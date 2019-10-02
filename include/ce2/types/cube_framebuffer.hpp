@@ -8,6 +8,8 @@ class _FrameBufferCube {CE_OBJECT_COMMON
 	std::vector<CubeMap> _maps;
 	DepthCubeMap _depth;
 
+	uint64_t _lastUpdated;
+
 	_FrameBufferCube(const _FrameBufferCube&) = delete;
 public:
 	_FrameBufferCube(uint r, std::vector<GLenum> types);

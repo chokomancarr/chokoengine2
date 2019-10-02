@@ -1,5 +1,7 @@
 #include "chokoeditor.hpp"
 #include "ext/ui_ext.hpp"
+#include "ui/colors.hpp"
+#include "res/icons.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -16,42 +18,45 @@ UI_Ext::Layout::InfoSt::Block& UI_Ext::Layout::InfoSt::BlockGrp::Get(int i) {
 	return blks[i];
 }
 
-void UI_Ext::Layout::BeginLayout(Rect& r, InfoSt& st) {
-	st.r = &r;
+void UI_Ext::Layout::BeginLayout(const Rect& r, InfoSt& st) {
 	st.x = r.x();
 	st.y = r.y();
 	st.w = r.w();
-
-	std::stack<InfoSt::Block*>().swap(st.current);
 	st.base.i = 0;
-	st.current.push(&st.base);
+	st.current = &st.base;
 }
 
-void UI_Ext::Layout::Push(const std::string& title, InfoSt& st) {
-	auto& pblk = st.current.top();
+void UI_Ext::Layout::Block(const std::string& title, InfoSt& st, std::function<void()> f) {
+	const auto pblk = st.current;
 	auto& blk = pblk->children.Get(pblk->i++);
 	blk.i = 0;
 	st.x += 2;
 	st.w -= 4;
+	
 	UI::Rect(Rect(st.x, st.y, st.w, 17), Color(0.1f, 0.7f));
+	if (UI::I::ButtonTr(Rect(st.x + 1, st.y, 16, 16)) == InputMouseStatus::HoverUp) {
+		blk.expanded = !blk.expanded;
+	}
+	UI::Texture(Rect(st.x + 1, st.y, 16, 16), EIcons::icons[blk.expanded ? "minus" : "plus"], Color(0.8f));
 	UI::Label(Rect(st.x + 18, st.y, st.w, 17), title, Color::white());
-	st.y += 18;
+
+	st.y += 17;
 	UI::Rect(Rect(st.x, st.y, st.w, blk.h), Color(0.1f, 0.3f));
 	blk.y0 = st.y;
-	st.current.push(&blk);
-}
+	st.current = &blk;
 
-void UI_Ext::Layout::Pop(InfoSt& st) {
-	auto& blk = st.current.top();
-	blk->h = st.y - blk->y0 + 1;
+	if (blk.expanded) {
+		f();
+	}
+	blk.h = st.y - blk.y0 + 1;
 	st.y += 2;
 	st.x -= 2;
 	st.w += 4;
-	st.current.pop();
+	st.current = pblk;
 }
 
-void UI_Ext::Layout::EndLayout(InfoSt& st) {
-	st.r->y(st.y);
+float UI_Ext::Layout::EndLayout(InfoSt& st) {
+	return st.y;
 }
 
 CE_END_ED_NAMESPACE

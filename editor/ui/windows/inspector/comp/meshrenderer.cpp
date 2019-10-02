@@ -48,26 +48,29 @@ CE_E_END_DRAWCOMP
 */
 
 CE_E_BEGIN_DRAWCOMP(MeshRenderer)
-	UI_Ext::Layout::Push("Modifiers", lt);
-	for (auto& m : c->modifiers()) {
-		UI_Ext::Layout::Push(m->name(), lt);
-		switch (m->type) {
-		case MeshModifierType::Shape: {
-			auto md = static_cast<MeshShapeModifier>(m);
-			const auto& ss = c->mesh()->shapeKeys();
-			for (size_t a = 0, n = ss.size(); a < n; a++) {
-				auto& w = md->weights()[a];
-				UI::Label(Rect(lt.x + 2, lt.y, lt.w, 17), ss[a].name, Color::white());
-				lt.y += 16;
-			}
-			break;
+	auto& mods = c->modifiers();
+	UI_Ext::Layout::Block("Modifiers", lt, [&]() {
+		for (auto& m : mods) {
+			UI_Ext::Layout::Block(m->name(), lt, [&]() {
+				switch (m->type) {
+				case MeshModifierType::Shape: {
+					auto md = static_cast<MeshShapeModifier>(m);
+					const auto& ss = c->mesh()->shapeKeys();
+					for (size_t a = 0, n = ss.size(); a < n; a++) {
+						auto& w = md->weights()[a];
+						UI::Label(Rect(lt.x + 2, lt.y, lt.w, 17), ss[a].name, Color::white());
+						lt.y += 16;
+					}
+					break;
+				}
+				default:
+					break;
+				}
+			});
 		}
-		default:
-			break;
-		}
-		UI_Ext::Layout::Pop(lt);
-	}
-	UI_Ext::Layout::Pop(lt);
+
+		UI::I::Button(Rect(lt.x + 2, lt.y, lt.w - 4, 16), UIButtonStyle(0.2f), "Add");
+	});
 CE_E_END_DRAWCOMP
 
 CE_END_ED_NAMESPACE

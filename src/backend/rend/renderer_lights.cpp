@@ -61,11 +61,14 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();
 	pointLightShad->Unbind();
-
-
 }
-#pragma optimize( "", off )
+
 void Renderer::RenderLight_Point_Shadow(const Light& l) {
+	if (l->shadowBuffer_Cube->_lastUpdated >= Time::millis()) {
+		return;
+	}
+	l->shadowBuffer_Cube->_lastUpdated = Time::millis();
+
 	const auto& _p = glm::perspectiveFov<float>(90 * Math::deg2rad, l->_shadowResolution, l->_shadowResolution, l->_radius, l->_distance);
 	const Vec3 rs[] = {
 		Vec3(180, 90, 0),
@@ -160,18 +163,18 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 }
 
 Mat4x4 Renderer::RenderLight_Spot_Shadow(const Light& l) {
+	if (l->shadowBuffer_2D->_lastUpdated >= Time::millis()) {
+		return l->_lastShadowMatrix;
+	}
+	l->shadowBuffer_2D->_lastUpdated = Time::millis();
+
 	l->shadowBuffer_2D->Bind();
 	l->shadowBuffer_2D->Clear();
 
-	MVP::Switch(true);
-	MVP::Clear();
-	MVP::Mul(glm::perspectiveFov<float>(l->_angle * 2 * Math::deg2rad, l->_shadowResolution, l->_shadowResolution, 0.1f, l->_distance));
-	MVP::Push();
-	MVP::Mul(Mat4x4::Rotation(Vec3(180, 0, 0)));
-	MVP::Push();
-	MVP::Mul(l->object()->transform()->worldMatrix().inverse());
-
-	const auto& p = MVP::projection();
+	const auto& p = l->_lastShadowMatrix = 
+		glm::perspectiveFov<float>(l->_angle * 2 * Math::deg2rad, l->_shadowResolution, l->_shadowResolution, 0.1f, l->_distance)
+		* Mat4x4::Rotation(Vec3(180, 0, 0))
+		* l->object()->transform()->worldMatrix().inverse();
 
 	glViewport(0, 0, l->_shadowResolution, l->_shadowResolution);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

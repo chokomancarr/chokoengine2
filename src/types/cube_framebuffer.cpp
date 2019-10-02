@@ -3,7 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 _FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types) 
-		: _maps(types.size(), nullptr), _depth(nullptr) {
+		: _maps(types.size(), nullptr), _depth(nullptr), _lastUpdated(0) {
 
 	std::vector<GLenum> bufs(types.size());
 	for (size_t a = 0; a < types.size(); a++) {

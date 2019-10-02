@@ -3,7 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 _FrameBuffer::_FrameBuffer(uint w, uint h, std::vector<GLenum> types) 
-		: _texs(types.size(), nullptr), _depth(nullptr) {
+		: _texs(types.size(), nullptr), _depth(nullptr), _lastUpdated(0) {
 	std::vector<GLenum> bufs(types.size());
 	glGenFramebuffers(1, &_pointer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _pointer);

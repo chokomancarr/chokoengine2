@@ -9,6 +9,8 @@ class _FrameBuffer {
 	std::vector<Texture> _texs;
 	DepthTexture _depth;
 
+	uint64_t _lastUpdated;
+
 	_FrameBuffer(const _FrameBuffer&) = delete;
 public:
 	_FrameBuffer(uint w, uint h, std::vector<GLenum> types);

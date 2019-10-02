@@ -20,7 +20,7 @@ public:
 		};
 
 		struct Block {
-			bool expanded;
+			bool expanded = true;
 			float y0;
 			float h;
 			int i;
@@ -28,19 +28,16 @@ public:
 		};
 
 		Block base;
-		std::stack<Block*> current;
+		Block* current;
 
-		Rect* r;
 		float x, y, w;
 	};
 
-	static void BeginLayout(Rect&, InfoSt&);
+	static void BeginLayout(const Rect&, InfoSt&);
 
-	static void Push(const std::string& title, InfoSt&);
+	static void Block(const std::string& title, InfoSt&, std::function<void()>);
 
-	static void Pop(InfoSt&);
-
-	static void EndLayout(InfoSt&);
+	static float EndLayout(InfoSt&);
 };
 
 CE_END_ED_NAMESPACE

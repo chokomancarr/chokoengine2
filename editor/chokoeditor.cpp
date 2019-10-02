@@ -53,7 +53,7 @@ void ChokoEditor::Main() {
 		const auto& l = o->AddComponent<Light>(LightType::Point);
 		l->distance(20);
 		l->strength(1);
-		l->shadow(true);
+		//l->shadow(true);
 		l->shadowStrength(0.7f);
 		l->shadowBias(0.01f);
 		l->color(Color(1, 0.9f, 0.7f));
@@ -74,7 +74,7 @@ void ChokoEditor::Main() {
 	o3->transform()->localPosition(Vec3(1, 0, 1));
 	const auto& pr = o3->AddComponent<LightProbe>();
 	pr->resolution(128);
-	pr->updateFrequency(LightProbeUpdateFrequency::Realtime);
+	pr->updateFrequency(LightProbeUpdateFrequency::OnStart);
 	const auto& mr3 = o3->AddComponent<MeshRenderer>();
 	mr3->mesh(ProceduralMesh::UVSphere(20, 10, 1));
 	const auto& mt3 = Material::New();

@@ -24,6 +24,7 @@ class _Light : public _Component { CE_COMPONENT_COMMON
 	float _shadowBias;
 	int _shadowResolution;
     bool _shadowOnly;
+    Mat4x4 _lastShadowMatrix;
 
 	static bool Init();
 	void GenShadowMap();
@@ -81,6 +82,10 @@ public:
 	 * shadowStrength can be > 1 in this case
 	 */
     CE_GET_SET_MEMBER(shadowOnly);
+    /* The last matrix used for shadow mapping
+     * Does not apply for point models
+     */
+    CE_GET_MEMBER(lastShadowMatrix);
 };
 
 CE_END_NAMESPACE

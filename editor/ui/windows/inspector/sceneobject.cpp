@@ -19,13 +19,11 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 	static UI_Ext::Layout::InfoSt lt = {};
 	UI_Ext::Layout::BeginLayout(r.sub(2, 0, 2, 0), lt);
 
-	UI_Ext::Layout::Push("Transform", lt);
-
-	CE_E_EDIT_V3_FV(tr->, "Position", localPosition);
-	CE_E_EDIT_V3_FV(tr->, "Rotation", localRotationEuler);
-	CE_E_EDIT_V3_FV(tr->, "Scale", localScale);
-
-	UI_Ext::Layout::Pop(lt);
+	UI_Ext::Layout::Block("Transform", lt, [&]() {
+		CE_E_EDIT_V3_FV(tr->, "Position", localPosition);
+		CE_E_EDIT_V3_FV(tr->, "Rotation", localRotationEuler);
+		CE_E_EDIT_V3_FV(tr->, "Scale", localScale);
+	});
 
 	for (auto& c : o->components()) {
 		auto cstatus = status->components.Get<EW_IS_Component>(c->id());
