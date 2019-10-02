@@ -85,6 +85,10 @@ float linearz(float z) {
 	return (2 * lightRad) / (lightDst + lightRad - z * (lightDst - lightRad));
 }
 
+float shadowAt(vec3 v) {
+	return linearz(texture(shadowMap, normalize(v)).r);
+}
+
 float vec2depth(vec3 v)
 {
     vec3 va = abs(v);
@@ -136,17 +140,23 @@ void main () {
 		float not_shadow = 1;
 		
 		if (shadowStr > 0) {
+			float rr2 = 1;
+			float pz = vec2depth(p2l);
+			float sz0 = shadowAt(-p2l);
+			if (sz0 < pz - shadowBias) {
+				rr2 = min((pz - sz0) * lightDst / lightRad / sz0, 1);
+				not_shadow = 0;
+			}
 			float rnd = rand(wPos.xyz);
 			vec3 lt1 = vec3(1, 0, 0);
 			if (abs(p2li.x) > 0.99) lt1 = vec3(0, 1, 0);
 			vec3 lt2 = normalize(cross(p2li, lt1));
 			lt1 = normalize(cross(p2li, lt2));
-			float pz = vec2depth(p2l);
-			for (int a = 0; a < shadowSmps; a++) {
+			for (int a = 1; a < shadowSmps; a++) {
 				float rt = rand(rnd) * 2 * 3.14159;
 				float rr = sqrt(rand(rt)) * lightRad;
 				rnd = rr;
-				float sz = linearz(texture(shadowMap, normalize(-p2l + (lt1 * sin(rt) + lt2 * cos(rt)) * rr)).r);
+				float sz = shadowAt(-p2l + (lt1 * sin(rt) + lt2 * cos(rt)) * rr * rr2);
 				not_shadow += (sz >= pz - shadowBias) ? 1 : (1 - shadowStr);
 			}
 			not_shadow /= shadowSmps;
