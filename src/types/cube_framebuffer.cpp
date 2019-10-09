@@ -32,6 +32,7 @@ _FrameBufferCube::_FrameBufferCube(uint r, std::vector<GLenum> types, int div)
 		//pass null textures to prevent double cleanup
 		_pointers[f] = RenderTarget::FromPtr(new _RenderTarget(_depth->_reso, _depth->_reso, 0, 0, fbo));
 	}
+	_tmpPointer = RenderTarget::New(_depth->_reso, _depth->_reso, true, true);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 

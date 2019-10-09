@@ -13,6 +13,7 @@ uniform sampler2D inGBufD;
 
 uniform sampler2D inSky;
 uniform float skyStrength;
+uniform float transparent;
 
 out vec4 fragCol;
 
@@ -38,10 +39,10 @@ void main () {
     vec4 diffuse = texture(inGBuf0, uv);
     vec3 normal = texture(inGBuf1, uv).xyz;
 	vec4 gbuf2 = texture(inGBuf2, uv);
-	float metallic = gbuf2.x;
+	float metallic = gbuf2.x * (1 - transparent);
 	float rough = gbuf2.y;
 	float occlu = gbuf2.z;
-    vec3 emit = texture(inGBuf3, uv).xyz;
+    vec4 emit = texture(inGBuf3, uv);
     float z = texture(inGBufD, uv).x;
 
     vec4 dc = vec4(uv.x*2-1, uv.y*2-1, z*2-1, 1);
@@ -52,16 +53,15 @@ void main () {
     vec3 fwd = normalize(wPos.xyz - wPos2.xyz);
 	
 	fragCol.rgb = skyColAt(fwd, 0).rgb * skyStrength;
+    fragCol.a = 0;
 
 	if (z < 1) {
 		vec3 refl = normalize(reflect(fwd, normal));
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);
-		vec3 diffCol = skyColAt(normal, 5).rgb * diffuse.rgb;
-        vec3 reflCol = skyColAt(refl, rough * 5).rgb * mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres));
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu + emit;
-        //fragCol.rgb = skyColAt(normalize(normal), (1-fres) * 5).rgb * diffuse.rgb;
+		vec4 diffCol = vec4(skyColAt(normal, 5).rgb, 1) * diffuse;
+        vec4 reflCol = vec4(skyColAt(refl, rough * 5).rgb * mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres)), 1);
+		fragCol = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu + emit;
 	}
-	fragCol.a = 1;
 }
 )";
 }

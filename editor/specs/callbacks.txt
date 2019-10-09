@@ -1,0 +1,7 @@
+List of allowed callback signatures and their arguments
+
+signature                   arg             value
+----------------------------------------------------
+CAMERA_SET_ORTHO            value           bool
+
+SCENE_SELECT_ALL            invert          bool

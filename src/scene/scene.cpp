@@ -95,4 +95,19 @@ SceneObject Scene::FindByName(const std::string& nm) {
     return DoFindByName(_objects, nm);
 }
 
+std::vector<SceneObject> Scene::FindAllByPred(std::function<bool(const SceneObject&)> cond) {
+    std::vector<SceneObject> res = {};
+    std::function<void(const std::vector<SceneObject>&, std::vector<SceneObject>&)> _f =
+        [&](const std::vector<SceneObject>& oo, std::vector<SceneObject>& rs) {
+        for (auto& o : oo) {
+            if (cond(o)) {
+                rs.push_back(o);
+            }
+            _f(o->_children, rs);
+        }
+    };
+    _f(_objects, res);
+    return res;
+}
+
 CE_END_NAMESPACE

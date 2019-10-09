@@ -4,10 +4,12 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+/* Callback function object that handles messages
+ */
 class ECallback {
+public:
     typedef void (*_Func)(EWindow* const, const ECallbackArgs&);
 
-public:
     ECallback(std::nullptr_t);
     ECallback(_Func f);
 

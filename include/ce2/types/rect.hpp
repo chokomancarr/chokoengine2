@@ -41,6 +41,10 @@ public:
 	/* Returns a sub-rect inside both this rect and \p r.
 	*/
 	Rect Intersection(const Rect& r) const;
+
+    /* A fullscreen rect
+     */
+    static Rect fullscreen();
 };
 
 CE_END_NAMESPACE

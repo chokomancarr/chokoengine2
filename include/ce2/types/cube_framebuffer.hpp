@@ -5,6 +5,7 @@ CE_BEGIN_NAMESPACE
 
 class _FrameBufferCube {CE_OBJECT_COMMON
 	std::array<RenderTarget, 6> _pointers;
+	RenderTarget _tmpPointer;
 	std::vector<CubeMap> _maps;
 	DepthCubeMap _depth;
 

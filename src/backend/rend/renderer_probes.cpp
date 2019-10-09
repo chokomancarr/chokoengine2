@@ -27,7 +27,7 @@ void Renderer::RenderLightProbe(const LightProbe& lp) {
 
 		const auto& p = _p * Mat4x4::Rotation(rs[a]) * _t;
 
-		RenderScene(tar, p, gbuf, [&]() {
+		RenderScene(tar, lp->_fbo->_tmpPointer, p, gbuf, [&]() {
 			if ((lp->_clearType == CameraClearType::Color)
 					|| (lp->_clearType == CameraClearType::ColorAndDepth)) {
 				glClearBufferfv(GL_COLOR, 0, &lp->_clearColor[0]);

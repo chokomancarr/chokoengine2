@@ -30,7 +30,7 @@ _FrameBuffer::~_FrameBuffer() {
 }
 
 void _FrameBuffer::Clear() const {
-	float zeros[4] = {};
+	float zeros[4] = { 1, 0, 0, 1 };
 	float one = 1;
 	for (int a = 0; a < _texs.size(); a++) {
 		glClearBufferfv(GL_COLOR, a, zeros);

@@ -11,6 +11,7 @@ class Renderer {
 	static Shader pointLightShad;
 	static Shader spotLightShad;
 	static Shader probeShad;
+	static Shader transOverlayShad;
 
 	static std::vector<Camera> cameras;
 	static std::vector<Light> lights;
@@ -23,18 +24,18 @@ class Renderer {
 
 	static void RenderMesh(const MeshRenderer& rend, const Mat4x4& P);
 
-	static void RenderScene(const RenderTarget& tar, const Mat4x4& p, const FrameBuffer& gbuf, std::function<void()> preBlit, bool useProbes);
+	static void RenderScene(const RenderTarget& tar, const RenderTarget& ttar, const Mat4x4& p, const FrameBuffer& gbuf, std::function<void()> preBlit, bool useProbes);
 
     static void RenderCamera(Camera& cam);
 
 	static void RenderProbe_CubeMap(const CubeMap&);
 
-	static void RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip);
+	static void RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr);
 
-	static void RenderLight_Point(const Light&, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget&);
+	static void RenderLight_Point(const Light&, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget&, bool tr);
 	static void RenderLight_Point_Shadow(const Light&);
 	
-	static void RenderLight_Spot(const Light&, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget&);
+	static void RenderLight_Spot(const Light&, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget&, bool tr);
 	static Mat4x4 RenderLight_Spot_Shadow(const Light&);
 
 	static void RenderLight_Directional(const Light&, const Camera&);

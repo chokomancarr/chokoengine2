@@ -42,6 +42,10 @@ public:
 	 */
 	static SceneObject FindByName(const std::string& nm);
 
+	/* Returns all objects satisfying the condition
+	 */
+	static std::vector<SceneObject> FindAllByPred(std::function<bool(const SceneObject&)>);
+
 	static std::string Tree();
 };
 

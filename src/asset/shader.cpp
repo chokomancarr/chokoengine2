@@ -109,7 +109,7 @@ void _Shader::ApplyFlags() {
 	};
 	glDepthFunc(zt[(int)_ztest]);
 	if (_queue == ShaderQueue::Opaque) {
-		glBlendFunc(GL_ONE, GL_ZERO);
+		//glBlendFunc(GL_ONE, GL_ZERO);
 	}
 	else {
 		static const GLenum bl[] = {
@@ -120,7 +120,7 @@ void _Shader::ApplyFlags() {
 			GL_ONE_MINUS_SRC_ALPHA,
 			GL_ONE_MINUS_DST_ALPHA
 		};
-		glBlendFunc(bl[(int)_blendSrc], bl[(int)_blendDst]);
+		//glBlendFunc(bl[(int)_blendSrc], bl[(int)_blendDst]);
 	}
 }
 

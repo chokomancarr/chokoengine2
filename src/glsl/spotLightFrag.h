@@ -21,6 +21,7 @@ uniform sampler2D shadowTex;
 uniform mat4 _LP;
 uniform float shadowStr;
 uniform float shadowBias;
+uniform float transparent;
 
 out vec4 fragCol;
 
@@ -51,7 +52,7 @@ void main () {
 	vec3 normal = texture(inGBuf1, uv).xyz;
 
 	vec4 gbuf2 = texture(inGBuf2, uv);
-	float metallic = gbuf2.x;
+	float metallic = gbuf2.x * (1 - transparent);
 	float rough = gbuf2.y;
 	float occlu = gbuf2.z;
 	float z = texture(inGBufD, uv).x;
@@ -80,6 +81,8 @@ void main () {
 
 		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightStr * not_shadow * occlu * (dot(-p2li, lightDir) > lightAngleCos ? 1.0 : 0.0);
 	}
+
+    fragCol.a = mix(1, fragCol.a, transparent);
 }
 )";
 }

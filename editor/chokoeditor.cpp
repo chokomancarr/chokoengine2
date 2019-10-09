@@ -56,9 +56,10 @@ void ChokoEditor::Main() {
 		l->shadow(true);
 		l->shadowStrength(0.7f);
 		l->shadowBias(0.002f);
-		l->radius(0.2f);
+		l->radius(0.1f);
 		l->color(Color(1, 0.9f, 0.7f));
 		l->softShadows(true);
+		l->shadowSamples(1);
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
 	}
 	/*
@@ -72,21 +73,23 @@ void ChokoEditor::Main() {
 	l2->color(Color(1, 0.7f, 0.3f));
 	o2->transform()->localPosition(Vec3(0.4f, 0, 0));
 	*/
-	/*
+	
 	const auto& o3 = Scene::AddNewObject();
 	o3->transform()->localPosition(Vec3(1, 0, 1));
-	const auto& pr = o3->AddComponent<LightProbe>();
-	pr->resolution(128);
-	pr->updateFrequency(LightProbeUpdateFrequency::OnStart);
-	pr->strength(0);
 	const auto& mr3 = o3->AddComponent<MeshRenderer>();
 	mr3->mesh(ProceduralMesh::UVSphere(20, 10, 1));
 	const auto& mt3 = Material::New();
-	mt3->shader((Shader)EAssetList::Get(EAssetType::Shader, ".internal/unlit_cubemap.shader"));
-	mt3->SetUniform("map", pr->result());
+	mt3->shader((Shader)EAssetList::Get(EAssetType::Shader, ".internal/standard_transparent_color.shader"));
+	mt3->SetUniform("color", Color(1, 1, 0.3f, 0.5f));
+	mt3->SetUniform("ior", 1.2f);
+	mt3->SetUniform("roughness", 0.3f);
 	mr3->materials({mt3});
+	/*
+	const auto& pr = o3->AddComponent<LightProbe>();
+	pr->resolution(128);
+	pr->updateFrequency(LightProbeUpdateFrequency::OnStart);
+	pr->strength(1);
 	*/
-
 	EWindowManager::LoadWindows();
 
 	std::cout << Scene::Tree() << std::endl;

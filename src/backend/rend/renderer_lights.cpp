@@ -8,17 +8,17 @@ CE_BEGIN_BK_NAMESPACE
 
 bool Renderer::InitLightShaders() {
 	(pointLightShad = Shader::New(glsl::minVert, glsl::pointLightFrag_Soft))
-		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightStr", "lightRad", "lightDst", "lightCol", "falloff", "shadowMap", "shadowStr", "shadowBias", "shadowSmps" });
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightStr", "lightRad", "lightDst", "lightCol", "falloff", "shadowMap", "shadowStr", "shadowBias", "shadowSmps", "transparent" });
 
 	(spotLightShad = Shader::New(glsl::minVert, glsl::spotLightFrag))
-		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightDir", "lightStr", "lightRad", "lightDst", "lightAngleCos", "falloff", "shadowTex", "_LP", "shadowStr", "shadowBias" });
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD", "lightPos", "lightDir", "lightStr", "lightRad", "lightDst", "lightAngleCos", "falloff", "shadowTex", "_LP", "shadowStr", "shadowBias", "transparent" });
 	return !!pointLightShad && !!spotLightShad;
 }
 
-void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar) {
+void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar, bool tr) {
 	const auto& pos = l->object()->transform()->worldPosition();
 
-	if (l->_shadow) {
+	if (l->_shadow && !tr) {
 		RenderLight_Point_Shadow(l);
 		tar->BindTarget();
 		glViewport(0, 0, tar->_width, tar->_height);
@@ -48,7 +48,7 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 	glUniform1i(pointLightShad->Loc(11), (int)l->_falloff);
 	glUniform1i(pointLightShad->Loc(12), 4);
 	glActiveTexture(GL_TEXTURE4);
-	if (l->_shadow) {
+	if (l->_shadow && !tr) {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, l->shadowBuffer_Cube->_depth->_pointer);
 		glUniform1f(pointLightShad->Loc(13), l->_shadowStrength);
 		glUniform1f(pointLightShad->Loc(14), l->_shadowBias);
@@ -58,6 +58,7 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 		glUniform1f(pointLightShad->Loc(13), 0);
 	}
 	glUniform1i(pointLightShad->Loc(15), l->_shadowSamples);
+	glUniform1f(pointLightShad->Loc(16), tr ? 1 : 0);
 
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -113,12 +114,12 @@ void Renderer::RenderLight_Point_Shadow(const Light& l) {
 	glDisable(GL_CULL_FACE);
 }
 
-void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar) {
+void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar, bool tr) {
 	const auto& pos = l->object()->transform()->worldPosition();
 	const auto& fwd = l->object()->transform()->forward();
 
 	Mat4x4 pShad;
-	if (l->_shadow) {
+	if (l->_shadow && !tr) {
 		pShad = RenderLight_Spot_Shadow(l);
 		tar->BindTarget();
 		glViewport(0, 0, tar->_width, tar->_height);
@@ -147,7 +148,7 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	glUniform1f(spotLightShad->Loc(11), std::cos(l->_angle * Math::deg2rad));
 	glUniform1i(spotLightShad->Loc(12), (int)l->_falloff);
 	glUniform1i(spotLightShad->Loc(13), 4);
-	if (l->_shadow) {
+	if (l->_shadow && !tr) {
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, l->shadowBuffer_2D->_depth->_pointer);
 		glUniformMatrix4fv(spotLightShad->Loc(14), 1, GL_FALSE, &pShad[0][0]);
@@ -157,6 +158,7 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	else {
 		glUniform1f(spotLightShad->Loc(15), 0);
 	}
+	glUniform1f(spotLightShad->Loc(16), tr ? 1 : 0);
 
 	_emptyVao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);

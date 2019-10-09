@@ -64,4 +64,8 @@ Rect Rect::Intersection(const Rect& r) const {
 	return Rect(ox, oy, p2x - ox, p2y - oy);
 }
 
+Rect Rect::fullscreen() {
+    return Rect(0, 0, Display::width(), Display::height());
+}
+
 CE_END_NAMESPACE

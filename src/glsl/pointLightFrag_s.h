@@ -19,6 +19,7 @@ uniform samplerCube shadowMap;
 uniform float shadowStr;
 uniform float shadowBias;
 uniform int shadowSmps;
+uniform float transparent;
 
 out vec4 fragCol;
 
@@ -106,7 +107,7 @@ void main () {
 	vec3 normal = texture(inGBuf1, uv).xyz;
 
 	vec4 gbuf2 = texture(inGBuf2, uv);
-	float metallic = gbuf2.x;
+	float metallic = gbuf2.x * (1 - transparent);
 	float rough = gbuf2.y;
 	float occlu = gbuf2.z;
 	float z = texture(inGBufD, uv).x;
@@ -132,20 +133,21 @@ void main () {
 			return;
 		}
 		vec3 p2li = normalize(p2l);
-		vec3 diffCol = diffuse.rgb * max(dot(p2li, normal), 0);
+		vec4 diffCol = vec4(diffuse.rgb * max(dot(p2li, normal), 0), diffuse.a);
 		vec3 hv = normalize(p2li - fwd);
 		float reflStr = ggx(normal, hv, rough);
-		vec3 reflCol = mix(vec3(1, 1, 1), diffuse.rgb, metallic) * reflStr;
+		vec4 reflCol = vec4(mix(vec3(1, 1, 1), diffuse.rgb, metallic), reflStr);
+		reflCol = mix(vec4(reflCol.rgb * reflCol.w, 0), reflCol, transparent);
 
 		float not_shadow = 1;
 		
-		if (shadowStr > 0) {
+		if (shadowStr > 0 && transparent == 0) {
 			float rr2 = 1;
 			float pz = vec2depth(p2l);
 			float sz0 = shadowAt(-p2l);
 			if (sz0 < pz - shadowBias) {
 				rr2 = min((pz - sz0) * lightDst / lightRad / sz0, 1);
-				not_shadow = 0;
+				not_shadow = 1 - shadowStr;
 			}
 			float rnd = rand(wPos.xyz);
 			vec3 lt1 = vec3(1, 0, 0);
@@ -162,9 +164,8 @@ void main () {
 			not_shadow /= shadowSmps;
 		}
 		
-		fragCol.rgb = mix(diffCol, reflCol, mix(fres, 1, metallic)) * lightCol * lightStr * occlu * get_falloff(length(p2l)) * not_shadow;
+		fragCol = mix(diffCol, reflCol, mix(fres, 1, metallic)) * vec4(lightCol * lightStr * occlu * get_falloff(length(p2l)) * not_shadow, 1);
 	}
-	return;
 }
 )";
 }
