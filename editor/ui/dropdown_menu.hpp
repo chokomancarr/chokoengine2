@@ -4,9 +4,8 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EDropdownMenu {
-
 public:
-    EDropdownMenu(const std::string& t);
+    EDropdownMenu(const std::string& t = "");
 
     std::string title;
     std::vector<EDropdownMenu> items;

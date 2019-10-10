@@ -1,13 +1,15 @@
 #include "chokoeditor.hpp"
 #include "ce2/parsers/mesh.hpp"
+#include "ext/ui_ext.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
 Background ss;
 
-void paint() {
+inline void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, Color(0.5f));
 	EWindowManager::Draw();
+
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
 }
 
@@ -96,6 +98,14 @@ void ChokoEditor::Main() {
 
 	UIButtonStyle style(Color(0.1f, 1));
 	style.textNormal(Color::white());
+
+	EDropdownMenu menu("asdf");
+	menu.items = {
+		EDropdownMenu("aaaa"),
+		EDropdownMenu("bbbb"),
+		EDropdownMenu("cccc"),
+	};
+	EO_Dropdown::Reg(Vec2(10, 10), menu);
 
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {

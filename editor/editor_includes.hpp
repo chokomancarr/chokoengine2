@@ -25,5 +25,6 @@ CE_END_ED_NAMESPACE
 
 #include "ui/dropdown_menu.hpp"
 #include "ui/windowmanager.hpp"
+#include "ui/overlaymanager.hpp"
 
 #include "serial/serializer.hpp"

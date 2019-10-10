@@ -6,5 +6,7 @@ set(SOURCES
 	${DIR}/dropdown_menu.cpp
 	${DIR}/window.cpp
 	${DIR}/windowmanager.cpp
+	${DIR}/overlay.cpp
+	${DIR}/overlaymanager.cpp
 	PARENT_SCOPE
 )

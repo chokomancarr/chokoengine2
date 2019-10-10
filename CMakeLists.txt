@@ -164,6 +164,7 @@ add_subdirectory("editor/ui/windows/inspector/comp")
 add_subdirectory("editor/ui/windows/inspector/status")
 add_subdirectory("editor/ui/windows/ops")
 add_subdirectory("editor/ui/windows/sceneview")
+add_subdirectory("editor/ui/overlay")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
 
