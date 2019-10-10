@@ -17,7 +17,7 @@ Vec4 Vec4::operator *(const Vec4& rhs) {
 }
 
 Vec4 Vec4::normalized() {
-	return static_cast<Vec4>(glm::normalize(*this));
+	return static_cast<Vec4>(glm::normalize((glm::vec4)*this));
 }
 
 Vec4 Vec4::left(float w) {

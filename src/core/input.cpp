@@ -85,7 +85,7 @@ CE_I_GETF(Vec2, mousePosition);
 
 CE_I_GETF(Vec2, mouseDownPosition);
 
-const Vec2& Input::mouseDelta() {
+Vec2 Input::mouseDelta() {
     return _state.mousePosition - _state.mousePositionOld;
 }
 

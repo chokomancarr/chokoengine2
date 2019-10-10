@@ -139,16 +139,21 @@ Asset EAssetLoader::Load(const std::string& path, const EAssetType t) {
 
 #undef CE_E_LD
 #define CE_E_EX(nm) case EExportType::nm:\
-	Export ## nm(path);\
+	result = Export ## nm(path);\
 	break;
 
-void EAssetLoader::Load(const std::string& path, const EExportType t) {
+bool EAssetLoader::Load(const std::string& path, const EExportType t) {
+	bool result;
 	switch (t) {
 		CE_E_EX(Model)
 		CE_E_EX(Image)
 		default:
-			break;
+			return false;
 	}
+	if (!result) {
+		Debug::Warning("Asset Loader", "Exporter operation failed!");
+	}
+	return result;
 }
 
 #undef CE_E_EX
@@ -314,7 +319,7 @@ CE_E_AL_IMPL_EX(Model) {
 	const auto meta = LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "blend") {
-		BlenderExporter::ExportBlend(ChokoEditor::assetPath + path, ChokoEditor::assetPath, ".exported/" + path + "/");
+		return BlenderExporter::ExportBlend(ChokoEditor::assetPath + path, ChokoEditor::assetPath, ".exported/" + path + "/");
 	}
 	else abort(); //we should never get here
 }
@@ -323,7 +328,7 @@ CE_E_AL_IMPL_EX(Image) {
 	const auto meta = LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "psd") {
-		BlenderExporter::ExportImage(ChokoEditor::assetPath + path, ChokoEditor::assetPath + ".exported/" + path + "/");
+		return BlenderExporter::ExportImage(ChokoEditor::assetPath + path, ChokoEditor::assetPath + ".exported/" + path + "/");
 	}
 	else abort(); //we should never get here
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/ui_scaling.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -46,6 +47,9 @@ public:
 	/* Draws an image with the provided dimensions.
 	 */
 	static void Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const Color& color = Color::white());
+	/* Draws an image with the provided dimensions.
+	 */
+	static void Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const UIScaling& scaling, const Color& color = Color::white());
 
 	/* Draws a rectangle with the provided dimensions
 	 */

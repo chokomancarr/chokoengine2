@@ -31,7 +31,7 @@ Mat4x4 Quat::matrix() const {
 }
 
 Quat Quat::normalized() {
-	return static_cast<Quat>(glm::normalize(*this));
+	return static_cast<Quat>(glm::normalize((glm::quat)*this));
 }
 
 Quat Quat::identity() {
@@ -57,7 +57,7 @@ Quat Quat::FromAxisAngle(Vec3 axis, float angle) {
 
 	// Calculate the w value by cos( theta / 2 )
 	float w = (float)cos(a / 2.0);
-	return Quat(w, x, y, z).normalized();
+	return Quat(w, x, y, z);//.normalized();
 }
 
 Quat Quat::LookAt(const Vec3& tarr) {

@@ -116,6 +116,39 @@ void UI::Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const Color& 
 	    TexQuad(rect, tex->_pointer, color);
 }
 
+void UI::Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const UIScaling& scaling, const Color& color) {
+    if (!tex || !tex->loaded()) return;
+	switch (scaling) {
+	case UIScaling::Stretch:
+		TexQuad(rect, tex->_pointer, color);
+		break;
+	case UIScaling::Fit:
+		TexQuad(rect, tex->_pointer, color);
+		break;
+	case UIScaling::Crop: {
+		float w2h = rect.w() / rect.h();
+		float tw2h = (float)(tex->width()) / tex->height();
+		if (w2h > tw2h) {
+			const float y0 = ((w2h / tw2h) - 1) / 2;
+			const float y1 = 1 - y0;
+			TexQuad(rect, tex->_pointer, color, 0,
+				Vec2(0, y1), Vec2(1, y1),
+				Vec2(0, y0), Vec2(1, y0)
+			);
+		}
+		else {
+			const float x0 = ((tw2h / w2h) - 1) / 2;
+			const float x1 = 1 - x0;
+			TexQuad(rect, tex->_pointer, color, 0,
+				Vec2(x0, 1), Vec2(x1, 1),
+				Vec2(x0, 0), Vec2(x1, 0)
+			);
+		}
+		break;
+	}
+	}
+}
+
 void UI::Rect(const CE_NS Rect& q, const Color& col) {
 	auto quadPoss = GetQuadVecs(q);
 	UI::SetVao(4, quadPoss.data(), nullptr);

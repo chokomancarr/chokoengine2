@@ -1,7 +1,7 @@
 {
-  "name":"Unlit",
+  "name":"Unlit (Color)",
   "variables":{
-    "tex":"Texture"
+    "color":"Color"
   },
 
   "vertex":"
@@ -29,7 +29,7 @@ in vec2 v2f_uv;
 
 uniform int _object_id;
 
-uniform sampler2D tex;
+uniform vec4 color;
 
 layout (location=0) out vec4 outColor; //rgb?
 layout (location=1) out vec4 outNormal; //xyz
@@ -39,13 +39,13 @@ layout (location=3) out vec4 outEmi; //????
 layout (location=4) out ivec4 _out_attrs; //????
 
 void main() {
-    outColor = texture(tex, v2f_uv);
+    outColor = color;
     outNormal.xyz = normalize(v2f_normal);
     outSpec.r = 0;
     outSpec.g = 1;
     outSpec.b = 1;
     outSpec.a = 0;
-    outEmi = texture(tex, v2f_uv);
+    outEmi = color;
     
     _out_attrs.r = _object_id;
 }"

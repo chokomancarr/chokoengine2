@@ -35,7 +35,7 @@ Vec2& Vec2::operator -=(const Vec2& rhs) {
 }
 
 Vec2 Vec2::normalized() {
-	return static_cast<Vec2>(glm::normalize(*this));
+	return static_cast<Vec2>(glm::normalize((glm::vec2)*this));
 }
 
 Vec2 Vec2::left() {

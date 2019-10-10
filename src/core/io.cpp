@@ -12,9 +12,9 @@
 #include <termios.h>
 #include <unistd.h>
 #include <pwd.h>
-#include <uuid/uuid.h>
 #ifdef PLATFORM_MAC
 #include <mach-o/dyld.h>
+#include <uuid/uuid.h>
 #endif
 #endif
 

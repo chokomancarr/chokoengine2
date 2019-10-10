@@ -7,7 +7,7 @@ CE_BEGIN_ED_NAMESPACE
 Background ss;
 
 inline void paint() {
-	UI::Texture(Display::fullscreenRect(), EImages::background, Color(0.5f));
+	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
 	EWindowManager::Draw();
 
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());

@@ -1,8 +1,15 @@
 #include "chokoengine.hpp"
+#ifdef PLATFORM_LNX
+#include <sys/wait.h>
+#endif
 
 CE_BEGIN_NAMESPACE
 
 int Subprocess::Run(const std::string& program, const std::vector<std::string>& args, Subprocess::_CbFunc callback) {
+    if (!IO::FileExists(program)) {
+        Debug::Warning("Subprocess", "program \"" + program + "\" does not exist!");
+        return -1;
+    }
     Debug::Message("Subprocess", "Executing " + program);
     for (int a = 0; a < args.size(); a++) {
         Debug::Message("Subprocess", " With arg[" + std::to_string(a) + "]=" + args[a]);
@@ -69,6 +76,7 @@ int Subprocess::Run(const std::string& program, const std::vector<std::string>& 
             }
         }
 		if (WIFEXITED(status)) {
+            Debug::Message("Subprocess::Run", "Child process exited with code " + std::to_string(WEXITSTATUS(status)));
 			return WEXITSTATUS(status);
 		}
 		else {

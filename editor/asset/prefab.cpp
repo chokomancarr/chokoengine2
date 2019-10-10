@@ -88,6 +88,7 @@ SceneObject Prefab::Load(const std::string& path) {
             LoadObject(g.value, o);
         }
     }
+    return o;
 }
 
 CE_END_ED_NAMESPACE

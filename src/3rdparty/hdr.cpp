@@ -44,6 +44,7 @@
 #include "hdr.h"
 #include <algorithm>
 #include <cmath>
+#include <string.h>
 
 const char * hdr::szSignature = "#?RADIANCE";
 const char * hdr::szFormat = "FORMAT=32-bit_rle_rgbe";

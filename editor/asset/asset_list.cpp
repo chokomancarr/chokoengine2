@@ -1,5 +1,6 @@
 #include "chokoeditor.hpp"
 #include "asset_loader.hpp"
+#include "utime.h"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -35,12 +36,12 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                     const auto mt = IO::ModTime(ffd + f);
                     if (it->modtime < mt) {
                         Debug::Message("AssetList", "\033[0;36m" "Updating " + sig + "\033[0m");
-                        if (!IO::FileExists(ffd + f + ".meta")) {
-                            EAssetLoader::GenDefaultMeta(sig, (EAssetType)a);
-                        }
                         if (!!it->obj) {
                             it->obj = EAssetLoader::Load(sig, (EAssetType)a);
                             //it->obj->dirty(true);
+                        }
+                        if (!IO::FileExists(ffd + f + ".meta")) {
+                            EAssetLoader::GenDefaultMeta(sig, (EAssetType)a);
                         }
                         it->modtime = mt;
                         dirty = true;
@@ -59,9 +60,12 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                         Debug::Message("AssetList", "\033[0;36m" "Processing " + sig + "\033[0m");
                         if (!IO::FileExists(mnm)) {
                             EAssetLoader::GenDefaultMeta(sig, (EExportType)a);
+                            UpdateModTime(mnm, false);
                         }
-                        EAssetLoader::Load(sig, (EExportType)a);
-                        dirty = true;
+                        if (EAssetLoader::Load(sig, (EExportType)a)) {
+                            UpdateModTime(mnm, true);
+                            dirty = true;
+                        }
                     }
                     goto next;
                 }
@@ -75,6 +79,18 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
         dirty |= Scan_Fd(fd + d + "/");
     }
     return dirty;
+}
+
+void EAssetList::UpdateModTime(const std::string& fl, bool now) {
+#ifdef PLATFORM_WIN
+    CE_NOT_IMPLEMENTED;
+#else
+    if (now) utime(fl.c_str(), nullptr);
+    else {
+        utimbuf buf = {};
+        utime(fl.c_str(), &buf);
+    }
+#endif
 }
 
 void EAssetList::Init() {

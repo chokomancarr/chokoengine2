@@ -5,7 +5,6 @@ namespace glsl {
 
 uniform sampler2D normTex;
 uniform sampler2D depthTex;
-uniform sampler2D noiseTex;
 uniform vec2 screenSize;
 uniform float radius;
 uniform int samples;

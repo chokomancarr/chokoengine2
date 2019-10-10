@@ -10,8 +10,8 @@ CE_BEGIN_ED_NAMESPACE
 #define CE_E_DEF(nm) static nm Load ## nm(const std::string& path)
 #define CE_E_AL_IMPL(nm) nm EAssetLoader::Load ## nm(const std::string& path)
 
-#define CE_E_DEF_EX(nm) static void Export ## nm(const std::string& path)
-#define CE_E_AL_IMPL_EX(nm) void EAssetLoader::Export ## nm(const std::string& path)
+#define CE_E_DEF_EX(nm) static bool Export ## nm(const std::string& path)
+#define CE_E_AL_IMPL_EX(nm) bool EAssetLoader::Export ## nm(const std::string& path)
 
 #define CE_E_DEF_J(nm) static nm Load ## nm(const JsonObject& data, SceneObject& obj)
 #define CE_E_AL_IMPL_J(nm) nm EAssetLoader::Load ## nm(const JsonObject& data, SceneObject& obj)
@@ -29,7 +29,7 @@ public:
 
     static Asset Load(const std::string& path, const EAssetType t);
 
-    static void Load(const std::string& path, const EExportType t);
+    static bool Load(const std::string& path, const EExportType t);
 
 	CE_E_DEF(AnimClip);
     CE_E_DEF(Armature);

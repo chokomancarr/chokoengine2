@@ -13,8 +13,8 @@ CE_BEGIN_NAMESPACE
 
 void Texture_I::FlipY(std::vector<byte>& data, uint w, uint h) {
     #pragma omp parallel for
-    std::vector<byte> tmp(w * 4);
 	for (int a = 0; a < h / 2; ++a) {
+		std::vector<byte> tmp(w * 4);
 		memcpy(&tmp[0], &data[a * w * 4], w * 4);
 		memcpy(&data[a * w * 4], &data[(h - a - 1) * w * 4], w * 4);
 		memcpy(&data[(h - a - 1) * w * 4], &tmp[0], w * 4);

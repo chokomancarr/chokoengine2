@@ -23,6 +23,8 @@ class EAssetList { CE_CLASS_COMMON
 
     static bool Scan_Fd(const std::string& fd);
 
+    static void UpdateModTime(const std::string& fl, bool now);
+
 public:
     static void Init();
     

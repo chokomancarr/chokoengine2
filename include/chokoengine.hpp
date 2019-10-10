@@ -3,15 +3,16 @@
 
 /* system headers
  */
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <array>
-#include <map>
-#include <unordered_map>
-#include <string>
 #include <algorithm>
+#include <array>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <memory>
+#include <string>
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 
 CE_BEGIN_NAMESPACE
 

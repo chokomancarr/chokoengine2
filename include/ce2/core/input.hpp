@@ -57,7 +57,7 @@ public:
 
 	/* Distance the pointer moved in screen coordinates
 	 */
-	static const Vec2& mouseDelta();
+	static Vec2 mouseDelta();
 
 	/* Distance the pointer scrolled
 	 */
