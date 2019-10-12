@@ -11,10 +11,11 @@ enum class EAssetType {
     Material,
     Mesh,
     Shader,
+	VShader,
     Texture,
     SceneObject,
     _COUNT,
-    Unknown
+    Unknown = 0xff
 };
 
 CE_END_ED_NAMESPACE

@@ -1,6 +1,8 @@
 #include "chokoeditor.hpp"
 #include "asset_loader.hpp"
-#include "utime.h"
+#ifndef PLATFORM_WIN
+#include <utime.h>
+#endif
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -83,7 +85,17 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 
 void EAssetList::UpdateModTime(const std::string& fl, bool now) {
 #ifdef PLATFORM_WIN
-    CE_NOT_IMPLEMENTED;
+	auto hndl = CreateFile(fl.c_str(), FILE_WRITE_ATTRIBUTES, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	FILETIME ft = {};
+	if (now) {
+		SYSTEMTIME st;
+		GetSystemTime(&st);              // Gets the current system time
+		SystemTimeToFileTime(&st, &ft);  // Converts the current system time to file time format
+	}
+	SetFileTime(hndl, nullptr, nullptr, &ft);
+
+	CloseHandle(hndl);
 #else
     if (now) utime(fl.c_str(), nullptr);
     else {
@@ -98,6 +110,7 @@ void EAssetList::Init() {
     _exts[(int)EAssetType::Material] = { "material" };
     _exts[(int)EAssetType::Mesh] = { "obj", "mesh" };
     _exts[(int)EAssetType::Shader] = { "shader" };
+	_exts[(int)EAssetType::VShader] = { "visualshader" };
     _exts[(int)EAssetType::Texture] = { "png", "jpg", "bmp" };
     _exts[(int)EAssetType::SceneObject] = { "prefab" };
 
@@ -131,6 +144,25 @@ const Asset& EAssetList::Get(EAssetType t, const std::string& sig) {
         i->obj = EAssetLoader::Load(i->sig, t);
     }
     return i->obj;
+}
+
+EAssetList::TypeOfSt EAssetList::TypeOf(const std::string& f) {
+	const auto ext = StrExt::ExtensionOf(f);
+	for (int a = 0; a < (int)EAssetType::_COUNT; a++) {
+		for (auto& e : _exts[a]) {
+			if (e == ext) {
+				return TypeOfSt{ false, (EAssetType)a, EExportType::Unknown };
+			}
+		}
+	}
+	for (int a = 0; a < (int)EExportType::_COUNT; a++) {
+		for (auto& e : _exts[a]) {
+			if (e == ext) {
+				return TypeOfSt{ true, EAssetType::Unknown, (EExportType)a };
+			}
+		}
+	}
+	return TypeOfSt{ true, EAssetType::Unknown, EExportType::Unknown };
 }
 
 CE_END_ED_NAMESPACE

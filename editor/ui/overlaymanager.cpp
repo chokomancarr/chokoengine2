@@ -20,8 +20,10 @@ void EOverlayManager::Update() {
 
 void EOverlayManager::Draw() {
 	for (auto& o : overlays) {
-		if (o->active)
+		if (o->active) {
+			UI_Ext::IncLayer();
 			o->Draw();
+		}
 	}
 }
 

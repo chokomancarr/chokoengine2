@@ -37,6 +37,8 @@ bool EW_SceneView::_Init() {
 	return true;
 }
 
+EW_SceneView::EW_SceneView() : EWindow("Scene") {}
+
 bool EW_SceneView::Init() {
 	_target = RenderTarget::New((uint)position.w(), (uint)(position.h() - 20), true, true);
 
@@ -56,6 +58,7 @@ bool EW_SceneView::Init() {
 	op.callback = ECallback(&Ops::ProjectionMode);
 	menus.back().items.push_back(op);
 	menus.push_back(EDropdownMenu("Object"));
+	menus.back().enabled = false;
 
 	return true;
 }

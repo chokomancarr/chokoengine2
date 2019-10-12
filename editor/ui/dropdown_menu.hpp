@@ -9,6 +9,7 @@ public:
 
     std::string title;
     std::vector<EDropdownMenu> items;
+	bool enabled;
 
     ECallback callback;
 };

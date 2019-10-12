@@ -12,6 +12,8 @@ void EW_Inspector::DrawMenu() {
 	EW_I_SceneObject::Draw(ESceneInfo::selectedObject, position + Rect(0, 20, 0, -20));
 }
 
+EW_Inspector::EW_Inspector() : EWindow("Inspector") {}
+
 bool EW_Inspector::Init() {
 	return true;
 }

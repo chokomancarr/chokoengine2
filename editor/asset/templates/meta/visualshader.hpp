@@ -4,7 +4,7 @@
 
 CE_BEGIN_META_NAMESPACE
 
-const std::string VShader = header + R"(
+const std::string Shader = header + R"(
   "dummy":"dummy"
 })";
 

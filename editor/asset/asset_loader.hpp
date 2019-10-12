@@ -1,6 +1,7 @@
 #pragma once
 #include "chokoeditor.hpp"
 #include "ce2/parsers/json.hpp"
+#include "ext/visual_shader.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -36,6 +37,7 @@ public:
     CE_E_DEF(Material);
     CE_E_DEF(Mesh);
     CE_E_DEF(Shader);
+	CE_E_DEF(VShader);
     CE_E_DEF(Texture);
     CE_E_DEF(SceneObject);
 

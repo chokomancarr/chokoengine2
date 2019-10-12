@@ -31,6 +31,12 @@ public:
     static void Rescan();
 
     static const Asset& Get(EAssetType t, const std::string& sig);
+
+	static struct TypeOfSt {
+		bool exported;
+		EAssetType assetType;
+		EExportType exportType;
+	} TypeOf(const std::string& f);
 };
 
 CE_END_ED_NAMESPACE

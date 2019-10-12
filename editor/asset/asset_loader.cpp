@@ -98,6 +98,7 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
 		CE_E_MKM(EAssetType, Material)
 		CE_E_MKM(EAssetType, Mesh)
 		CE_E_MKM(EAssetType, Shader)
+		CE_E_MKM(EAssetType, VShader)
 		CE_E_MKM(EAssetType, Texture)
 		CE_E_MKM(EAssetType, SceneObject)
 		default:
@@ -129,6 +130,7 @@ Asset EAssetLoader::Load(const std::string& path, const EAssetType t) {
 		CE_E_LD(Material)
 		CE_E_LD(Mesh)
 		CE_E_LD(Shader)
+		CE_E_LD(VShader)
 		CE_E_LD(Texture)
 		CE_E_LD(SceneObject)
 		default:
@@ -288,6 +290,19 @@ CE_E_AL_IMPL(Shader) {
 		else CE_E_SHV(CubeMap)
 	}
 	return shd;
+}
+
+CE_E_AL_IMPL(VShader) {
+	const auto meta = LoadMeta(path);
+	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+	auto shad = VShader::New();
+	for (auto& n : data.group) {
+		shad->nodes.push_back(_VShaderNode::FromSig(n.key.string));
+	}
+	for (size_t a = 0, n = data.group.size(); a < n; a++) {
+		shad->nodes[a]->Parse(data.group[a].value);
+	}
+	return shad;
 }
 
 CE_E_AL_IMPL(Texture) {

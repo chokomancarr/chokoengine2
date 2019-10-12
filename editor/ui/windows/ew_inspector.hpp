@@ -8,10 +8,13 @@ class EW_Inspector : public EWindow {
 	Shader highlightShad;
 
 protected:
+
 	void DrawMenu() override;
 
 public:
 	static EW_I_Status::UMap statuses;
+
+	EW_Inspector();
 
 	bool Init() override;
 };

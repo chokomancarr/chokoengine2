@@ -9,6 +9,8 @@ class ESceneInfo {
 public:
 	static SceneObject selectedObject;
 	static std::vector<SceneObject> subSelectedObjects;
+
+	static Asset selectedAsset;
 };
 
 CE_END_ED_NAMESPACE

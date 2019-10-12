@@ -6,6 +6,7 @@
 #include "windows/ew_hierarchy.hpp"
 #include "windows/ew_inspector.hpp"
 #include "windows/ew_sceneview.hpp"
+#include "windows/ew_shadereditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

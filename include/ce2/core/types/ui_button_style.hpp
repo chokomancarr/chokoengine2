@@ -8,7 +8,7 @@ class UIButtonStyle {
     Color _textNormal, _textHover, _textPressed;
 public:
     UIButtonStyle(const Color& n);
-    UIButtonStyle(const Color& n, const Color& h, const Color& p);
+    UIButtonStyle(const Color& n, const Color& h, const Color& p, const Color& tn = Color::black(), const Color& th = Color::black(), const Color& tp = Color::black());
 
     CE_GET_SET_MEMBER(normal);
     CE_GET_SET_MEMBER(hover);

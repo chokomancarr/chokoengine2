@@ -64,6 +64,8 @@ void EW_Hierarchy::DrawMenu() {
 	EUILayout::EndScroll(st, off);
 }
 
+EW_Hierarchy::EW_Hierarchy() : EWindow("Hierarchy") {}
+
 bool EW_Hierarchy::Init() {
 	return true;
 }

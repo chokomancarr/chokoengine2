@@ -11,6 +11,8 @@ protected:
 	void DrawMenu() override;
 	
 public:
+	EW_Hierarchy();
+
 	bool Init() override;
 
     void ExpandAll();

@@ -18,6 +18,8 @@ protected:
 public:
 	static bool _Init();
 
+	EW_SceneView();
+
 	bool Init() override;
 
 	void Update() override;

@@ -10,6 +10,8 @@ inline void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
 	EWindowManager::Draw();
 
+	EOverlayManager::Draw();
+
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
 }
 
@@ -32,6 +34,7 @@ void ChokoEditor::Main() {
 	EIcons::Init();
 	EWindowManager::Init();
 	ESerializer::Init();
+	EOverlayManager::Init();
 
 	assetPath = IO::path() + "project/assets/";
 	EAssetList::Rescan();
@@ -43,7 +46,7 @@ void ChokoEditor::Main() {
 
 	Scene::sky(ss);
 	Scene::sky()->brightness(0);
-	//*
+	/*
 	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab"));
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
@@ -94,6 +97,8 @@ void ChokoEditor::Main() {
 	*/
 	EWindowManager::LoadWindows();
 
+	EW_ShaderEditor::target = (VShader)EAssetList::Get(EAssetType::VShader, "test.visualshader");
+
 	std::cout << Scene::Tree() << std::endl;
 
 	UIButtonStyle style(Color(0.1f, 1));
@@ -105,12 +110,13 @@ void ChokoEditor::Main() {
 		EDropdownMenu("bbbb"),
 		EDropdownMenu("cccc"),
 	};
-	EO_Dropdown::Reg(Vec2(10, 10), menu);
+	//EO_Dropdown::Reg(Vec2(10, 10), menu, true);
 
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {
 			UI_Ext::PreLoop();
 			EWindowManager::Update();
+			EOverlayManager::Update();
 		});
 		ChokoLait::Paint(0, paint);
 	}

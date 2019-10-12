@@ -5,10 +5,14 @@ CE_BEGIN_ED_NAMESPACE
 
 class EWindow {
 protected:
+	EWindow(const std::string& title);
+
 	virtual void DrawMenu() = 0;
 public:
+
 	virtual ~EWindow() = default;
 
+	std::string title;
 	Rect position;
 
 	std::vector<EDropdownMenu> menus;

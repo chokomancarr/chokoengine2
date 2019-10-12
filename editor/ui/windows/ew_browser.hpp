@@ -9,8 +9,13 @@ class EW_Browser : public EWindow {
 		File(const std::string& nm = "") : name(nm) {}
 
 		std::string name;
+		std::string sig;
+		EAssetList::TypeOfSt type;
 		Texture icon = nullptr;
+
 		std::vector<File> subfiles;
+
+		void GetIcon();
 	};
 	class Folder {
 	public:
@@ -34,9 +39,12 @@ class EW_Browser : public EWindow {
 	void DrawFiles();
 
 protected:
+
 	void DrawMenu() override;
 
 public:
+	EW_Browser();
+
 	bool Init() override;
 	void Refresh() override;
 

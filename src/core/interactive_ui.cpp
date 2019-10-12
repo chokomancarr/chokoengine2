@@ -28,7 +28,9 @@ InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, cons
 	Rect(r, col);
 
 	if (!t.empty()) {
-		Label(r, t, s.textNormal(), font);
+		const auto tcol = (ret == InputMouseStatus::None) ? s.textNormal() :
+			(((ret == InputMouseStatus::Hover) || (ret == InputMouseStatus::HoverUp)) ? s.textHover() : s.textPressed());
+		Label(r, t, tcol, font);
 	}
 
 	return ret;

@@ -6,5 +6,6 @@ set(SOURCES
 	${DIR}/ew_hierarchy.cpp
 	${DIR}/ew_inspector.cpp
 	${DIR}/ew_sceneview.cpp
+	${DIR}/ew_shadereditor.cpp
 	PARENT_SCOPE
 )

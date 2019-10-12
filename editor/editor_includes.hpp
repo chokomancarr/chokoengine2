@@ -5,9 +5,13 @@ CE_BEGIN_ED_NAMESPACE
 class EPaths;
 class EWindow;
 
+CE_OBJECT(VShader)
+
 CE_END_ED_NAMESPACE
 
 #include "editor_paths.hpp"
+
+#include "asset/ext/visual_shader.hpp"
 
 #include "res/icons.hpp"
 #include "res/images.hpp"

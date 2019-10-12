@@ -24,9 +24,7 @@ public:
 	std::vector<JsonObject> list;
 	std::string string;
 
-	static JsonObject ParseNext(std::istringstream& ss);
-	static JsonObject ParseString(std::istringstream& ss);
-
+	const JsonObject& Get(const std::string& k) const;
 	bool ToBool() const;
 	int ToInt() const;
 	float ToFloat() const;
@@ -35,6 +33,9 @@ public:
 	Color ToColor() const;
 	template <typename T>
 	T ToEnum(const std::initializer_list<std::string>& entries) const;
+
+	static JsonObject ParseNext(std::istringstream& ss);
+	static JsonObject ParseString(std::istringstream& ss);
 };
 
 class JsonPair {

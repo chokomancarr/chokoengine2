@@ -2,19 +2,44 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+void EW_Browser::File::GetIcon() {
+	if (type.exported) {
+
+	}
+	else {
+		switch (type.assetType) {
+		case EAssetType::Texture:
+			icon = (Texture)EAssetList::Get(type.assetType, sig);
+			break;
+		case EAssetType::Material:
+
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+
 void EW_Browser::ScanFolder(Folder& pfd) {
 	auto fls = IO::ListFiles(ChokoEditor::assetPath + pfd.path);
 	for (auto& l : fls) {
 		if (l[0] == '.') continue;
 		const auto lsz = l.size();
 		if (lsz > 5 && l.substr(lsz - 5) == ".meta") continue;
-		pfd.files.push_back(File(l));
+		File f(l);
+		f.sig = pfd.path + l;
+		f.type = EAssetList::TypeOf(l);
+		pfd.files.push_back(f);
 		auto& fl = pfd.files.back();
 		const auto sfls = IO::ListFiles(ChokoEditor::assetPath + pfd.path + l);
 		for (auto& s : sfls) {
 			if (s[0] == '.') continue;
 			const auto ssz = s.size();
 			if (ssz > 5 && s.substr(ssz - 5) == ".meta") continue;
+			File f(s);
+			f.sig = pfd.path + s;
+			f.type = EAssetList::TypeOf(s);
 			fl.subfiles.push_back(File(s));
 		}
 		std::sort(fl.subfiles.begin(), fl.subfiles.end(), [](const File& a, const File& b) {
@@ -77,30 +102,54 @@ float EW_Browser::DrawFolder(float& off, Folder& fd, int level) {
 
 void EW_Browser::DrawFiles() {
 	if (!currentFd || !currentFd->files.size()) return;
-	
+	static UIButtonStyle style(Color(0, 0), Color(0.3f, 0.5f), Color(0.1f, 0.5f));
+
+	const float pd = 100;
+	const float sz = 64;
 	const auto x1 = position.x() + 154;
 	const auto w1 = position.w() - 155;
 	static EUILayout::ScrollState st = {};
 	float off = EUILayout::BeginScroll(Rect(x1, position.y() + 21, w1, position.h() - 23), st);
 
 	auto& fls = currentFd->files;
+	int nx = (int)(w1 / pd);
+	float dx = w1 / nx - 1;
+	float x = x1;
+	int i = 0;
 	for (auto& f : fls) {
-		UI::Label(Rect(x1, off, 1000, 16), f.name, Color::white());
-		off += 16;
+		if (i == nx) {
+			off += sz + 24;
+			x = x1;
+			i = 0;
+		}
+		if (UI::I::Button(Rect(x, off, pd, sz + 24), style) == InputMouseStatus::HoverUp) {
+
+		}
+		f.GetIcon();
+		UI::Texture(Rect(x + (pd - sz) / 2, off + 2, sz, sz), f.icon);
+		UI::Label(Rect(x, off + sz + 4, pd, 16), f.name, Color::white());
+		x += dx;
+		i++;
 	}
+	off += sz + 20;
 
 	EUILayout::EndScroll(st, off);
 }
 
 void EW_Browser::DrawMenu() {
+
 	UI::Rect(Rect(position.x() + 1, position.y() + 20, 152, position.h() - 21), Color(0.1f, 0.6f));
 	static EUILayout::ScrollState st = {};
 	float off = EUILayout::BeginScroll(Rect(position.x() + 2, position.y() + 21, 150, position.h() - 23), st);
     DrawFolder(off, baseFd, 0);
 	EUILayout::EndScroll(st, off);
 
+	UI::defaultFont()->alignment(FontAlign::TopCenter);
 	DrawFiles();
+	UI::defaultFont()->alignment(FontAlign::TopLeft);
 }
+
+EW_Browser::EW_Browser() : EWindow("Assets") {}
 
 bool EW_Browser::Init() {
 	path = "";
