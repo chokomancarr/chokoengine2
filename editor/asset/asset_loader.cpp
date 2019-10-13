@@ -300,7 +300,7 @@ CE_E_AL_IMPL(VShader) {
 		shad->nodes.push_back(_VShaderNode::FromSig(n.key.string));
 	}
 	for (size_t a = 0, n = data.group.size(); a < n; a++) {
-		shad->nodes[a]->Parse(data.group[a].value);
+		shad->nodes[a]->Parse(data.group[a].value, shad);
 	}
 	return shad;
 }

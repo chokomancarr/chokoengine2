@@ -164,7 +164,18 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 }
 
 void UI::Line(const Vec2& p1, const Vec2& p2, const Color& col) {
+	Vec3 quadPoss[] = { Vec3(p1, 0), Vec3(p2, 0) };
+	for (int y = 0; y < 2; y++) {
+		quadPoss[y] = Ds(UI::matrixIsI ? quadPoss[y] : UI::matrix*quadPoss[y]);
+	}
+	UI::SetVao(2, quadPoss, nullptr);
 
+	colShad->Bind();
+	glUniform4f(colShad->Loc(0), col.r, col.g, col.b, col.a * _alpha);
+	_vao->Bind();
+	glDrawArrays(GL_LINES, 0, 2);
+	_vao->Unbind();
+	colShad->Unbind();
 }
 
 void UI::Label(const CE_NS Rect& rect, const std::string& str, const Color& col, const Font& font) {

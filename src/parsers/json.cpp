@@ -38,6 +38,13 @@ JsonObject JsonParser::Parse(std::string text) {
 	return JsonObject::ParseNext(ss);
 }
 
+JsonObject::JsonObject(Type t) : type(t), group({}), list({}), string("") {}
+
+JsonObject::JsonObject(const std::string& val) : type(Type::String), group({}), list({}), string(val) {}
+
+JsonObject::JsonObject(const std::vector<JsonPair>& pairs) : type(Type::Group), group(pairs), list({}), string("") {}
+
+JsonObject::JsonObject(const std::vector<JsonObject>& items) : type(Type::List), group({}), list(items), string("") {}
 
 const JsonObject& JsonObject::Get(const std::string& k) const {
 	if (type != Type::Group) {
@@ -90,6 +97,15 @@ Color JsonObject::ToColor() const {
 		std::stof(list[2].string),
 		std::stof(list[3].string)
 	);
+}
+
+JsonObject JsonObject::FromColor(const Color& c) {
+	return JsonObject({
+		JsonObject(std::to_string(c.r)),
+		JsonObject(std::to_string(c.g)),
+		JsonObject(std::to_string(c.b)),
+		JsonObject(std::to_string(c.a))
+	});
 }
 
 JsonObject JsonObject::ParseNext(std::istringstream& ss) {

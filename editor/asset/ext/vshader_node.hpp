@@ -26,8 +26,13 @@ public:
 		Conn(const std::string& nm, const Type tp) : name(nm), type(tp), value_f(0) {}
 	};
 
-	typedef Conn<pVShaderNode> ConnI;
-	typedef Conn<std::vector<pVShaderNode>> ConnO;
+	struct ConnTar {
+		pVShaderNode nd;
+		int i = -1;
+	};
+
+	typedef Conn<ConnTar> ConnI;
+	typedef Conn<std::vector<ConnTar>> ConnO;
 
 	_VShaderNode(const std::string& name) : name(name), inputs({}), outputs({}) {}
 	virtual ~_VShaderNode() = default;
@@ -40,8 +45,10 @@ public:
 
 	static VShaderNode FromSig(const std::string& nm);
 
-	void Parse(const JsonObject& data);
-	virtual void ParseOptions(const JsonObject& data) = 0;
+	void Parse(const JsonObject& data, VShader& shad);
+
+	virtual void LoadOptions(const JsonObject& data) = 0;
+	virtual JsonObject SaveOptions() = 0;
 };
 
 

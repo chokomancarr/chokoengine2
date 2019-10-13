@@ -8,7 +8,8 @@ class VSN_Output_Surface : public _VShaderNode {
 public:
 	VSN_Output_Surface();
 
-	void ParseOptions(const JsonObject& data) override;
+	void LoadOptions(const JsonObject& data) override;
+	JsonObject SaveOptions() override;
 };
 
 CE_END_ED_NAMESPACE
