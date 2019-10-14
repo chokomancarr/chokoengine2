@@ -79,8 +79,10 @@ CE_OBJECT(Material)
 CE_OBJECT(Mesh)
 CE_OBJECT(Shader)
 CE_OBJECT(Texture)
+CE_OBJECT(Texture3)
 CE_OBJECT(Background)
 CE_OBJECT(RenderTarget)
+CE_OBJECT(RenderTarget3)
 
 CE_OBJECT(TextureBuffer)
 

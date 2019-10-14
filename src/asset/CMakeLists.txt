@@ -13,8 +13,10 @@ set(SOURCES
 	${DIR}/material.cpp
 	${DIR}/mesh.cpp
 	${DIR}/rendertarget.cpp
+	${DIR}/rendertarget3.cpp
 	${DIR}/shader.cpp
 	${DIR}/texture.cpp
+	${DIR}/texture3.cpp
 	${DIR}/texture_internal.cpp
 	PARENT_SCOPE
 )

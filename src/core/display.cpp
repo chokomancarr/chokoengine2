@@ -12,7 +12,7 @@ bool Display::Init() {
 		Debug::Error("System", "Fatal: Cannot init glfw!");
 		return false;
 	}
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -21,8 +21,12 @@ bool Display::Init() {
 
 bool Display::InitWindow(const std::string& title, uint w, uint h) {
 	if (!(_window = glfwCreateWindow(w, h, title.c_str(), NULL, NULL))) {
-		Debug::Error("System", "Fatal: Cannot create glfw window!");
-		return false;
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		if (!(_window = glfwCreateWindow(w, h, title.c_str(), NULL, NULL))) {
+			Debug::Error("System", "Fatal: Cannot create glfw window!");
+			return false;
+		}
+		Debug::Warning("System", "Using OpenGL 3.3 context because 4.3 is not supported");
 	}
 	glfwMakeContextCurrent(_window);
 	glewExperimental = true;

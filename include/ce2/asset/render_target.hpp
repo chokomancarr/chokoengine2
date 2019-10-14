@@ -19,8 +19,6 @@ public:
 
 	~_RenderTarget();
 
-	CE_GET_MEMBER(fbo);
-
 	void BindTarget() const;
 	void UnbindTarget() const;
 

@@ -9,8 +9,7 @@ void EWindowManager::Init() {
 }
 
 void EWindowManager::LoadWindows() {
-	//windows.push_back(std::make_shared<EW_SceneView>());
-	windows.push_back(std::make_shared<EW_ShaderEditor>());
+	windows.push_back(std::make_shared<EW_SceneView>());
 	windows.back()->position = Rect(0, 0, 600, 350);
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Browser>());

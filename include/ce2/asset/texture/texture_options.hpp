@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/texture_wrap.hpp"
 
 CE_BEGIN_NAMESPACE
 
