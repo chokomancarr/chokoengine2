@@ -75,7 +75,7 @@ _Background::_Background(const std::string& path, int div) : _Texture(nullptr), 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, _width, _height, 0, GL_RGB, GL_FLOAT, data.data());
 
     for (int a = 1; a < div; a++) {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, mips[a - 1]->fbo());
+		mips[a - 1]->BindTarget(true);
         glCopyTexImage2D(GL_TEXTURE_2D, a, GL_RGB32F, 0, 0, mips[a - 1]->width(), mips[a - 1]->height(), 0);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     }

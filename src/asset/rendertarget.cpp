@@ -35,12 +35,12 @@ _RenderTarget::~_RenderTarget() {
 	glDeleteFramebuffers(1, &_fbo);
 }
 
-void _RenderTarget::BindTarget() const {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);
+void _RenderTarget::BindTarget(bool read) const {
+	glBindFramebuffer(read ? GL_READ_FRAMEBUFFER : GL_DRAW_FRAMEBUFFER, _fbo);
 }
 
-void _RenderTarget::UnbindTarget() const {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+void _RenderTarget::UnbindTarget(bool read) const {
+	glBindFramebuffer(read ? GL_READ_FRAMEBUFFER : GL_DRAW_FRAMEBUFFER, 0);
 }
 
 CE_END_NAMESPACE

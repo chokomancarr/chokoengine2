@@ -102,7 +102,7 @@ void _CubeMap::ComputeGlossMipmaps() {
 		}
 		glBindTexture(GL_TEXTURE_CUBE_MAP, _pointer);
 		for (int f = 0; f < 6; f++) {
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, tars[f]->fbo());
+			tars[f]->BindTarget(true);
 			glCopyTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + f, a, 0, 0, 0, 0, res, res);
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 		}

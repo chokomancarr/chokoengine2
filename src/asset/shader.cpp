@@ -29,7 +29,7 @@ bool _Shader::LoadShader(GLenum shaderType, std::string source, GLuint& shader, 
 				glGetShaderInfoLog(shader, info_log_length, NULL, &shader_log[0]);
 				shader = 0;
 				*err += std::string(&shader_log[0]);
-				Debug::Error("_Shader", *err);
+				//Debug::Error("_Shader", *err);
 			}
 		}
 		glDeleteShader(shader);
@@ -151,6 +151,44 @@ _Shader::_Shader(const std::string& vert, const std::string& frag) : _Shader() {
 		pointers.push_back(FromVF(prep + vert, prep + frag));
 	}
 	pointer = pointers[0];
+}
+
+_Shader::_Shader(const std::vector<std::string>& strs, const std::vector<ShaderType>& typs) {
+	const auto n = strs.size();
+	const GLenum t2e[] = {
+		GL_VERTEX_SHADER,
+		GL_GEOMETRY_SHADER,
+		GL_TESS_CONTROL_SHADER,
+		GL_TESS_EVALUATION_SHADER,
+		GL_FRAGMENT_SHADER
+	};
+
+	std::vector<GLuint> sps(n);
+
+	std::string err = "";
+	for (size_t a = 0; a < n; a++) {
+		if (!LoadShader(t2e[(int)typs[a]], strs[a], sps[a], &err)) {
+			Debug::Error("_Shader Compiler", "Comp " + std::to_string(a) + " error: " + err);
+			for (size_t b = 0; b <= a; b++) {
+				glDeleteShader(sps[b]);
+			}
+		}
+	}
+
+	pointer = glCreateProgram();
+	for (size_t a = 0; a < n; a++) {
+		glAttachShader(pointer, sps[a]);
+	}
+
+	if (!LinkShader(pointer)) {
+		glDeleteProgram(pointer);
+		pointer = 0;
+	}
+
+	for (size_t a = 0; a < n; a++) {
+		glDetachShader(pointer, sps[a]);
+		glDeleteShader(sps[a]);
+	}
 }
 
 void _Shader::SetOptions(const std::initializer_list<std::string>& nms) {

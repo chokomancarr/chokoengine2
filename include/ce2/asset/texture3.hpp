@@ -11,10 +11,10 @@ protected: //allow rendertarget access
 
     uint _width, _height, _depth;
     byte _channels;
-    bool _hdr;
+    GLenum _format;
 
 public:
-	_Texture3(uint w, uint h, uint d, bool hdr);
+	_Texture3(uint w, uint h, uint d, GLenum fmt);
 
     virtual ~_Texture3(); //allow render targets etc to override
 
@@ -22,7 +22,7 @@ public:
     CE_GET_MEMBER(height);
 	CE_GET_MEMBER(depth);
 	CE_GET_MEMBER(channels);
-	CE_GET_MEMBER(hdr);
+	CE_GET_MEMBER(format);
 
 	bool loaded() const;
 

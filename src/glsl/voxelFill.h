@@ -1,6 +1,7 @@
 #pragma once
 namespace glsl {
 	const char voxelFillVert[] = R"(
+#version 330 core
 layout (location = 0) in vec3 pos;
 
 uniform mat4 _MVP;
@@ -14,6 +15,7 @@ void main() {
 )";
 
 	const char voxelFillGeom[] = R"(
+#version 330 core
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
@@ -72,11 +74,12 @@ void main() {
 )";
 
 	const char voxelFillFrag[] = R"(
-#version 430 core
+#version 330 core
+#extension GL_ARB_shader_image_load_store : require
 
 in vec3 g2f_uvw;
 
-uniform layout(binding=1, rgba8) writeonly image2D voxelTex;
+uniform layout(rgba8) writeonly image3D voxelTex;
 
 void main() {
 	ivec3 coord;

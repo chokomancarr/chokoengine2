@@ -45,8 +45,9 @@ void ChokoEditor::Main() {
 	ss = Background::New(IO::path() + "res/sky.hdr", 6);
 
 	Scene::sky(ss);
-	Scene::sky()->brightness(0);
-	
+	Scene::sky()->brightness(1);
+	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/cornell.blend/cornell.blend.prefab"));
+	/*
 	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab"));
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
@@ -78,7 +79,7 @@ void ChokoEditor::Main() {
 	l2->color(Color(1, 0.7f, 0.3f));
 	o2->transform()->localPosition(Vec3(0.4f, 0, 0));
 	*/
-	
+	/*
 	const auto& o3 = Scene::AddNewObject();
 	o3->transform()->localPosition(Vec3(1, 0, 1));
 	const auto& mr3 = o3->AddComponent<MeshRenderer>();

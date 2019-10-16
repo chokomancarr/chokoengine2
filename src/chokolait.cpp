@@ -19,7 +19,7 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 		return false;
 	}
 
-	if (!Backend::Renderer::Init()) {
+	if (!Backend::Renderer::Init() || !Backend::GI::Init()) {
 		return false;
 	}
 

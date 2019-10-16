@@ -267,6 +267,9 @@ void Renderer::RenderCamera(Camera& cam) {
 		c->OnPreRender();
 	}
 
+	const auto v = cam->object()->transform()->worldMatrix().inverse();
+	GI::Voxelizer::Bake(v, 20);
+
 	const auto& tar = cam->_target;
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
@@ -325,6 +328,16 @@ void Renderer::RenderCamera(Camera& cam) {
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostRender();
 	}
+
+	glBlendFunc(GL_ONE, GL_ZERO);
+	glDepthFunc(GL_ALWAYS);
+	glDisable(GL_CULL_FACE);
+
+	GI::Voxelizer::DrawDebug(p);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_ALWAYS);
+	glEnable(GL_CULL_FACE);
 }
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
@@ -368,7 +381,7 @@ bool Renderer::Init() {
 	(transOverlayShad = Shader::New(glsl::minVert, glsl::transOverlayFrag))
 		->AddUniforms({ "_P", "_IP", "screenSize", "camPos", "trTex", "trNrm", "trPrm", "trDep", "opTex", "opDep" });
 
-	return !!skyShad && !!probeShad && InitLightShaders();
+	return !!skyShad && !!probeShad && InitLightShaders() && GI::Voxelizer::InitShaders();
 }
 
 void Renderer::Render() {

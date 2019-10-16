@@ -4,8 +4,8 @@
 
 CE_BEGIN_NAMESPACE
 
-_RenderTarget3::_RenderTarget3(uint w, uint h, uint d, bool hdr)
-		: _Texture3(w, h, d, hdr) {
+_RenderTarget3::_RenderTarget3(uint w, uint h, uint d, GLenum fmt)
+		: _Texture3(w, h, d, fmt) {
 
 	glGenFramebuffers(1, &_fbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);

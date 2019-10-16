@@ -1,6 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
 
+#include "enums/shader_type.hpp"
 #include "enums/shader_variable_type.hpp"
 #include "enums/shader_queue.hpp"
 #include "enums/shader_ztest.hpp"
@@ -31,6 +32,7 @@ class _Shader : public _Asset { CE_OBJECT_COMMON
 public:
 	_Shader();
 	_Shader(const std::string& vert, const std::string& frag);
+	_Shader(const std::vector<std::string>& strs, const std::vector<ShaderType>& typs);
 
 	void SetOptions(const std::initializer_list<std::string>& nms);
 	void SetOption(const std::string& nm, bool on);

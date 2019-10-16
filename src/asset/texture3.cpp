@@ -5,14 +5,14 @@
 CE_BEGIN_NAMESPACE
 
 _Texture3::_Texture3(std::nullptr_t)
-		: _pointer(0), _width(0), _height(0), _depth(0), _hdr(false) {}
+		: _pointer(0), _width(0), _height(0), _depth(0), _format(0) {}
 
-_Texture3::_Texture3(uint w, uint h, uint d, bool hdr)
-		: _width(w), _height(h), _depth(d), _channels(4), _hdr(hdr) {
+_Texture3::_Texture3(uint w, uint h, uint d, GLenum fmt)
+		: _width(w), _height(h), _depth(d), _channels(4), _format(fmt) {
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_3D, _pointer);
 	std::vector<byte> data(w * h * d * 4);
-	glTexImage3D(GL_TEXTURE_3D, 0, hdr ? GL_RGBA32F : GL_RGBA, (int)w, (int)h, (int)d, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+	glTexImage3D(GL_TEXTURE_3D, 0, fmt, (int)w, (int)h, (int)d, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 	SetTexParams<GL_TEXTURE_3D>(0, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glBindTexture(GL_TEXTURE_3D, 0);

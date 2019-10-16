@@ -14,7 +14,8 @@
 #define CE_CLASS_COMMON\
 	friend ::ChokoEngine::ChokoEngine;\
 	friend ::ChokoEngine::ChokoLait;\
-	friend ::ChokoEngine::Backend::Renderer;
+	friend ::ChokoEngine::Backend::Renderer;\
+	friend ::ChokoEngine::Backend::GI;
 #define CE_OBJECT_COMMON\
 	CE_CLASS_COMMON\
 	public:\

@@ -19,8 +19,8 @@ public:
 
 	~_RenderTarget();
 
-	void BindTarget() const;
-	void UnbindTarget() const;
+	void BindTarget(bool read = false) const;
+	void UnbindTarget(bool read = false) const;
 
 	friend class _FrameBufferCube;
 };
