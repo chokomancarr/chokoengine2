@@ -17,7 +17,7 @@ void EW_ShaderEditor::DrawMenu() {
 		for (auto& i : n->inputs) {
 			UI::Label(Rect(x + 5, y, 100, 18), i.name, Color(1));
 			if (i.target.i > -1) {
-				auto& n2 = i.target.nd.lock();
+				const auto& n2 = i.target.nd.lock();
 				UI::Line(Vec2(x0 + n2->pos.x + 150, y0 + n2->pos.y + 20 + n2->inputs.size() * 18 + 13 + i.target.i * 18), Vec2(x, y + 9), Color::red());
 			}
 			y += 18;

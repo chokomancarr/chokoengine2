@@ -1,8 +1,4 @@
-set(DIR src/scene/comp/mesh)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/modifier_shape.cpp
-	${DIR}/modifier_skin.cpp
-	PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/modifier_shape.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/modifier_skin.cpp
 )

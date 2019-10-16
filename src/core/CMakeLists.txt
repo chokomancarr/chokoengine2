@@ -1,15 +1,13 @@
-set(DIR src/core)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/debug.cpp
-	${DIR}/display.cpp
-	${DIR}/input.cpp
-	${DIR}/interactive_ui.cpp
-	${DIR}/io.cpp
-	${DIR}/mvp.cpp
-	${DIR}/time.cpp
-	${DIR}/ui.cpp
-	${DIR}/world_ui.cpp
-	PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/display.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/input.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/interactive_ui.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/io.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/mvp.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/time.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ui.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/world_ui.cpp
 )
+
+add_subdirectory("types")

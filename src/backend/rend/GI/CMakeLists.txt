@@ -1,8 +1,4 @@
-set(DIR src/backend/rend/gi)
-
-set(SOURCES
-    ${SOURCES}
-    ${DIR}/gi.cpp
-    ${DIR}/gi_voxelizer.cpp
-    PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/gi.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gi_voxelizer.cpp
 )

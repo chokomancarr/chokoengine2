@@ -17,7 +17,7 @@ int GI::Voxelizer::resolution() {
 
 void GI::Voxelizer::resolution(int r) {
 	if (!res || res->width() != r) {
-		res = RenderTarget3::New(r, r, r, GL_RG32UI); //4x4x4
+		res = RenderTarget3::New(r, r, r, GL_RGBA8); //3x3x3 + padding (some cards do not support RGBA32UI)
 	}
 }
 

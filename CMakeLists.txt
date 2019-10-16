@@ -96,34 +96,8 @@ else()
     )
 endif()
 
-if(MSVC)
-    set(SOURCES
-        cpp.hint
-    )
-else()
-	set(SOURCES)
-endif()
-
 include_directories(${INC_DIRS})
 link_directories(${LINK_DIRS})
-
-add_subdirectory("src")
-add_subdirectory("src/3rdparty")
-add_subdirectory("src/asset")
-add_subdirectory("src/asset/animclip")
-add_subdirectory("src/asset/animgraph")
-add_subdirectory("src/asset/shader")
-add_subdirectory("src/backend/rend")
-add_subdirectory("src/backend/rend/gi")
-add_subdirectory("src/core")
-add_subdirectory("src/core/types")
-add_subdirectory("src/ext")
-add_subdirectory("src/parsers")
-add_subdirectory("src/scene")
-add_subdirectory("src/scene/comp")
-add_subdirectory("src/scene/comp/mesh")
-add_subdirectory("src/types")
-add_subdirectory("src/utils")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -131,8 +105,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
-add_library(ChokoEngine SHARED ${SOURCES} ${HEADERS})
+add_library(ChokoEngine SHARED "")
 target_compile_definitions(ChokoEngine PRIVATE BUILD_CHOKOENGINE=1)
+
+if(MSVC)
+    target_sources(ChokoEngine PRIVATE cpp.hint)
+endif()
+
+add_subdirectory("src")
 
 include(GenerateExportHeader)
 generate_export_header(ChokoEngine)

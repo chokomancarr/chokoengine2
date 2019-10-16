@@ -23,7 +23,7 @@ void main() {
 layout (points) in;
 layout (triangle_strip, max_vertices = 6) out;
 
-in vec3 v2g_uvw;
+in vec3 v2g_uvw[];
 
 uniform float ptsz;
 
@@ -33,22 +33,22 @@ void main() {
 	vec4 pos = gl_in[0].gl_Position;
 
 	gl_Position = pos - vec4(-ptsz, -ptsz, 0, 0);
-	g2f_uvw = v2g_uvw;
+	g2f_uvw = v2g_uvw[0];
 	EmitVertex();
 	gl_Position = pos - vec4(-ptsz, ptsz, 0, 0);
-	g2f_uvw = v2g_uvw;
+	g2f_uvw = v2g_uvw[0];
 	EmitVertex();
 	gl_Position = pos - vec4(ptsz, -ptsz, 0, 0);
-	g2f_uvw = v2g_uvw;
+	g2f_uvw = v2g_uvw[0];
 	EmitVertex();
 	gl_Position = pos - vec4(-ptsz, ptsz, 0, 0);
-	g2f_uvw = v2g_uvw;
+	g2f_uvw = v2g_uvw[0];
 	EmitVertex();
 	gl_Position = pos - vec4(ptsz, ptsz, 0, 0);
-	g2f_uvw = v2g_uvw;
+	g2f_uvw = v2g_uvw[0];
 	EmitVertex();
 	gl_Position = pos - vec4(ptsz, -ptsz, 0, 0);
-	g2f_uvw = v2g_uvw;
+	g2f_uvw = v2g_uvw[0];
 	EmitVertex();
 	EndPrimitive();
 }

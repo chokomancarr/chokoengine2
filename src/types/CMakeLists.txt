@@ -1,20 +1,16 @@
-set(DIR src/types)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/color.cpp
-	${DIR}/depth_texture.cpp
-	${DIR}/depth_cubemap.cpp
-	${DIR}/framebuffer.cpp
-	${DIR}/cube_framebuffer.cpp
-	${DIR}/mat4x4.cpp
-	${DIR}/quat.cpp
-	${DIR}/rect.cpp
-	${DIR}/texturebuffer.cpp
-	${DIR}/vec2.cpp
-	${DIR}/vec3.cpp
-	${DIR}/vec4.cpp
-	${DIR}/vertexbuffer.cpp
-	${DIR}/vertexarray.cpp
-	PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/depth_texture.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/depth_cubemap.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/framebuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/cube_framebuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/mat4x4.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/quat.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/rect.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/texturebuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/vec2.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/vec3.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/vec4.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/vertexbuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/vertexarray.cpp
 )

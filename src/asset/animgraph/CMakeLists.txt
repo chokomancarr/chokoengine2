@@ -1,8 +1,4 @@
-set(DIR src/asset/animgraph)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/animgraph_link.cpp
-	${DIR}/animgraph_node.cpp
-	PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/animgraph_link.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/animgraph_node.cpp
 )

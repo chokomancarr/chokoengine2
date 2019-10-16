@@ -26,17 +26,19 @@ class EAssetList { CE_CLASS_COMMON
     static void UpdateModTime(const std::string& fl, bool now);
 
 public:
+    struct TypeOfSt {
+		bool exported;
+		EAssetType assetType;
+		EExportType exportType;
+	};
+
     static void Init();
     
     static void Rescan();
 
     static const Asset& Get(EAssetType t, const std::string& sig);
 
-	static struct TypeOfSt {
-		bool exported;
-		EAssetType assetType;
-		EExportType exportType;
-	} TypeOf(const std::string& f);
+	static TypeOfSt TypeOf(const std::string& f);
 };
 
 CE_END_ED_NAMESPACE

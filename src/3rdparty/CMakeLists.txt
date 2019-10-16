@@ -1,8 +1,4 @@
-set(DIR src/3rdparty)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/hdr.cpp
-	${DIR}/lodepng.cpp
-	PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/hdr.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/lodepng.cpp
 )

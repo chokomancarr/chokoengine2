@@ -1,8 +1,4 @@
-set(DIR src/asset/animclip)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/animclip_entry.cpp
-	${DIR}/animclip_value.cpp
-	PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/animclip_entry.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/animclip_value.cpp
 )

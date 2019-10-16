@@ -14,8 +14,11 @@ _Texture3::_Texture3(uint w, uint h, uint d, GLenum fmt)
 	std::vector<byte> data(w * h * d * 4);
 	glTexImage3D(GL_TEXTURE_3D, 0, fmt, (int)w, (int)h, (int)d, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 	SetTexParams<GL_TEXTURE_3D>(0, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glBindTexture(GL_TEXTURE_3D, 0);
+	
+	if (glGetError() != 0) {
+		Debug::Error("Texture3", "OpenGL Error detected: Is the format " + std::to_string(fmt) + " supported?");
+	}
 }
 
 _Texture3::~_Texture3() {

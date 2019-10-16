@@ -1,7 +1,3 @@
-set(DIR src/ext)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/strext.cpp
-	PARENT_SCOPE
+target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/strext.cpp
 )
