@@ -9,12 +9,12 @@ uniform mat4 _P;
 out vec3 v2g_uvw;
 
 void main() {
-	int x = gl_VertexID / num * num;
+	int x = gl_VertexID / num / num;
 	int ty = gl_VertexID - x * num * num;
 	int y = ty / num;
 	int z = int(mod(ty, num));
-	v2g_uvw = vec3(x, y, z);
-	gl_Position = _P * (vec4(v2g_uvw, 1) * 2 - 1);
+	v2g_uvw = vec3(x, y, z) / (num - 1.0);
+	gl_Position = _P * vec4(v2g_uvw * 2 - 1, 1);
 }
 )";
 
@@ -31,6 +31,7 @@ out vec3 g2f_uvw;
 
 void main() {
 	vec4 pos = gl_in[0].gl_Position;
+	pos /= pos.w;
 
 	gl_Position = pos - vec4(-ptsz, -ptsz, 0, 0);
 	g2f_uvw = v2g_uvw[0];
@@ -64,7 +65,7 @@ uniform sampler3D tex;
 out vec4 fragCol;
 
 void main() {
-	fragCol = vec4(1, 0, 0, 1);//texture(tex, g2f_uvw);
+	fragCol = texture(tex, g2f_uvw);
 }
 )";
 }

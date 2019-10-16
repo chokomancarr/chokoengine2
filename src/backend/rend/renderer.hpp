@@ -50,6 +50,8 @@ public:
 	static bool Init();
 
     static void Render();
+
+	friend class GI;
 };
 
 CE_END_BK_NAMESPACE

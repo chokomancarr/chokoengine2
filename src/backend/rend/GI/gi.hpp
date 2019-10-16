@@ -11,7 +11,7 @@ public:
 
 		static RenderTarget3 res;
 
-		static Mat4x4 lastV, lastVP;
+		static Mat4x4 lastVP;
 
 	public:
 		static int resolution();
@@ -20,6 +20,8 @@ public:
 		static bool InitShaders();
 
 		static void Bake(const Mat4x4& v, float sz);
+
+		static void DrawVoxelAO(const Mat4x4& p);
 
 		static void DrawDebug(const Mat4x4& p);
 	};

@@ -116,10 +116,10 @@ void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 
 void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, const Mat4x4& p, const FrameBuffer& gbuf
 		, std::function<void()> preBlit, bool useProbes) {
-	const auto _w = (!tar) ? Display::width() : tar->_width;
-	const auto _h = (!tar) ? Display::height() : tar->_height;
+	const auto _w = tar->_width;
+	const auto _h = tar->_height;
 
-	const auto& ip = p.inverse();
+	const auto ip = p.inverse();
 
 	glViewport(0, 0, _w, _h);
 
@@ -233,9 +233,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	glUniform2f(transOverlayShad->Loc(2), _w, _h);
 	auto cp = ip * Vec4(0, 0, -1, 1);
 	cp /= cp.w;
-	glUniform3f(transOverlayShad->Loc(2), cp.x, cp.y, cp.z);
-	const auto& cu = Vec4(ip * Vec4(0, 1, 0, 0)).normalized();
-	glUniform3f(transOverlayShad->Loc(3), cu.x, cu.y, cu.z);
+	glUniform3f(transOverlayShad->Loc(3), cp.x, cp.y, cp.z);
 	glUniform1i(transOverlayShad->Loc(4), 0);
 	glActiveTexture(GL_TEXTURE0);
 	tar->Bind();
@@ -279,7 +277,7 @@ void Renderer::RenderCamera(Camera& cam) {
 
 	auto& gbuf = cam->_deferredBuffer;
 	auto& btar = cam->_blitTargets[0];
-	
+
 	if (!gbuf) {
 		gbuf = FrameBuffer_New(_w, _h, {
 			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
@@ -315,12 +313,26 @@ void Renderer::RenderCamera(Camera& cam) {
 		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
 	}
 
+	btar->BindTarget();
+	glBlendFunc(GL_ONE, GL_ZERO);
+	glDepthFunc(GL_LEQUAL);
+	glDisable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+	GI::Voxelizer::DrawDebug(p);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_ALWAYS);
+	glEnable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	btar->Blit(tar, nullptr);
 
 	tar->BindTarget();
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();
 	}
+
 	tar->UnbindTarget();
 
 	glViewport(0, 0, Display::width(), Display::height());
@@ -328,16 +340,6 @@ void Renderer::RenderCamera(Camera& cam) {
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostRender();
 	}
-
-	glBlendFunc(GL_ONE, GL_ZERO);
-	glDepthFunc(GL_ALWAYS);
-	glDisable(GL_CULL_FACE);
-
-	GI::Voxelizer::DrawDebug(p);
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthFunc(GL_ALWAYS);
-	glEnable(GL_CULL_FACE);
 }
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {

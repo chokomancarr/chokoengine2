@@ -62,6 +62,7 @@ void main () {
         vec4 oc = texture(opTex, uv);
         fragCol = oc;
     }
+	gl_FragDepth = od;
 }
 )";
 }

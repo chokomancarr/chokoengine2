@@ -8,8 +8,8 @@ uniform sampler2D depthTex;
 uniform vec2 screenSize;
 uniform float radius;
 uniform int samples;
-uniform mat4x4 _P;
-uniform mat4x4 _IP;
+uniform mat4 _P;
+uniform mat4 _IP;
 
 out vec4 fragCol;
 

@@ -74,19 +74,18 @@ void main() {
 )";
 
 	const char voxelFillFrag[] = R"(
-#version 330 core
-#extension GL_ARB_shader_image_load_store : require
+#version 420 core
 
 in vec3 g2f_uvw;
 
-uniform layout(rgba8) writeonly image3D voxelTex;
+uniform layout(binding=3, rgba8) writeonly image3D voxelTex;
 
 void main() {
 	ivec3 coord;
 	coord.x = int(g2f_uvw.x);
 	coord.y = int(g2f_uvw.y);
 	coord.z = int(g2f_uvw.z);
-	imageStore(voxelTex, coord, vec4(1, 1, 1, 1));
+	imageStore(voxelTex, coord, vec4(1, 1, 1, 1) * 255);
 }
 )";
 }
