@@ -129,7 +129,7 @@ void EAssetList::Rescan() {
     Debug::Message("AssetList", "Scanning complete.");
 }
 
-const Asset& EAssetList::Get(EAssetType t, const std::string& sig) {
+const Asset& EAssetList::Get(EAssetType t, const std::string& sig, bool async) {
     auto& ar = _entries[(int)t];
     auto i = std::find_if(ar.begin(), ar.end(), [&](const _Entry& e) {
         return e.sig == sig;
@@ -141,7 +141,7 @@ const Asset& EAssetList::Get(EAssetType t, const std::string& sig) {
     }
     if (!i->obj) {
         Debug::Message("AssetList",  "\033[0;34m" "Loading \"" + i->sig + "\"" "\033[0m");
-        i->obj = EAssetLoader::Load(i->sig, t);
+        i->obj = EAssetLoader::Load(i->sig, t, async);
     }
     return i->obj;
 }

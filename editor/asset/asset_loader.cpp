@@ -116,14 +116,14 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 }
 
 #define CE_E_LD(nm) case EAssetType::nm: {\
-	auto res = static_cast<Asset>(Load ## nm(path));\
+	auto res = static_cast<Asset>(Load ## nm(path, async));\
 	if (!res)\
 		Debug::Error("EAssetLoader", "Failed to load \"" + path + "\" (nullptr returned by loader)!");\
 	res->assetSignature(path);\
 	res->name(StrExt::RemoveExt(StrExt::RemoveFd(path)));\
 	return res; }
 
-Asset EAssetLoader::Load(const std::string& path, const EAssetType t) {
+Asset EAssetLoader::Load(const std::string& path, const EAssetType t, bool async) {
 	switch (t) {
 		CE_E_LD(AnimClip)
 		CE_E_LD(Armature)
@@ -318,7 +318,7 @@ CE_E_AL_IMPL(Texture) {
 		else if (g.key.string == "linear")
 			opts.linear = g.value.ToBool();
 	}
-	return Texture::New(ChokoEditor::assetPath + path, opts);
+	return Texture::New(ChokoEditor::assetPath + path, opts, async);
 }
 
 CE_E_AL_IMPL(SceneObject) {

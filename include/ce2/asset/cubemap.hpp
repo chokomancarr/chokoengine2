@@ -28,7 +28,7 @@ public:
 
 	void ComputeGlossMipmaps();
 
-	void Bind() const override;
+	void Bind() override;
 	void Unbind() const override;
 
 	friend class _FrameBufferCube;

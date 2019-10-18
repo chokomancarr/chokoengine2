@@ -9,7 +9,7 @@ _TextureBuffer::_TextureBuffer(const VertexBuffer& buf, GLenum fmt) : _Texture(n
 	glBindTexture(GL_TEXTURE_BUFFER, 0);
 }
 
-void _TextureBuffer::Bind() const {
+void _TextureBuffer::Bind() {
 	glBindTexture(GL_TEXTURE_BUFFER, _pointer);
 }
 

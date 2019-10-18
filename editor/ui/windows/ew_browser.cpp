@@ -9,7 +9,7 @@ void EW_Browser::File::GetIcon() {
 	else {
 		switch (type.assetType) {
 		case EAssetType::Texture:
-			icon = (Texture)EAssetList::Get(type.assetType, sig);
+			icon = (Texture)EAssetList::Get(type.assetType, sig, true);
 			break;
 		case EAssetType::Material:
 

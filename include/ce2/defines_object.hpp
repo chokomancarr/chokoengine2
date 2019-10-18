@@ -45,3 +45,38 @@
 #define CE_GET_SET_ST_MEMBER(nm)\
     CE_GET_ST_MEMBER(nm)\
     CE_SET_ST_MEMBER(nm)
+
+/* Objects that can be loaded slowly
+ * Some functions have to be implemented
+ */
+#define CE_OBJECT_ALLOW_ASYNC\
+	public:\
+	bool loaded();\
+	private:\
+	std::thread _asyncThread;\
+	std::mutex _asyncLock;\
+	byte _asyncLoadStatus = 0;\
+	void LoadAsync();\
+	byte _GetAsyncStatus() {\
+		std::lock_guard<std::mutex> lock(_asyncLock);\
+		return _asyncLoadStatus;\
+	}\
+	void _SetAsyncStatus(byte b) {\
+		std::lock_guard<std::mutex> lock(_asyncLock);\
+		_asyncLoadStatus = b;\
+	}
+
+#define CE_OBJECT_SET_ASYNC_LOADING\
+	_SetAsyncStatus(1)
+
+#define CE_OBJECT_SET_ASYNC_READY\
+	_SetAsyncStatus(2)
+
+#define CE_OBJECT_ASYNC_READY\
+	(_GetAsyncStatus() == 2)
+
+#define CE_OBJECT_CHECK_ASYNC\
+	if (CE_OBJECT_ASYNC_READY) {\
+		LoadAsync();\
+		_SetAsyncStatus(0);\
+	}

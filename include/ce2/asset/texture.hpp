@@ -4,7 +4,7 @@
 
 CE_BEGIN_NAMESPACE
 
-class _Texture : public _Asset { CE_OBJECT_COMMON
+class _Texture : public _Asset { CE_OBJECT_COMMON CE_OBJECT_ALLOW_ASYNC
 protected: //allow rendertarget access
     _Texture(std::nullptr_t);
     _Texture(uint w, uint h, GLuint ptr);
@@ -18,6 +18,9 @@ protected: //allow rendertarget access
 	bool partialScaling;
 	Rect scalingArea;
 
+	const TextureOptions _opts;
+	std::vector<byte> _pixels;
+
 public:
 	_Texture(uint w, uint h, bool hdr);
 
@@ -26,7 +29,7 @@ public:
     /* Loads an image from the specified path
      * Supported formats: png, jpg, bmp, hdr
      */
-	_Texture(const std::string& path, const TextureOptions& opts = TextureOptions());
+	_Texture(const std::string& path, const TextureOptions& opts = TextureOptions(), bool async = false);
 
     virtual ~_Texture(); //allow render targets etc to override
 
@@ -35,9 +38,7 @@ public:
 	CE_GET_MEMBER(channels);
 	CE_GET_MEMBER(hdr);
 
-	bool loaded() const;
-
-    virtual void Bind() const;
+    virtual void Bind();
     virtual void Unbind() const;
 
 	/* Copies the texture to the destination render target, applying the material

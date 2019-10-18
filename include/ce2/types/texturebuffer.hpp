@@ -12,7 +12,7 @@ public:
 
 	CE_GET_MEMBER(buffer);
 
-	void Bind() const override;
+	void Bind() override;
 	void Unbind() const override;
 };
 

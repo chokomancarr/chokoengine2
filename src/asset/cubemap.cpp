@@ -113,7 +113,7 @@ void _CubeMap::ComputeGlossMipmaps() {
 	}
 }
 
-void _CubeMap::Bind() const {
+void _CubeMap::Bind() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, _pointer);
 }
 

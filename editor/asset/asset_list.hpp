@@ -36,7 +36,7 @@ public:
     
     static void Rescan();
 
-    static const Asset& Get(EAssetType t, const std::string& sig);
+    static const Asset& Get(EAssetType t, const std::string& sig, bool async = false);
 
 	static TypeOfSt TypeOf(const std::string& f);
 };

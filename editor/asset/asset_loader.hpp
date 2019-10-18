@@ -8,8 +8,8 @@ CE_BEGIN_ED_NAMESPACE
 #define CE_E_META_SIGNATURE "ChokoEngine Asset MetaData"
 #define CE_E_META_VERSION 20
 
-#define CE_E_DEF(nm) static nm Load ## nm(const std::string& path)
-#define CE_E_AL_IMPL(nm) nm EAssetLoader::Load ## nm(const std::string& path)
+#define CE_E_DEF(nm) static nm Load ## nm(const std::string& path, bool async)
+#define CE_E_AL_IMPL(nm) nm EAssetLoader::Load ## nm(const std::string& path, bool async)
 
 #define CE_E_DEF_EX(nm) static bool Export ## nm(const std::string& path)
 #define CE_E_AL_IMPL_EX(nm) bool EAssetLoader::Export ## nm(const std::string& path)
@@ -28,7 +28,7 @@ public:
 
     static void GenDefaultMeta(const std::string& path, const EExportType t);
 
-    static Asset Load(const std::string& path, const EAssetType t);
+    static Asset Load(const std::string& path, const EAssetType t, bool async = false);
 
     static bool Load(const std::string& path, const EExportType t);
 
