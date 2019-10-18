@@ -266,7 +266,7 @@ void Renderer::RenderCamera(Camera& cam) {
 	}
 
 	const auto v = cam->object()->transform()->worldMatrix().inverse();
-	GI::Voxelizer::Bake(v, 20);
+	//GI::Voxelizer::Bake(v, 20);
 
 	const auto& tar = cam->_target;
 	const auto _w = (!tar) ? Display::width() : tar->_width;
@@ -319,7 +319,7 @@ void Renderer::RenderCamera(Camera& cam) {
 	glDisable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-	GI::Voxelizer::DrawDebug(p);
+	//GI::Voxelizer::DrawDebug(p);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_ALWAYS);
