@@ -20,7 +20,7 @@ JsonObject EAssetLoader::LoadMeta(const std::string& path) {
 	return obj;
 }
 
-SceneObject EAssetLoader::JsonToObject(const JsonObject& data) {
+SceneObject EAssetLoader::JsonToObject(const JsonObject& data, bool async) {
 	auto obj = SceneObject::New();
 	for (auto& g : data.group) {
 		const auto& k = g.key.string;
@@ -40,7 +40,7 @@ SceneObject EAssetLoader::JsonToObject(const JsonObject& data) {
 		else if (k == "components") {
 			for (auto& c : v.group) {
 				#define CE_E_SW(nm) if (c.key.string == #nm) {\
-					Load ## nm(c.value, obj);\
+					Load ## nm(c.value, obj, async);\
 				}
 				CE_E_SW(MeshRenderer)
 				CE_E_SW(Rig)
@@ -232,7 +232,7 @@ CE_E_AL_IMPL(Material) {
 		CE_E_ME(Float)
 		else CE_E_ME(Color)
 		else if (d.key.string == "Texture") {
-			mat->SetUniform(vrnm, static_cast<Texture>(EAssetList::Get(EAssetType::Texture, vrvl.string)));
+			mat->SetUniform(vrnm, static_cast<Texture>(EAssetList::Get(EAssetType::Texture, vrvl.string, async)));
 		}
 	}
 	return mat;

@@ -46,8 +46,8 @@
     CE_GET_ST_MEMBER(nm)\
     CE_SET_ST_MEMBER(nm)
 
-/* Objects that can be loaded slowly
- * Some functions have to be implemented
+/* Objects that can be loaded in the background
+ * LoadAsync setting _loading = false must be implemented
  */
 #define CE_OBJECT_ALLOW_ASYNC\
 	public:\
@@ -56,8 +56,9 @@
 	std::thread _asyncThread;\
 	std::mutex _asyncLock;\
 	byte _asyncLoadStatus = 0;\
-	void LoadAsync();\
+	void LoadAsync(); /*<-Implement this function*/\
 	byte _GetAsyncStatus() {\
+		if (!_loading) return 0;\
 		std::lock_guard<std::mutex> lock(_asyncLock);\
 		return _asyncLoadStatus;\
 	}\
@@ -65,6 +66,13 @@
 		std::lock_guard<std::mutex> lock(_asyncLock);\
 		_asyncLoadStatus = b;\
 	}
+
+#define CE_OBJECT_INIT_ASYNC\
+	if (!async) {\
+		_asyncThread.join();\
+		LoadAsync();\
+	}\
+	else _loading = true;
 
 #define CE_OBJECT_SET_ASYNC_LOADING\
 	_SetAsyncStatus(1)
@@ -78,5 +86,7 @@
 #define CE_OBJECT_CHECK_ASYNC\
 	if (CE_OBJECT_ASYNC_READY) {\
 		LoadAsync();\
-		_SetAsyncStatus(0);\
 	}
+
+#define CE_OBJECT_FINALIZE_ASYNC\
+	if (_asyncThread.joinable()) _asyncThread.join();

@@ -48,7 +48,7 @@ void ChokoEditor::Main() {
 	Scene::sky()->brightness(0);
 	//Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/cornell.blend/cornell.blend.prefab"));
 	//*
-	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab"));
+	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true));
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
 	
@@ -98,7 +98,7 @@ void ChokoEditor::Main() {
 	*/
 	EWindowManager::LoadWindows();
 
-	EW_ShaderEditor::target = (VShader)EAssetList::Get(EAssetType::VShader, "test.visualshader");
+	//EW_ShaderEditor::target = (VShader)EAssetList::Get(EAssetType::VShader, "test.visualshader");
 
 	std::cout << Scene::Tree() << std::endl;
 

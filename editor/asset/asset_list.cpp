@@ -143,7 +143,10 @@ const Asset& EAssetList::Get(EAssetType t, const std::string& sig, bool async) {
         Debug::Message("AssetList",  "\033[0;34m" "Loading \"" + i->sig + "\"" "\033[0m");
         i->obj = EAssetLoader::Load(i->sig, t, async);
     }
-    return i->obj;
+	else if (!async) {
+		i->obj->Wait();
+	}
+	return i->obj;
 }
 
 EAssetList::TypeOfSt EAssetList::TypeOf(const std::string& f) {

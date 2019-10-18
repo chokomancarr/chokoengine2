@@ -8,6 +8,7 @@ class _Object : public std::enable_shared_from_this<_Object> {
 protected:
     _Object(const std::string& nm = "Unnamed Object");
 
+	bool _loading = false;
     bool _deleted = false;
 
     std::string _name;
@@ -17,6 +18,11 @@ public:
 
     CE_GET_SET_MEMBER(name);
     CE_GET_MEMBER(id);
+
+	/* If an object is currently loading,
+	 * issues a blocking call until it finishes
+	 */
+	virtual void Wait() {};
 
     template <class T>
     friend class Ref;

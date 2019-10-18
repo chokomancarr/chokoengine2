@@ -76,19 +76,16 @@ _Texture::_Texture(const std::string& path, const TextureOptions& opts, bool asy
 		CE_OBJECT_SET_ASYNC_READY;
 	}, path);
 
-	if (!async) {
-		_asyncThread.join();
-		CE_OBJECT_CHECK_ASYNC
-	}
+	CE_OBJECT_INIT_ASYNC;
 }
 
 _Texture::~_Texture() {
-	if (_asyncThread.joinable()) _asyncThread.join();
+	CE_OBJECT_FINALIZE_ASYNC;
 	glDeleteTextures(1, &_pointer);
 }
 
 bool _Texture::loaded() {
-	CE_OBJECT_CHECK_ASYNC
+	CE_OBJECT_CHECK_ASYNC;
 	return !!_pointer;
 }
 
@@ -120,10 +117,12 @@ void _Texture::LoadAsync() {
 		);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	std::swap(_pixels, std::vector<byte>());
+
+	_loading = false;
 }
 
 void _Texture::Bind() {
-	CE_OBJECT_CHECK_ASYNC
+	CE_OBJECT_CHECK_ASYNC;
 	glBindTexture(GL_TEXTURE_2D, _pointer);
 }
 

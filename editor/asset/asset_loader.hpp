@@ -14,13 +14,13 @@ CE_BEGIN_ED_NAMESPACE
 #define CE_E_DEF_EX(nm) static bool Export ## nm(const std::string& path)
 #define CE_E_AL_IMPL_EX(nm) bool EAssetLoader::Export ## nm(const std::string& path)
 
-#define CE_E_DEF_J(nm) static nm Load ## nm(const JsonObject& data, SceneObject& obj)
-#define CE_E_AL_IMPL_J(nm) nm EAssetLoader::Load ## nm(const JsonObject& data, SceneObject& obj)
+#define CE_E_DEF_J(nm) static nm Load ## nm(const JsonObject& data, SceneObject& obj, bool async)
+#define CE_E_AL_IMPL_J(nm) nm EAssetLoader::Load ## nm(const JsonObject& data, SceneObject& obj, bool async)
 
 class EAssetLoader { CE_CLASS_COMMON
     static JsonObject LoadMeta(const std::string& path);
 
-    static SceneObject JsonToObject(const JsonObject& data);
+    static SceneObject JsonToObject(const JsonObject& data, bool async = false);
 
     static std::vector<Bone> LoadBones(const JsonObject& data);
 public:

@@ -17,12 +17,12 @@ void Debug::Message(const std::string& caller, const std::string& msg) {
 }
 
 void Debug::Warning(const std::string& caller, const std::string& msg) {
-	std::cout << "[w] " + caller + ": " + msg + "\n";
+	std::cout << "\033[33m[w]\033[0m " + caller + ": " + msg + "\n";
 	std::flush(std::cout);
 }
 
 void Debug::Error(const std::string& caller, const std::string& msg) {
-	std::cerr << "[e] " + caller + ": " + msg + "\n";
+	std::cerr << "\033[31m[e]\033[0m " + caller + ": " + msg + "\n";
 	std::flush(std::cout);
 }
 
