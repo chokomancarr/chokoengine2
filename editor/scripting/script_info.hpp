@@ -1,12 +1,10 @@
 #pragma once
 #include "chokoeditor.hpp"
-#include "script_var.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
-class ScriptInfo {
+class _ScriptInfo : public _Object {
 public:
-	std::string name;
 	std::string className;
 
 	std::vector<ScriptTypeExt> types;

@@ -1,6 +1,6 @@
 #pragma once
 #include "chokoeditor.hpp"
-#include "script_newtype.hpp"
+#include "asset/enums/asset_type.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -10,12 +10,18 @@ public:
 		Int,
 		Float,
 		Double,
+		Asset,
+		Comp,
 		ExtType
 	};
 
-	std::string name;
 	Type type;
+	EAssetType typeAsset;
+	ComponentType typeComp;
+	pScriptTypeExt typeExt;
+	std::string typeName;
 
+	std::string name;
 };
 
 CE_END_ED_NAMESPACE

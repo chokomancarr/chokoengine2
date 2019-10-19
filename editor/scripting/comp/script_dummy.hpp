@@ -3,9 +3,9 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-CE_OBJECT(DummyScript)
-class _DummyScript : _Script {
-
+class _DummyScript : public _Script {
+public:
+	ScriptInfo info;
 };
 
 CE_END_ED_NAMESPACE

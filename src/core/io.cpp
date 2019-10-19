@@ -51,6 +51,19 @@ bool IO::Init() {
 	_userPath = std::string(pw->pw_dir) + "/";
 #endif
 
+#ifdef PLATFORM_WIN
+	auto so = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD cm;
+	if (!GetConsoleMode(so, &cm)) {
+		return false;
+	}
+
+	cm |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+	if (!SetConsoleMode(so, cm)) {
+		return false;
+	}
+#endif
+
 	return true;
 }
 

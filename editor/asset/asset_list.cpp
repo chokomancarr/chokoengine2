@@ -47,7 +47,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 					EAssetLoader::GenDefaultScriptMeta(sig);
 				}
 				it->modtime = mt;
-				dirty = true;
+				//dirty = true;
 			}
 			goto next;
 		}
@@ -75,7 +75,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                             EAssetLoader::GenDefaultMeta(sig, (EAssetType)a);
                         }
                         it->modtime = mt;
-                        dirty = true;
+                        //dirty = true;
                     }
                     goto next;
                 }
@@ -176,6 +176,18 @@ const Asset& EAssetList::Get(EAssetType t, const std::string& sig, bool async) {
 		i->obj->Wait();
 	}
 	return i->obj;
+}
+
+const ScriptInfo& EAssetList::GetScr(const std::string& sig) {
+	auto& ar = _scriptEntries;
+	auto i = std::find_if(ar.begin(), ar.end(), [&](const _ScriptEntry& e) {
+		return e.sig == sig;
+	});
+	if (i == ar.end()) {
+		Debug::Error("AssetList", "Cannot find script \"" + sig + "\!");
+		return nullptr;
+	}
+	return i->info;
 }
 
 EAssetList::TypeOfSt EAssetList::TypeOf(const std::string& f) {

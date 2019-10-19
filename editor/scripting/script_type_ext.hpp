@@ -3,10 +3,10 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-CE_OBJECT(ScriptTypeExt)
 class _ScriptTypeExt {
 public:
-
+	std::string name;
+	std::vector<ScriptVar> vars;
 };
 
 CE_END_ED_NAMESPACE
