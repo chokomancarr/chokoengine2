@@ -151,4 +151,28 @@ std::vector<std::string> IO::ListDirectories(const std::string& dir) {
 	return dirs;
 }
 
+std::string IO::ColorOutput(const std::string& s, TerminalColor c) {
+#define esc(n) "\033[" #n "m"
+	static const std::string cs[] = {
+		esc(0),
+		esc(30),
+		esc(31),
+		esc(32),
+		esc(33),
+		esc(34),
+		esc(35),
+		esc(36),
+		esc(37),
+		esc(30;1),
+		esc(31;1),
+		esc(32;1),
+		esc(33;1),
+		esc(34;1),
+		esc(35;1),
+		esc(36;1),
+		esc(37;1),
+	};
+	return cs[(int)c] + s + cs[0];
+}
+
 CE_END_NAMESPACE

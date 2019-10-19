@@ -49,7 +49,7 @@ SceneObject EAssetLoader::JsonToObject(const JsonObject& data, bool async) {
 		else if (k == "children") {
 			for (auto& c : v.group) {
 				if (c.key.string == "object") {
-					JsonToObject(c.value)->parent(obj);
+					JsonToObject(c.value, async)->parent(obj);
 				}
 			}
 		}
@@ -327,7 +327,7 @@ CE_E_AL_IMPL(SceneObject) {
 	if (data.group[0].key.string != "object") {
 		Debug::Error("AssetLoader::LoadPrefab", "Object entry missing!");
 	}
-	return JsonToObject(data.group[0].value);
+	return JsonToObject(data.group[0].value, async);
 }
 
 CE_E_AL_IMPL_EX(Model) {

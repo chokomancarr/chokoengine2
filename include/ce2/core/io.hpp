@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/io_terminal_color.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -47,7 +48,8 @@ public:
 	/* Returns all sub-directories in directory \p dir
 	 */
 	static std::vector<std::string> ListDirectories(const std::string& dir);
-
+	
+	static std::string ColorOutput(const std::string& s, TerminalColor c);
 };
 
 CE_END_NAMESPACE

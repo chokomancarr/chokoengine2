@@ -30,14 +30,14 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                         return _e.sig == sig;
                     });
                     if (it == ent.end()) {
-                        Debug::Message("AssetList", "\033[0;32m" "Registered \"" + sig + "\"" "\033[0m");
+                        Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
                         ent.push_back(_Entry(sig));
                         it = ent.end() - 1;
                         it->modtime = 0;
                     }
                     const auto mt = IO::ModTime(ffd + f);
                     if (it->modtime < mt) {
-                        Debug::Message("AssetList", "\033[0;36m" "Updating " + sig + "\033[0m");
+                        Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
                         if (!!it->obj) {
                             it->obj = EAssetLoader::Load(sig, (EAssetType)a);
                             //it->obj->dirty(true);
@@ -59,7 +59,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                     const auto mnm = ffd + f + ".meta";
                     const auto mmt = IO::ModTime(mnm);
                     if (mmt < mt) {
-                        Debug::Message("AssetList", "\033[0;36m" "Processing " + sig + "\033[0m");
+                        Debug::Message("AssetList", "Processing " + sig, TerminalColor::BrightYellow);
                         if (!IO::FileExists(mnm)) {
                             EAssetLoader::GenDefaultMeta(sig, (EExportType)a);
                             UpdateModTime(mnm, false);
@@ -140,7 +140,7 @@ const Asset& EAssetList::Get(EAssetType t, const std::string& sig, bool async) {
         return a;
     }
     if (!i->obj) {
-        Debug::Message("AssetList",  "\033[0;34m" "Loading \"" + i->sig + "\"" "\033[0m");
+        Debug::Message("AssetList", "Loading " + i->sig, TerminalColor::BrightYellow);
         i->obj = EAssetLoader::Load(i->sig, t, async);
     }
 	else if (!async) {

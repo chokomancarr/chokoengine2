@@ -36,8 +36,6 @@ CE_END_NAMESPACE
 */
 #include "backend/chokoengine_backend_base.hpp"
 
-#include "core/debug.hpp"
-
 #include "ext/ptrext.hpp"
 #include "ext/glext.hpp"
 #include "ext/strext.hpp"
@@ -128,6 +126,7 @@ CE_END_NAMESPACE
 #include "utils/unique_caller.hpp"
 
 #include "core/display.hpp"
+#include "core/debug.hpp"
 #include "core/input.hpp"
 #include "core/io.hpp"
 #include "core/mvp.hpp"

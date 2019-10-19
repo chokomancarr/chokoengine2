@@ -13,10 +13,14 @@ class Time { CE_CLASS_COMMON
     static void Reset();
     static void Update();
 public:
-    /* The current time in millisecond ticks
+	/* The current time in millisecond ticks
+	 * This value might differ on the same frame
+	 */
+	static uint64_t actualMillis();
+	/* The current frame time in millisecond ticks
      */
     CE_GET_ST_MEMBER(millis);
-    /* The current time in seconds
+    /* The current frame time in seconds
      */
     CE_GET_ST_MEMBER(time);
     /* Time elapsed since last frame in seconds

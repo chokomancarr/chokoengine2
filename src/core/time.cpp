@@ -25,4 +25,8 @@ void Time::Update() {
     _delta = (_millis - _lastMillis) * 0.001f;
 }
 
+uint64_t Time::actualMillis() {
+	return GetTicks() - _millis0;
+}
+
 CE_END_NAMESPACE

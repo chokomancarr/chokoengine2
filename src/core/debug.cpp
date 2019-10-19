@@ -2,6 +2,7 @@
 #ifndef PLATFORM_WIN
 #include <execinfo.h>
 #endif
+#include <thread>
 
 CE_BEGIN_NAMESPACE
 
@@ -11,18 +12,24 @@ bool Debug::Init() {
     return true;
 }
 
-void Debug::Message(const std::string& caller, const std::string& msg) {
-    std::cout << "[i] " + caller + ": " + msg + "\n";
+void Debug::Message(const std::string& caller, const std::string& msg, TerminalColor col) {
+	std::stringstream ss;
+	ss << std::this_thread::get_id();
+    std::cout << "[i t=" + std::to_string(Time::actualMillis()) + " thread=" + ss.str() + "] " + IO::ColorOutput(caller + ": " + msg, col) + "\n";
     std::flush(std::cout);
 }
 
 void Debug::Warning(const std::string& caller, const std::string& msg) {
-	std::cout << "\033[33m[w]\033[0m " + caller + ": " + msg + "\n";
+	std::stringstream ss;
+	ss << std::this_thread::get_id();
+	std::cout << IO::ColorOutput("[w t=" + std::to_string(Time::actualMillis()) + " thread=" + ss.str() + "] ", TerminalColor::Yellow) + caller + ": " + msg + "\n";
 	std::flush(std::cout);
 }
 
 void Debug::Error(const std::string& caller, const std::string& msg) {
-	std::cerr << "\033[31m[e]\033[0m " + caller + ": " + msg + "\n";
+	std::stringstream ss;
+	ss << std::this_thread::get_id();
+	std::cerr << IO::ColorOutput("[e t=" + std::to_string(Time::actualMillis()) + " thread=" + ss.str() + + "] ", TerminalColor::Red) + caller + ": " + msg + "\n";
 	std::flush(std::cout);
 }
 

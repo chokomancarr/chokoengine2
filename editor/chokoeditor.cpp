@@ -96,6 +96,8 @@ void ChokoEditor::Main() {
 	pr->updateFrequency(LightProbeUpdateFrequency::OnStart);
 	pr->strength(1);
 	*/
+
+	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
 
 	//EW_ShaderEditor::target = (VShader)EAssetList::Get(EAssetType::VShader, "test.visualshader");
@@ -112,6 +114,7 @@ void ChokoEditor::Main() {
 		EDropdownMenu("cccc"),
 	};
 	//EO_Dropdown::Reg(Vec2(10, 10), menu, true);
+	Debug::Message("Editor", "Startup finished");
 
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {

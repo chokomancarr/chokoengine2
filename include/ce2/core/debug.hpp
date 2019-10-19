@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/io_terminal_color.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -8,7 +9,7 @@ class Debug { CE_CLASS_COMMON
 
 	static bool Init();
 public:
-	static void Message(const std::string& caller, const std::string& message);
+	static void Message(const std::string& caller, const std::string& message, TerminalColor col = TerminalColor::Default);
 	static void Warning(const std::string& caller, const std::string& message);
 	static void Error(const std::string& caller, const std::string& message);
 

@@ -12,18 +12,21 @@ void Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const s
     auto sz = objs.size();
     if (!sz) return;
     for (size_t a = 0; a < sz; a++) {
+		std::string sl = "";
         for (auto l : level) {
-            s += l ? "|  " : "   ";
+            sl += l ? "|  " : "   ";
         }
-        s += (a == sz - 1) ? "`--" : "+--";
-        s += objs[a]->name() + " [";
+        sl += (a == sz - 1) ? "`--" : "+--";
+		s += IO::ColorOutput(sl, TerminalColor::DarkGrey)
+			+ objs[a]->name();
+		sl = " [";
         for (auto& c : objs[a]->components()) {
-            s += " " + c->name() + ",";
+            sl += " " + c->name() + ",";
         }
-        if (s.back() != '[') {
-            s.back() = ' ';
+        if (sl.back() != '[') {
+            sl.back() = ' ';
         }
-        s += "]\n";
+		s += IO::ColorOutput(sl + "]\n", TerminalColor::DarkGrey);
         if (a == sz - 1)
             lvl2.back() = false;
         DoTree(s, objs[a]->children(), lvl2);
