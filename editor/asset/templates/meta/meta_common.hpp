@@ -14,6 +14,8 @@ const std::string header = R"({
 
 CE_END_META_NAMESPACE
 
+#include "script.hpp"
+
 #include "animclip.hpp"
 #include "armature.hpp"
 #include "material.hpp"

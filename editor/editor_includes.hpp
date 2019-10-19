@@ -13,6 +13,8 @@ CE_END_ED_NAMESPACE
 
 #include "asset/ext/visual_shader.hpp"
 
+#include "scripting/scripting.hpp"
+
 #include "res/icons.hpp"
 #include "res/images.hpp"
 

@@ -24,8 +24,9 @@ class EAssetLoader { CE_CLASS_COMMON
 
     static std::vector<Bone> LoadBones(const JsonObject& data);
 public:
-    static void GenDefaultMeta(const std::string& path, const EAssetType t);
 
+	static void GenDefaultScriptMeta(const std::string& path);
+    static void GenDefaultMeta(const std::string& path, const EAssetType t);
     static void GenDefaultMeta(const std::string& path, const EExportType t);
 
     static Asset Load(const std::string& path, const EAssetType t, bool async = false);

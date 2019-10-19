@@ -107,6 +107,18 @@ std::string StrExt::RemoveFd(const std::string& s) {
 	return s.substr(pd + 1);
 }
 
+size_t StrExt::Find(const std::string& s, const std::string& v, size_t st, size_t ed) {
+	size_t lv = v.length();
+	if (lv > s.length()) return std::string::npos;
+	ed = std::min(ed, s.length() - lv);
+	if (ed <= st) return std::string::npos;
+	for (; st < ed; st++) {
+		if (!std::strncmp(s.c_str() + st, v.c_str(), lv))
+			return st;
+	}
+	return std::string::npos;
+}
+
 int StrExt::ToInt(const std::string& s, int def) {
 	try {
 		return std::stoi(s);

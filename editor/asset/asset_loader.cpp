@@ -91,6 +91,11 @@ std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
 	break;\
 }
 
+void EAssetLoader::GenDefaultScriptMeta(const std::string& path) {
+	std::ofstream strm(ChokoEditor::assetPath + path + ".meta");
+	strm << meta::Script;
+}
+
 void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
 	switch (t) {
 		CE_E_MKM(EAssetType, AnimClip)

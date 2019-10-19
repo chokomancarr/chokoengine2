@@ -127,7 +127,6 @@ target_link_libraries(ChokoEngine ${LIBS})
 
 set(SOURCES )
 
-add_subdirectory("editor")
 add_subdirectory("editor/asset")
 add_subdirectory("editor/asset/ext")
 add_subdirectory("editor/asset/ext/vshader/inputs")
@@ -151,6 +150,7 @@ add_subdirectory("editor/ui/windows/sceneview")
 add_subdirectory("editor/ui/overlay")
 
 add_executable(ChokoEditor ${SOURCES} ${HEADERS})
+add_subdirectory("editor")
 
 target_include_directories(ChokoEditor PRIVATE editor)
 

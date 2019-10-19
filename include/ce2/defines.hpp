@@ -28,3 +28,4 @@
 #endif
 
 #include "defines_object.hpp"
+#include "defines_script.hpp"

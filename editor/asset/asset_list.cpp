@@ -10,10 +10,15 @@ EAssetList::_Entry::_Entry(const std::string& sig)
     : sig(sig), obj(nullptr), modtime(0) {}
 
 
+EAssetList::_ScriptEntry::_ScriptEntry(const std::string& scr)
+	: sig(sig), info({}), modtime(0) {}
+
+
 std::array<std::vector<EAssetList::_Entry>, (int)EAssetType::_COUNT> EAssetList::_entries = {};
 std::array<std::vector<std::string>, (int)EAssetType::_COUNT> EAssetList::_exts = {};
 
 std::array<std::vector<std::string>, (int)EExportType::_COUNT> EAssetList::_export_exts = {};
+std::vector<EAssetList::_ScriptEntry> EAssetList::_scriptEntries;
 
 bool EAssetList::Scan_Fd(const std::string& fd) {
     bool dirty = false;
@@ -22,6 +27,30 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
     for (auto& f : fls) {
         const auto ext = StrExt::ExtensionOf(f);
         const auto sig = fd + f;
+		if (ext == "hpp") {
+			auto& ent = _scriptEntries;
+			auto it = std::find_if(ent.begin(), ent.end(), [&](const _ScriptEntry& _e) {
+				return _e.sig == sig;
+			});
+			if (it == ent.end()) {
+				Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
+				ent.push_back(_ScriptEntry(sig));
+				it = ent.end() - 1;
+				it->sig = sig;
+				it->modtime = 0;
+			}
+			const auto mt = IO::ModTime(ffd + f);
+			if (it->modtime < mt) {
+				Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
+				it->info = Scripting::ParseInfo(ffd + f);
+				if (!IO::FileExists(ffd + f + ".meta")) {
+					EAssetLoader::GenDefaultScriptMeta(sig);
+				}
+				it->modtime = mt;
+				dirty = true;
+			}
+			goto next;
+		}
         for (int a = 0; a < (int)EAssetType::_COUNT; a++) {
             for (auto& e : _exts[a]) {
                 if (e == ext) {
