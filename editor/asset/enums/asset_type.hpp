@@ -18,4 +18,26 @@ enum class EAssetType {
     Unknown = 0xff
 };
 
+template <typename T>
+struct EAssetTypeOf;
+
+#define _EAssetTypeFromClass(nm) \
+template <>\
+struct EAssetTypeOf<nm> {\
+	static const auto value = EAssetType::nm;\
+};
+
+_EAssetTypeFromClass(AnimClip)
+_EAssetTypeFromClass(AnimGraph)
+_EAssetTypeFromClass(Armature)
+_EAssetTypeFromClass(Font)
+_EAssetTypeFromClass(Material)
+_EAssetTypeFromClass(Mesh)
+_EAssetTypeFromClass(Shader)
+_EAssetTypeFromClass(VShader)
+_EAssetTypeFromClass(Texture)
+_EAssetTypeFromClass(SceneObject)
+
+#undef _EAssetTypeFromClass
+
 CE_END_ED_NAMESPACE

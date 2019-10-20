@@ -4,7 +4,6 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EW_SceneView::CaptureCallbacks : public _Script {
-
 public:
     EW_SceneView* parent;
 

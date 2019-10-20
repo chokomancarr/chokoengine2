@@ -54,7 +54,7 @@ void ChokoEditor::Main() {
 	
 	auto& scr = Scene::objects().back()->AddComponent<DummyScript>();
 	scr->name("Turner (Script)");
-	scr->info = EAssetList::GetScr("turner.hpp");
+	scr->info(EAssetList::GetScr("turner.hpp"));
 	
 	const auto& cl = Scene::FindByName("celing lamp");
 	if (!!cl) {

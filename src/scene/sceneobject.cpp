@@ -8,6 +8,10 @@ _SceneObject::_SceneObject(const std::string& nm,
 	_transform._object = this;
 }
 
+_SceneObject::~_SceneObject() {
+	Delete();
+}
+
 pTransform _SceneObject::transform() {
     return &_transform;
 }
@@ -59,8 +63,19 @@ void _SceneObject::RemoveComponent(const Component& c) {
     if (cc == _components.end()) {
         Debug::Warning("SceneObject", "Cannot remove component: component is not attached!");
     }
+	(*cc)->_deleted = true;
     std::swap(*cc, _components.back());
     _components.pop_back();
+}
+
+void _SceneObject::Delete() {
+	_Object::Delete();
+	for (auto& c : _components) {
+		c->Delete();
+	}
+	for (auto& o : _children) {
+		o->Delete();
+	}
 }
 
 CE_END_NAMESPACE

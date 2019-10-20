@@ -11,7 +11,8 @@ enum class ComponentType {
 	MeshRenderer,
 	Rig,
 	Script,
-	_COUNT
+	_COUNT,
+	Unknown
 };
 
 CE_END_NAMESPACE

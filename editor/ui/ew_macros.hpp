@@ -24,11 +24,14 @@
 	}\
 	CE_E_INC_Y()
 
-#define CE_E_EDIT_F(pr, lbl, nm)\
-	CE_E_EDIT_ST(F, pr, lbl, nm, CE_E_GETVAL, CE_E_SETVAL(pr nm, res_ ## nm))
+#define CE_E_EDIT_I(pr, lbl, nm)\
+	CE_E_EDIT_ST(I, pr, lbl, nm, CE_E_GETVAL, CE_E_SETVAL(pr nm, res_ ## nm))
 
 #define CE_E_EDIT_I_FV(pr, lbl, nm)\
 	CE_E_EDIT_ST(I, pr, lbl, nm, CE_E_GETVAL_FV, CE_E_SETVAL_FV(pr nm, res_ ## nm))
+
+#define CE_E_EDIT_F(pr, lbl, nm)\
+	CE_E_EDIT_ST(F, pr, lbl, nm, CE_E_GETVAL, CE_E_SETVAL(pr nm, res_ ## nm))
 
 #define CE_E_EDIT_F_FV(pr, lbl, nm)\
 	CE_E_EDIT_ST(F, pr, lbl, nm, CE_E_GETVAL_FV, CE_E_SETVAL_FV(pr nm, res_ ## nm))
@@ -44,6 +47,19 @@
 
 #define CE_E_EDIT_V3_FV(pr, lbl, nm)\
 	CE_E_EDIT_ST(V3, pr, lbl, nm, CE_E_GETVAL_FV, CE_E_SETVAL_FV(pr nm, res_ ## nm))
+
+#define CE_E_EDIT_V4(pr, lbl, nm)\
+	CE_E_EDIT_ST(V4, pr, lbl, nm, CE_E_GETVAL, CE_E_SETVAL(pr nm, res_ ## nm));\
+	CE_E_INC_Y()
+
+#define CE_E_EDIT_TG(pr, lbl, nm)\
+	CE_E_LBL(lbl);\
+	const auto ori_ ## nm = CE_E_GETVAL(pr nm);\
+	const auto res_ ## nm = UI::I::Toggle(Rect(lt.x + lt.w - 18, lt.y, 16, 16), ori_ ## nm, Color(0.2f));\
+	if (res_ ## nm != ori_ ## nm) {\
+		CE_E_SETVAL(pr nm, res_ ## nm);\
+	}\
+	CE_E_INC_Y()
 
 #define CE_E_EDIT_TG_FV(pr, lbl, nm)\
 	CE_E_LBL(lbl);\

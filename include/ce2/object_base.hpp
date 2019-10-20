@@ -24,20 +24,17 @@ public:
 	 */
 	virtual void Wait() {};
 
+	/* Explicitly deletes an object
+	 * After deletion, all references will return nullptrs
+	 */
+	virtual void Delete();
+
     template <class T>
     friend class Ref;
 	template <class T>
 	friend class Ref_w;
-    template <class T>
-    friend void DeleteObject(Ref<T>& obj);
 };
 
-/* Explicitly deletes an object
- * After deletion, all references will return nullptrs
- */
-template <class T>
-void DeleteObject(Ref<T>& obj);
+
 
 CE_END_NAMESPACE
-
-#include "detail/object_base.inl"

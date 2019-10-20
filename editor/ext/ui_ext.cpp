@@ -43,4 +43,14 @@ Vec3 UI_Ext::TextFieldV3(const Rect& r, const Vec3& v) {
     );
 }
 
+Vec4 UI_Ext::TextFieldV4(const Rect& r, const Vec4& v) {
+	const float w = std::floor(r.w() / 2);
+	return Vec4(
+		StrExt::ToFloat(UI::I::TextField(Rect(r.x(), r.y(), w - 1, r.h()), std::to_string(v.x), Color(0.3f, 0.1f, 0.1f, 0.8f)), v.x),
+		StrExt::ToFloat(UI::I::TextField(Rect(r.x() + w, r.y(), w - 1, r.h()), std::to_string(v.y), Color(0.1f, 0.3f, 0.1f, 0.8f)), v.y),
+		StrExt::ToFloat(UI::I::TextField(Rect(r.x(), r.y() + r.h() + 1, w - 1, r.h()), std::to_string(v.z), Color(0.1f, 0.1f, 0.3f, 0.8f)), v.z),
+		StrExt::ToFloat(UI::I::TextField(Rect(r.x() + w, r.y() + r.h() + 1, w - 1, r.h()), std::to_string(v.w), Color(0.3f, 0.3f, 0.1f, 0.8f)), v.w)
+	);
+}
+
 CE_END_ED_NAMESPACE

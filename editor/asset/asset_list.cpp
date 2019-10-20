@@ -178,13 +178,21 @@ const Asset& EAssetList::Get(EAssetType t, const std::string& sig, bool async) {
 	return i->obj;
 }
 
+std::vector<std::string> EAssetList::GetList(EAssetType t) {
+	std::vector<std::string> res;
+	for (auto& e : _entries[(int)t]) {
+		res.push_back(e.sig);
+	}
+	return res;
+}
+
 const ScriptInfo& EAssetList::GetScr(const std::string& sig) {
 	auto& ar = _scriptEntries;
 	auto i = std::find_if(ar.begin(), ar.end(), [&](const _ScriptEntry& e) {
 		return e.sig == sig;
 	});
 	if (i == ar.end()) {
-		Debug::Error("AssetList", "Cannot find script \"" + sig + "\!");
+		Debug::Error("AssetList", "Cannot find script \"" + sig + "\"!");
 		return nullptr;
 	}
 	return i->info;

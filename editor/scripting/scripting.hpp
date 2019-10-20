@@ -5,6 +5,7 @@ CE_BEGIN_ED_NAMESPACE
 
 CE_OBJECT(ScriptInfo);
 class ScriptVar;
+class ScriptVal;
 class _ScriptTypeExt;
 typedef std::shared_ptr<_ScriptTypeExt> ScriptTypeExt;
 typedef std::weak_ptr<_ScriptTypeExt> pScriptTypeExt;
@@ -19,5 +20,6 @@ CE_END_ED_NAMESPACE
 
 #include "script_info.hpp"
 #include "script_var.hpp"
+#include "script_val.hpp"
 #include "script_type_ext.hpp"
 #include "comp/script_dummy.hpp"

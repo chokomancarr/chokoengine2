@@ -20,6 +20,8 @@ public:
 
 	static Vec3 TextFieldV3(const Rect& r, const Vec3& v);
 
+	static Vec4 TextFieldV4(const Rect& r, const Vec4& v);
+
 	class Layout;
 };
 

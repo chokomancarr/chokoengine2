@@ -36,9 +36,10 @@ inline std::string nextWord(const std::string& s, size_t st, size_t* nxt = nullp
 inline bool parseVar(const std::string& ln, size_t& st, ScriptVar& vr, const ScriptInfo& res) {
 	const auto& tp = vr.typeName = nextWord(ln, st, &st);
 	static const std::string typeSs[] = {
-		"int", "float", "double"
+		"bool", "int", "float", "double"
+		, "Vec2", "Vec3", "Vec4"
 	};
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < (sizeof(typeSs) / sizeof(std::string)); i++) {
 		if (tp == typeSs[i]) {
 			vr.type = (ScriptVar::Type)i;
 			return true;

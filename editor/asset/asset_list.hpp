@@ -45,6 +45,7 @@ public:
     static void Rescan();
 
     static const Asset& Get(EAssetType t, const std::string& sig, bool async = false);
+	static std::vector<std::string> GetList(EAssetType t);
 	static const ScriptInfo& GetScr(const std::string& sig);
 
 	static TypeOfSt TypeOf(const std::string& f);

@@ -7,9 +7,13 @@ CE_BEGIN_ED_NAMESPACE
 class ScriptVar {
 public:
 	enum class Type {
+		Bool,
 		Int,
 		Float,
 		Double,
+		Vec2,
+		Vec3,
+		Vec4,
 		Asset,
 		Comp,
 		ExtType

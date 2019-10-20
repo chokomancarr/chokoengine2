@@ -20,6 +20,10 @@ public:
 			const Quat& rot = Quat(1, 0, 0, 0),
 			const Vec3& scl = Vec3(1));
 
+	~_SceneObject();
+
+	_SceneObject(const _SceneObject&) = delete;
+
 	/* Transformation data of the object
 	 */
 	pTransform transform();
@@ -50,6 +54,8 @@ public:
 	/* Removes a component from the object
 	 */
 	void RemoveComponent(const Component& c);
+
+	void Delete() override;
 
 	friend class Scene;
 };
