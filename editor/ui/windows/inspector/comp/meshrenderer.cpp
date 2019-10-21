@@ -33,21 +33,20 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 	});
 
 	UI_Ext::Layout::Block("Materials", lt, [&]() { //tmp
-		std::vector<Material> mats(0);
+		std::vector<Material*> mats(0);
 		for (auto& m : c->materials()) {
 			CE_E_ASSET_REF_FV("slot", ((Material&)m));
 			if (!m) continue;
-			if (std::find_if(mats.begin(), mats.end(), [&](const Material& m2) {
-				return m2 == m;
+			if (std::find_if(mats.begin(), mats.end(), [&](const Material* m2) {
+				return m2 == &m;
 			}) == mats.end()) {
-				mats.push_back(m);
+				mats.push_back((Material*)&m);
 			}
 		}
-		for (auto& m : mats) {
+		for (auto _m : mats) {
+			auto& m = *_m;
 			UI_Ext::Layout::Block(m->name() + " (Material)", lt, [&]() {
-				CE_E_LBL("shader");
-				UI::Label(CE_E_VL_RECT, m->shader()->name(), Color(0.7f));
-				CE_E_INC_Y();
+				CE_E_ASSET_REF("shader", m->shader);
 				for (auto& v : m->variables()) {
 					switch (v.type()) {
 					case ShaderVariableType::Float: {
@@ -57,12 +56,17 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 					case ShaderVariableType::Color: {
 						CE_E_LBL(v.name());
 						UI::Rect(CE_E_VL_RECT, v.val_v4());
+						if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(v.val_v4())) == InputMouseStatus::HoverUp) {
+							EO_ColorPicker::Reg(CE_E_VL_RECT, v.val_v4(), std::function<void(const Color&)>([&](const Color& vl) {
+								v.val_v4(vl);
+							}));
+						}
 						CE_E_INC_Y();
 						break;
 					}
 					case ShaderVariableType::Texture: {
 						CE_E_LBL(v.name());
-						if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 34, 0), UIButtonStyle(Color(0.2f)), v.val_t()->assetSignature()) == InputMouseStatus::HoverUp) {
+						if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 34, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(v.val_t())) == InputMouseStatus::HoverUp) {
 							EO_SelectRef::RegAsset(v.val_t(), std::function<void(const Texture&)>([&](const Texture& tx) {
 								v.val_t(tx);
 							}));

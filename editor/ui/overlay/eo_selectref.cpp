@@ -2,6 +2,8 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+std::shared_ptr<EO_SelectRef> EO_SelectRef::instance = nullptr;
+
 void EO_SelectRef::Draw() {
 	UI::Rect(Rect(10, 10, 200, 400), Color(0.1f, 0.7f));
 	if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && !Rect(10, 10, 200, 400).Contains(Input::mouseDownPosition())) {

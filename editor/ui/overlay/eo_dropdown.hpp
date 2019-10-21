@@ -11,6 +11,8 @@ class EO_Dropdown : public EOverlay {
 	void DoDraw(bool title);
 
 public:
+	static std::shared_ptr<EO_Dropdown> instance;
+
     void Draw() override;
     static void Reg(const Vec2& pos, const EDropdownMenu& menu, bool title);
 };

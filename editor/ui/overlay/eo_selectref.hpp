@@ -45,6 +45,8 @@ class EO_SelectRef : public EOverlay {
 	void ScanComps();
 
 public:
+	static std::shared_ptr<EO_SelectRef> instance;
+
 	void Draw() override;
 
 	template <typename T>

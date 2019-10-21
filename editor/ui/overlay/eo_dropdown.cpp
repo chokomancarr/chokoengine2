@@ -2,6 +2,8 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+std::shared_ptr<EO_Dropdown> EO_Dropdown::instance = nullptr;
+
 void EO_Dropdown::DoDraw(bool title) {
 	static UIButtonStyle style(
 		Color(0, 0), Color(0.3f, 0.5f), Color(0, 0.5f),

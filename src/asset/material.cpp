@@ -77,12 +77,14 @@ void _Material::Bind() {
 			glUniformMatrix4fv(v._location, 1, false, &v._val_m[0][0]);
 			break;
 		case ShaderVariableType::Texture:
+			if (!v._val_t) break;
 			glUniform1i(v._location, tid);
 			glActiveTexture(GL_TEXTURE0 + tid);
 			v._val_t->Bind();
 			tid++;
 			break;
 		case ShaderVariableType::CubeMap:
+			if (!v._val_cm) break;
 			glUniform1i(v._location, tid);
 			glActiveTexture(GL_TEXTURE0 + tid);
 			v._val_cm->Bind();
