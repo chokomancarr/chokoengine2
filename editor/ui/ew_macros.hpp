@@ -69,3 +69,5 @@
 		CE_E_SETVAL_FV(pr nm, res_ ## nm);\
 	}\
 	CE_E_INC_Y()
+
+#include "ew_macros_selref.hpp"

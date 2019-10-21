@@ -1,11 +1,13 @@
 #include "chokoeditor.hpp"
+#include "ext/ui_ext.hpp"
 #include "ui/windows/inspector/status/comp/meshrenderer.hpp"
 #include "ui/ew_macros.hpp"
-#include "ext/ui_ext.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
 CE_E_BEGIN_DRAWCOMP(MeshRenderer)
+	CE_E_ASSET_REF("mesh", c->mesh);
+
 	UI_Ext::Layout::Block("Modifiers", lt, [&]() {
 		for (auto& m : c->modifiers()) {
 			UI_Ext::Layout::Block(m->name(), lt, [&]() {
@@ -29,12 +31,12 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 		UI::I::Button(Rect(lt.x + 2, lt.y, lt.w - 4, 16), UIButtonStyle(0.2f), "Add");
 		lt.y += 17;
 	});
+
 	UI_Ext::Layout::Block("Materials", lt, [&]() { //tmp
 		std::vector<Material> mats(0);
 		for (auto& m : c->materials()) {
-			CE_E_LBL("slot");
-			UI::Label(CE_E_VL_RECT, m->assetSignature(), Color(1));
-			CE_E_INC_Y();
+			CE_E_ASSET_REF_FV("slot", ((Material&)m));
+			if (!m) continue;
 			if (std::find_if(mats.begin(), mats.end(), [&](const Material& m2) {
 				return m2 == m;
 			}) == mats.end()) {
@@ -60,7 +62,13 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 					}
 					case ShaderVariableType::Texture: {
 						CE_E_LBL(v.name());
-						UI::Texture(Rect(lt.x + lt.w - 17, lt.y, 16, 16), v.val_t());
+						if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 34, 0), UIButtonStyle(Color(0.2f)), v.val_t()->assetSignature()) == InputMouseStatus::HoverUp) {
+							EO_SelectRef::RegAsset(v.val_t(), std::function<void(const Texture&)>([&](const Texture& tx) {
+								v.val_t(tx);
+							}));
+						}
+						UI::Texture(Rect(lt.x + lt.w - 35, lt.y, 16, 16), v.val_t());
+						CE_E_ASSET_SEEK_BTN();
 						CE_E_INC_Y();
 						break;
 					}

@@ -11,8 +11,11 @@ CE_E_BEGIN_DRAWCOMP(Camera)
 	CE_E_EDIT_F_RNG_FV(c->, "Far Clip", farClip, c->nearClip(), 1000000);
 	static Texture tx = nullptr;
 	CE_E_LBL("asdf");
-	if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(Color(0.2f)), !tx ? "[none]" : tx->assetSignature()) == InputMouseStatus::HoverUp) {
+	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), !tx ? "[none]" : tx->assetSignature()) == InputMouseStatus::HoverUp) {
 		EO_SelectRef::RegAsset(tx);
+	}
+	if (UI::I::Button(Rect(lt.x + lt.w - 18, lt.y, 16, 16), UIButtonStyle(Color(0.2f))) == InputMouseStatus::HoverUp) {
+
 	}
 	CE_E_INC_Y();
 CE_E_END_DRAWCOMP
