@@ -173,6 +173,47 @@ float UI::I::SliderTr(const CE_NS Rect& r, const Vec2& range, float value) {
 	return value;
 }
 
+float UI::I::SliderY(const CE_NS Rect& r, const Vec2& range, float value, const Color& color) {
+	Rect(r, color);
+	const auto v = SliderTr(r, range, value);
+	Rect(CE_NS Rect(r.x() + 1, r.y() + 1, r.w() - 2, (r.h() - 2) * Math::Clamp(Math::ILerp(range.x, range.y, value), 0.f, 1.f)), Color::white());
+	return v;
+}
+
+float UI::I::SliderYTr(const CE_NS Rect& r, const Vec2& range, float value) {
+	const auto mst = Input::mouseStatus(InputMouseButton::Left);
+	if (mst != InputMouseStatus::None) {
+		if (r.Contains(Input::mouseDownPosition())) {
+			value = Math::Lerp(range.x, range.y, Math::ILerp(r.y(), r.y2(), Input::mousePosition().y));
+			value = Math::Clamp(value, range.x, range.y);
+		}
+	}
+	return value;
+}
+
+Vec2 UI::I::Slider2D(const CE_NS Rect& r, const Vec2& rangeX, const Vec2& rangeY, const Vec2& value, const Color& color) {
+	Rect(r, color);
+	const auto v = Slider2DTr(r, rangeX, rangeY, value);
+	Rect(CE_NS Rect(r.x() + 1, r.y() + 1,
+		(r.w() - 2) * Math::Clamp(Math::ILerp(rangeX.x, rangeX.y, value.x), 0.f, 1.f),
+		(r.h() - 2) * Math::Clamp(Math::ILerp(rangeY.x, rangeY.y, value.y), 0.f, 1.f)
+	), Color::white());
+	return v;
+}
+
+Vec2 UI::I::Slider2DTr(const CE_NS Rect& r, const Vec2& rangeX, const Vec2& rangeY, Vec2 value) {
+	const auto mst = Input::mouseStatus(InputMouseButton::Left);
+	if (mst != InputMouseStatus::None) {
+		if (r.Contains(Input::mouseDownPosition())) {
+			value.x = Math::Lerp(rangeX.x, rangeX.y, Math::ILerp(r.x(), r.x2(), Input::mousePosition().x));
+			value.x = Math::Clamp(value.x, rangeX.x, rangeX.y);
+			value.y = Math::Lerp(rangeY.x, rangeY.y, Math::ILerp(r.y(), r.y2(), Input::mousePosition().y));
+			value.y = Math::Clamp(value.y, rangeY.x, rangeY.y);
+		}
+	}
+	return value;
+}
+
 bool UI::I::Toggle(const CE_NS Rect& r, bool val, const Color& color) {
 	Rect(r, color);
 	if (val) Rect(r.sub(3, 3, 3, 3), Color::white());

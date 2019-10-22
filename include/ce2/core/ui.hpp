@@ -55,6 +55,14 @@ public:
 	 */
 	static void Rect(const CE_NS Rect& rect, const Color& color);
 
+	/* Draws a rectangle with the provided dimensions,
+	 * using the specified material
+	 * The following inputs will be provided to the shader:
+	 *   layout(location = 0) in vec3 pos;
+	 *   layout(location = 1) in vec2 uv;
+	 */
+	static void Rect(const CE_NS Rect& rect, const Material& mat);
+
 	/* Draws a straight line connecting two points
 	 */
 	static void Line(const Vec2& p1, const Vec2& p2, const Color& col);

@@ -10,6 +10,13 @@ public:
     Color(const float c, const float a = 1);
     Color(const glm::vec4& v);
 
+	float h, s, v;
+
+	void ComputeHSV();
+	void ComputeRGB();
+
+	static Color FromHSV(const float h, const float s, const float v, const float a = 1);
+
     static Color black();
     static Color white();
     static Color red();

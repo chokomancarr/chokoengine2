@@ -15,7 +15,9 @@ T Math::ILerp(const T& a, const T& b, const T& c) {
 
 template <typename T>
 T Math::Clamp(const T& t, const T& a, const T& b) {
-	return std::min(std::max(t, a), b);
+	return std::min(std::max(t, 
+		std::min(a, b)), 
+		std::max(a, b));
 }
 
 CE_END_NAMESPACE

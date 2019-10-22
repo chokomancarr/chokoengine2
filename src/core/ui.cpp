@@ -163,6 +163,19 @@ void UI::Rect(const CE_NS Rect& q, const Color& col) {
 	colShad->Unbind();
 }
 
+void UI::Rect(const CE_NS Rect& q, const Material& mat) {
+	auto quadPoss = GetQuadVecs(q);
+	UI::SetVao(4, quadPoss.data(), nullptr);
+
+	mat->Bind();
+	_vao->Bind();
+	_quadElo->Bind();
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	_quadElo->Unbind();
+	_vao->Unbind();
+	mat->Unbind();
+}
+
 void UI::Line(const Vec2& p1, const Vec2& p2, const Color& col) {
 	Vec3 quadPoss[] = { Vec3(p1, 0), Vec3(p2, 0) };
 	for (int y = 0; y < 2; y++) {

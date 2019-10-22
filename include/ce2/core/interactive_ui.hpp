@@ -51,6 +51,20 @@ public:
      */
     static float SliderTr(const CE_NS Rect& r, const Vec2& range, float value);
 
+	/* Draws a vertical slider with dimensions \p r
+	 * The value is clamped between \p range
+	 */
+	static float SliderY(const CE_NS Rect& r, const Vec2& range, float value, const Color& color);
+
+	/* A vertical slider with dimensions \p r
+	 * The value is clamped between \p range
+	 */
+	static float SliderYTr(const CE_NS Rect& r, const Vec2& range, float value);
+
+	static Vec2 Slider2D(const CE_NS Rect& r, const Vec2& rangeX, const Vec2& rangeY, const Vec2& value, const Color& color);
+
+	static Vec2 Slider2DTr(const CE_NS Rect& r, const Vec2& rangeX, const Vec2& rangeY, Vec2 value);
+
     /* Draws a toggle button
      */
     static bool Toggle(const CE_NS Rect& r, bool val, const Color& color);

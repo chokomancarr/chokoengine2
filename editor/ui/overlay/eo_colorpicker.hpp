@@ -4,7 +4,10 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EO_ColorPicker : public EOverlay {
-    Vec2 pos;
+	Shader hShad, svShad;
+	Material hMat, svMat;
+	
+	Vec2 pos;
 
 	class _State {
 	public:
@@ -17,13 +20,15 @@ class EO_ColorPicker : public EOverlay {
 	class State : public _State {
 	public:
 		typedef std::function<void(F)> TpFunc;
-		State(const Color& v, TpFunc f) : value(v), func(f) {}
+		State(const Color& v, TpFunc f) : value(v), func(f) {
+			value.ComputeHSV();
+		}
 
 		Color value;
 		const TpFunc func;
 
 		const Color& get() override { return value; }
-		void set(const Color& o) override { func(o); }
+		void set(const Color& o) override { func(value = o); }
 	};
 
 	class StateR : public _State {
@@ -40,6 +45,8 @@ class EO_ColorPicker : public EOverlay {
 
 public:
 	static std::shared_ptr<EO_ColorPicker> instance;
+
+	EO_ColorPicker();
 
     void Draw() override;
     static void Reg(const Rect& pos, Color& tar);
