@@ -11,7 +11,7 @@ EAssetList::_Entry::_Entry(const std::string& sig)
 
 
 EAssetList::_ScriptEntry::_ScriptEntry(const std::string& scr)
-	: sig(sig), info({}), modtime(0) {}
+	: sig(scr), info({}), modtime(0) {}
 
 
 std::array<std::vector<EAssetList::_Entry>, (int)EAssetType::_COUNT> EAssetList::_entries = {};

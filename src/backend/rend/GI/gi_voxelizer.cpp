@@ -22,6 +22,9 @@ void GI::Voxelizer::resolution(int r) {
 }
 
 bool GI::Voxelizer::InitShaders() {
+#ifdef PLATFORM_MAC
+	return true; //
+#else
 	(voxShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
 		->AddUniforms({ "_MVP", "layerCount" });
 
@@ -32,6 +35,7 @@ bool GI::Voxelizer::InitShaders() {
 	resolution(128);
 
 	return !!voxShad && !!voxDebugShad;
+#endif
 }
 
 void GI::Voxelizer::Bake(const Mat4x4& v, float sz) {

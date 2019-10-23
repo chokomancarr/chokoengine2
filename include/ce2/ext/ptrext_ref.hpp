@@ -37,7 +37,7 @@ public:
 
 	CE_GET_MEMBER(object);
 
-	/* Construct a reference from an allocated pointer
+	/* Constructs a reference from an allocated pointer
 	 * WARNING: risk of dangling pointer
 	 * You should not use this function
 	 * unless you know what you are doing

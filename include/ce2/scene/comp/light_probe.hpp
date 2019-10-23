@@ -30,6 +30,8 @@ public:
      */
     _LightProbe();
 
+	_LightProbe(const _LightProbe& rhs);
+
     /* Probe intensity
      */
     CE_GET_SET_MEMBER(strength);

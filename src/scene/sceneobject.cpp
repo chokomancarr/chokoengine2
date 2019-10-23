@@ -50,7 +50,7 @@ void _SceneObject::parent(const SceneObject& p) {
     /* Add to new parent
      */
     _parent = p;
-    p->_children.push_back(Ref<_SceneObject>(std::static_pointer_cast<_SceneObject>(shared_from_this())));
+    p->_children.push_back(SceneObject(get_shared<_SceneObject>()));
 
     _transform.UpdateParentMatrix();
 }
@@ -66,6 +66,24 @@ void _SceneObject::RemoveComponent(const Component& c) {
 	(*cc)->_deleted = true;
     std::swap(*cc, _components.back());
     _components.pop_back();
+}
+
+SceneObject _SceneObject::Clone() const {
+    std::function<SceneObject(const SceneObject&, const SceneObject&)> doclone = 
+            [&](const SceneObject& o, const SceneObject& p) {
+        SceneObject copy = SceneObject::New();
+        copy->_transform = o->_transform;
+        for (auto& c : o->_components) {
+            copy->_components.push_back(c->Clone());
+        }
+        for (auto& o2 : o->_children) {
+            copy->_children.push_back(doclone(o2, o));
+        }
+        copy->_parent = p;
+        return copy;
+    };
+
+    return doclone(SceneObject(get_shared<_SceneObject>()), nullptr);
 }
 
 void _SceneObject::Delete() {

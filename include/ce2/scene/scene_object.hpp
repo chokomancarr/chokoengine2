@@ -49,11 +49,17 @@ public:
 	/* Retrieves a component in the object
 	 */
 	template <class T>
-	T GetComponent();
+	T GetComponent() const;
 
 	/* Removes a component from the object
 	 */
 	void RemoveComponent(const Component& c);
+
+	/* Returns a copy of the object tree
+	 * All children objects and components will also be copied
+	 * However, object references in components will not change
+	 */
+	SceneObject Clone() const;
 
 	void Delete() override;
 

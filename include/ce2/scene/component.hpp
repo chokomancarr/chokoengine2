@@ -8,6 +8,8 @@ protected:
 	_Component(ComponentType t, const std::string& nm);
 
 	pSceneObject _object;
+
+	virtual Component Clone() const = 0;
 public:
 	virtual ~_Component() = default;
 
@@ -54,7 +56,7 @@ public:
 	 */
 	virtual void OnPostRender() {}
 
-	friend class _SceneObject; //allow set _object
+	friend class _SceneObject;
 };
 
 CE_END_NAMESPACE

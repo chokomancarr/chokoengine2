@@ -52,7 +52,7 @@ void ChokoEditor::Main() {
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
 	
-	auto& scr = Scene::objects().back()->AddComponent<DummyScript>();
+	auto scr = Scene::objects().back()->AddComponent<DummyScript>();
 	scr->name("Turner (Script)");
 	scr->info(EAssetList::GetScr("turner.hpp"));
 	

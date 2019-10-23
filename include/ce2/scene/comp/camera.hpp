@@ -25,8 +25,11 @@ class _Camera : public _Component { CE_COMPONENT_COMMON
 	std::vector<CameraEffect> _effects;
 
 	static bool Init();
+
 public:
 	_Camera();
+
+	_Camera(const _Camera& rhs);
 
 	/* The rendering target
 	 * If this is null, the camera renders to the screen

@@ -13,6 +13,9 @@ protected:
 
     std::string _name;
     const ChokoEngine::objectid _id;
+
+	template <typename T>
+	std::shared_ptr<T> get_shared() const;
 public:
     virtual ~_Object() = default;
 
@@ -35,6 +38,6 @@ public:
 	friend class Ref_w;
 };
 
-
-
 CE_END_NAMESPACE
+
+#include "detail/object_base.inl"

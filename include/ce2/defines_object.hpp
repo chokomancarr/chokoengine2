@@ -22,7 +22,12 @@
     static size_t _object_id() { return __COUNTER__; }\
 	private:
 #define CE_COMPONENT_COMMON\
-	CE_OBJECT_COMMON
+	CE_OBJECT_COMMON\
+	protected:\
+	Component Clone() const override {\
+	    return (Component)Ref<std::remove_cv<std::remove_reference<decltype(*this)>::type>::type>::New(*this);\
+	}\
+	private:
 
 /* Handy macros to add getters and setters
  */

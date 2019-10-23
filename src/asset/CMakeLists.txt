@@ -9,6 +9,7 @@ target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/font.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/material.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/mesh.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/prefab.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/rendertarget.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/rendertarget3.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp

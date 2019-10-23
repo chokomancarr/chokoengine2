@@ -13,7 +13,7 @@ T _SceneObject::AddComponent(Args&&... args) {
 }
 
 template<class T>
-T _SceneObject::GetComponent() {
+T _SceneObject::GetComponent() const {
 	static_assert(std::is_base_of<_Component, typename T::_TpBase>::value, "GetComponent must be called with component type!");
 	for (auto& c : _components) {
 		auto res = std::dynamic_pointer_cast<typename T::_TpBase>(c.object());

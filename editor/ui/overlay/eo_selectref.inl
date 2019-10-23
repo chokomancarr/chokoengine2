@@ -48,7 +48,7 @@ template <typename T>
 void EO_SelectRef::RegComp(T& tar) {
 	static_assert(std::is_base_of<_Component, typename T::_TpBase>::value, "Target is not a component!");
 	auto i = GetInstance<EO_SelectRef>();
-	i->state = std::unique_ptr<StateR<T>>(new StateR<T>(slot));
+	i->state = std::unique_ptr<StateR<T>>(new StateR<T>(tar));
 	i->state->comp = true;
 	i->ScanComps<T>();
 	i->active = true;
@@ -58,7 +58,7 @@ template <typename T, typename F>
 void EO_SelectRef::RegComp(const T& tar, std::function<void(F)> setter) {
 	static_assert(std::is_base_of<_Component, typename T::_TpBase>::value, "Target is not a component!");
 	auto i = GetInstance<EO_SelectRef>();
-	i->state = std::unique_ptr<State<T, F>>(new State<T, F>(slot, setter));
+	i->state = std::unique_ptr<State<T, F>>(new State<T, F>(tar, setter));
 	i->state->comp = true;
 	i->ScanComps<T>();
 	i->active = true;

@@ -116,7 +116,8 @@ void _Texture::LoadAsync() {
 		GL_LINEAR : GL_NEAREST
 		);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	std::swap(_pixels, std::vector<byte>());
+	std::vector<byte> empty(0);
+	std::swap(_pixels, empty);
 
 	_loading = false;
 }

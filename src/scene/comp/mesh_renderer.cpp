@@ -5,6 +5,11 @@ CE_BEGIN_NAMESPACE
 _MeshRenderer::_MeshRenderer() : CE_COMPDEF(MeshRenderer),
 		_mesh(nullptr), _modifiers({}), _materials({}) {}
 
+_MeshRenderer::_MeshRenderer(const _MeshRenderer& rhs) : CE_COMPDEF(MeshRenderer),
+		_mesh(rhs._mesh), _modifiers({}), _materials(rhs._materials) {
+	//copy modifiers here
+}
+
 void _MeshRenderer::mesh(const Mesh& m) {
 	_mesh = m;
 	_materials.clear();

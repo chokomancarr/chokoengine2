@@ -35,6 +35,8 @@ public:
      */
     _Light(LightType);
 
+    _Light(const _Light&);
+
     /* Type of the light model
      */
     CE_GET_SET_MEMBER_F(type);

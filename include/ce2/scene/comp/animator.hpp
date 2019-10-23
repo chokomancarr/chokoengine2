@@ -11,6 +11,8 @@ class _Animator : public _Component { CE_COMPONENT_COMMON
 public:
 	_Animator();
 
+	_Animator(const _Animator& rhs) = default;
+
 	/* The animation graph
 	*/
     CE_GET_SET_MEMBER_F(graph);

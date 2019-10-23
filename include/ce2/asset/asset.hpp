@@ -21,6 +21,7 @@ CE_END_NAMESPACE
 #include "./armature.hpp"
 #include "./font.hpp"
 #include "./mesh.hpp"
+#include "./prefab.hpp"
 #include "./shader.hpp"
 #include "./material.hpp"
 #include "./texture.hpp"
