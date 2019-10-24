@@ -53,7 +53,7 @@ void main () {
     vec3 fwd = normalize(wPos.xyz - wPos2.xyz);
 	
 	fragCol.rgb = skyColAt(fwd, 0).rgb * skyStrength;
-    fragCol.a = 0;
+    fragCol.a = 1;
 
 	if (z < 1) {
 		vec3 refl = normalize(reflect(fwd, normal));

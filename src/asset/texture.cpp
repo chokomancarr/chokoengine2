@@ -20,10 +20,10 @@ _Texture::_Texture(uint w, uint h, bool hdr)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-_Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts) {
+_Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts, const void* pixels, const GLenum pixelFmt, const GLenum pixelType) {
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
-	glTexImage2D(GL_TEXTURE_2D, 0, type, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, type, (int)w, (int)h, 0, pixelFmt, pixelType, pixels);
 	const GLenum wraps[] = { GL_CLAMP_TO_EDGE, GL_REPEAT, GL_MIRRORED_REPEAT };
 	SetTexParams<>(0,
 		wraps[(int)opts.xwrap],

@@ -343,6 +343,8 @@ void Renderer::RenderCamera(Camera& cam) {
 }
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
+	if (!Scene::_sky->loaded()) return;
+	
 	skyShad->Bind();
 	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
 	glUniform2f(skyShad->Loc(1), w, h);

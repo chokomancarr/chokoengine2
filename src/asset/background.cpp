@@ -13,7 +13,7 @@ TextureBuffer _Background::noiseTex;
 
 #define SAMPLES 1024
 
-void  _Background::Init() {
+void _Background::Init() {
     //auto noise = Random::Hammersley(SAMPLES);
     std::vector<Vec2> noise(65535);
     for (auto& n : noise) {
@@ -37,31 +37,15 @@ void  _Background::Init() {
     initd = true;
 }
 
-_Background::_Background(const std::string& path, int div) : _Texture(nullptr), _layers(div), _brightness(1) {
-    if (!initd)
-        Init();
-    
-    std::string ss = path.substr(path.find_last_of('.') + 1, std::string::npos);
+void _Background::LoadAsync() {
+    std::vector<RenderTarget> mips(_layers - 1, nullptr);
 
-    if (ss != "hdr") {
-        Debug::Error("Background", "Cannot open non-hdr file \"" + path + "\"!");
-        return;
-    }
-
-    std::vector<byte> data;
-
-    if (!Texture_I::FromHDR(path, _width, _height, _channels, data))
-        return;
-    _hdr = true;
-
-    std::vector<RenderTarget> mips(div - 1, nullptr);
-
-    Texture tmp0 = Texture::New(path, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true));
+    auto tmp0 = Texture::New(_width, _height, GL_RGB32F, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true), _pixels.data(), GL_RGB, GL_FLOAT);
     uint w = _width / 2, h = _height / 2;
     ggxBlurMat->SetUniform("mainTex", tmp0);
-    for (int a = 1; a < div; a++) {
+    for (int a = 1; a < _layers; a++) {
         RenderTarget target2 = RenderTarget::New(w, h, true, false);
-        ggxBlurMat->SetUniform("rough", a * 1.f / div);
+        ggxBlurMat->SetUniform("rough", a * 1.f / _layers);
         ggxBlurMat->SetUniform("screenSize", Vec2(w, h));
         tmp0->Blit(target2, ggxBlurMat);
         mips[a - 1] = target2;
@@ -72,17 +56,85 @@ _Background::_Background(const std::string& path, int div) : _Texture(nullptr), 
 
     glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, _width, _height, 0, GL_RGB, GL_FLOAT, data.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, _width, _height, 0, GL_RGB, GL_FLOAT, _pixels.data());
 
-    for (int a = 1; a < div; a++) {
+    for (int a = 1; a < _layers; a++) {
 		mips[a - 1]->BindTarget(true);
         glCopyTexImage2D(GL_TEXTURE_2D, a, GL_RGB32F, 0, 0, mips[a - 1]->width(), mips[a - 1]->height(), 0);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     }
     
-	SetTexParams<>(div - 1, GL_REPEAT, GL_MIRRORED_REPEAT,
+	SetTexParams<>(_layers - 1, GL_REPEAT, GL_MIRRORED_REPEAT,
 		GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	std::vector<byte> empty(0);
+	std::swap(_pixels, empty);
+
+	_loading = false;
+}
+
+_Background::_Background(const std::string& path, int div, bool async) : _pointer(0), _width(0), _height(0), _layers(div), _brightness(1) {
+    if (!initd)
+        Init();
+
+    //_asyncThread = std::thread([&](const std::string& path) {
+	//	CE_OBJECT_SET_ASYNC_LOADING;
+        std::string ss = path.substr(path.find_last_of('.') + 1, std::string::npos);
+
+        if (ss != "hdr") {
+            Debug::Error("Background", "Cannot open non-hdr file \"" + path + "\"!");
+            return;
+        }
+
+        if (!Texture_I::FromHDR(path, _width, _height, _channels, _pixels))
+            return;
+
+	//	CE_OBJECT_SET_ASYNC_READY;
+	//}, path);
+
+	//CE_OBJECT_INIT_ASYNC;
+    std::vector<RenderTarget> mips(_layers - 1, nullptr);
+
+    auto tmp0 = //Texture::New(_width, _height, GL_RGB32F, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true), _pixels.data(), GL_RGB, GL_FLOAT);
+        Texture::New(path, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true));
+    uint w = _width / 2, h = _height / 2;
+    ggxBlurMat->SetUniform("mainTex", tmp0);
+    for (int a = 1; a < _layers; a++) {
+        RenderTarget target2 = RenderTarget::New(w, h, true, false);
+        ggxBlurMat->SetUniform("rough", a * 1.f / _layers);
+        ggxBlurMat->SetUniform("screenSize", Vec2(w, h));
+        tmp0->Blit(target2, ggxBlurMat);
+        mips[a - 1] = target2;
+        tmp0 = static_cast<Texture>(target2); //this is wrong, but it reduces noise for now
+        w /= 2;
+        h /= 2;
+    } //no crash until here
+
+    glGenTextures(1, &_pointer);
+	glBindTexture(GL_TEXTURE_2D, _pointer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, _width, _height, 0, GL_RGB, GL_FLOAT, _pixels.data());
+
+    for (int a = 1; a < _layers; a++) {
+		mips[a - 1]->BindTarget(true);
+        glCopyTexImage2D(GL_TEXTURE_2D, a, GL_RGB32F, 0, 0, mips[a - 1]->width(), mips[a - 1]->height(), 0);
+    }
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    
+	SetTexParams<>(_layers - 1, GL_REPEAT, GL_MIRRORED_REPEAT,
+		GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//std::vector<byte> empty(0);
+	//std::swap(_pixels, empty);
+}
+
+_Background::~_Background() {
+    CE_OBJECT_FINALIZE_ASYNC;
+	glDeleteTextures(1, &_pointer);
+}
+
+bool _Background::loaded() {
+	CE_OBJECT_CHECK_ASYNC;
+	return !!_pointer;
 }
 
 CE_END_NAMESPACE

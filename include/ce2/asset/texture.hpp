@@ -24,7 +24,7 @@ protected: //allow rendertarget access
 public:
 	_Texture(uint w, uint h, bool hdr);
 
-	_Texture(uint w, uint h, GLenum type, const TextureOptions& opts);
+	_Texture(uint w, uint h, GLenum type, const TextureOptions& opts, const void* pixels = nullptr, const GLenum pixelFmt = GL_RGBA, const GLenum pixelType = GL_UNSIGNED_BYTE);
 
     /* Loads an image from the specified path
      * Supported formats: png, jpg, bmp, hdr
