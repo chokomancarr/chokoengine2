@@ -42,10 +42,10 @@ void ChokoEditor::Main() {
 	Scene::AddNewObject()
 		->name("__Editor_Cameras__");
 
-	ss = Background::New(IO::path() + "res/sky.hdr", 6, false);
+	//ss = Background::New(IO::path() + "res/sky.hdr", 6, false);
 
-	Scene::sky(ss);
-	Scene::sky()->brightness(1);
+	//Scene::sky(ss);
+	//Scene::sky()->brightness(1);
 	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true));
 	//Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/cornell.blend/cornell.blend.prefab"));
 	//*

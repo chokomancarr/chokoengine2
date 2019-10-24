@@ -343,36 +343,42 @@ void Renderer::RenderCamera(Camera& cam) {
 }
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
-	if (!Scene::_sky->loaded()) return;
-	
-	skyShad->Bind();
-	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
-	glUniform2f(skyShad->Loc(1), w, h);
-	glUniform1i(skyShad->Loc(2), false); //is_ortho
-	glUniform1i(skyShad->Loc(3), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
-	glUniform1i(skyShad->Loc(4), 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
-	glUniform1i(skyShad->Loc(5), 2);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
-	glUniform1i(skyShad->Loc(6), 3);
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[3]->_pointer);
-	glUniform1i(skyShad->Loc(7), 4);
-	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
-	glUniform1i(skyShad->Loc(8), 5);
-	glActiveTexture(GL_TEXTURE5);
-	glBindTexture(GL_TEXTURE_2D, Scene::_sky->_pointer);
-	glUniform1f(skyShad->Loc(9), Scene::_sky->_brightness);
-	glUniform1f(skyShad->Loc(10), tr ? 1 : 0);
-	_emptyVao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	_emptyVao->Unbind();
-	skyShad->Unbind();
+	if (!Scene::_sky || !Scene::_sky->loaded()) {
+		gbuf->Bind(true);
+		glReadBuffer(GL_COLOR_ATTACHMENT3);
+		glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		gbuf->Unbind(true);
+	}
+	else {
+		skyShad->Bind();
+		glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+		glUniform2f(skyShad->Loc(1), w, h);
+		glUniform1i(skyShad->Loc(2), false); //is_ortho
+		glUniform1i(skyShad->Loc(3), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
+		glUniform1i(skyShad->Loc(4), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
+		glUniform1i(skyShad->Loc(5), 2);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
+		glUniform1i(skyShad->Loc(6), 3);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[3]->_pointer);
+		glUniform1i(skyShad->Loc(7), 4);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+		glUniform1i(skyShad->Loc(8), 5);
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, Scene::_sky->_pointer);
+		glUniform1f(skyShad->Loc(9), Scene::_sky->_brightness);
+		glUniform1f(skyShad->Loc(10), tr ? 1 : 0);
+		_emptyVao->Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		_emptyVao->Unbind();
+		skyShad->Unbind();
+	}
 }
 
 bool Renderer::Init() {

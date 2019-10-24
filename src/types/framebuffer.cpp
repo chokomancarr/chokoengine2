@@ -30,7 +30,7 @@ _FrameBuffer::~_FrameBuffer() {
 }
 
 void _FrameBuffer::Clear() const {
-	float zeros[4] = { 1, 0, 0, 1 };
+	float zeros[4] = {};
 	float one = 1;
 	for (int a = 0; a < _texs.size(); a++) {
 		glClearBufferfv(GL_COLOR, a, zeros);
@@ -38,12 +38,12 @@ void _FrameBuffer::Clear() const {
 	glClearBufferfv(GL_DEPTH, 0, &one);
 }
 
-void _FrameBuffer::Bind() const {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _pointer);
+void _FrameBuffer::Bind(bool read) const {
+	glBindFramebuffer(read ? GL_READ_FRAMEBUFFER : GL_DRAW_FRAMEBUFFER, _pointer);
 }
 
-void _FrameBuffer::Unbind() const {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+void _FrameBuffer::Unbind(bool read) const {
+	glBindFramebuffer(read ? GL_READ_FRAMEBUFFER : GL_DRAW_FRAMEBUFFER, 0);
 }
 
 FrameBuffer FrameBuffer_New(uint w, uint h, std::vector<GLenum> types) {

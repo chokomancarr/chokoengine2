@@ -20,8 +20,8 @@ public:
 	CE_GET_MEMBER(depth);
 
 	void Clear() const;
-	void Bind() const;
-	void Unbind() const;
+	void Bind(bool read = false) const;
+	void Unbind(bool read = false) const;
 };
 
 typedef std::shared_ptr<_FrameBuffer> FrameBuffer;
