@@ -90,8 +90,7 @@ float shadowAt(vec3 v) {
 	return linearz(texture(shadowMap, normalize(v)).r);
 }
 
-float vec2depth(vec3 v)
-{
+float vec2depth(vec3 v) {
     vec3 va = abs(v);
     float mv = max(va.x, max(va.y, va.z));
 
@@ -99,6 +98,10 @@ float vec2depth(vec3 v)
     float n = lightRad;
     float nv = (f+n) / (f-n) - (2*f*n)/(f-n)/mv;
     return linearz((nv + 1.0) * 0.5);
+}
+
+float cocrad(float shadowZ, float myZ) {
+	return (lightDst - lightRad) * (myZ - shadowZ) / shadowZ * lightRad;
 }
 
 void main () {
@@ -128,6 +131,8 @@ void main () {
 		dpn *= min(lightRad / length(dpn), 1);
 		pn = lightPos + dpn;
 		vec3 p2l = pn - wPos.xyz;
+		float p2ll2 = length2(p2l);
+		float p2ll = sqrt(p2ll2);
 		if (length2(p2l) < lightRad * lightRad) {
 			fragCol.rgb = lightCol * lightStr * occlu;
 			return;
@@ -140,13 +145,14 @@ void main () {
 		reflCol = mix(vec4(reflCol.rgb * reflCol.w, 0), reflCol, transparent);
 
 		float not_shadow = 1;
+		int not_shadown = 1;
 		
 		if (shadowStr > 0 && transparent == 0) {
-			float rr2 = 1;
+			float rr2 = 0;
 			float pz = vec2depth(p2l);
 			float sz0 = shadowAt(-p2l);
 			if (sz0 < pz - shadowBias) {
-				rr2 = min((pz - sz0) * lightDst / lightRad / sz0, 1);
+				rr2 = cocrad(sz0, pz);
 				not_shadow = 1 - shadowStr;
 			}
 			float rnd = rand(wPos.xyz);
@@ -156,12 +162,20 @@ void main () {
 			lt1 = normalize(cross(p2li, lt2));
 			for (int a = 1; a < shadowSmps; a++) {
 				float rt = rand(rnd) * 2 * 3.14159;
-				float rr = sqrt(rand(rt)) * lightRad;
+				float rr = sqrt(rand(rt));
 				rnd = rr;
-				float sz = shadowAt(-p2l + (lt1 * sin(rt) + lt2 * cos(rt)) * rr * rr2);
-				not_shadow += (sz >= pz - shadowBias) ? 1 : (1 - shadowStr);
+				vec3 sp = -p2l + (lt1 * sin(rt) + lt2 * cos(rt)) * rr * rr2;
+				float sz = shadowAt(sp);
+				float szl = mix(lightRad, lightDst, sz);
+				float rr2s = cocrad(sz, pz); //effect radius for this sample
+				sp = normalize(sp) * p2ll;
+				float rrs = length2(p2l - sp); //distance from sample
+				//if (rrs < (rr2s * rr2s)) {
+					not_shadow += (sz >= (pz - shadowBias)) ? 1 : (1 - shadowStr);
+					not_shadown += 1;
+				//}
 			}
-			not_shadow /= shadowSmps;
+			not_shadow /= not_shadown;
 		}
 		
 		fragCol = mix(diffCol, reflCol, mix(fres, 1, metallic)) * vec4(lightCol * lightStr * occlu * get_falloff(length(p2l)) * not_shadow, 1);

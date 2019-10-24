@@ -65,10 +65,10 @@ void ChokoEditor::Main() {
 		l->shadow(true);
 		l->shadowStrength(0.7f);
 		l->shadowBias(0.002f);
-		l->radius(0.1f);
+		l->radius(0.05f);
 		l->color(Color(1, 0.9f, 0.7f));
 		l->softShadows(true);
-		l->shadowSamples(1);
+		l->shadowSamples(20);
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
 	}
 	/*
