@@ -5,4 +5,4 @@ target_sources(ChokoEditor PRIVATE
 )
 
 add_subdirectory(ext)
-add_subdirectory("parsers/comp")
+add_subdirectory(parsers/comp)

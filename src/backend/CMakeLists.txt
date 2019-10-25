@@ -1,1 +1,1 @@
-add_subdirectory("rend")
+add_subdirectory(rend)

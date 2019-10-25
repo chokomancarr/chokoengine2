@@ -10,4 +10,4 @@ target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/world_ui.cpp
 )
 
-add_subdirectory("types")
+add_subdirectory(types)

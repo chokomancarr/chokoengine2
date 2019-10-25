@@ -112,7 +112,7 @@ if(MSVC)
     target_sources(ChokoEngine PRIVATE cpp.hint)
 endif()
 
-add_subdirectory("src")
+add_subdirectory(src)
 
 include(GenerateExportHeader)
 generate_export_header(ChokoEngine)
@@ -125,7 +125,7 @@ target_link_libraries(ChokoEngine ${LIBS})
 #------editor-------
 
 add_executable(ChokoEditor "")
-add_subdirectory("editor")
+add_subdirectory(editor)
 
 target_include_directories(ChokoEditor PRIVATE editor)
 

@@ -8,4 +8,4 @@ target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/script.cpp
 )
 
-add_subdirectory("mesh")
+add_subdirectory(mesh)

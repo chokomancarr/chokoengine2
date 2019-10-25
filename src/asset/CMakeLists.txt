@@ -18,6 +18,6 @@ target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/texture_internal.cpp
 )
 
-add_subdirectory("animclip")
-add_subdirectory("animgraph")
-add_subdirectory("shader")
+add_subdirectory(animclip)
+add_subdirectory(animgraph)
+add_subdirectory(shader)
