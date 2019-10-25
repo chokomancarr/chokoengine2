@@ -14,7 +14,7 @@ class _VertexBuffer {
 	GLenum _usage;
 public:
 	_VertexBuffer() = default;
-	_VertexBuffer(bool isf, size_t dim, size_t num, void* data, size_t stride = 0, GLenum type = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_COPY);
+	_VertexBuffer(bool isf, size_t dim, size_t num, const void* data, size_t stride = 0, GLenum type = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_COPY);
 	~_VertexBuffer();
 
 	CE_GET_MEMBER(pointer);
@@ -31,6 +31,6 @@ public:
 	friend class _TransformFeedback;
 };
 
-VertexBuffer VertexBuffer_New(bool isf, size_t dim, size_t num, void* data, size_t stride = 0, GLenum type = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_COPY);
+VertexBuffer VertexBuffer_New(bool isf, size_t dim, size_t num, const void* data, size_t stride = 0, GLenum type = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_COPY);
 
 CE_END_NAMESPACE

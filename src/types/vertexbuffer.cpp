@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_VertexBuffer::_VertexBuffer(bool isf, size_t dim, size_t num, void* data, size_t stride, GLenum type, GLenum usage)
+_VertexBuffer::_VertexBuffer(bool isf, size_t dim, size_t num, const void* data, size_t stride, GLenum type, GLenum usage)
 	: _isfloat(isf), _dim(dim), _num(num), _type(type), _usage(usage) {
 	glGenBuffers(1, &_pointer);
 	glBindBuffer(type, _pointer);
@@ -31,7 +31,7 @@ void _VertexBuffer::Unbind() const {
 	glBindBuffer(_type, 0);
 }
 
-VertexBuffer VertexBuffer_New(bool isf, size_t dim, size_t num, void* data, size_t stride, GLenum type, GLenum usage) {
+VertexBuffer VertexBuffer_New(bool isf, size_t dim, size_t num, const void* data, size_t stride, GLenum type, GLenum usage) {
 	return std::make_shared<_VertexBuffer>(isf, dim, num, data, stride, type, usage);
 }
 
