@@ -1,8 +1,7 @@
-set(DIR editor/ui/windows/inspector)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/component.cpp
-	${DIR}/sceneobject.cpp
-	PARENT_SCOPE
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sceneobject.cpp
 )
+
+add_subdirectory(comp)
+add_subdirectory(status)

@@ -1,7 +1,3 @@
-set(DIR editor/scene)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/sceneinfo.cpp
-	PARENT_SCOPE
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/sceneinfo.cpp
 )

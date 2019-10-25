@@ -1,7 +1,3 @@
-set(DIR editor/asset/ext/vshader/outputs)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/surface.cpp
-	PARENT_SCOPE
-)
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/surface.cpp
+	)

@@ -1,9 +1,5 @@
-set(DIR editor/ui/overlay)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/eo_dropdown.cpp
-	${DIR}/eo_colorpicker.cpp
-	${DIR}/eo_selectref.cpp
-	PARENT_SCOPE
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/eo_dropdown.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/eo_colorpicker.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/eo_selectref.cpp
 )

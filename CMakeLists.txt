@@ -124,32 +124,7 @@ target_link_libraries(ChokoEngine ${LIBS})
 
 #------editor-------
 
-
-set(SOURCES )
-
-add_subdirectory("editor/asset")
-add_subdirectory("editor/asset/ext")
-add_subdirectory("editor/asset/ext/vshader/inputs")
-add_subdirectory("editor/asset/ext/vshader/outputs")
-add_subdirectory("editor/asset/parsers/comp")
-add_subdirectory("editor/exporters")
-add_subdirectory("editor/ext")
-add_subdirectory("editor/hooks")
-add_subdirectory("editor/res")
-add_subdirectory("editor/scene")
-add_subdirectory("editor/serial")
-add_subdirectory("editor/serial/config")
-add_subdirectory("editor/ui")
-add_subdirectory("editor/ui/layout")
-add_subdirectory("editor/ui/windows")
-add_subdirectory("editor/ui/windows/inspector")
-add_subdirectory("editor/ui/windows/inspector/comp")
-add_subdirectory("editor/ui/windows/inspector/status")
-add_subdirectory("editor/ui/windows/ops")
-add_subdirectory("editor/ui/windows/sceneview")
-add_subdirectory("editor/ui/overlay")
-
-add_executable(ChokoEditor ${SOURCES} ${HEADERS})
+add_executable(ChokoEditor "")
 add_subdirectory("editor")
 
 target_include_directories(ChokoEditor PRIVATE editor)

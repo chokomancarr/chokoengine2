@@ -1,7 +1,3 @@
-set(DIR editor/ui/layout)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/ui_layout.cpp
-	PARENT_SCOPE
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/ui_layout.cpp
 )

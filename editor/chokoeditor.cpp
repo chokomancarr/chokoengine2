@@ -46,7 +46,11 @@ void ChokoEditor::Main() {
 
 	//Scene::sky(ss);
 	//Scene::sky()->brightness(1);
-	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true));
+	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
+	Scene::AddObject(obj);
+	obj->children()[0]->GetComponent<MeshRenderer>()->materials({
+		(Material)EAssetList::Get(EAssetType::Material, "unlit.material")
+	});
 	//Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/cornell.blend/cornell.blend.prefab"));
 	//*
 	/*

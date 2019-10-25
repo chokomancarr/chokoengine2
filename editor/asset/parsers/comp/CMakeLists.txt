@@ -1,8 +1,4 @@
-set(DIR editor/asset/parsers/comp)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/mesh_renderer.cpp
-	${DIR}/rig.cpp
-	PARENT_SCOPE
-)
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/mesh_renderer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/rig.cpp
+	)

@@ -1,7 +1,3 @@
-set(DIR editor/asset/ext/vshader/inputs)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/color.cpp
-	PARENT_SCOPE
-)
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
+	)

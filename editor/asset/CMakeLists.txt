@@ -1,9 +1,8 @@
-set(DIR editor/asset)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/asset_list.cpp
-	${DIR}/asset_loader.cpp
-	${DIR}/prefab.cpp
-	PARENT_SCOPE
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/asset_list.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/asset_loader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/prefab.cpp
 )
+
+add_subdirectory(ext)
+add_subdirectory("parsers/comp")

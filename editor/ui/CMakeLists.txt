@@ -1,11 +1,11 @@
-set(DIR editor/ui)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/colors.cpp
-	${DIR}/dropdown_menu.cpp
-	${DIR}/window.cpp
-	${DIR}/windowmanager.cpp
-	${DIR}/overlaymanager.cpp
-	PARENT_SCOPE
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/colors.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/dropdown_menu.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/windowmanager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/overlaymanager.cpp
 )
+
+add_subdirectory(layout)
+add_subdirectory(overlay)
+add_subdirectory(windows)

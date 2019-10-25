@@ -1,10 +1,6 @@
-set(DIR editor/ui/windows/sceneview)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/callback_capture.cpp
-	${DIR}/draw_comp_list.cpp
-	${DIR}/light.cpp
-	${DIR}/rig.cpp
-	PARENT_SCOPE
-)
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/callback_capture.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/draw_comp_list.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/light.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/rig.cpp
+	)

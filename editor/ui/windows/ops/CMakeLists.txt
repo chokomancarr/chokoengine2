@@ -1,7 +1,3 @@
-set(DIR editor/ui/windows/ops)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/ew_sceneview_ops.cpp
-	PARENT_SCOPE
-)
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/ew_sceneview_ops.cpp
+	)

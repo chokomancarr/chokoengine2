@@ -1,7 +1,3 @@
-set(DIR editor/exporters)
-
-set(SOURCES
-	${SOURCES}
-	${DIR}/blender.cpp
-	PARENT_SCOPE
+target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/blender.cpp
 )
