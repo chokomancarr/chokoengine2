@@ -3,14 +3,14 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m, const Int2& res) {
+MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	auto approx3 = [](const Vec3& v1, const Vec3& v2) {
 		return std::abs(v1.x - v2.x) < 0.000001f
 			&& std::abs(v1.y - v2.y) < 0.000001f
 			&& std::abs(v1.z - v2.z) < 0.000001f;
 	};
 
-	MeshSurfaceData data;
+	MeshSurfaceData data = {};
 
 	const auto& poss = m->positions();
 	const auto& uvs = m->texcoords();
@@ -109,17 +109,31 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m, const Int2& res) {
 
 	//--------- uv angles -----------
 
-	std::vector<Vec4> cons(inds.size() * 2, Vec4(-1));
-	for (int a = 0; a < m->triangleCount(); a++) {
-		if (icons[a * 3] > -1) {
-			cons[a*2] = Vec4(uvs[icons[a * 3]], uvs[icons[a * 3 + 1]]);
-			Vec2 tv = Normalize(uvs[inds[(a % 3 == 2) ? a - 2 : a + 1]] - uvs[inds[a]]);
-			float t = std::acos(tv.x) * rad2deg;
-			if (tv.y > 0) t = 360 - t;
-			t -= 90;
-			cons[a * 2 + 1].x = t;
+	std::vector<Vec4> cons(m->triangleCount() * 18, Vec4(-1));
+	for (int a = 0; a < m->triangleCount() * 3; a++) {
+		for (int b = 0; b < 3; b++) {
+			const int k = a * 3 + b;
+			const auto& ic = icons[k];
+			if (ic.x > -1) {
+				cons[k*2] = glm::vec4(uvs[ic.x], uvs[ic.y]);
+				Vec2 tv = glm::normalize(uvs[inds[a][(b == 2) ? 0 : b + 1]] - uvs[inds[a][b]]);
+				float t = std::acos(tv.x) * Math::rad2deg;
+				if (tv.y > 0) t = 360 - t;
+				t -= 90;
+				cons[a * 2 + 1].x = t;
+			}
 		}
 	}
+
+	data.conData = TextureBuffer::New(
+		VertexBuffer_New(true, 4, m->triangleCount() * 18, cons.data()),
+		GL_RGBA32F);
+
+	return data;
+}
+
+void MeshSurfaceData::GenInfoTex(const Int2& res) {
+	
 }
 
 CE_END_ED_NAMESPACE

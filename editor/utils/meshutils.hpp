@@ -7,7 +7,7 @@ class MeshSurfaceData;
 
 class MeshUtils {
 public:
-	static MeshSurfaceData GenSurfaceData(const Mesh& m, const Int2& res);
+	static MeshSurfaceData GenSurfaceData(const Mesh& m);
 };
 
 class MeshSurfaceData {
@@ -18,7 +18,10 @@ public:
 	TextureBuffer edgeData;
 	TextureBuffer iconData;
 	TextureBuffer conData;
-	Int2 res;
+
+	RenderTarget edgeInfoTex;
+
+	void GenInfoTex(const Int2& res);
 };
 
 CE_END_ED_NAMESPACE

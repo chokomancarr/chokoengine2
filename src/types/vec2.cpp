@@ -2,13 +2,13 @@
 
 CE_BEGIN_NAMESPACE
 
-Vec2::Vec2(const glm::vec2& q) : glm::vec2(q) {}
-
 Vec2::Vec2() : glm::vec2() {}
 
 Vec2::Vec2(float w) : glm::vec2(w) {}
 
 Vec2::Vec2(float x, float y) : glm::vec2(x, y) {}
+
+Vec2::Vec2(const glm::vec2& q) : glm::vec2(q) {}
 
 Vec2 Vec2::operator *(const Vec2& rhs) {
 	return Vec2(x * rhs.x, y * rhs.y);
