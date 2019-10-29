@@ -40,9 +40,11 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 
 	for (int a = 1; a < data.vertCount; a++) {
 		const auto& va = poss[a];
-		for (int b = 0; b < uvcnt; b++) {
-			if (approx3(poss[i2v[b]], va))
+		for (int b = 0; b < a; b++) {
+			if (approx3(poss[b], va)) {
+				i2v.push_back(i2v[b]);
 				goto brk;
+			}
 		}
 		i2v.push_back(a);
 		uvcnt++;
@@ -76,9 +78,9 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	std::vector<Int2> tvs = {};
 
 	//adj graph of unique verts
-	for (int a = 0; a < data.indCount; a++) {
+	for (int a = 0; a < data.indCount; a++) { //tri id
 		const auto& ts = inds[a];
-		const int vts[] = {
+		const int vts[] = { //unique vert ids
 			i2v[ts[0]],
 			i2v[ts[1]],
 			i2v[ts[2]]
@@ -91,22 +93,22 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 		};
 
 #define COMB(a, b) (((uint64_t)a) << 32 | b)
-		for (int b = 0; b < 3; b++) {
+		for (int b = 0; b < 3; b++) { //edge id
 			const int k = a * 3 + b;
 			const auto vt1 = vts[es[b][0]];
 			const auto vt2 = vts[es[b][1]];
 			if (tvst.count(COMB(vt1, vt2)) == 1) {
 				const auto& res = tvst[COMB(vt1, vt2)];
 				icons[k] = Int3(res);
-				icons[res.w] = Int3(ts[es[b][0]], ts[es[b][1]], ts[es[b][2]]);
+				icons[res.w] = Int3(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]]);
 			}
-			else if (tvst.count(COMB(vt2, vt1)) == 0) {
-				const auto& res = tvst[COMB(vt1, vt2)];
+			else if (tvst.count(COMB(vt2, vt1)) == 1) {
+				const auto& res = tvst[COMB(vt2, vt1)];
 				icons[k] = Int3(res);
-				icons[res.w] = Int3(ts[es[b][0]], ts[es[b][1]], ts[es[b][2]]);
+				icons[res.w] = Int3(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]]);
 			}
 			else {
-				tvst[COMB(vt1, vt2)] = Int4(ts[es[b][0]], ts[es[b][1]], ts[es[b][2]], k);
+				tvst[COMB(vt1, vt2)] = Int4(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]], k);
 			}
 		}
 	}
