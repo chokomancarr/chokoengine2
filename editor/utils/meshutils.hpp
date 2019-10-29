@@ -6,10 +6,15 @@ CE_BEGIN_ED_NAMESPACE
 class MeshSurfaceData;
 
 class MeshUtils {
+	static bool initd;
+	static Shader blurShad;
+
+	static void Init();
+
 public:
 	static MeshSurfaceData GenSurfaceData(const Mesh& m);
 
-	static void SurfaceBlur(const MeshSurfaceData& data, const RenderTarget& tar, float size);
+	static void SurfaceBlur(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar, float size);
 };
 
 class MeshSurfaceData {
@@ -31,10 +36,15 @@ public:
 	TextureBuffer iconData;
 	TextureBuffer conData;
 
-	FrameBuffer uvInfoTex;
-	FrameBuffer jmpInfoTex;
+	struct infoTexSt {
+		FrameBuffer uvInfoTex;
+		FrameBuffer jmpInfoTex;
+	};
 
-	void GenInfoTex(const Int2& res);
+	std::unordered_map<uint64_t, infoTexSt> texs;
+
+	infoTexSt GetInfoTex(const Int2& res);
+	infoTexSt GenInfoTex(const Int2& res);
 };
 
 CE_END_ED_NAMESPACE

@@ -4,8 +4,23 @@
 #include "glsl/minVert.h"
 #include "glsl/uvinfo.h"
 #include "glsl/uvjmpgen.h"
+#include "glsl/surfaceBlurFrag.h"
 
 CE_BEGIN_ED_NAMESPACE
+
+bool MeshUtils::initd = false;
+Shader MeshUtils::blurShad;
+
+void MeshUtils::Init() {
+	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
+		->AddUniforms({
+			"sres", "reso", "colTex", "idTex", 
+			"jmpTex", "posBuf", "indBuf", "edatBuf",
+			"iconBuf", "conBuf", "dir0", "blurcnt"
+		});
+
+	initd = true;
+}
 
 MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	auto approx3 = [](const Vec3& v1, const Vec3& v2) {
@@ -142,8 +157,53 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	return data;
 }
 
-void MeshUtils::SurfaceBlur(const MeshSurfaceData& data, const RenderTarget& tar, float size) {
+void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar, float size) {
+	if (!initd) Init();
 
+	const auto w = src->width();
+	const auto h = src->height();
+	const auto info = data.GetInfoTex(Int2(w, h));
+
+	glViewport(0, 0, w, h);
+
+	tar->BindTarget();
+
+	blurShad->Bind();
+
+	glUniform2f(blurShad->Loc(0), w, h);
+	glUniform2f(blurShad->Loc(1), w, h);
+	glUniform1i(blurShad->Loc(2), 0);
+	glActiveTexture(GL_TEXTURE0);
+	src->Bind();
+	glUniform1i(blurShad->Loc(3), 1);
+	glActiveTexture(GL_TEXTURE1);
+	info.uvInfoTex->Bind();
+	glUniform1i(blurShad->Loc(4), 2);
+	glActiveTexture(GL_TEXTURE2);
+	info.jmpInfoTex->Bind();
+	glUniform1i(blurShad->Loc(5), 3);
+	glActiveTexture(GL_TEXTURE3);
+	data.positions->Bind();
+	glUniform1i(blurShad->Loc(6), 4);
+	glActiveTexture(GL_TEXTURE4);
+	data.indices->Bind();
+	glUniform1i(blurShad->Loc(7), 5);
+	glActiveTexture(GL_TEXTURE5);
+	data.edgeData->Bind();
+	glUniform1i(blurShad->Loc(8), 6);
+	glActiveTexture(GL_TEXTURE6);
+	data.iconData->Bind();
+	glUniform1i(blurShad->Loc(9), 7);
+	glActiveTexture(GL_TEXTURE7);
+	data.conData->Bind();
+	glUniform2f(blurShad->Loc(10), 1, 0);
+	glUniform1i(blurShad->Loc(11), (int)size);
+
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
+	blurShad->Unbind();
+
+	tar->UnbindTarget();
 }
 
 
@@ -159,10 +219,19 @@ void MeshSurfaceData::InitShaders() {
 	initd = true;
 }
 
-void MeshSurfaceData::GenInfoTex(const Int2& res) {
+MeshSurfaceData::infoTexSt MeshSurfaceData::GetInfoTex(const Int2& res) {
+	if (texs.count((uint64_t)res.x << 32 | res.y) == 0) return GenInfoTex(res);
+	return texs[(uint64_t)res.x << 32 | res.y];
+}
+
+MeshSurfaceData::infoTexSt MeshSurfaceData::GenInfoTex(const Int2& res) {
 	if (!initd) InitShaders();
 
 	glViewport(0, 0, res.x, res.y);
+
+	auto& tx = texs[(uint64_t)res.x << 32 | res.y];
+	auto& uvInfoTex = tx.uvInfoTex;
+	auto& jmpInfoTex = tx.jmpInfoTex;
 
 	uvInfoTex = FrameBuffer_New(res.x, res.y, { GL_RGBA32I });
 	uvInfoTex->Bind();
@@ -198,6 +267,8 @@ void MeshSurfaceData::GenInfoTex(const Int2& res) {
 
 	jmpInfoShad->Unbind();
 	jmpInfoTex->Unbind();
+
+	return tx;
 }
 
 CE_END_ED_NAMESPACE

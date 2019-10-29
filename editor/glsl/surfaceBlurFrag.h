@@ -1,7 +1,5 @@
 namespace glsl {
 	const char surfBlurFrag[] = R"(
-#version 330 core
-
 uniform vec2 sres;
 uniform vec2 reso;
 uniform sampler2D colTex;

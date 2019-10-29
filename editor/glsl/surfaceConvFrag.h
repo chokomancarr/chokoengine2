@@ -1,5 +1,5 @@
 namespace glsl {
-	const char surfBlurFrag[] = R"(
+	const char surfConvFrag[] = R"(
 #version 330 core
 
 uniform vec2 sres;
