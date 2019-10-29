@@ -1,10 +1,12 @@
 #include "chokoeditor.hpp"
 #include "ce2/parsers/mesh.hpp"
 #include "ext/ui_ext.hpp"
+#include "utils/meshutils.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
 Background ss;
+MeshSurfaceData dt;
 
 inline void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
@@ -13,6 +15,10 @@ inline void paint() {
 	EOverlayManager::Draw();
 
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
+
+	glBlendFunc(GL_ONE, GL_ZERO);
+	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.jmpInfoTex->tex(0));
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 std::string ChokoEditor::assetPath;
@@ -46,9 +52,13 @@ void ChokoEditor::Main() {
 
 	//Scene::sky(ss);
 	//Scene::sky()->brightness(1);
-	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
+	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
+	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/a.blend/a.blend.prefab", true);
 	Scene::AddObject(obj);
-	obj->children()[0]->GetComponent<MeshRenderer>()->materials({
+	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
+	dt = MeshUtils::GenSurfaceData(mr->mesh());
+	dt.GenInfoTex(Int2(100));
+	mr->materials({
 		(Material)EAssetList::Get(EAssetType::Material, "unlit.material")
 	});
 	//Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/cornell.blend/cornell.blend.prefab"));

@@ -1,7 +1,5 @@
 namespace glsl {
 	const char uvjmpgenFrag[] = R"(
-#version 330 core
-
 uniform vec2 reso;
 //uv data: tri id (x), edge id (y), edge t (z)
 uniform isampler2D uvinfo;
@@ -27,7 +25,7 @@ void main() {
 
 	ivec4 info = smp(uv);
 	if (info.x > 0) { //pixel inside triangle
-		outColor = vec4(-1, 0.5 + info.x * 0.2, 0, 0);
+		outColor = vec4(-1, info.x * 0.3, 0.1 + info.y * 0.3, 0);
 		return;
 	}
 

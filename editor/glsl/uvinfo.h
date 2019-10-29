@@ -1,7 +1,5 @@
 namespace glsl {
 	const char uvinfoVert[] = R"(
-#version 330 core
-
 uniform samplerBuffer uvTex;
 uniform isamplerBuffer elemTex;
 
@@ -13,14 +11,12 @@ void main() {
 	v2f_tri.y = (i == 1) ? 1.0 : 0.0;
 	v2f_tri.z = (i == 2) ? 1.0 : 0.0;
 
-	int e = texelFetch(elemTex, gl_VertexID).r;
+	int e = texelFetch(elemTex, gl_VertexID / 3)[i];
 	gl_Position = vec4(texelFetch(uvTex, e).xy * 2.0 - 1.0, 0, 1);
 }
 )";
 
 	const char uvinfoFrag[] = R"(
-#version 330 core
-
 in vec3 v2f_tri;
 
 out ivec4 outColor;

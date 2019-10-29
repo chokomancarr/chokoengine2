@@ -19,6 +19,8 @@ public:
 
 	~_RenderTarget();
 
+	void Clear(const Color& c, const float d) const;
+
 	void BindTarget(bool read = false) const;
 	void UnbindTarget(bool read = false) const;
 

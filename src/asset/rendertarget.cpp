@@ -35,6 +35,11 @@ _RenderTarget::~_RenderTarget() {
 	glDeleteFramebuffers(1, &_fbo);
 }
 
+void _RenderTarget::Clear(const Color& c, const float d) const {
+	glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0, &c[0]);
+	if (_depth) glClearBufferfv(GL_DEPTH, 0, &d);
+}
+
 void _RenderTarget::BindTarget(bool read) const {
 	glBindFramebuffer(read ? GL_READ_FRAMEBUFFER : GL_DRAW_FRAMEBUFFER, _fbo);
 }
