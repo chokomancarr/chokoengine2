@@ -21,7 +21,7 @@ struct TextureOptions {
     TextureOptions() :
         xwrap(TextureWrap::Clamp),
         ywrap(TextureWrap::Clamp),
-        mipmaps(5),
+        mipmaps(0),
         linear(true)
     {}
     

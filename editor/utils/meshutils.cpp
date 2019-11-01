@@ -157,7 +157,8 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	return data;
 }
 
-void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar, float size) {
+void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
+		const RenderTarget& tar, const RenderTarget& tmp, float size) {
 	if (!initd) Init();
 
 	const auto w = src->width();
@@ -165,8 +166,6 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src, const Ren
 	const auto info = data.GetInfoTex(Int2(w, h));
 
 	glViewport(0, 0, w, h);
-
-	tar->BindTarget();
 
 	blurShad->Bind();
 
@@ -177,10 +176,10 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src, const Ren
 	src->Bind();
 	glUniform1i(blurShad->Loc(3), 1);
 	glActiveTexture(GL_TEXTURE1);
-	info.uvInfoTex->Bind();
+	info.uvInfoTex->tex(0)->Bind();
 	glUniform1i(blurShad->Loc(4), 2);
 	glActiveTexture(GL_TEXTURE2);
-	info.jmpInfoTex->Bind();
+	info.jmpInfoTex->tex(0)->Bind();
 	glUniform1i(blurShad->Loc(5), 3);
 	glActiveTexture(GL_TEXTURE3);
 	data.positions->Bind();
@@ -199,11 +198,20 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src, const Ren
 	glUniform2f(blurShad->Loc(10), 1, 0);
 	glUniform1i(blurShad->Loc(11), (int)size);
 
+	tmp->BindTarget();
+	tmp->Clear(Color(0, 0), 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
-	blurShad->Unbind();
+	tar->BindTarget();
+	tar->Clear(Color(0, 0), 1);
+	//glActiveTexture(GL_TEXTURE0);
+	//tmp->Bind();
+	glUniform2f(blurShad->Loc(10), 0, 1);
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
 	tar->UnbindTarget();
+
+	blurShad->Unbind();
 }
 
 

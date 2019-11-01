@@ -24,6 +24,8 @@ out vec4 outColor;
 
 const float rad2deg = 180 / 3.14159;
 
+const int tolerance = 2;
+
 float length2(vec3 r) {
 	return dot(r, r);
 }
@@ -65,9 +67,10 @@ vec4 sample(
 		}
 		ivec4 npx = texture(idTex, pos * dreso);
 		int tid2 = npx.x - 1;
-		if (tid2 < 0) { //not triangle, finish
-			break;
-		}
+		//if (tid2 < 0) { //not triangle, finish
+		//	break;
+		//}
+		if (tid2 < 0) tid2 = tid;
 		if (tid != tid2) {
 			vec4 ed = texelFetch(edatBuf, tid * 3);
 			vec2 ts1 = rebase2(dr, ed.xy, ed.zw);
@@ -118,16 +121,24 @@ void main() {
 
 	//this color
 	vec4 col = texture(colTex, uvr);
+	
 	//get current triangle
 	ivec4 px = texture(idTex, uvr);
+	//vec4 jx = texture(jmpTex, uvr);
+	//if (jx.x >= 0) { //jump here
+	//	col = texture(colTex, jx.xy * reso);
+	//}
 	//not in triangle, end
-	if (px.x == 0) {
-		outColor = col * 0.5;
-		return;
-	}
+	//if (px.x == 0) {
+	//	outColor = col;// * 0.5;
+	//	return;
+	//}
+	
 	int n = 1;
-	col += sample(dir0, px, uv, dreso, n) + sample(-dir0, px, uv, dreso, n);
-	outColor = col / n;
+	col +=
+		sample(dir0, px, uv, dreso, n);// + 
+		//sample(-dir0, px, uv, dreso, n);
+	outColor = col / n * ((px.x == 0) ? 0.2 : 1);
 }
 )";
 }

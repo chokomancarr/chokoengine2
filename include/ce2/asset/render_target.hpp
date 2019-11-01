@@ -15,7 +15,7 @@ public:
 	 * If \p hdr is true, the buffer will be 32-bit instead of 8-bit
 	 * \p depth specifies if a depth buffer is created
 	 */
-	_RenderTarget(uint w, uint h, bool hdr, bool depth);
+	_RenderTarget(uint w, uint h, bool hdr, bool depth, const TextureOptions opts = TextureOptions());
 
 	~_RenderTarget();
 

@@ -12,6 +12,20 @@ void SetTexParams(int mp = 0, GLenum ws = GL_CLAMP_TO_EDGE, GLenum wt = GL_CLAMP
 	glTexParameteri(T, GL_TEXTURE_MAG_FILTER, mg);
 }
 
+template<GLenum T = GL_TEXTURE_2D>
+void SetTexParams(const TextureOptions& opts) {
+	const GLenum wraps[] = { GL_CLAMP_TO_EDGE, GL_REPEAT, GL_MIRRORED_REPEAT };
+	if (opts.mipmaps >= 0) glTexParameteri(T, GL_TEXTURE_MAX_LEVEL, opts.mipmaps);
+	glTexParameteri(T, GL_TEXTURE_WRAP_S, wraps[(int)opts.xwrap]);
+	glTexParameteri(T, GL_TEXTURE_WRAP_T, wraps[(int)opts.ywrap]);
+	glTexParameteri(T, GL_TEXTURE_MIN_FILTER,
+		(opts.linear) ? (
+			(opts.mipmaps > 0) ?
+			GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR
+		) : GL_NEAREST);
+	glTexParameteri(T, GL_TEXTURE_MAG_FILTER, (opts.linear) ? GL_LINEAR : GL_NEAREST);
+}
+
 class Texture_I {
 public:
     static void FlipY(std::vector<byte>& data, uint w, uint h);

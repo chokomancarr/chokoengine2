@@ -9,6 +9,7 @@ Background ss;
 MeshSurfaceData dt;
 Int2 sz;
 Texture tx;
+RenderTarget tx2t;
 RenderTarget tx2;
 
 inline void paint() {
@@ -22,8 +23,14 @@ inline void paint() {
 	glBlendFunc(GL_ONE, GL_ZERO);
 	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	UI::Texture(Rect(220, Display::height() - 220, 200, 200), (Texture)tx2);
 
-	MeshUtils::SurfaceBlur(dt, tx, tx2, 10);
+	glBlendFunc(GL_ONE, GL_ZERO);
+	UI::Texture(Rect(Display::width() - 300, Display::height() - 320, 300, 300), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	UI::Texture(Rect(Display::width() - 300, Display::height() - 320, 300, 300), (Texture)tx2);
+
+	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 10);
 }
 
 std::string ChokoEditor::assetPath;
@@ -58,9 +65,12 @@ void ChokoEditor::Main() {
 	//Scene::sky(ss);
 	//Scene::sky()->brightness(1);
 	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
-	tx = (Texture)EAssetList::Get(EAssetType::Texture, "a.jpg");
+	tx = (Texture)EAssetList::Get(EAssetType::Texture, "t.png");
 	sz = Int2(tx->width(), tx->height());
-	tx2 = RenderTarget::New(sz.x, sz.y, false, false);
+
+	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
+	tx2t = RenderTarget::New(sz.x, sz.y, false, false, opts);
+	tx2 = RenderTarget::New(sz.x, sz.y, false, false, opts);
 	
 	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/a.blend/a.blend.prefab", true);
 	Scene::AddObject(obj);

@@ -17,11 +17,17 @@ ivec4 smp(vec2 v) {
 void main() {
 	vec2 uv = gl_FragCoord.xy;
 	
-	int kernel[16] = int[]( 
+	const int CNT = 16;
+	int kernel[CNT*2] = int[]( 
 		-1,  0,   1, 0,
 		 0, -1,   0, 1,
 		-1, -1,  -1, 1,
-		 1, -1,   1, 1 );
+		 1, -1,   1, 1,
+		-2,  0,   2, 0,
+		 0, -2,   0, 2,
+		-2, -2,   2, 2,
+		-2,  2,   2, -2
+		  );
 
 	ivec4 info = smp(uv);
 	if (info.x > 0) { //pixel inside triangle
@@ -29,7 +35,7 @@ void main() {
 		return;
 	}
 
-	for (int a = 0; a < 8; a++) { //pixel beside triangle
+	for (int a = 0; a < CNT; a++) { //pixel beside triangle
 		vec2 duv = vec2(kernel[a*2], kernel[a*2 + 1]);
 		info = smp(uv + duv);
 		int tid = (info.x);

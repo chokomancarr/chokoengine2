@@ -14,7 +14,8 @@ class MeshUtils {
 public:
 	static MeshSurfaceData GenSurfaceData(const Mesh& m);
 
-	static void SurfaceBlur(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar, float size);
+	static void SurfaceBlur(MeshSurfaceData& data, const Texture& src,
+			const RenderTarget& tar, const RenderTarget& tmp, float size);
 };
 
 class MeshSurfaceData {

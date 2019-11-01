@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 #include "glsl/uiTexVert.h"
 #include "glsl/colorpicker_h.h"

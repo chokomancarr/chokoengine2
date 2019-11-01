@@ -10,13 +10,13 @@ _Texture::_Texture(std::nullptr_t)
 _Texture::_Texture(uint w, uint h, GLuint ptr)
 		: _pointer(ptr), _width(w), _height(h), _hdr(false) {}
 
-_Texture::_Texture(uint w, uint h, bool hdr)
+_Texture::_Texture(uint w, uint h, bool hdr, const TextureOptions& opts)
 		: _width(w), _height(h), _channels(4), _hdr(hdr) {
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
 	std::vector<byte> data(w * h * 4);
 	glTexImage2D(GL_TEXTURE_2D, 0, hdr? GL_RGBA32F : GL_RGBA, (int)w, (int)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
-	SetTexParams<>(0, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+	SetTexParams<>(opts);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -24,17 +24,7 @@ _Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts, cons
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
 	glTexImage2D(GL_TEXTURE_2D, 0, type, (int)w, (int)h, 0, pixelFmt, pixelType, pixels);
-	const GLenum wraps[] = { GL_CLAMP_TO_EDGE, GL_REPEAT, GL_MIRRORED_REPEAT };
-	SetTexParams<>(0,
-		wraps[(int)opts.xwrap],
-		wraps[(int)opts.ywrap],
-		(opts.linear) ? (
-		(opts.mipmaps > 0) ?
-			GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR
-			) : GL_NEAREST,
-			(opts.linear) ?
-		GL_LINEAR : GL_NEAREST
-		);
+	SetTexParams<>(opts);
 	if (opts.mipmaps > 0) {
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}

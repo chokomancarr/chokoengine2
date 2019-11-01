@@ -7,8 +7,8 @@ CE_BEGIN_NAMESPACE
 _RenderTarget::_RenderTarget(uint w, uint h, GLuint tex, GLuint depth, GLuint fbo)
 		: _Texture(w, h, tex), _depth(depth), _fbo(fbo) {}
 
-_RenderTarget::_RenderTarget(uint w, uint h, bool hdr, bool d)
-		: _Texture(w, h, hdr), _depth(0) {
+_RenderTarget::_RenderTarget(uint w, uint h, bool hdr, bool d, const TextureOptions opts)
+		: _Texture(w, h, hdr, opts), _depth(0) {
 	if (d) {
 		glGenTextures(1, &_depth);
 		glBindTexture(GL_TEXTURE_2D, _depth);
@@ -19,8 +19,8 @@ _RenderTarget::_RenderTarget(uint w, uint h, bool hdr, bool d)
 
 	glGenFramebuffers(1, &_fbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _pointer, 0);
-	if (d) glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depth, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _pointer, 0);
+	if (d) glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _depth, 0);
 
 	GLenum dbuf = GL_COLOR_ATTACHMENT0;
 	glDrawBuffers(1, &dbuf);

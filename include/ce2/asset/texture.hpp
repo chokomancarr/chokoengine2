@@ -22,7 +22,7 @@ protected: //allow rendertarget access
 	std::vector<byte> _pixels;
 
 public:
-	_Texture(uint w, uint h, bool hdr);
+	_Texture(uint w, uint h, bool hdr, const TextureOptions& opts);
 
 	_Texture(uint w, uint h, GLenum type, const TextureOptions& opts, const void* pixels = nullptr, const GLenum pixelFmt = GL_RGBA, const GLenum pixelType = GL_UNSIGNED_BYTE);
 
