@@ -22,6 +22,7 @@ class MeshSurfaceData {
 	static bool initd;
 
 	static Shader uvInfoShad;
+	static Shader uvInfoShad2;
 	static Shader jmpInfoShad;
 
 	static void InitShaders();
@@ -30,12 +31,12 @@ public:
 	size_t vertCount;
 	size_t indCount;
 
-	TextureBuffer positions;
-	TextureBuffer uvcoords;
-	TextureBuffer indices;
-	TextureBuffer edgeData;
-	TextureBuffer iconData;
-	TextureBuffer conData;
+	TextureBuffer positions; //model space XYZ coords
+	TextureBuffer uvcoords; //texture space UV coords
+	TextureBuffer indices; //triangle indices
+	TextureBuffer edgeData; //texture space (u1-u0, u2-u0), model space (p1-p0, 0), model space (p2-p0, 0)
+	TextureBuffer iconData; //connected triangle indices
+	TextureBuffer conData; //connected vectors (why is this needed????????), angle
 
 	struct infoTexSt {
 		FrameBuffer uvInfoTex;

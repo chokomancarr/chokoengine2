@@ -3,6 +3,7 @@
 #include "glutils.hpp"
 #include "glsl/minVert.h"
 #include "glsl/uvinfo.h"
+#include "glsl/uvinfo_exp.h"
 #include "glsl/uvjmpgen.h"
 #include "glsl/surfaceBlurFrag.h"
 
@@ -217,11 +218,14 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 
 bool MeshSurfaceData::initd = false;
 Shader MeshSurfaceData::uvInfoShad;
+Shader MeshSurfaceData::uvInfoShad2;
 Shader MeshSurfaceData::jmpInfoShad;
 
 void MeshSurfaceData::InitShaders() {
 	(uvInfoShad = Shader::New(glsl::uvinfoVert, glsl::uvinfoFrag))
 		->AddUniforms({ "uvTex", "elemTex" });
+	(uvInfoShad2 = Shader::New(glsl::minVert, glsl::uvinfoExpFrag))
+		->AddUniforms({ "reso", "uvinfo", "uvcoords", "indices" });
 	(jmpInfoShad = Shader::New(glsl::minVert, glsl::uvjmpgenFrag))
 		->AddUniforms({ "uvinfo", "edgeData", "reso" });
 	initd = true;
@@ -256,7 +260,24 @@ MeshSurfaceData::infoTexSt MeshSurfaceData::GenInfoTex(const Int2& res) {
 	GLUtils::DrawArrays(GL_TRIANGLES, indCount * 3);
 
 	uvInfoShad->Unbind();
+	
+
+	uvInfoShad2->Bind();
+	
+	glUniform2f(uvInfoShad2->Loc(0), res.x, res.y);
+	glUniform1i(uvInfoShad2->Loc(1), 0);
+	glActiveTexture(GL_TEXTURE0);
+	uvInfoTex->tex(0)->Bind();
+	glUniform1i(uvInfoShad2->Loc(2), 1);
+	glActiveTexture(GL_TEXTURE1);
+	uvcoords->Bind();
+	glUniform1i(uvInfoShad2->Loc(3), 2);
+	glActiveTexture(GL_TEXTURE2);
+	indices->Bind();
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+	
 	uvInfoTex->Unbind();
+
 
 	jmpInfoTex = FrameBuffer_New(res.x, res.y, { GL_RGBA32F });
 	jmpInfoTex->Bind();

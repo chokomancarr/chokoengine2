@@ -100,8 +100,8 @@ vec4 sample(
 			//new coords
 			tid = tid2;
 			vec4 tcd = texelFetch(edatBuf, tid * 3);
-			//dr = tcd.xy * ts2.x + tcd.zw * ts2.y;
-			//dr = normalize(dr);
+			dr = tcd.xy * ts2.x + tcd.zw * ts2.y;
+			dr = normalize(dr);
 			drr = dr * dreso;
 		}
 		eid = npx.y;
