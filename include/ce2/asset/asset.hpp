@@ -24,6 +24,7 @@ CE_END_NAMESPACE
 #include "./prefab.hpp"
 #include "./shader.hpp"
 #include "./material.hpp"
+#include "./prefab.hpp"
 #include "./texture.hpp"
 #include "./texture3.hpp"
 #include "./background.hpp"

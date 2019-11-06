@@ -141,7 +141,7 @@ void EAssetList::Init() {
     _exts[(int)EAssetType::Shader] = { "shader" };
 	_exts[(int)EAssetType::VShader] = { "visualshader" };
     _exts[(int)EAssetType::Texture] = { "png", "jpg", "bmp" };
-    _exts[(int)EAssetType::SceneObject] = { "prefab" };
+    _exts[(int)EAssetType::Prefab] = { "prefab" };
 
     _export_exts[(int)EExportType::Model] = { "blend" };
     _export_exts[(int)EExportType::Image] = { "psd" };

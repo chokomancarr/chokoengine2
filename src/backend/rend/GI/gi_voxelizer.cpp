@@ -39,6 +39,9 @@ bool GI::Voxelizer::InitShaders() {
 }
 
 void GI::Voxelizer::Bake(const Mat4x4& v, float sz) {
+#ifdef PLATFORM_MAC
+	CE_NOT_IMPLEMENTED
+#else
 	const auto& p = glm::ortho(-sz / 2, sz / 2, -sz / 2, sz / 2, 0.f, sz);
 	lastVP = p * v;
 
@@ -70,6 +73,7 @@ void GI::Voxelizer::Bake(const Mat4x4& v, float sz) {
 	}
 
 	voxShad->Unbind();
+#endif
 }
 
 void GI::Voxelizer::DrawDebug(const Mat4x4& p) {

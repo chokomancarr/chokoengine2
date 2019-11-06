@@ -14,6 +14,8 @@ protected:
     std::string _name;
     const ChokoEngine::objectid _id;
 
+	virtual void _CopyInfo(const Object& tar);
+
 	template <typename T>
 	std::shared_ptr<T> get_shared() const;
 public:

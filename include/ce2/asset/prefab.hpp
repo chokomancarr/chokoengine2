@@ -5,19 +5,16 @@ CE_BEGIN_NAMESPACE
 
 /* Prefab class
  * A holder of scene objects
- * Saves a configuration of objects,
+ * Saves a configuration of objects
  * that can be instantiated into the scene
  */
 class _Prefab : public _Asset { CE_OBJECT_COMMON
-
-    std::vector<SceneObject> _objects;
+    SceneObject _rootObject;
 
 public:
-    _Prefab(const std::vector<SceneObject>& o = {});
+    _Prefab(const SceneObject& o = nullptr);
 
-    void AddObject(const SceneObject& o);
-
-    std::vector<SceneObject> Instantiate();
+    SceneObject Instantiate() const;
 };
 
 CE_END_NAMESPACE

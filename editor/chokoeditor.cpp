@@ -1,16 +1,8 @@
 #include "chokoeditor.hpp"
 #include "ce2/parsers/mesh.hpp"
 #include "ext/ui_ext.hpp"
-#include "utils/meshutils.hpp"
 
 CE_BEGIN_ED_NAMESPACE
-
-Background ss;
-MeshSurfaceData dt;
-Int2 sz;
-Texture tx;
-RenderTarget tx2t;
-RenderTarget tx2;
 
 inline void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
@@ -19,18 +11,6 @@ inline void paint() {
 	EOverlayManager::Draw();
 
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
-
-	glBlendFunc(GL_ONE, GL_ZERO);
-	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	UI::Texture(Rect(220, Display::height() - 220, 200, 200), (Texture)tx2);
-
-	glBlendFunc(GL_ONE, GL_ZERO);
-	UI::Texture(Rect(Display::width() - 300, Display::height() - 320, 300, 300), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	UI::Texture(Rect(Display::width() - 300, Display::height() - 320, 300, 300), (Texture)tx2);
-
-	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 10);
 }
 
 std::string ChokoEditor::assetPath;
@@ -65,29 +45,8 @@ void ChokoEditor::Main() {
 	//Scene::sky(ss);
 	//Scene::sky()->brightness(1);
 	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
-	tx = (Texture)EAssetList::Get(EAssetType::Texture, "t.png");
-	sz = Int2(tx->width(), tx->height());
-
-	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
-	tx2t = RenderTarget::New(sz.x, sz.y, false, false, opts);
-	tx2 = RenderTarget::New(sz.x, sz.y, false, false, opts);
 	
-	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/a.blend/a.blend.prefab", true);
-	Scene::AddObject(obj);
-	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
-	dt = MeshUtils::GenSurfaceData(mr->mesh());
-	dt.GenInfoTex(sz);
-
-	mr->materials({
-		(Material)EAssetList::Get(EAssetType::Material, "unlit.material")
-	});
-	mr->materials()[0]->SetUniform("tex", (Texture)tx2);
-
-#if 0
-	//Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/cornell.blend/cornell.blend.prefab"));
-	//*
-	/*
-	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true));
+	Scene::AddObject(((Prefab)EAssetList::Get(EAssetType::Prefab, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true))->Instantiate());
 	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
 	
@@ -107,7 +66,7 @@ void ChokoEditor::Main() {
 		l->radius(0.05f);
 		l->color(Color(1, 0.9f, 0.7f));
 		l->softShadows(true);
-		l->shadowSamples(20);
+		l->shadowSamples(1);
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
 	}
 	/*
@@ -138,7 +97,6 @@ void ChokoEditor::Main() {
 	pr->updateFrequency(LightProbeUpdateFrequency::OnStart);
 	pr->strength(1);
 	*/
-#endif
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();

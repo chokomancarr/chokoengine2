@@ -7,7 +7,13 @@
 #include <unistd.h>
 #endif
 
+#ifdef PLATFORM_MAC
+#define GLFW_INCLUDE_GLCOREARB
+#define GLFW_INCLUDE_GLEXT
+#else
 #include <GL/glew.h>
+#endif
+
 #include <GLFW/glfw3.h>
 
 #define GLM_ENABLE_EXPERIMENTAL

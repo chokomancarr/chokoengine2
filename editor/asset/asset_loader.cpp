@@ -102,10 +102,10 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
 		CE_E_MKM(EAssetType, Armature)
 		CE_E_MKM(EAssetType, Material)
 		CE_E_MKM(EAssetType, Mesh)
+		CE_E_MKM(EAssetType, Prefab)
 		CE_E_MKM(EAssetType, Shader)
 		CE_E_MKM(EAssetType, VShader)
 		CE_E_MKM(EAssetType, Texture)
-		CE_E_MKM(EAssetType, SceneObject)
 		default:
 			break;
 	}
@@ -134,10 +134,10 @@ Asset EAssetLoader::Load(const std::string& path, const EAssetType t, bool async
 		CE_E_LD(Armature)
 		CE_E_LD(Material)
 		CE_E_LD(Mesh)
+		CE_E_LD(Prefab)
 		CE_E_LD(Shader)
-		CE_E_LD(VShader)
 		CE_E_LD(Texture)
-		CE_E_LD(SceneObject)
+		CE_E_LD(VShader)
 		default:
 			break;
 	}
@@ -326,13 +326,13 @@ CE_E_AL_IMPL(Texture) {
 	return Texture::New(ChokoEditor::assetPath + path, opts, async);
 }
 
-CE_E_AL_IMPL(SceneObject) {
+CE_E_AL_IMPL(Prefab) {
 	const auto meta = LoadMeta(path);
 	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	if (data.group[0].key.string != "object") {
 		Debug::Error("AssetLoader::LoadPrefab", "Object entry missing!");
 	}
-	return JsonToObject(data.group[0].value, async);
+	return Prefab::New(JsonToObject(data.group[0].value, async));
 }
 
 CE_E_AL_IMPL_EX(Model) {

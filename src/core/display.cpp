@@ -29,6 +29,8 @@ bool Display::InitWindow(const std::string& title, uint w, uint h) {
 		Debug::Warning("System", "Using OpenGL 3.3 context because 4.3 is not supported");
 	}
 	glfwMakeContextCurrent(_window);
+
+#ifndef PLATFORM_MAC
 	glewExperimental = true;
 	GLint GlewInitResult = glewInit();
 	if (GLEW_OK != GlewInitResult)
@@ -36,6 +38,7 @@ bool Display::InitWindow(const std::string& title, uint w, uint h) {
 		Debug::Error("System", "Glew error: " + std::string((const char*)glewGetErrorString(GlewInitResult)));
 		abort();
 	}
+#endif
 
 	_width = w;
 	_height = h;

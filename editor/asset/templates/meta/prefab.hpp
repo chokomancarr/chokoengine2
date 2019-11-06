@@ -4,7 +4,7 @@
 
 CE_BEGIN_META_NAMESPACE
 
-const std::string SceneObject = header + R"(
+const std::string Prefab = header + R"(
   "dummy":"dummy"
 })";
 

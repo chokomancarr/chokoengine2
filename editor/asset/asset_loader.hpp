@@ -37,11 +37,11 @@ public:
     CE_E_DEF(Armature);
     CE_E_DEF(Material);
     CE_E_DEF(Mesh);
+    CE_E_DEF(Prefab);
     CE_E_DEF(Shader);
-	CE_E_DEF(VShader);
     CE_E_DEF(Texture);
-    CE_E_DEF(SceneObject);
-
+	CE_E_DEF(VShader);
+    
     CE_E_DEF_EX(Model);
     CE_E_DEF_EX(Image);
 

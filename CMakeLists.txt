@@ -10,7 +10,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
-find_package(GLEW REQUIRED)
+if (NOT APPLE)
+	find_package(GLEW REQUIRED)
+endif()
 find_package(JPEG REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(Threads REQUIRED)
@@ -42,11 +44,16 @@ set(INC_DIRS
 	${PROJECT_SOURCE_DIR}/src
 	${GLFW3_INCLUDE_DIR}
 	${GLM_INCLUDE_DIR}
-	${GLEW_INCLUDE_DIR}
 	${JPEG_INCLUDE_DIR}
 	${FREETYPE_INCLUDE_DIRS}
 	${PROJECT_SOURCE_DIR}/chokoballs/include
 )
+if (NOT APPLE)
+set(INC_DIRS
+	${INC_DIRS}
+	${GLEW_INCLUDE_DIR}
+)
+endif()
 if (MSVC)
     set(INC_DIRS
         ${INC_DIRS}
@@ -68,11 +75,16 @@ set(LIBS
 	${OPENGL_gl_LIBRARY}
 	glfw
 	${GLM_LIBRARY}
-	${GLEW_LIBRARY}
 	${JPEG_LIBRARY}
 	${FREETYPE_LIBRARIES}
 	#ChokoBalls
 )
+if (NOT APPLE)
+set(LIBS
+	${LIBS}
+	${GLEW_LIBRARY}
+)
+endif()
 if(MSVC)
     set(LIBS
         ${LIBS}
@@ -113,11 +125,6 @@ if(MSVC)
 endif()
 
 add_subdirectory(src)
-
-include(GenerateExportHeader)
-generate_export_header(ChokoEngine)
-
-set_target_properties(ChokoEngine PROPERTIES PUBLIC_HEADER include/ce2/chokoengine.hpp)
 
 target_link_libraries(ChokoEngine ${LIBS})
 

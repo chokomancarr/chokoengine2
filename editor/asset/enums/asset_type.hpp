@@ -10,10 +10,10 @@ enum class EAssetType {
     Font,
     Material,
     Mesh,
+    Prefab,
     Shader,
-	VShader,
     Texture,
-    SceneObject,
+	VShader,
     _COUNT,
     Unknown = 0xff
 };
@@ -33,10 +33,10 @@ _EAssetTypeFromClass(Armature)
 _EAssetTypeFromClass(Font)
 _EAssetTypeFromClass(Material)
 _EAssetTypeFromClass(Mesh)
+_EAssetTypeFromClass(Prefab)
 _EAssetTypeFromClass(Shader)
 _EAssetTypeFromClass(VShader)
 _EAssetTypeFromClass(Texture)
-_EAssetTypeFromClass(SceneObject)
 
 #undef _EAssetTypeFromClass
 

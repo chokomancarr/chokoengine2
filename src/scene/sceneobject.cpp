@@ -72,6 +72,7 @@ SceneObject _SceneObject::Clone() const {
     std::function<SceneObject(const SceneObject&, const SceneObject&)> doclone = 
             [&](const SceneObject& o, const SceneObject& p) {
         SceneObject copy = SceneObject::New();
+        copy->_CopyInfo((Object)o);
         copy->_transform = o->_transform;
         for (auto& c : o->_components) {
             copy->_components.push_back(c->Clone());
