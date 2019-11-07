@@ -44,6 +44,8 @@ vec2 rebase3(vec3 v, vec3 i, vec3 j) {
 }
 
 vec3 orient(vec3 r, vec3 x, vec3 t) {
+	x = normalize(x);
+	t = normalize(t);
 	float th = dot(r, x);
 	float lt = sqrt(length2(r) - th * th);
 	return th * x + lt * t;
@@ -100,14 +102,16 @@ vec4 sample(
 			//new coords
 			tid = tid2;
 			vec4 tcd = texelFetch(edatBuf, tid * 3);
-			//dr = tcd.xy * ts2.x + tcd.zw * ts2.y;
-			//dr = normalize(dr);
+			dr = tcd.xy * ts2.x + tcd.zw * ts2.y;
+			dr = normalize(dr);
 			drr = dr * dreso;
+
+			col = vec4(ws2, 1);//+= texture(colTex, pos * dreso);
 		}
 		eid = npx.y;
 		pos += dr;
 
-		col += texture(colTex, pos * dreso);
+		//col = vec4(1, 1, 1, 1);//+= texture(colTex, pos * dreso);
 		n += 1;
 	}
 	return col;
@@ -129,16 +133,18 @@ void main() {
 	//	col = texture(colTex, jx.xy * reso);
 	//}
 	//not in triangle, end
-	//if (px.x == 0) {
-	//	outColor = col;// * 0.5;
-	//	return;
-	//}
+	if (px.x == 0) {
+		outColor = vec4(0, 0, 0, 0);// * 0.5;
+		return;
+	}
 	
 	int n = 1;
 	col +=
 		sample(dir0, px, uv, dreso, n);// + 
 		//sample(-dir0, px, uv, dreso, n);
 	outColor = col / n * ((px.x == 0) ? 0.2 : 1);
+
+	outColor = sample(dir0, px, uv, dreso, n);
 }
 )";
 }

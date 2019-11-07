@@ -25,12 +25,53 @@ inline void paint() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(Rect(220, Display::height() - 220, 200, 200), (Texture)tx2);
 
-	glBlendFunc(GL_ONE, GL_ZERO);
-	UI::Texture(Rect(Display::width() - 300, Display::height() - 320, 300, 300), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	UI::Texture(Rect(Display::width() - 300, Display::height() - 320, 300, 300), (Texture)tx2);
+	const Rect r3(Display::width() - 300, Display::height() - 320, 300, 300);
 
-	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 10);
+	glBlendFunc(GL_ONE, GL_ZERO);
+	UI::Texture(r3, dt.GetInfoTex(sz).jmpInfoTex->tex(0));
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	UI::Texture(r3, (Texture)tx2);
+
+	if (r3.Contains(Input::mousePosition())) {
+		float mul = sz.x / r3.w();
+		int px = (int)((Input::mousePosition().x - r3.x()) * mul);
+		int py = sz.y - (int)((Input::mousePosition().y - r3.y()) * mul) - 1;
+
+		auto& fb1 = dt.GetInfoTex(sz).uvInfoTex;
+		fb1->Bind(true);
+		Int4 vi;
+		glReadPixels(px, py, 1, 1, GL_RGBA_INTEGER, GL_INT, &vi);
+		fb1->Unbind(true);
+
+		auto& fb2 = dt.GetInfoTex(sz).jmpInfoTex;
+		fb2->Bind(true);
+		Vec4 vj;
+		glReadPixels(px, py, 1, 1, GL_RGBA, GL_FLOAT, &vj);
+		fb2->Unbind(true);
+
+		tx2->BindTarget(true);
+		float vc[4];
+		glReadPixels(px, py, 1, 1, GL_RGBA, GL_FLOAT, vc);
+		tx2->UnbindTarget(true);
+
+		UI::Label(Rect(r3.x(), r3.y() - 60, 200, 20), "ID: "
+			+ std::to_string(vi.x) + ", "
+			+ std::to_string(vi.y) + ", "
+			+ std::to_string(vi.z) + ", "
+			+ std::to_string(vi.w), Color::white());
+		UI::Label(Rect(r3.x(), r3.y() - 40, 200, 20), "Jump: "
+			+ std::to_string(vj.x) + ", "
+			+ std::to_string(vj.y) + ", "
+			+ std::to_string(vj.z) + ", "
+			+ std::to_string(vj.w), Color::white());
+		UI::Label(Rect(r3.x(), r3.y() - 20, 200, 20), "Result: "
+			+ std::to_string(vc[0]) + ", "
+			+ std::to_string(vc[1]) + ", "
+			+ std::to_string(vc[2]) + ", "
+			+ std::to_string(vc[3]), Color::white());
+	}
+
+	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 1);
 }
 
 std::string ChokoEditor::assetPath;
@@ -69,8 +110,8 @@ void ChokoEditor::Main() {
 	sz = Int2(tx->width(), tx->height());
 
 	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
-	tx2t = RenderTarget::New(sz.x, sz.y, false, false, opts);
-	tx2 = RenderTarget::New(sz.x, sz.y, false, false, opts);
+	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
+	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
 	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/a.blend/a.blend.prefab", true);
 	Scene::AddObject(obj);
