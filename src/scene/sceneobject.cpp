@@ -9,7 +9,7 @@ _SceneObject::_SceneObject(const std::string& nm,
 }
 
 _SceneObject::~_SceneObject() {
-	Delete();
+	//Delete();
 }
 
 pTransform _SceneObject::transform() {

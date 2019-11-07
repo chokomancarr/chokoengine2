@@ -266,14 +266,13 @@ void Renderer::RenderCamera(Camera& cam) {
 	}
 
 	const auto v = cam->object()->transform()->worldMatrix().inverse();
-	//GI::Voxelizer::Bake(v, 20);
 
 	const auto& tar = cam->_target;
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
-	const auto& p = cam->_lastViewProjectionMatrix = glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip())
-		* cam->object()->transform()->worldMatrix().inverse();
+	const auto& vp = cam->_lastViewProjectionMatrix = glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip())
+		* v;
 
 	auto& gbuf = cam->_deferredBuffer;
 	auto& btar = cam->_blitTargets[0];
@@ -289,7 +288,7 @@ void Renderer::RenderCamera(Camera& cam) {
 		}
 	}
 
-	RenderScene(btar, cam->_blitTargets[1], p, gbuf, [&]() {
+	RenderScene(btar, cam->_blitTargets[1], vp, gbuf, [&]() {
 		if ((cam->_clearType == CameraClearType::Color)
 				|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
 			glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
@@ -319,7 +318,7 @@ void Renderer::RenderCamera(Camera& cam) {
 	glDisable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-	//GI::Voxelizer::DrawDebug(p);
+	GI::Voxelizer::DrawDebug(vp);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_ALWAYS);
@@ -409,6 +408,8 @@ void Renderer::Render() {
 			p->_dirty = false;
 		}
 	}
+
+	GI::Voxelizer::Bake();
 
 	for (auto& c : cameras) {
 		RenderCamera(c);

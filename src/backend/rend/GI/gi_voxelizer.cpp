@@ -11,6 +11,10 @@ RenderTarget3 GI::Voxelizer::res;
 
 Mat4x4 GI::Voxelizer::lastVP;
 
+GI::Voxelizer::regionSt GI::Voxelizer::regionOld;
+
+GI::Voxelizer::regionSt GI::Voxelizer::region;
+
 int GI::Voxelizer::resolution() {
 	return !res ? 0 : res->width();
 }
@@ -38,12 +42,11 @@ bool GI::Voxelizer::InitShaders() {
 #endif
 }
 
-void GI::Voxelizer::Bake(const Mat4x4& v, float sz) {
+void GI::Voxelizer::Bake() {
 #ifdef PLATFORM_MAC
 	CE_NOT_IMPLEMENTED
 #else
-	const auto& p = glm::ortho(-sz / 2, sz / 2, -sz / 2, sz / 2, 0.f, sz);
-	lastVP = p * v;
+	lastVP = glm::ortho(region.x0, region.x1, region.y0, region.y1, region.z0, region.z1);
 
 	res->BindTarget();
 	float zero[4] = {};
@@ -76,9 +79,9 @@ void GI::Voxelizer::Bake(const Mat4x4& v, float sz) {
 #endif
 }
 
-void GI::Voxelizer::DrawDebug(const Mat4x4& p) {
+void GI::Voxelizer::DrawDebug(const Mat4x4& vp) {
 	const auto reso = res->_width;
-	const auto mvp = p * lastVP.inverse();
+	const auto mvp = vp * lastVP.inverse();
 
 	voxDebugShad->Bind();
 
