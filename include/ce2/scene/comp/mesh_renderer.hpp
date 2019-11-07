@@ -8,7 +8,7 @@ class _MeshRenderer : public _Component { CE_COMPONENT_COMMON
     Mesh _mesh;
     std::vector<MeshModifier> _modifiers;
     std::vector<Material> _materials;
-    
+
 public:
 	_MeshRenderer();
 

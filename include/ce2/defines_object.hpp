@@ -25,7 +25,8 @@
 	CE_OBJECT_COMMON\
 	protected:\
 	Component Clone() const override {\
-	    return (Component)Ref<std::remove_cv<std::remove_reference<decltype(*this)>::type>::type>::New(*this);\
+		typedef std::remove_cv<std::remove_reference<decltype(*this)>::type>::type _BaseTp;\
+	    return (Component)Ref<_BaseTp>::New(*this);\
 	}\
 	private:
 

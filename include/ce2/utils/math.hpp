@@ -5,8 +5,8 @@ CE_BEGIN_NAMESPACE
 
 class Math {
 public:
-	static const float deg2rad;
-	static const float rad2deg;
+	static CE_EXPORT const float deg2rad;
+	static CE_EXPORT const float rad2deg;
 
     template <typename T, typename F>
     static T Lerp(const T& a, const T& b, const F& t);

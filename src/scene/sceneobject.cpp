@@ -74,8 +74,10 @@ SceneObject _SceneObject::Clone() const {
         SceneObject copy = SceneObject::New();
         copy->_CopyInfo((Object)o);
         copy->_transform = o->_transform;
+		copy->_transform._object = copy.object().get();
         for (auto& c : o->_components) {
             copy->_components.push_back(c->Clone());
+			copy->_components.back()->_object = copy;
         }
         for (auto& o2 : o->_children) {
             copy->_children.push_back(doclone(o2, o));
