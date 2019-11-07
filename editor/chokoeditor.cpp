@@ -71,7 +71,7 @@ inline void paint() {
 			+ std::to_string(vc[3]), Color::white());
 	}
 
-	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 1);
+	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 10);
 }
 
 std::string ChokoEditor::assetPath;

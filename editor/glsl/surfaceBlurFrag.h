@@ -106,12 +106,12 @@ vec4 sample(
 			dr = normalize(dr);
 			drr = dr * dreso;
 
-			col = vec4(ws2, 1);//+= texture(colTex, pos * dreso);
+			//col = vec4(dr, icon.z, 1);//+= texture(colTex, pos * dreso);
 		}
 		eid = npx.y;
 		pos += dr;
 
-		//col = vec4(1, 1, 1, 1);//+= texture(colTex, pos * dreso);
+		col += texture(colTex, pos * dreso);
 		n += 1;
 	}
 	return col;
@@ -128,10 +128,13 @@ void main() {
 	
 	//get current triangle
 	ivec4 px = texture(idTex, uvr);
-	//vec4 jx = texture(jmpTex, uvr);
-	//if (jx.x >= 0) { //jump here
-	//	col = texture(colTex, jx.xy * reso);
-	//}
+	vec4 jx = texture(jmpTex, uvr);
+	if (jx.x >= 0) { //jump here
+		col = texture(colTex, jx.xy * reso);
+		uvr = jx.xy;
+		uv = uvr * reso;
+		px = texture(idTex, uvr);
+	}
 	//not in triangle, end
 	if (px.x == 0) {
 		outColor = vec4(0, 0, 0, 0);// * 0.5;
@@ -140,11 +143,9 @@ void main() {
 	
 	int n = 1;
 	col +=
-		sample(dir0, px, uv, dreso, n);// + 
-		//sample(-dir0, px, uv, dreso, n);
+		sample(dir0, px, uv, dreso, n) + 
+		sample(-dir0, px, uv, dreso, n);
 	outColor = col / n * ((px.x == 0) ? 0.2 : 1);
-
-	outColor = sample(dir0, px, uv, dreso, n);
 }
 )";
 }

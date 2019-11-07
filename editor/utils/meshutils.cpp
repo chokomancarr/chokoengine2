@@ -130,7 +130,7 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	}
 
 	data.iconData = TextureBuffer::New(
-		VertexBuffer_New(false, 3, data.indCount, icons.data()),
+		VertexBuffer_New(false, 3, data.indCount * 3, icons.data()),
 		GL_RGB32I);
 
 	//--------- uv angles -----------
@@ -205,7 +205,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 
 	tar->BindTarget();
 	tar->Clear(Color(0, 0), 1);
-	//glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0);
 	//tmp->Bind();
 	glUniform2f(blurShad->Loc(10), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
@@ -261,7 +261,7 @@ const MeshSurfaceData::infoTexSt& MeshSurfaceData::GenInfoTex(const Int2& res) {
 
 	uvInfoShad->Unbind();
 	
-
+/*
 	uvInfoShad2->Bind();
 	
 	glUniform2f(uvInfoShad2->Loc(0), res.x, res.y);
@@ -277,7 +277,7 @@ const MeshSurfaceData::infoTexSt& MeshSurfaceData::GenInfoTex(const Int2& res) {
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 	
 	uvInfoTex->Unbind();
-
+*/
 
 	jmpInfoTex = FrameBuffer_New(res.x, res.y, { GL_RGBA32F });
 	jmpInfoTex->Bind();
