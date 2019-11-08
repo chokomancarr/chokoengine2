@@ -7,12 +7,16 @@ class MeshSurfaceData;
 
 class MeshUtils {
 	static bool initd;
+
+	static Shader padShad;
 	static Shader blurShad;
 
 	static void Init();
 
 public:
 	static MeshSurfaceData GenSurfaceData(const Mesh& m);
+
+	static void PadTexture(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar);
 
 	static void SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 			const RenderTarget& tar, const RenderTarget& tmp, float size);

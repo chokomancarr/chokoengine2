@@ -9,6 +9,7 @@ Background ss;
 MeshSurfaceData dt;
 Int2 sz;
 Texture tx;
+Texture txp;
 RenderTarget tx2t;
 RenderTarget tx2;
 
@@ -24,11 +25,13 @@ inline void paint() {
 	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(Rect(220, Display::height() - 220, 200, 200), (Texture)tx2);
+	UI::Texture(Rect(430, Display::height() - 90, 70, 70), tx);
+	UI::Texture(Rect(500, Display::height() - 90, 70, 70), txp);
 
 	const Rect r3(Display::width() - 300, Display::height() - 320, 300, 300);
 
 	glBlendFunc(GL_ONE, GL_ZERO);
-	UI::Texture(r3, dt.GetInfoTex(sz).jmpInfoTex->tex(0));
+	//UI::Texture(r3, dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(r3, (Texture)tx2);
 
@@ -71,7 +74,7 @@ inline void paint() {
 			+ std::to_string(vc[3]), Color::white());
 	}
 
-	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 10);
+	MeshUtils::SurfaceBlur(dt, (Texture)txp, tx2, tx2t, 10);
 }
 
 std::string ChokoEditor::assetPath;
@@ -110,6 +113,7 @@ void ChokoEditor::Main() {
 	sz = Int2(tx->width(), tx->height());
 
 	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
+	txp = (Texture)RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
@@ -118,73 +122,16 @@ void ChokoEditor::Main() {
 	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
 	dt = MeshUtils::GenSurfaceData(mr->mesh());
 	dt.GenInfoTex(sz);
+	MeshUtils::PadTexture(dt, tx, (RenderTarget)txp);
+	txp = tx;
 
 	mr->materials({
 		(Material)EAssetList::Get(EAssetType::Material, "unlit.material")
 	});
 	mr->materials()[0]->SetUniform("tex", (Texture)tx2);
 
-#if 0
-	//Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/cornell.blend/cornell.blend.prefab"));
-	//*
-	/*
-	Scene::AddObject((SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true));
-	Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
-	Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
-	
-	auto scr = Scene::objects().back()->AddComponent<DummyScript>();
-	scr->name("Turner (Script)");
-	scr->info(EAssetList::GetScr("turner.hpp"));
-	
-	const auto& cl = Scene::FindByName("celing lamp");
-	if (!!cl) {
-		const auto& o = Scene::AddNewObject(cl);
-		const auto& l = o->AddComponent<Light>(LightType::Point);
-		l->distance(20);
-		l->strength(3);
-		l->shadow(true);
-		l->shadowStrength(0.7f);
-		l->shadowBias(0.002f);
-		l->radius(0.05f);
-		l->color(Color(1, 0.9f, 0.7f));
-		l->softShadows(true);
-		l->shadowSamples(20);
-		o->transform()->localPosition(Vec3(0, -0.7f, 0));
-	}
-	/*
-	const auto& o2 = Scene::AddNewObject(Scene::FindByName("rabbit house pillar lamp.001"));
-	const auto& l2 = o2->AddComponent<Light>(LightType::Point);
-	l2->distance(10);
-	l2->strength(0);
-	//l2->shadow(true);
-	l2->shadowStrength(0.5f);
-	l2->shadowBias(0.01f);
-	l2->color(Color(1, 0.7f, 0.3f));
-	o2->transform()->localPosition(Vec3(0.4f, 0, 0));
-	*/
-	/*
-	const auto& o3 = Scene::AddNewObject();
-	o3->transform()->localPosition(Vec3(1, 0, 1));
-	const auto& mr3 = o3->AddComponent<MeshRenderer>();
-	mr3->mesh(ProceduralMesh::UVSphere(20, 10, 1));
-	const auto& mt3 = Material::New();
-	mt3->shader((Shader)EAssetList::Get(EAssetType::Shader, ".internal/standard_transparent_color.shader"));
-	mt3->SetUniform("color", Color(1, 1, 0.3f, 0.5f));
-	mt3->SetUniform("ior", 1.2f);
-	mt3->SetUniform("roughness", 0.3f);
-	mr3->materials({mt3});
-	/*
-	const auto& pr = o3->AddComponent<LightProbe>();
-	pr->resolution(128);
-	pr->updateFrequency(LightProbeUpdateFrequency::OnStart);
-	pr->strength(1);
-	*/
-#endif
-
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
-
-	//EW_ShaderEditor::target = (VShader)EAssetList::Get(EAssetType::VShader, "test.visualshader");
 
 	std::cout << Scene::Tree() << std::endl;
 

@@ -2,17 +2,22 @@
 #include "meshutils.hpp"
 #include "glutils.hpp"
 #include "glsl/minVert.h"
+#include "glsl/padTextureFrag.h"
+#include "glsl/surfaceBlurFrag.h"
 #include "glsl/uvinfo.h"
 #include "glsl/uvinfo_exp.h"
 #include "glsl/uvjmpgen.h"
-#include "glsl/surfaceBlurFrag.h"
 
 CE_BEGIN_ED_NAMESPACE
 
 bool MeshUtils::initd = false;
+
+Shader MeshUtils::padShad;
 Shader MeshUtils::blurShad;
 
 void MeshUtils::Init() {
+	(padShad = Shader::New(glsl::minVert, glsl::padTextureFrag))
+		->AddUniforms({ "reso", "colTex", "jmpTex" });
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
 			"sres", "reso", "colTex", "idTex", 
@@ -158,6 +163,34 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	return data;
 }
 
+void MeshUtils::PadTexture(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar) {
+	if (!initd) Init();
+
+	const auto w = src->width();
+	const auto h = src->height();
+	const auto info = data.GetInfoTex(Int2(w, h));
+
+	glViewport(0, 0, w, h);
+
+	padShad->Bind();
+
+	glUniform2f(padShad->Loc(0), w, h);
+	glUniform1i(padShad->Loc(1), 0);
+	glActiveTexture(GL_TEXTURE0);
+	src->Bind();
+	glUniform1i(padShad->Loc(2), 1);
+	glActiveTexture(GL_TEXTURE1);
+	info.jmpInfoTex->tex(0)->Bind();
+
+	tar->BindTarget();
+	tar->Clear(Color(0, 0), 1);
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
+	tar->UnbindTarget();
+
+	padShad->Unbind();
+}
+
 void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 		const RenderTarget& tar, const RenderTarget& tmp, float size) {
 	if (!initd) Init();
@@ -261,7 +294,7 @@ const MeshSurfaceData::infoTexSt& MeshSurfaceData::GenInfoTex(const Int2& res) {
 
 	uvInfoShad->Unbind();
 	
-/*
+	/*
 	uvInfoShad2->Bind();
 	
 	glUniform2f(uvInfoShad2->Loc(0), res.x, res.y);
@@ -277,7 +310,7 @@ const MeshSurfaceData::infoTexSt& MeshSurfaceData::GenInfoTex(const Int2& res) {
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 	
 	uvInfoTex->Unbind();
-*/
+	*/
 
 	jmpInfoTex = FrameBuffer_New(res.x, res.y, { GL_RGBA32F });
 	jmpInfoTex->Bind();

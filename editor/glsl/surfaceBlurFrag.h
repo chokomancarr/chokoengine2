@@ -18,13 +18,19 @@ uniform isamplerBuffer iconBuf;
 //for each tri [for each edge [uv1(xy) uv2(zw) or -1 if no connection]]
 uniform samplerBuffer conBuf;
 uniform vec2 dir0;
-uniform int blurcnt;
 
 out vec4 outColor;
 
 const float rad2deg = 180 / 3.14159;
 
 const int tolerance = 2;
+
+const int BLUR_CNT = 10;
+
+const float kernel[11] = float[](
+	0.100346, 0.097274, 0.088613, 0.075856,
+	0.061021, 0.046128, 0.032768, 0.021874,
+	0.013722, 0.008089, 0.004481 );
 
 float length2(vec3 r) {
 	return dot(r, r);
@@ -54,7 +60,10 @@ vec3 orient(vec3 r, vec3 x, vec3 t) {
 vec4 sample(
 		vec2 dr, //direction
 		ivec4 px, //first pixel
-		vec2 uv, vec2 dreso, inout int n) {
+		vec2 uv, vec2 dreso) {
+
+	vec2 poso = uv;
+
 	vec2 drr = dr * dreso;
 	vec2 pos = uv + dr;
 	int tid = px.x - 1;
@@ -62,16 +71,18 @@ vec4 sample(
 
 	vec4 col = vec4(0, 0, 0, 0);
 
-	for (int a = 0; a < blurcnt; a++) {
+	for (int a = 0; a < BLUR_CNT; a++) {
 		vec2 nxt = texture(jmpTex, pos * dreso).xy;
 		if (nxt.x >= 0) { //jump here
 			pos = nxt.xy * reso;
 		}
 		ivec4 npx = texture(idTex, pos * dreso);
 		int tid2 = npx.x - 1;
-		//if (tid2 < 0) { //not triangle, finish
-		//	break;
-		//}
+		if (tid2 < 0) { //not triangle, finish
+			pos = poso;
+			npx = texture(idTex, pos * dreso);
+			tid2 = npx.x - 1;
+		}
 		if (tid2 < 0) tid2 = tid;
 		if (tid != tid2) {
 			vec4 ed = texelFetch(edatBuf, tid * 3);
@@ -109,10 +120,10 @@ vec4 sample(
 			//col = vec4(dr, icon.z, 1);//+= texture(colTex, pos * dreso);
 		}
 		eid = npx.y;
+		poso = pos;
 		pos += dr;
 
-		col += texture(colTex, pos * dreso);
-		n += 1;
+		col += texture(colTex, pos * dreso) * kernel[a+1];
 	}
 	return col;
 }
@@ -124,28 +135,37 @@ void main() {
 	uv = uvr * reso;
 
 	//this color
-	vec4 col = texture(colTex, uvr);
-	
-	//get current triangle
+	vec4 col = texture(colTex, uvr) * kernel[0];
+
+	//vec4 jx = texture(jmpTex, uvr + dir0 * dreso);
+	//outColor = vec4(jx.xy, 0, 1);
+	//return;
+
+	//in triangle?
 	ivec4 px = texture(idTex, uvr);
+	if (px.x == 0) {
+		outColor = vec4(0, 0, 1, 1);// * 0.5;
+		return;
+	}
+	
+	//jump?
 	vec4 jx = texture(jmpTex, uvr);
-	if (jx.x >= 0) { //jump here
-		col = texture(colTex, jx.xy * reso);
+	if (jx.x >= 0) {
 		uvr = jx.xy;
 		uv = uvr * reso;
 		px = texture(idTex, uvr);
 	}
-	//not in triangle, end
+/*
+	//in triangle?
+	ivec4 px = texture(idTex, uvr);
 	if (px.x == 0) {
 		outColor = vec4(0, 0, 0, 0);// * 0.5;
 		return;
 	}
-	
-	int n = 1;
-	col +=
-		sample(dir0, px, uv, dreso, n) + 
-		sample(-dir0, px, uv, dreso, n);
-	outColor = col / n * ((px.x == 0) ? 0.2 : 1);
+*/
+	outColor = col +
+		sample(dir0, px, uv, dreso) + 
+		sample(-dir0, px, uv, dreso);
 }
 )";
 }
