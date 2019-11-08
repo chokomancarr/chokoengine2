@@ -23,8 +23,7 @@ inline void paint() {
 	glBlendFunc(GL_ONE, GL_ZERO);
 	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	UI::Texture(Rect(220, Display::height() - 220, 200, 200), (Texture)tx2);
-	UI::Texture(Rect(430, Display::height() - 220, 200, 200), tx);
+	UI::Texture(Rect(220, Display::height() - 220, 200, 200), tx);
 
 	const Rect r3(Display::width() - 300, Display::height() - 320, 300, 300);
 
@@ -102,11 +101,6 @@ void ChokoEditor::Main() {
 	Scene::AddNewObject()
 		->name("__Editor_Cameras__");
 
-	//ss = Background::New(IO::path() + "res/sky.hdr", 6, false);
-
-	//Scene::sky(ss);
-	//Scene::sky()->brightness(1);
-	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
 	tx = (Texture)EAssetList::Get(EAssetType::Texture, "t.png");
 	sz = Int2(tx->width(), tx->height());
 
@@ -130,16 +124,6 @@ void ChokoEditor::Main() {
 
 	std::cout << Scene::Tree() << std::endl;
 
-	UIButtonStyle style(Color(0.1f, 1));
-	style.textNormal(Color::white());
-
-	EDropdownMenu menu("asdf");
-	menu.items = {
-		EDropdownMenu("aaaa"),
-		EDropdownMenu("bbbb"),
-		EDropdownMenu("cccc"),
-	};
-	//EO_Dropdown::Reg(Vec2(10, 10), menu, true);
 	Debug::Message("Editor", "Startup finished");
 
 	while (ChokoLait::alive()) {

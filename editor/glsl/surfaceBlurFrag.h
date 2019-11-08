@@ -147,7 +147,8 @@ void main() {
 	//in triangle?
 	ivec4 px = texture(idTex, uvr);
 	if (px.x == 0) {
-		outColor = col;//vec4(0, 0, 0, 0);// * 0.5;
+		outColor = col;
+		//outColor = vec4(0, 0, 0, 0);
 		return;
 	}
 

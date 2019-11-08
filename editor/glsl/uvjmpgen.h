@@ -38,18 +38,14 @@ void main() {
 		if (tid == 0) continue; //not triangle
 		int eid = (info.y);
 		vec4 data = texelFetch(edgeData, ((tid-1) * 3 + eid) * 2);
-		vec4 data2 = texelFetch(edgeData, ((tid-1) * 3 + eid) * 2 + 1);
 		if (data.x < 0) { //no connection
 			outColor = vec4(-1, 0, 0, 0);
 			return;
 		}
 		outColor.xy = mix(data.xy, data.zw, info.z * 0.01);
 		vec2 dir = normalize(data.zw - data.xy);
-		outColor.z = data2.x;
-		outColor.w = rad2deg * acos(dir.x);
-		if (dir.y > 0) outColor.w = 360 - outColor.w;
-		outColor.w -= 90;
 		outColor.xy -= duv / reso;
+		outColor.z = info.z * 0.01;
 		return;
 	}
 	
