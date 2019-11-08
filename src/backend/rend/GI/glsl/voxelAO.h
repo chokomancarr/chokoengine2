@@ -14,7 +14,7 @@ uniform mat4 _VP;
 uniform sampler2D nrmTex;
 uniform sampler2D dphTex;
 
-uniform sampler3D voxTex;
+uniform isampler3D voxTex;
 
 uniform float radius;
 

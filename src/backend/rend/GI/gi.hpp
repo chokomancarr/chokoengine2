@@ -9,7 +9,11 @@ public:
 		static Shader voxShad;
 		static Shader voxDebugShad;
 
-		static RenderTarget3 res;
+		static GLuint occlusionTex;
+		static std::vector<GLuint> occlusionFbos;
+
+		static int _reso;
+		static int _mips;
 
 		static Mat4x4 lastVP;
 
