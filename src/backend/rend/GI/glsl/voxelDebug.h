@@ -1,71 +1,77 @@
 #pragma once
 namespace glsl {
 	const char voxelDebugVert[] = R"(
-#version 330 core
-
 uniform int num;
-uniform mat4 _P;
 
-out vec3 v2g_uvw;
+uniform mat4 _VP;
+
+uniform sampler3D tex;
+
+out vec3 normal;
+out float occlu;
+out vec3 cpos;
+
+const int cubeids[36] = int[](
+	0, 1, 7,	1, 4, 7,
+	1, 2, 4,	2, 5, 4,
+	2, 3, 5,	3, 6, 5,
+	3, 0, 6,	0, 7, 6,
+	3, 2, 0,	2, 1, 0,
+	7, 4, 6,	4, 5, 6
+);
+
+const float cubeverts[24] = float[](
+	-1, -1, -1,	 1, -1, -1,
+	 1, -1,  1,	-1, -1,  1,
+	 1,  1, -1,	 1,  1,  1,
+	-1,  1,  1,	-1,  1, -1
+);
+
+const vec3 normals[6] = vec3[](
+	vec3(0, 0, -1), vec3(1, 0, 0),
+	vec3(0, 0, 1), vec3(-1, 0, 0),
+	vec3(0, -1, 0), vec3(0, 1, 0)
+);
+
+const vec3 normals2[6] = vec3[](
+	vec3(1, 0, 1), vec3(1, 0, 0),
+	vec3(0, 0, 1), vec3(1, 1, 0),
+	vec3(0, 1, 1), vec3(0, 1, 0)
+);
 
 void main() {
-	int x = gl_VertexID / num / num;
-	int ty = gl_VertexID - x * num * num;
+	int vid = gl_VertexID / 36;
+	int a = gl_VertexID - vid * 36;
+	int x = vid / num / num;
+	int ty = vid - x * num * num;
 	int y = ty / num;
 	int z = int(mod(ty, num));
-	v2g_uvw = vec3(x, y, z) / (num - 1.0);
-	gl_Position = _P * vec4(v2g_uvw * 2 - 1, 1);
-}
-)";
 
-	const char voxelDebugGeom[] = R"(
-#version 330 core
-layout (points) in;
-layout (triangle_strip, max_vertices = 6) out;
+	vec3 pos = vec3(x, y, z);
+	vec3 uvw = pos / (num - 1.0);
+	float texval = texture(tex, uvw).r;
+	float scl = ceil(texval) * 0.5;
 
-in vec3 v2g_uvw[];
-
-uniform float ptsz;
-
-out vec3 g2f_uvw;
-
-void main() {
-	vec4 pos = gl_in[0].gl_Position;
-	pos /= pos.w;
-
-	gl_Position = pos - vec4(-ptsz, -ptsz, 0, 0);
-	g2f_uvw = v2g_uvw[0];
-	EmitVertex();
-	gl_Position = pos - vec4(-ptsz, ptsz, 0, 0);
-	g2f_uvw = v2g_uvw[0];
-	EmitVertex();
-	gl_Position = pos - vec4(ptsz, -ptsz, 0, 0);
-	g2f_uvw = v2g_uvw[0];
-	EmitVertex();
-	gl_Position = pos - vec4(-ptsz, ptsz, 0, 0);
-	g2f_uvw = v2g_uvw[0];
-	EmitVertex();
-	gl_Position = pos - vec4(ptsz, ptsz, 0, 0);
-	g2f_uvw = v2g_uvw[0];
-	EmitVertex();
-	gl_Position = pos - vec4(ptsz, -ptsz, 0, 0);
-	g2f_uvw = v2g_uvw[0];
-	EmitVertex();
-	EndPrimitive();
+	int id = cubeids[a] * 3;
+	cpos = vec3(cubeverts[id], cubeverts[id + 1], cubeverts[id + 2]);
+	vec3 pos2 = pos + cpos * scl;
+	vec4 posn = vec4(pos2 / (num - 1.0) * 2 - 1, 1);
+	gl_Position = _VP * posn;
+	normal = normals2[a / 6];
+	occlu = texval;
 }
 )";
 
 	const char voxelDebugFrag[] = R"(
-#version 330 core
-
-in vec3 g2f_uvw;
-
-uniform sampler3D tex;
+in vec3 normal;
+in float occlu;
+in vec3 cpos;
 
 out vec4 fragCol;
 
 void main() {
-	fragCol = texture(tex, g2f_uvw);
+	float mul = 1 - max(abs(cpos.x) + abs(cpos.y) + abs(cpos.z) - 2, 0);
+	fragCol = vec4(normal * mul, 1);//vec4(occlu, occlu, occlu, 1);
 }
 )";
 }

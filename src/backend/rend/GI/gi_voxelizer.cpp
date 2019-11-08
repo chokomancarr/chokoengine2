@@ -32,9 +32,8 @@ bool GI::Voxelizer::InitShaders() {
 	(voxShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
 		->AddUniforms({ "_MVP", "layerCount" });
 
-	(voxDebugShad = Shader::New(std::vector<std::string>{ glsl::voxelDebugVert, glsl::voxelDebugGeom, glsl::voxelDebugFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
-	//(voxDebugShad = Shader::New(std::vector<std::string>{ glsl::voxelDebugVert, glsl::voxelDebugFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
-		->AddUniforms({ "num", "_P", "ptsz", "tex" });
+	(voxDebugShad = Shader::New(glsl::voxelDebugVert, glsl::voxelDebugFrag))
+		->AddUniforms({ "num", "_VP", "tex" });
 
 	resolution(128);
 
@@ -87,13 +86,12 @@ void GI::Voxelizer::DrawDebug(const Mat4x4& vp) {
 
 	glUniform1i(voxDebugShad->Loc(0), reso);
 	glUniformMatrix4fv(voxDebugShad->Loc(1), 1, false, &mvp[0][0]);
-	glUniform1f(voxDebugShad->Loc(2), 0.01f);
-	glUniform1i(voxDebugShad->Loc(3), 0);
+	glUniform1i(voxDebugShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);
 	res->Bind();
 
 	UI::_vao->Bind();
-	glDrawArrays(GL_POINTS, 0, reso * reso * reso);
+	glDrawArrays(GL_TRIANGLES, 0, reso * reso * reso * 36);
 	UI::_vao->Unbind();
 
 	voxDebugShad->Unbind();
