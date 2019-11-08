@@ -17,7 +17,7 @@ Shader MeshUtils::blurShad;
 
 void MeshUtils::Init() {
 	(padShad = Shader::New(glsl::minVert, glsl::padTextureFrag))
-		->AddUniforms({ "reso", "colTex", "jmpTex" });
+		->AddUniforms({ "reso", "colTex", "jmpTex", "idTex" });
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
 			"sres", "reso", "colTex", "idTex", 
@@ -181,6 +181,9 @@ void MeshUtils::PadTexture(MeshSurfaceData& data, const Texture& src, const Rend
 	glUniform1i(padShad->Loc(2), 1);
 	glActiveTexture(GL_TEXTURE1);
 	info.jmpInfoTex->tex(0)->Bind();
+	glUniform1i(padShad->Loc(3), 2);
+	glActiveTexture(GL_TEXTURE2);
+	info.uvInfoTex->tex(0)->Bind();
 
 	tar->BindTarget();
 	tar->Clear(Color(0, 0), 1);
@@ -239,7 +242,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	tar->BindTarget();
 	tar->Clear(Color(0, 0), 1);
 	glActiveTexture(GL_TEXTURE0);
-	//tmp->Bind();
+	tmp->Bind();
 	glUniform2f(blurShad->Loc(10), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 

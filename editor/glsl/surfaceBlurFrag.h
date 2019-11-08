@@ -78,7 +78,7 @@ vec4 sample(
 		}
 		ivec4 npx = texture(idTex, pos * dreso);
 		int tid2 = npx.x - 1;
-		if (tid2 < 0) { //not triangle, finish
+		if (tid2 < 0) { //not triangle, go back
 			pos = poso;
 			npx = texture(idTex, pos * dreso);
 			tid2 = npx.x - 1;
@@ -135,35 +135,23 @@ void main() {
 	uv = uvr * reso;
 
 	//this color
-	vec4 col = texture(colTex, uvr) * kernel[0];
+	vec4 col = texture(colTex, uvr);
 
-	//vec4 jx = texture(jmpTex, uvr + dir0 * dreso);
-	//outColor = vec4(jx.xy, 0, 1);
-	//return;
-
-	//in triangle?
-	ivec4 px = texture(idTex, uvr);
-	if (px.x == 0) {
-		outColor = vec4(0, 0, 1, 1);// * 0.5;
-		return;
-	}
-	
 	//jump?
 	vec4 jx = texture(jmpTex, uvr);
 	if (jx.x >= 0) {
 		uvr = jx.xy;
 		uv = uvr * reso;
-		px = texture(idTex, uvr);
 	}
-/*
+
 	//in triangle?
 	ivec4 px = texture(idTex, uvr);
 	if (px.x == 0) {
-		outColor = vec4(0, 0, 0, 0);// * 0.5;
+		outColor = col;//vec4(0, 0, 0, 0);// * 0.5;
 		return;
 	}
-*/
-	outColor = col +
+
+	outColor = col * kernel[0] +
 		sample(dir0, px, uv, dreso) + 
 		sample(-dir0, px, uv, dreso);
 }

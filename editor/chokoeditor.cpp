@@ -9,7 +9,6 @@ Background ss;
 MeshSurfaceData dt;
 Int2 sz;
 Texture tx;
-Texture txp;
 RenderTarget tx2t;
 RenderTarget tx2;
 
@@ -25,8 +24,7 @@ inline void paint() {
 	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(Rect(220, Display::height() - 220, 200, 200), (Texture)tx2);
-	UI::Texture(Rect(430, Display::height() - 90, 70, 70), tx);
-	UI::Texture(Rect(500, Display::height() - 90, 70, 70), txp);
+	UI::Texture(Rect(430, Display::height() - 220, 200, 200), tx);
 
 	const Rect r3(Display::width() - 300, Display::height() - 320, 300, 300);
 
@@ -74,7 +72,7 @@ inline void paint() {
 			+ std::to_string(vc[3]), Color::white());
 	}
 
-	MeshUtils::SurfaceBlur(dt, (Texture)txp, tx2, tx2t, 10);
+	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 10);
 }
 
 std::string ChokoEditor::assetPath;
@@ -113,7 +111,6 @@ void ChokoEditor::Main() {
 	sz = Int2(tx->width(), tx->height());
 
 	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
-	txp = (Texture)RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
@@ -122,8 +119,6 @@ void ChokoEditor::Main() {
 	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
 	dt = MeshUtils::GenSurfaceData(mr->mesh());
 	dt.GenInfoTex(sz);
-	MeshUtils::PadTexture(dt, tx, (RenderTarget)txp);
-	txp = tx;
 
 	mr->materials({
 		(Material)EAssetList::Get(EAssetType::Material, "unlit.material")
