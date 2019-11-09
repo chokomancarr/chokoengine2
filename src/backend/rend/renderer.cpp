@@ -318,7 +318,7 @@ void Renderer::RenderCamera(Camera& cam) {
 	glDisable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-	GI::Voxelizer::DrawDebug(vp);
+	GI::Voxelizer::DrawDebug(vp, 1);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_ALWAYS);

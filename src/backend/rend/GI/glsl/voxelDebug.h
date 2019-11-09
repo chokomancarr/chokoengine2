@@ -6,6 +6,7 @@ uniform int num;
 uniform mat4 _VP;
 
 uniform sampler3D occluTex;
+uniform float mip;
 
 out vec3 normal;
 out vec3 occlu;
@@ -49,7 +50,7 @@ void main() {
 
 	vec3 pos = vec3(x, y, z);
 	vec3 uvw = pos / (num - 1.0);
-	vec4 texval = texture(occluTex, uvw);
+	vec4 texval = textureLod(occluTex, uvw, mip);
 
 	float scl = ceil(texval.w) * 0.5;
 

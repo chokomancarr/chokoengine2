@@ -1,15 +1,18 @@
 #include "backend/chokoengine_backend.hpp"
 #include "asset/texture_internal.hpp"
 #include "glsl/voxelFill.h"
+#include "glsl/voxelDownsample.h"
 #include "glsl/voxelDebug.h"
 
 CE_BEGIN_BK_NAMESPACE
 
 Shader GI::Voxelizer::voxShad;
+Shader GI::Voxelizer::voxDownShad;
 Shader GI::Voxelizer::voxDebugShad;
 
 GLuint GI::Voxelizer::occlusionTex = 0;
 std::vector<GLuint> GI::Voxelizer::occlusionFbos = {};
+std::vector<int> GI::Voxelizer::occlusionMipSzs = {};
 
 int GI::Voxelizer::_reso = 0;
 int GI::Voxelizer::_mips = 0;
@@ -30,6 +33,7 @@ void GI::Voxelizer::resolution(int r) {
 		if (!!occlusionTex) {
 			glDeleteFramebuffers(_mips, &occlusionFbos[0]);
 			occlusionFbos.clear();
+			occlusionMipSzs.clear();
 			glDeleteTextures(1, &occlusionTex);
 		}
 
@@ -41,6 +45,7 @@ void GI::Voxelizer::resolution(int r) {
 		_mips = 0;
 		while (r > 4) {
 			glTexImage3D(GL_TEXTURE_3D, _mips, GL_RGBA32F, r, r, r, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+			occlusionMipSzs.push_back(r);
 			_mips++;
 			r /= 2;
 		}
@@ -72,8 +77,11 @@ bool GI::Voxelizer::InitShaders() {
 	(voxShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
 		->AddUniforms({ "_M", "_MVP", "layerCount" });
 
+	(voxDownShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleVert, glsl::voxelDownsampleGeom, glsl::voxelDownsampleFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
+		->AddUniforms({ "sz", "tex", "mip" });
+
 	(voxDebugShad = Shader::New(glsl::voxelDebugVert, glsl::voxelDebugFrag))
-		->AddUniforms({ "num", "_VP", "occluTex" });
+		->AddUniforms({ "num", "_VP", "occluTex", "mip" });
 
 	float sz = 1;
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
@@ -88,6 +96,8 @@ void GI::Voxelizer::Bake() {
 	CE_NOT_IMPLEMENTED
 #else
 	lastVP = glm::ortho(region.x0, region.x1, region.y0, region.y1, region.z0, region.z1);
+
+	glViewport(0, 0, _reso, _reso);
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, occlusionFbos[0]);
 	float zero[4] = {};
@@ -119,10 +129,41 @@ void GI::Voxelizer::Bake() {
 	}
 
 	voxShad->Unbind();
+
+	Downsample();
 #endif
 }
 
-void GI::Voxelizer::DrawDebug(const Mat4x4& vp) {
+void GI::Voxelizer::Downsample() {
+	glBlendFunc(GL_ONE, GL_ZERO);
+	glDepthFunc(GL_ALWAYS);
+	glDisable(GL_CULL_FACE);
+
+	voxDownShad->Bind();
+	glUniform1i(voxDownShad->Loc(1), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_3D, occlusionTex);
+
+	for (int a = 1; a < _mips; a++) {
+		const auto tar = occlusionFbos[a];
+		const auto sz = occlusionMipSzs[a];
+
+		glViewport(0, 0, sz, sz);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar);
+
+		glUniform1i(voxDownShad->Loc(0), sz);
+		glUniform1f(voxDownShad->Loc(2), (float)(a - 1));
+
+		UI::_vao->Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6 * sz);
+		UI::_vao->Unbind();
+	}
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	voxDownShad->Unbind();
+}
+
+void GI::Voxelizer::DrawDebug(const Mat4x4& vp, int mip) {
+	const auto sz = occlusionMipSzs[mip];
 	const auto mvp = vp * lastVP.inverse();
 
 	voxDebugShad->Bind();
@@ -132,9 +173,10 @@ void GI::Voxelizer::DrawDebug(const Mat4x4& vp) {
 	glUniform1i(voxDebugShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, occlusionTex);
+	glUniform1f(voxDebugShad->Loc(3), (float)mip);
 
 	UI::_vao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, _reso * _reso * _reso * 36);
+	glDrawArrays(GL_TRIANGLES, 0, sz * sz * sz * 36);
 	UI::_vao->Unbind();
 
 	voxDebugShad->Unbind();
