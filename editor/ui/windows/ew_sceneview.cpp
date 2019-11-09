@@ -74,11 +74,13 @@ void EW_SceneView::Update() {
 	z = glm::clamp(z + Input::mouseDelta().y * 5 / Display::height(), -5.f, -2.f);
 	_camera->object()->transform()->localPosition(Vec3(0, 0, z));
 	*/
+	/*
 	if (Input::KeyDown(InputKey::F)) {
 		auto args = ECallbackArgs();
 		args.Add(ECallbackArg("isOrtho", (int)(!_camera->orthographic())));
 		menus.back().items[0].callback(this, args);
 	}
+	*/
 }
 
 CE_END_ED_NAMESPACE

@@ -43,7 +43,7 @@ void GI::Voxelizer::resolution(int r) {
 		std::vector<byte> data(r * r * r * 4);
 
 		_mips = 0;
-		while (r > 4) {
+		while (r >= 4) {
 			glTexImage3D(GL_TEXTURE_3D, _mips, GL_RGBA32F, r, r, r, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 			occlusionMipSzs.push_back(r);
 			_mips++;
@@ -85,7 +85,7 @@ bool GI::Voxelizer::InitShaders() {
 
 	float sz = 1;
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
-	resolution(64);
+	resolution(32);
 
 	return !!voxShad && !!voxDebugShad;
 #endif
@@ -138,6 +138,7 @@ void GI::Voxelizer::Downsample() {
 	glBlendFunc(GL_ONE, GL_ZERO);
 	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
 
 	voxDownShad->Bind();
 	glUniform1i(voxDownShad->Loc(1), 0);
@@ -160,6 +161,8 @@ void GI::Voxelizer::Downsample() {
 	}
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	voxDownShad->Unbind();
+
+	glEnable(GL_BLEND);
 }
 
 void GI::Voxelizer::DrawDebug(const Mat4x4& vp, int mip) {
@@ -168,7 +171,7 @@ void GI::Voxelizer::DrawDebug(const Mat4x4& vp, int mip) {
 
 	voxDebugShad->Bind();
 
-	glUniform1i(voxDebugShad->Loc(0), _reso);
+	glUniform1i(voxDebugShad->Loc(0), sz);
 	glUniformMatrix4fv(voxDebugShad->Loc(1), 1, false, &mvp[0][0]);
 	glUniform1i(voxDebugShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);

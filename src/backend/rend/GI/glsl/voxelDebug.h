@@ -74,7 +74,7 @@ void main() {
 		ovu = ovu & 0x0000ffffu;
 	}
 
-	occlu = vec3(1, 1, 1) * (float(ovu) * 0.0001 * 0.5 + 0.5);
+	occlu = vec3(1, 1, 1) * (float(ovu) * 0.0001 * 0.8 + 0.2);
 }
 )";
 
@@ -87,7 +87,7 @@ out vec4 fragCol;
 
 void main() {
 	float mul = 1 - max(abs(cpos.x) + abs(cpos.y) + abs(cpos.z) - 2, 0);
-	fragCol = vec4(occlu, 1);//vec4(occlu, occlu, occlu, 1);
+	fragCol = vec4(occlu * mul, 1);//vec4(occlu, occlu, occlu, 1);
 }
 )";
 }

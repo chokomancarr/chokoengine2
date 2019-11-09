@@ -318,7 +318,13 @@ void Renderer::RenderCamera(Camera& cam) {
 	glDisable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-	GI::Voxelizer::DrawDebug(vp, 1);
+	static int n = 0;
+
+	if (Input::KeyDown(InputKey::F)) {
+		n = (++n) % 5;
+	}
+
+	GI::Voxelizer::DrawDebug(vp, n);// std::fmod(Time::time(), 2.0f) > 1 ? 1 : 0);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_ALWAYS);
