@@ -2,13 +2,15 @@
 #include "asset/texture_internal.hpp"
 #include "glsl/voxelFill.h"
 #include "glsl/voxelDownsample.h"
-#include "glsl/voxelDebug.h"
+#include "glsl/voxelDebugAO.h"
+#include "glsl/voxelDebugEm.h"
 
 CE_BEGIN_BK_NAMESPACE
 
 Shader GI::Voxelizer::voxShad;
 Shader GI::Voxelizer::voxDownShad;
-Shader GI::Voxelizer::voxDebugShad;
+Shader GI::Voxelizer::voxDebugAOShad;
+Shader GI::Voxelizer::voxDebugEmShad;
 
 GLuint GI::Voxelizer::occlusionTex = 0;
 std::vector<GLuint> GI::Voxelizer::occlusionFbos = {};
@@ -112,20 +114,23 @@ bool GI::Voxelizer::InitShaders() {
 	(voxShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag },
 			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment },
 			std::vector<std::string>({ "emit_color", "emit_texture" })))
-		->AddUniforms({ "_M", "_MVP", "layerCount" });
+		->AddUniforms({ "_M", "_MVP", "layerCount", "emitStr", "emitCol", "emitTex" });
 
 	(voxDownShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleVert, glsl::voxelDownsampleGeom, glsl::voxelDownsampleFrag },
 			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
 		->AddUniforms({ "sz", "tex", "mip" });
 
-	(voxDebugShad = Shader::New(glsl::voxelDebugVert, glsl::voxelDebugFrag))
+	(voxDebugAOShad = Shader::New(glsl::voxelDebugAOVert, glsl::voxelDebugAOFrag))
 		->AddUniforms({ "num", "_VP", "occluTex", "mip" });
+
+	(voxDebugEmShad = Shader::New(glsl::voxelDebugEmVert, glsl::voxelDebugEmFrag))
+		->AddUniforms({ "num", "_VP", "emitTex", "mip" });
 
 	float sz = 1.1f;
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
 	resolution(32);
 
-	return !!voxShad && !!voxDebugShad;
+	return !!voxShad && !!voxDebugAOShad && !!voxDebugEmShad;
 #endif
 }
 
@@ -167,6 +172,18 @@ void GI::Voxelizer::Bake() {
 			glUniformMatrix4fv(voxShad->Loc(0), 1, false, &M[0][0]);
 			glUniformMatrix4fv(voxShad->Loc(1), 1, false, &MVP[0][0]);
 			glUniform1i(voxShad->Loc(2), _reso);
+			if (emitCol || emitTex) {
+				glUniform1f(voxShad->Loc(3), mat->GetGIEmissionStr());
+				if (emitCol) {
+					Color c = mat->GetGIEmissionCol();
+					glUniform3f(voxShad->Loc(4), c.r, c.g, c.b);
+				}
+				if (emitTex) {
+					glUniform1i(voxShad->Loc(5), 0);
+					glActiveTexture(GL_TEXTURE0);
+					mat->GetGIEmissionTex()->Bind();
+				}
+			}
 			glBindImageTexture(3, occlusionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 			glBindImageTexture(4, emissionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 
@@ -214,24 +231,44 @@ void GI::Voxelizer::Downsample() {
 	glEnable(GL_BLEND);
 }
 
-void GI::Voxelizer::DrawDebug(const Mat4x4& vp, int mip) {
+void GI::Voxelizer::DrawDebugAO(const Mat4x4& vp, int mip) {
 	const auto sz = mipSzs[mip];
 	const auto mvp = vp * lastVP.inverse();
 
-	voxDebugShad->Bind();
+	voxDebugAOShad->Bind();
 
-	glUniform1i(voxDebugShad->Loc(0), sz);
-	glUniformMatrix4fv(voxDebugShad->Loc(1), 1, false, &mvp[0][0]);
-	glUniform1i(voxDebugShad->Loc(2), 0);
+	glUniform1i(voxDebugAOShad->Loc(0), sz);
+	glUniformMatrix4fv(voxDebugAOShad->Loc(1), 1, false, &mvp[0][0]);
+	glUniform1i(voxDebugAOShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, occlusionTex);
-	glUniform1f(voxDebugShad->Loc(3), (float)mip);
+	glUniform1f(voxDebugAOShad->Loc(3), (float)mip);
 
 	UI::_vao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, sz * sz * sz * 36);
 	UI::_vao->Unbind();
 
-	voxDebugShad->Unbind();
+	voxDebugAOShad->Unbind();
+}
+
+void GI::Voxelizer::DrawDebugEm(const Mat4x4& vp, int mip) {
+	const auto sz = mipSzs[mip];
+	const auto mvp = vp * lastVP.inverse();
+
+	voxDebugEmShad->Bind();
+
+	glUniform1i(voxDebugEmShad->Loc(0), sz);
+	glUniformMatrix4fv(voxDebugEmShad->Loc(1), 1, false, &mvp[0][0]);
+	glUniform1i(voxDebugEmShad->Loc(2), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_3D, occlusionTex);
+	glUniform1f(voxDebugEmShad->Loc(3), (float)mip);
+
+	UI::_vao->Bind();
+	glDrawArrays(GL_TRIANGLES, 0, sz * sz * sz * 36);
+	UI::_vao->Unbind();
+
+	voxDebugEmShad->Unbind();
 }
 
 CE_END_BK_NAMESPACE

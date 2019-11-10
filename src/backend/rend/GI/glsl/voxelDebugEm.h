@@ -1,11 +1,11 @@
 #pragma once
 namespace glsl {
-	const char voxelDebugVert[] = R"(
+	const char voxelDebugEmVert[] = R"(
 uniform int num;
 
 uniform mat4 _VP;
 
-uniform sampler3D occluTex;
+uniform sampler3D emitTex;
 uniform float mip;
 
 out vec3 normal;
@@ -78,7 +78,7 @@ void main() {
 }
 )";
 
-	const char voxelDebugFrag[] = R"(
+	const char voxelDebugEmFrag[] = R"(
 in vec3 normal;
 in vec3 occlu;
 in vec3 cpos;

@@ -324,7 +324,7 @@ void Renderer::RenderCamera(Camera& cam) {
 		n = (++n) % 5;
 	}
 
-	GI::Voxelizer::DrawDebug(vp, n);// std::fmod(Time::time(), 2.0f) > 1 ? 1 : 0);
+	GI::Voxelizer::DrawDebugAO(vp, n);// std::fmod(Time::time(), 2.0f) > 1 ? 1 : 0);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_ALWAYS);

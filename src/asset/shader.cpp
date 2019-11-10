@@ -253,7 +253,7 @@ void _Shader::AddUniform(const std::string& s, ShaderVariableType t) {
 	}
 	std::vector<GLint> locs = {};
 	for (auto& p : pointers) {
-		locs.push_back(glGetUniformLocation(pointer, s.c_str()));
+		locs.push_back(glGetUniformLocation(p, s.c_str()));
 	}
 	variables.push_back(ShaderVariable(s, t, locs));
 }

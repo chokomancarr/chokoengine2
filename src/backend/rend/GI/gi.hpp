@@ -8,7 +8,8 @@ public:
 	class Voxelizer {
 		static Shader voxShad;
 		static Shader voxDownShad;
-		static Shader voxDebugShad;
+		static Shader voxDebugAOShad;
+		static Shader voxDebugEmShad;
 
 		static GLuint occlusionTex;
 		static std::vector<GLuint> occlusionFbos;
@@ -47,7 +48,9 @@ public:
 
 		static void DrawVoxelAO(const Mat4x4& p);
 
-		static void DrawDebug(const Mat4x4& vp, int mip);
+		static void DrawDebugAO(const Mat4x4& vp, int mip);
+
+		static void DrawDebugEm(const Mat4x4& vp, int mip);
 	};
 
 	static bool Init();
