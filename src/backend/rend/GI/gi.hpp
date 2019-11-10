@@ -7,7 +7,8 @@ class GI {
 public:
 	class Voxelizer {
 		static Shader voxShad;
-		static Shader voxDownShad;
+		static Shader voxDownAOShad;
+		static Shader voxDownEmShad;
 		static Shader voxDebugAOShad;
 		static Shader voxDebugEmShad;
 

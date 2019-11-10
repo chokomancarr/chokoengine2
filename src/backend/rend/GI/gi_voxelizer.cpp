@@ -1,14 +1,16 @@
 #include "backend/chokoengine_backend.hpp"
 #include "asset/texture_internal.hpp"
 #include "glsl/voxelFill.h"
-#include "glsl/voxelDownsample.h"
+#include "glsl/voxelDownsampleAO.h"
+#include "glsl/voxelDownsampleEm.h"
 #include "glsl/voxelDebugAO.h"
 #include "glsl/voxelDebugEm.h"
 
 CE_BEGIN_BK_NAMESPACE
 
 Shader GI::Voxelizer::voxShad;
-Shader GI::Voxelizer::voxDownShad;
+Shader GI::Voxelizer::voxDownAOShad;
+Shader GI::Voxelizer::voxDownEmShad;
 Shader GI::Voxelizer::voxDebugAOShad;
 Shader GI::Voxelizer::voxDebugEmShad;
 
@@ -61,7 +63,7 @@ void GI::Voxelizer::resolution(int r) {
 		glBindTexture(GL_TEXTURE_3D, occlusionTex);
 
 		_mips = 0;
-		while (r >= 4) {
+		while (r >= 1) {
 			glTexImage3D(GL_TEXTURE_3D, _mips, GL_RGBA32F, r, r, r, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 			mipSzs.push_back(r);
 			_mips++;
@@ -100,12 +102,14 @@ void GI::Voxelizer::resolution(int r) {
 		}
 		glBindTexture(GL_TEXTURE_3D, 0);
 
-		for (int a = 0; a < _mips; a++) {
+		emissionFbos.push_back(0);
+		for (int a = 1; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
 			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-			for (int b = 0; b < 3; b++)
-			glFramebufferTexture(GL_FRAMEBUFFER, dbuf[b], emissionTex[b], a);
-			glDrawBuffers(1, dbuf);
+			for (int b = 0; b < 3; b++) {
+				glFramebufferTexture(GL_FRAMEBUFFER, dbuf[b], emissionTex[b], a);
+			}
+			glDrawBuffers(3, dbuf);
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if (status != GL_FRAMEBUFFER_COMPLETE) {
 				Debug::Error("GI", "Could not create emission framebuffer: level " + std::to_string(a) + ", gl error " + std::to_string(status));
@@ -128,9 +132,13 @@ bool GI::Voxelizer::InitShaders() {
 			std::vector<std::string>({ "emit_color", "emit_texture" })))
 		->AddUniforms({ "_M", "_MVP", "layerCount", "emitStr", "emitCol", "emitTex" });
 
-	(voxDownShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleVert, glsl::voxelDownsampleGeom, glsl::voxelDownsampleFrag },
+	(voxDownAOShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleAOVert, glsl::voxelDownsampleAOGeom, glsl::voxelDownsampleAOFrag },
 			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
 		->AddUniforms({ "sz", "tex", "mip" });
+
+	(voxDownEmShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleEmVert, glsl::voxelDownsampleEmGeom, glsl::voxelDownsampleEmFrag },
+		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
+		->AddUniforms({ "sz", "texX", "texY", "texZ", "mip" });
 
 	(voxDebugAOShad = Shader::New(glsl::voxelDebugAOVert, glsl::voxelDebugAOFrag))
 		->AddUniforms({ "num", "_VP", "occluTex", "mip" });
@@ -143,7 +151,7 @@ bool GI::Voxelizer::InitShaders() {
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
 	resolution(32);
 
-	return !!voxShad && !!voxDebugAOShad && !!voxDebugEmShad;
+	return !!voxShad && !!voxDownAOShad && !!voxDownEmShad && !!voxDebugAOShad && !!voxDebugEmShad;
 #endif
 }
 
@@ -221,8 +229,8 @@ void GI::Voxelizer::Downsample() {
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 
-	voxDownShad->Bind();
-	glUniform1i(voxDownShad->Loc(1), 0);
+	voxDownAOShad->Bind();
+	glUniform1i(voxDownAOShad->Loc(1), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, occlusionTex);
 
@@ -233,15 +241,40 @@ void GI::Voxelizer::Downsample() {
 		glViewport(0, 0, sz, sz);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar);
 
-		glUniform1i(voxDownShad->Loc(0), sz);
-		glUniform1f(voxDownShad->Loc(2), (float)(a - 1));
+		glUniform1i(voxDownAOShad->Loc(0), sz);
+		glUniform1f(voxDownAOShad->Loc(2), (float)(a - 1));
 
 		UI::_vao->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6 * sz);
 		UI::_vao->Unbind();
 	}
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	voxDownShad->Unbind();
+	voxDownAOShad->Unbind();
+
+
+	voxDownEmShad->Bind();
+	for (int a = 0; a < 3; a++) {
+		glUniform1i(voxDownEmShad->Loc(1 + a), a);
+		glActiveTexture(GL_TEXTURE0 + a);
+		glBindTexture(GL_TEXTURE_3D, emissionTex[a]);
+	}
+
+	for (int a = 1; a < _mips; a++) {
+		const auto tar = emissionFbos[a];
+		const auto sz = mipSzs[a];
+
+		glViewport(0, 0, sz, sz);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar);
+
+		glUniform1i(voxDownEmShad->Loc(0), sz);
+		glUniform1i(voxDownEmShad->Loc(4), a - 1);
+
+		UI::_vao->Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6 * sz);
+		UI::_vao->Unbind();
+	}
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	voxDownEmShad->Unbind();
 
 	glEnable(GL_BLEND);
 }

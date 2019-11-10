@@ -327,10 +327,10 @@ void Renderer::RenderCamera(Camera& cam) {
 		glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
 		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
 
-		static int n = 0;
-		static bool e = false;
+		static int n = 1;
+		static bool e = true;
 		if (Input::KeyDown(InputKey::F)) {
-			n = (++n) % 4;
+			n = (++n) % 6;
 		}
 		if (Input::KeyDown(InputKey::E)) {
 			e = !e;

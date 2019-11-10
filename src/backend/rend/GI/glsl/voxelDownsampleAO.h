@@ -1,6 +1,6 @@
 #pragma once
 namespace glsl {
-	const char voxelDownsampleVert[] = R"(
+	const char voxelDownsampleAOVert[] = R"(
 #version 330 core
 
 flat out int v2g_layer;
@@ -14,7 +14,7 @@ void main() {
 }
 )";
 
-	const char voxelDownsampleGeom[] = R"(
+	const char voxelDownsampleAOGeom[] = R"(
 #version 330 core
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
@@ -40,7 +40,7 @@ void main() {
 }
 )";
 
-	const char voxelDownsampleFrag[] = R"(
+	const char voxelDownsampleAOFrag[] = R"(
 #version 330 core
 
 layout (pixel_center_integer) in vec4 gl_FragCoord;
