@@ -14,7 +14,7 @@ public:
 		static GLuint occlusionTex;
 		static std::vector<GLuint> occlusionFbos;
 
-		static GLuint emissionTex;
+		static GLuint emissionTex[3];
 		static std::vector<GLuint> emissionFbos;
 
 		static int _reso;

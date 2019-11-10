@@ -290,7 +290,7 @@ void Renderer::RenderCamera(Camera& cam) {
 
 	RenderScene(btar, cam->_blitTargets[1], vp, gbuf, [&]() {
 		if ((cam->_clearType == CameraClearType::Color)
-				|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
+			|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
 			glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
 		}
 		if ((cam->_clearType == CameraClearType::Depth)
@@ -304,7 +304,7 @@ void Renderer::RenderCamera(Camera& cam) {
 
 	int sw = 0;
 	for (auto& e : cam->_effects) {
-		e->Apply(cam->_blitTargets[sw], cam->_blitTargets[1-sw], cam->_blitTargets[2], gbuf);
+		e->Apply(cam->_blitTargets[sw], cam->_blitTargets[1 - sw], cam->_blitTargets[2], gbuf);
 		sw = 1 - sw;
 	}
 
@@ -318,18 +318,32 @@ void Renderer::RenderCamera(Camera& cam) {
 	glDisable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-	static int n = 0;
-
-	if (Input::KeyDown(InputKey::F)) {
-		n = (++n) % 5;
+	static bool dd = true;
+	if (Input::KeyDown(InputKey::D)) {
+		dd = !dd;
 	}
 
-	GI::Voxelizer::DrawDebugEm(vp, n);// std::fmod(Time::time(), 2.0f) > 1 ? 1 : 0);
+	if (dd) {
+		glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
+		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthFunc(GL_ALWAYS);
-	glEnable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		static int n = 0;
+		static bool e = false;
+		if (Input::KeyDown(InputKey::F)) {
+			n = (++n) % 4;
+		}
+		if (Input::KeyDown(InputKey::E)) {
+			e = !e;
+		}
+
+		if (e) GI::Voxelizer::DrawDebugEm(vp, n);
+		else GI::Voxelizer::DrawDebugAO(vp, n);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDepthFunc(GL_ALWAYS);
+		glEnable(GL_CULL_FACE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 
 	btar->Blit(tar, nullptr);
 

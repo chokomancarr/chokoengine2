@@ -118,13 +118,26 @@ in vec2 g2f_uv;
 #endif
 
 uniform layout(binding=3, rgba32f) writeonly image3D occluTexW;
-uniform layout(binding=4, rgba32f) writeonly image3D emitTexW;
+uniform layout(binding=4, rgba32f) writeonly image3D emitTexWx;
+uniform layout(binding=5, rgba32f) writeonly image3D emitTexWy;
+uniform layout(binding=6, rgba32f) writeonly image3D emitTexWz;
 
 float encode(vec2 v) {
 	uint u1 = uint(v.x * 10000);
 	uint u2 = uint(v.y * 10000);
 	uint ru = uint(u1 << 16u) + u2;
 	return uintBitsToFloat(ru);
+}
+
+vec3 encodeE(vec3 e, vec2 n) {
+	vec3 e0 = e * n.x;
+	vec3 e1 = e * n.y;
+
+	return vec3(
+		uintBitsToFloat(packHalf2x16(vec2(e0.x, e1.x))),
+		uintBitsToFloat(packHalf2x16(vec2(e0.y, e1.y))),
+		uintBitsToFloat(packHalf2x16(vec2(e0.z, e1.z)))
+	);
 }
 
 void main() {
@@ -149,7 +162,9 @@ void main() {
 		emit *= texture(emitTex, g2f_uv).xyz;
 	#endif
 
-	imageStore(emitTexW, coord, vec4(emit, 1));
+	imageStore(emitTexWx, coord, vec4(encodeE(emit, nx), 0));
+	imageStore(emitTexWy, coord, vec4(encodeE(emit, ny), 0));
+	imageStore(emitTexWz, coord, vec4(encodeE(emit, nz), 0));
 #endif
 }
 )";

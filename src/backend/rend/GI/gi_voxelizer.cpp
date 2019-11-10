@@ -14,7 +14,7 @@ Shader GI::Voxelizer::voxDebugEmShad;
 
 GLuint GI::Voxelizer::occlusionTex = 0;
 std::vector<GLuint> GI::Voxelizer::occlusionFbos = {};
-GLuint GI::Voxelizer::emissionTex = 0;
+GLuint GI::Voxelizer::emissionTex[3] = {};
 std::vector<GLuint> GI::Voxelizer::emissionFbos = {};
 
 int GI::Voxelizer::_reso = 0;
@@ -42,14 +42,18 @@ void GI::Voxelizer::resolution(int r) {
 
 			glDeleteFramebuffers(_mips, &emissionFbos[0]);
 			emissionFbos.clear();
-			glDeleteTextures(1, &emissionTex);
+			glDeleteTextures(3, emissionTex);
 
 			mipSzs.clear();
 		}
 
 		const std::vector<byte> data(r * r * r * 4);
 		GLuint fbo;
-		const GLenum dbuf = GL_COLOR_ATTACHMENT0;
+		const GLenum dbuf[] = {
+			GL_COLOR_ATTACHMENT0,
+			GL_COLOR_ATTACHMENT1,
+			GL_COLOR_ATTACHMENT2
+		};
 
 		// ---- occlusion ----
 
@@ -66,11 +70,12 @@ void GI::Voxelizer::resolution(int r) {
 		SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		glBindTexture(GL_TEXTURE_3D, 0);
 
-		for (int a = 0; a < _mips; a++) {
+		occlusionFbos.push_back(0);
+		for (int a = 1; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
 			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-			glFramebufferTexture(GL_FRAMEBUFFER, dbuf, occlusionTex, a);
-			glDrawBuffers(1, &dbuf);
+			glFramebufferTexture(GL_FRAMEBUFFER, dbuf[0], occlusionTex, a);
+			glDrawBuffers(1, dbuf);
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if (status != GL_FRAMEBUFFER_COMPLETE) {
 				Debug::Error("GI", "Could not create occlusion framebuffer: level " + std::to_string(a) + ", gl error " + std::to_string(status));
@@ -82,21 +87,25 @@ void GI::Voxelizer::resolution(int r) {
 
 		// ---- emission ----
 
-		glGenTextures(1, &emissionTex);
-		glBindTexture(GL_TEXTURE_3D, emissionTex);
+		glGenTextures(3, emissionTex);
 
-		int mi = 0;
-		for (auto& m : mipSzs) {
-			glTexImage3D(GL_TEXTURE_3D, mi++, GL_RGBA32F, m, m, m, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+		for (int a = 0; a < 3; a++) {
+			glBindTexture(GL_TEXTURE_3D, emissionTex[a]);
+
+			int mi = 0;
+			for (auto& m : mipSzs) {
+				glTexImage3D(GL_TEXTURE_3D, mi++, GL_RGBA32F, m, m, m, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+			}
+			SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		}
-		SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		glBindTexture(GL_TEXTURE_3D, 0);
 
 		for (int a = 0; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
 			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-			glFramebufferTexture(GL_FRAMEBUFFER, dbuf, emissionTex, a);
-			glDrawBuffers(1, &dbuf);
+			for (int b = 0; b < 3; b++)
+			glFramebufferTexture(GL_FRAMEBUFFER, dbuf[b], emissionTex[b], a);
+			glDrawBuffers(1, dbuf);
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if (status != GL_FRAMEBUFFER_COMPLETE) {
 				Debug::Error("GI", "Could not create emission framebuffer: level " + std::to_string(a) + ", gl error " + std::to_string(status));
@@ -126,8 +135,9 @@ bool GI::Voxelizer::InitShaders() {
 	(voxDebugAOShad = Shader::New(glsl::voxelDebugAOVert, glsl::voxelDebugAOFrag))
 		->AddUniforms({ "num", "_VP", "occluTex", "mip" });
 
-	(voxDebugEmShad = Shader::New(glsl::voxelDebugEmVert, glsl::voxelDebugEmFrag))
-		->AddUniforms({ "num", "_VP", "emitTex", "mip" });
+	(voxDebugEmShad = Shader::New(std::vector<std::string>{ glsl::voxelDebugEmVert, glsl::voxelDebugEmFrag },
+		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
+		->AddUniforms({ "num", "_VP", "emitTexX", "emitTexY", "emitTexZ", "mip" });
 
 	float sz = 1.1f;
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
@@ -188,7 +198,9 @@ void GI::Voxelizer::Bake() {
 				}
 			}
 			glBindImageTexture(3, occlusionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
-			glBindImageTexture(4, emissionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+			for (int e = 0; e < 3; e++) {
+				glBindImageTexture(4 + e, emissionTex[e], 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+			}
 
 			mesh->_elos[a]->Bind();
 			glDrawElements(GL_TRIANGLES, mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
@@ -264,8 +276,14 @@ void GI::Voxelizer::DrawDebugEm(const Mat4x4& vp, int mip) {
 	glUniformMatrix4fv(voxDebugEmShad->Loc(1), 1, false, &mvp[0][0]);
 	glUniform1i(voxDebugEmShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_3D, emissionTex);
-	glUniform1f(voxDebugEmShad->Loc(3), (float)mip);
+	glBindTexture(GL_TEXTURE_3D, emissionTex[0]);
+	glUniform1i(voxDebugEmShad->Loc(3), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_3D, emissionTex[1]);
+	glUniform1i(voxDebugEmShad->Loc(4), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_3D, emissionTex[2]);
+	glUniform1f(voxDebugEmShad->Loc(5), (float)mip);
 
 	UI::_vao->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, sz * sz * sz * 36);

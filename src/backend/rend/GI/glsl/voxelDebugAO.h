@@ -62,7 +62,6 @@ void main() {
 
 	int fi = a / 6;
 	normal = normals2[fi];
-	
 	int fi2 = fi / 2;
 	float ov = texval[fi2];
 

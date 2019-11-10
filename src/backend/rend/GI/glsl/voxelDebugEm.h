@@ -1,11 +1,15 @@
 #pragma once
 namespace glsl {
 	const char voxelDebugEmVert[] = R"(
+#version 420 core
+
 uniform int num;
 
 uniform mat4 _VP;
 
-uniform sampler3D emitTex;
+uniform sampler3D emitTexX;
+uniform sampler3D emitTexY;
+uniform sampler3D emitTexZ;
 uniform float mip;
 
 out vec3 normal;
@@ -40,6 +44,14 @@ const vec3 normals2[6] = vec3[](
 	vec3(0, 1, 1), vec3(0, 1, 0)
 );
 
+vec3 decodeE(vec3 v, int i) {
+	return vec3(
+		unpackHalf2x16(floatBitsToUint(v.x))[i],
+		unpackHalf2x16(floatBitsToUint(v.y))[i],
+		unpackHalf2x16(floatBitsToUint(v.z))[i]
+	);
+}
+
 void main() {
 	int vid = gl_VertexID / 36;
 	int a = gl_VertexID - vid * 36;
@@ -50,24 +62,37 @@ void main() {
 
 	vec3 pos = vec3(x, y, z);
 	vec3 uvw = pos / (num - 1.0);
-	vec4 texval = textureLod(emitTex, uvw, mip);
+	vec3 texvals[3] = vec3[](
+		textureLod(emitTexX, uvw, mip).xyz,
+		textureLod(emitTexY, uvw, mip).xyz,
+		textureLod(emitTexZ, uvw, mip).xyz
+	);
 
-	float scl = ceil(texval.w) * 0.5;//ceil(min(texval.x + texval.y + texval.z, 1) * 0.5;
+	int fi = a / 6; //which face
+	normal = normals2[fi];
+	int fi2 = fi / 2; //which axis
+
+	float scl = 0;
+
+	vec3 emits[6];
+	for (int a = 0; a < 6; a++) {
+		emits[a] = decodeE(texvals[a / 2], a - ((a / 2) * 2));
+		scl = max(scl, ceil(min(emits[a].x + emits[a].y + emits[a].z, 1)) * 0.5);
+	}
+
+	emit = max(emits[fi], vec3(0.2, 0.2, 0.2));
 
 	int id = cubeids[a] * 3;
 	cpos = vec3(cubeverts[id], cubeverts[id + 1], cubeverts[id + 2]);
 	vec3 pos2 = pos + cpos * scl;
 	vec4 posn = vec4(pos2 / (num - 1.0) * 2 - 1, 1);
 	gl_Position = _VP * posn;
-
-	int fi = a / 6;
-	normal = normals2[fi];
-
-	emit = texval.xyz;
 }
 )";
 
 	const char voxelDebugEmFrag[] = R"(
+#version 420 core
+
 in vec3 normal;
 in vec3 emit;
 in vec3 cpos;
