@@ -4,11 +4,12 @@
 CE_BEGIN_NAMESPACE
 
 class ShaderVariable {
-    ShaderVariable(const std::string&, ShaderVariableType, GLuint); //only allow shader to construct
+    ShaderVariable(const std::string&, ShaderVariableType, const std::vector<GLint>&); //only allow shader to construct
 
     std::string _name;
     ShaderVariableType _type;
     GLint _location;
+	std::vector<GLint> _locations;
 
 	float _val_f;
 	int _val_i;

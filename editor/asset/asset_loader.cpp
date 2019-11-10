@@ -260,19 +260,22 @@ CE_E_AL_IMPL(Shader) {
 	std::string nm, vs, fs;
 	bool tr = false;
 	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	JsonObject vrs;
+	JsonObject vrs, lmp;
 	for (auto& d : data.group) {
 		if (d.key.string == "name") {
 			nm = d.value.string;
 		}
-		if (d.key.string == "type") {
+		else if (d.key.string == "type") {
 			if (d.value.string == "Transparent") tr = true;
 			else if (d.value.string != "Opaque") {
 				Debug::Warning("Shader Asset Loader", "unknown \"type\" value: \"" + d.value.string + "\" (accepted values: \"Opaque\", \"Transparent\")!");
 			}
 		}
-		if (d.key.string == "variables") {
+		else if (d.key.string == "variables") {
 			vrs = d.value;
+		}
+		else if (d.key.string == "lightmapping") {
+			lmp = d.value;
 		}
 		else if (d.key.string == "vertex") {
 			vs = d.value.string;
@@ -293,6 +296,26 @@ CE_E_AL_IMPL(Shader) {
 		else CE_E_SHV(Color)
 		else CE_E_SHV(Texture)
 		else CE_E_SHV(CubeMap)
+	}
+
+	SHADER_GI_FLAGS flg = 0;
+	_Shader::GIParams giprm = {};
+	for (auto v : lmp.group) {
+		if (v.key.string == "emission_strength") {
+			giprm.emissionStrVar = v.value.string;
+		}
+		else if (v.key.string == "emission_color") {
+			flg |= SHADER_GI_EMIT_COLOR;
+			giprm.emissionColVar = v.value.string;
+		}
+		else if (v.key.string == "emission_texture") {
+			flg |= SHADER_GI_EMIT_TEXTURE;
+			giprm.emissionTexVar = v.value.string;
+		}
+	}
+	if (flg > 0) {
+		shd->giFlags(flg);
+		shd->giParams(giprm);
 	}
 	return shd;
 }

@@ -2,6 +2,33 @@
 
 CE_BEGIN_NAMESPACE
 
+float _Material::GetGIEmissionStr() {
+	for (auto& v : _variables) {
+		if (v.name() == _shader->_giParams.emissionStrVar) {
+			return v.val_f();
+		}
+	}
+	return 1;
+}
+
+Color _Material::GetGIEmissionCol() {
+	for (auto& v : _variables) {
+		if (v.name() == _shader->_giParams.emissionColVar) {
+			return v.val_v4();
+		}
+	}
+	return Color(1);
+}
+
+const Texture& _Material::GetGIEmissionTex() {
+	for (auto& v : _variables) {
+		if (v.name() == _shader->_giParams.emissionTexVar) {
+			return v.val_t();
+		}
+	}
+}
+
+
 _Material::_Material() : _shader(nullptr), _variables({}) {}
 
 void _Material::shader(const Shader& s) {

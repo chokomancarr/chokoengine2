@@ -10,6 +10,10 @@ class _Material : public _Asset { CE_OBJECT_COMMON
     Shader _shader;
 
 	std::vector<ShaderVariable> _variables;
+
+	float GetGIEmissionStr();
+	Color GetGIEmissionCol();
+	const Texture& GetGIEmissionTex();
 public:
     _Material();
 

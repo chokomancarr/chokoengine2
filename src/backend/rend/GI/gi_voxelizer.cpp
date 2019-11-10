@@ -12,10 +12,13 @@ Shader GI::Voxelizer::voxDebugShad;
 
 GLuint GI::Voxelizer::occlusionTex = 0;
 std::vector<GLuint> GI::Voxelizer::occlusionFbos = {};
-std::vector<int> GI::Voxelizer::occlusionMipSzs = {};
+GLuint GI::Voxelizer::emissionTex = 0;
+std::vector<GLuint> GI::Voxelizer::emissionFbos = {};
 
 int GI::Voxelizer::_reso = 0;
 int GI::Voxelizer::_mips = 0;
+
+std::vector<int> GI::Voxelizer::mipSzs = {};
 
 Mat4x4 GI::Voxelizer::lastVP;
 
@@ -33,26 +36,33 @@ void GI::Voxelizer::resolution(int r) {
 		if (!!occlusionTex) {
 			glDeleteFramebuffers(_mips, &occlusionFbos[0]);
 			occlusionFbos.clear();
-			occlusionMipSzs.clear();
 			glDeleteTextures(1, &occlusionTex);
+
+			glDeleteFramebuffers(_mips, &emissionFbos[0]);
+			emissionFbos.clear();
+			glDeleteTextures(1, &emissionTex);
+
+			mipSzs.clear();
 		}
+
+		std::vector<byte> data(r * r * r * 4);
+		GLuint fbo;
+		GLenum dbuf = GL_COLOR_ATTACHMENT0;
+
+		// ---- occlusion ----
 
 		glGenTextures(1, &occlusionTex);
 		glBindTexture(GL_TEXTURE_3D, occlusionTex);
 
-		std::vector<byte> data(r * r * r * 4);
-
 		_mips = 0;
 		while (r >= 4) {
 			glTexImage3D(GL_TEXTURE_3D, _mips, GL_RGBA32F, r, r, r, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
-			occlusionMipSzs.push_back(r);
+			mipSzs.push_back(r);
 			_mips++;
 			r /= 2;
 		}
 		SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 
-		GLuint fbo;
-		GLenum dbuf = GL_COLOR_ATTACHMENT0;
 		for (int a = 0; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
 			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -66,6 +76,31 @@ void GI::Voxelizer::resolution(int r) {
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
+		// ---- occlusion ----
+
+		glGenTextures(1, &emissionTex);
+		glBindTexture(GL_TEXTURE_3D, emissionTex);
+
+		for (auto& m : mipSzs) {
+			glTexImage3D(GL_TEXTURE_3D, _mips, GL_RGBA32F, m, m, m, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+		}
+		SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+
+		for (int a = 0; a < _mips; a++) {
+			glGenFramebuffers(1, &fbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+			glFramebufferTexture(GL_FRAMEBUFFER, dbuf, emissionTex, a);
+			glDrawBuffers(1, &dbuf);
+			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+			if (status != GL_FRAMEBUFFER_COMPLETE) {
+				Debug::Error("GI", "Could not create emission framebuffer: level " + std::to_string(a) + ", gl error " + std::to_string(status));
+			}
+			emissionFbos.push_back(fbo);
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 		glBindTexture(GL_TEXTURE_3D, 0);
 	}
 }
@@ -74,16 +109,19 @@ bool GI::Voxelizer::InitShaders() {
 #ifdef PLATFORM_MAC
 	return true; //
 #else
-	(voxShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
+	(voxShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag },
+			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment },
+			std::vector<std::string>({ "emit_color", "emit_texture" })))
 		->AddUniforms({ "_M", "_MVP", "layerCount" });
 
-	(voxDownShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleVert, glsl::voxelDownsampleGeom, glsl::voxelDownsampleFrag }, std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
+	(voxDownShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleVert, glsl::voxelDownsampleGeom, glsl::voxelDownsampleFrag },
+			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
 		->AddUniforms({ "sz", "tex", "mip" });
 
 	(voxDebugShad = Shader::New(glsl::voxelDebugVert, glsl::voxelDebugFrag))
 		->AddUniforms({ "num", "_VP", "occluTex", "mip" });
 
-	float sz = 1;
+	float sz = 1.1f;
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
 	resolution(32);
 
@@ -104,10 +142,6 @@ void GI::Voxelizer::Bake() {
 	glClearBufferfv(GL_COLOR, 0, zero);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-	voxShad->Bind();
-	glUniform1i(voxShad->Loc(2), _reso);
-	glBindImageTexture(3, occlusionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
-
 	glBlendFunc(GL_ZERO, GL_ONE);
 	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
@@ -117,10 +151,25 @@ void GI::Voxelizer::Bake() {
 		if (!mesh) continue;
 		const auto& M = rend->object()->transform()->worldMatrix();
 		const auto MVP = lastVP * M;
-		glUniformMatrix4fv(voxShad->Loc(0), 1, false, &M[0][0]);
-		glUniformMatrix4fv(voxShad->Loc(1), 1, false, &MVP[0][0]);
+
 		mesh->_vao->Bind();
 		for (size_t a = 0; a < rend->_mesh->materialCount(); a++) {
+			auto& mat = rend->_materials[a];
+			auto& shad = mat->_shader;
+
+			const bool emitCol = (shad->_giFlags & SHADER_GI_EMIT_COLOR) > 0;
+			const bool emitTex = (shad->_giFlags & SHADER_GI_EMIT_TEXTURE) > 0;
+
+			voxShad->SetOption("emit_color", emitCol);
+			voxShad->SetOption("emit_texture", emitTex);
+			voxShad->Bind();
+
+			glUniformMatrix4fv(voxShad->Loc(0), 1, false, &M[0][0]);
+			glUniformMatrix4fv(voxShad->Loc(1), 1, false, &MVP[0][0]);
+			glUniform1i(voxShad->Loc(2), _reso);
+			glBindImageTexture(3, occlusionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(4, emissionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+
 			mesh->_elos[a]->Bind();
 			glDrawElements(GL_TRIANGLES, mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
 			mesh->_elos[a]->Unbind();
@@ -147,7 +196,7 @@ void GI::Voxelizer::Downsample() {
 
 	for (int a = 1; a < _mips; a++) {
 		const auto tar = occlusionFbos[a];
-		const auto sz = occlusionMipSzs[a];
+		const auto sz = mipSzs[a];
 
 		glViewport(0, 0, sz, sz);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar);
@@ -166,7 +215,7 @@ void GI::Voxelizer::Downsample() {
 }
 
 void GI::Voxelizer::DrawDebug(const Mat4x4& vp, int mip) {
-	const auto sz = occlusionMipSzs[mip];
+	const auto sz = mipSzs[mip];
 	const auto mvp = vp * lastVP.inverse();
 
 	voxDebugShad->Bind();

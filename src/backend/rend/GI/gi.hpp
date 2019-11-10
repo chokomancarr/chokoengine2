@@ -12,10 +12,14 @@ public:
 
 		static GLuint occlusionTex;
 		static std::vector<GLuint> occlusionFbos;
-		static std::vector<int> occlusionMipSzs;
+
+		static GLuint emissionTex;
+		static std::vector<GLuint> emissionFbos;
 
 		static int _reso;
 		static int _mips;
+
+		static std::vector<int> mipSzs;
 
 		static Mat4x4 lastVP;
 

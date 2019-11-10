@@ -2,8 +2,8 @@
 
 CE_BEGIN_NAMESPACE
 
-ShaderVariable::ShaderVariable(const std::string& s, ShaderVariableType t, GLuint l)
-	: _name(s), _type(t), _location(l),
+ShaderVariable::ShaderVariable(const std::string& s, ShaderVariableType t, const std::vector<GLint>& l)
+	: _name(s), _type(t), _location(l[0]), _locations(l),
 	_val_f(0),
 	_val_i(0),
 	_val_v2(0),

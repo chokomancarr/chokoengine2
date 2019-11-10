@@ -94,7 +94,10 @@ void _Shader::UpdatePointer() {
 			i |= (1 << j);
 		j++;
 	}
-	pointer = pointers[j];
+	pointer = pointers[i];
+	for (auto& v : variables) {
+		v._location = v._locations[i];
+	}
 }
 
 void _Shader::ApplyFlags() {
@@ -124,7 +127,10 @@ void _Shader::ApplyFlags() {
 	}
 }
 
-_Shader::_Shader() : pointer(0), _queue(ShaderQueue::Opaque), _ztest(ShaderZTest::LessEqual), _blendSrc(ShaderBlend::SrcAlpha), _blendDst(ShaderBlend::OneMinusSrcAlpha) {}
+_Shader::_Shader() : pointer(0), pointers({}), variables({}), options({}),
+		_giFlags(0), _giParams({}), _queue(ShaderQueue::Opaque),
+		_ztest(ShaderZTest::LessEqual), _blendSrc(ShaderBlend::SrcAlpha),
+		_blendDst(ShaderBlend::OneMinusSrcAlpha) {}
 
 _Shader::_Shader(const std::string& vert, const std::string& frag) : _Shader() {
 	uint vers = 1;
@@ -153,7 +159,7 @@ _Shader::_Shader(const std::string& vert, const std::string& frag) : _Shader() {
 	pointer = pointers[0];
 }
 
-_Shader::_Shader(const std::vector<std::string>& strs, const std::vector<ShaderType>& typs) {
+_Shader::_Shader(std::vector<std::string> strs, const std::vector<ShaderType>& typs, const std::vector<std::string>& opts) {
 	const auto n = strs.size();
 	const GLenum t2e[] = {
 		GL_VERTEX_SHADER,
@@ -163,32 +169,65 @@ _Shader::_Shader(const std::vector<std::string>& strs, const std::vector<ShaderT
 		GL_FRAGMENT_SHADER
 	};
 
-	std::vector<GLuint> sps(n);
+	int vers = 1;
+	for (auto& o : opts) {
+		options.push_back(std::make_pair(o, false));
+		vers *= 2;
+	}
 
+	std::vector<GLuint> sps(n);
+	std::vector<std::string> drcs(n);
 	std::string err = "";
-	for (size_t a = 0; a < n; a++) {
-		if (!LoadShader(t2e[(int)typs[a]], strs[a], sps[a], &err)) {
-			Debug::Error("_Shader Compiler", "Comp " + std::to_string(a) + " error: " + err);
-			for (size_t b = 0; b <= a; b++) {
-				glDeleteShader(sps[b]);
-			}
+
+	for (int a = 0; a < n; a++) {
+		auto& s = strs[a];
+		const auto hl = s.find_first_of('#');
+		const auto nl = s.find_first_of('\n', hl + 1);
+		if (s.substr(hl + 1, 7) == "version") {
+			drcs[a] = s.substr(hl, nl - hl + 1);
+			s = s.substr(nl + 1);
+		}
+		else {
+			Debug::Error("_Shader Compiler", "First '#' statement is not version statement!");
+			return;
 		}
 	}
 
-	pointer = glCreateProgram();
-	for (size_t a = 0; a < n; a++) {
-		glAttachShader(pointer, sps[a]);
+	for (int v = 0; v < vers; v++) {
+		std::string str = "";
+		for (int a = 0; a < options.size(); a++) {
+			if (!!(v & (1 << a))) {
+				str += "#define " + options[a].first + "\n";
+			}
+		}
+
+		for (size_t a = 0; a < n; a++) {
+			if (!LoadShader(t2e[(int)typs[a]], drcs[a] + str + strs[a], sps[a], &err)) {
+				Debug::Error("_Shader Compiler", "Comp " + std::to_string(a) + " error: " + err);
+				for (size_t b = 0; b <= a; b++) {
+					glDeleteShader(sps[b]);
+				}
+			}
+		}
+
+		pointer = glCreateProgram();
+		for (size_t a = 0; a < n; a++) {
+			glAttachShader(pointer, sps[a]);
+		}
+
+		if (!LinkShader(pointer)) {
+			glDeleteProgram(pointer);
+			pointer = 0;
+		}
+
+		for (size_t a = 0; a < n; a++) {
+			glDetachShader(pointer, sps[a]);
+			glDeleteShader(sps[a]);
+		}
+		pointers.push_back(pointer);
 	}
 
-	if (!LinkShader(pointer)) {
-		glDeleteProgram(pointer);
-		pointer = 0;
-	}
-
-	for (size_t a = 0; a < n; a++) {
-		glDetachShader(pointer, sps[a]);
-		glDeleteShader(sps[a]);
-	}
+	pointer = pointers[0];
 }
 
 void _Shader::SetOptions(const std::initializer_list<std::string>& nms) {
@@ -212,9 +251,11 @@ void _Shader::AddUniform(const std::string& s, ShaderVariableType t) {
 	for (auto& v : variables) {
 		if (v.name() == s) return;
 	}
-	variables.push_back(ShaderVariable(s, t,
-		glGetUniformLocation(pointer, s.c_str())
-	));
+	std::vector<GLint> locs = {};
+	for (auto& p : pointers) {
+		locs.push_back(glGetUniformLocation(pointer, s.c_str()));
+	}
+	variables.push_back(ShaderVariable(s, t, locs));
 }
 
 void _Shader::AddUniforms(std::initializer_list<const std::string> ss) {
