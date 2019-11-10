@@ -9,7 +9,7 @@ uniform sampler3D emitTex;
 uniform float mip;
 
 out vec3 normal;
-out vec3 occlu;
+out vec3 emit;
 out vec3 cpos;
 
 const int cubeids[36] = int[](
@@ -50,9 +50,9 @@ void main() {
 
 	vec3 pos = vec3(x, y, z);
 	vec3 uvw = pos / (num - 1.0);
-	vec4 texval = textureLod(occluTex, uvw, mip);
+	vec4 texval = textureLod(emitTex, uvw, mip);
 
-	float scl = ceil(texval.w) * 0.5;
+	float scl = ceil(texval.w) * 0.5;//ceil(min(texval.x + texval.y + texval.z, 1) * 0.5;
 
 	int id = cubeids[a] * 3;
 	cpos = vec3(cubeverts[id], cubeverts[id + 1], cubeverts[id + 2]);
@@ -62,32 +62,21 @@ void main() {
 
 	int fi = a / 6;
 	normal = normals2[fi];
-	
-	int fi2 = fi / 2;
-	float ov = texval[fi2];
 
-	uint ovu = floatBitsToUint(ov);
-	if (fi == fi2 * 2) {
-		ovu = ovu >> 16;
-	}
-	else {
-		ovu = ovu & 0x0000ffffu;
-	}
-
-	occlu = vec3(1, 1, 1) * (float(ovu) * 0.0001 * 0.8 + 0.2);
+	emit = texval.xyz;
 }
 )";
 
 	const char voxelDebugEmFrag[] = R"(
 in vec3 normal;
-in vec3 occlu;
+in vec3 emit;
 in vec3 cpos;
 
 out vec4 fragCol;
 
 void main() {
 	float mul = 1 - max(abs(cpos.x) + abs(cpos.y) + abs(cpos.z) - 2, 0);
-	fragCol = vec4(occlu * mul, 1);//vec4(occlu, occlu, occlu, 1);
+	fragCol = vec4(emit * mul, 1);
 }
 )";
 }

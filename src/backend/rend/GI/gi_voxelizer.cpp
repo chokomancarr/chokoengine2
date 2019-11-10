@@ -47,9 +47,9 @@ void GI::Voxelizer::resolution(int r) {
 			mipSzs.clear();
 		}
 
-		std::vector<byte> data(r * r * r * 4);
+		const std::vector<byte> data(r * r * r * 4);
 		GLuint fbo;
-		GLenum dbuf = GL_COLOR_ATTACHMENT0;
+		const GLenum dbuf = GL_COLOR_ATTACHMENT0;
 
 		// ---- occlusion ----
 
@@ -64,6 +64,7 @@ void GI::Voxelizer::resolution(int r) {
 			r /= 2;
 		}
 		SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+		glBindTexture(GL_TEXTURE_3D, 0);
 
 		for (int a = 0; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
@@ -79,15 +80,17 @@ void GI::Voxelizer::resolution(int r) {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
-		// ---- occlusion ----
+		// ---- emission ----
 
 		glGenTextures(1, &emissionTex);
 		glBindTexture(GL_TEXTURE_3D, emissionTex);
 
+		int mi = 0;
 		for (auto& m : mipSzs) {
-			glTexImage3D(GL_TEXTURE_3D, _mips, GL_RGBA32F, m, m, m, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+			glTexImage3D(GL_TEXTURE_3D, mi++, GL_RGBA32F, m, m, m, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 		}
 		SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+		glBindTexture(GL_TEXTURE_3D, 0);
 
 		for (int a = 0; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
@@ -261,7 +264,7 @@ void GI::Voxelizer::DrawDebugEm(const Mat4x4& vp, int mip) {
 	glUniformMatrix4fv(voxDebugEmShad->Loc(1), 1, false, &mvp[0][0]);
 	glUniform1i(voxDebugEmShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_3D, occlusionTex);
+	glBindTexture(GL_TEXTURE_3D, emissionTex);
 	glUniform1f(voxDebugEmShad->Loc(3), (float)mip);
 
 	UI::_vao->Bind();
