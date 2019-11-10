@@ -1,0 +1,7 @@
+{
+  "shader":".internal/unlit_color.shader",
+  "Color":{
+    "name":"color",
+    "value":[ "20", "20", "20", "1" ]
+  }
+}

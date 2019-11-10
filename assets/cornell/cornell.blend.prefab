@@ -1,0 +1,26 @@
+{
+  "object":{
+    "name":"cornell.blend",
+    "position":[ "0", "0", "0" ],
+    "rotation":[ "1", "0", "0", "0" ],
+    "scale":[ "1", "1", "1" ],
+    "children":{
+      "object":{
+        "name":"Plane",
+        "position":[ "0.000000", "0.000000", "-0.000000" ],
+        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale":[ "1.000000", "1.000000", "1.000000" ],
+        "components":{
+          "MeshRenderer":{
+            "mesh":".exported/cornell.blend/Plane.mesh",
+            "modifiers":{},
+            "materials":[
+              "cornell.material",
+              "emit.material"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

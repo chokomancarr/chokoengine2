@@ -1,0 +1,15 @@
+{
+  "shader":"singletex.shader",
+  "Texture":{
+    "name":"diffuse",
+    "value":"cornell.png"
+  },
+  "Float":{
+    "name":"metallic",
+    "value":"0"
+  },
+  "Float":{
+    "name":"roughness",
+    "value":"0.5"
+  }
+}
