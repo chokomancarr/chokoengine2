@@ -1,18 +1,22 @@
 #include "backend/chokoengine_backend.hpp"
 #include "asset/texture_internal.hpp"
+#include "utils/glutils.hpp"
+#include "glsl/minVert.h"
 #include "glsl/voxelFill.h"
 #include "glsl/voxelDownsampleAO.h"
 #include "glsl/voxelDownsampleEm.h"
 #include "glsl/voxelDebugAO.h"
 #include "glsl/voxelDebugEm.h"
+#include "glsl/voxelLight.h"
 
 CE_BEGIN_BK_NAMESPACE
 
-Shader GI::Voxelizer::voxShad;
+Shader GI::Voxelizer::voxFillShad;
 Shader GI::Voxelizer::voxDownAOShad;
 Shader GI::Voxelizer::voxDownEmShad;
 Shader GI::Voxelizer::voxDebugAOShad;
 Shader GI::Voxelizer::voxDebugEmShad;
+Shader GI::Voxelizer::voxLightShad;
 
 GLuint GI::Voxelizer::occlusionTex = 0;
 std::vector<GLuint> GI::Voxelizer::occlusionFbos = {};
@@ -127,7 +131,7 @@ bool GI::Voxelizer::InitShaders() {
 #ifdef PLATFORM_MAC
 	return true; //
 #else
-	(voxShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag },
+	(voxFillShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag },
 			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment },
 			std::vector<std::string>({ "emit_color", "emit_texture" })))
 		->AddUniforms({ "_M", "_MVP", "layerCount", "emitStr", "emitCol", "emitTex" });
@@ -147,11 +151,16 @@ bool GI::Voxelizer::InitShaders() {
 		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
 		->AddUniforms({ "num", "_VP", "emitTexX", "emitTexY", "emitTexZ", "mip" });
 
+	(voxLightShad = Shader::New(std::vector<std::string>{ ("#version 330 core\n" + std::string(glsl::minVert)), glsl::voxelDebugEmFrag },
+		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD",
+			"voxelMips", "voxelMat", "voxelUnit", "emitTexX", "emitTexY", "emitTexZ" });
+
 	float sz = 1.1f;
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
 	resolution(32);
 
-	return !!voxShad && !!voxDownAOShad && !!voxDownEmShad && !!voxDebugAOShad && !!voxDebugEmShad;
+	return !!voxFillShad && !!voxDownAOShad && !!voxDownEmShad && !!voxDebugAOShad && !!voxDebugEmShad;
 #endif
 }
 
@@ -186,21 +195,21 @@ void GI::Voxelizer::Bake() {
 			const bool emitCol = (shad->_giFlags & SHADER_GI_EMIT_COLOR) > 0;
 			const bool emitTex = (shad->_giFlags & SHADER_GI_EMIT_TEXTURE) > 0;
 
-			voxShad->SetOption("emit_color", emitCol);
-			voxShad->SetOption("emit_texture", emitTex);
-			voxShad->Bind();
+			voxFillShad->SetOption("emit_color", emitCol);
+			voxFillShad->SetOption("emit_texture", emitTex);
+			voxFillShad->Bind();
 
-			glUniformMatrix4fv(voxShad->Loc(0), 1, false, &M[0][0]);
-			glUniformMatrix4fv(voxShad->Loc(1), 1, false, &MVP[0][0]);
-			glUniform1i(voxShad->Loc(2), _reso);
+			glUniformMatrix4fv(voxFillShad->Loc(0), 1, false, &M[0][0]);
+			glUniformMatrix4fv(voxFillShad->Loc(1), 1, false, &MVP[0][0]);
+			glUniform1i(voxFillShad->Loc(2), _reso);
 			if (emitCol || emitTex) {
-				glUniform1f(voxShad->Loc(3), mat->GetGIEmissionStr());
+				glUniform1f(voxFillShad->Loc(3), mat->GetGIEmissionStr());
 				if (emitCol) {
 					Color c = mat->GetGIEmissionCol();
-					glUniform3f(voxShad->Loc(4), c.r, c.g, c.b);
+					glUniform3f(voxFillShad->Loc(4), c.r, c.g, c.b);
 				}
 				if (emitTex) {
-					glUniform1i(voxShad->Loc(5), 0);
+					glUniform1i(voxFillShad->Loc(5), 0);
 					glActiveTexture(GL_TEXTURE0);
 					mat->GetGIEmissionTex()->Bind();
 				}
@@ -217,7 +226,7 @@ void GI::Voxelizer::Bake() {
 		mesh->_vao->Unbind();
 	}
 
-	voxShad->Unbind();
+	voxFillShad->Unbind();
 
 	Downsample();
 #endif
@@ -244,9 +253,7 @@ void GI::Voxelizer::Downsample() {
 		glUniform1i(voxDownAOShad->Loc(0), sz);
 		glUniform1f(voxDownAOShad->Loc(2), (float)(a - 1));
 
-		UI::_vao->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6 * sz);
-		UI::_vao->Unbind();
+		GLUtils::DrawArrays(GL_TRIANGLES, 6 * sz);
 	}
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	voxDownAOShad->Unbind();
@@ -269,9 +276,7 @@ void GI::Voxelizer::Downsample() {
 		glUniform1i(voxDownEmShad->Loc(0), sz);
 		glUniform1i(voxDownEmShad->Loc(4), a - 1);
 
-		UI::_vao->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6 * sz);
-		UI::_vao->Unbind();
+		GLUtils::DrawArrays(GL_TRIANGLES, 6 * sz);
 	}
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	voxDownEmShad->Unbind();
@@ -292,9 +297,7 @@ void GI::Voxelizer::DrawDebugAO(const Mat4x4& vp, int mip) {
 	glBindTexture(GL_TEXTURE_3D, occlusionTex);
 	glUniform1f(voxDebugAOShad->Loc(3), (float)mip);
 
-	UI::_vao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, sz * sz * sz * 36);
-	UI::_vao->Unbind();
+	GLUtils::DrawArrays(GL_TRIANGLES, sz * sz * sz * 36);
 
 	voxDebugAOShad->Unbind();
 }
@@ -318,11 +321,36 @@ void GI::Voxelizer::DrawDebugEm(const Mat4x4& vp, int mip) {
 	glBindTexture(GL_TEXTURE_3D, emissionTex[2]);
 	glUniform1f(voxDebugEmShad->Loc(5), (float)mip);
 
-	UI::_vao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, sz * sz * sz * 36);
-	UI::_vao->Unbind();
+	GLUtils::DrawArrays(GL_TRIANGLES, sz * sz * sz * 36);
 
 	voxDebugEmShad->Unbind();
+}
+
+#define texu(i, j)\
+	glUniform1i(voxLightShad->Loc(i), j);\
+	glActiveTexture(GL_TEXTURE0 + j)
+
+void GI::Voxelizer::LightPass(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
+	voxLightShad->Bind();
+
+	glUniformMatrix4fv(voxLightShad->Loc(0), 1, false, &ip[0][0]);
+	glUniform2f(voxLightShad->Loc(1), w, h);
+	for (int a = 0; a < 3; a++) {
+		texu(2 + a, a);
+		gbuf->tex(a)->Bind();
+	}
+	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+	glUniform1i(voxLightShad->Loc(6), _mips - 1);
+	glUniformMatrix4fv(voxLightShad->Loc(7), 1, false, &lastVP[0][0]);
+	glUniform1f(voxLightShad->Loc(8), glm::length(lastVP * Vec4(1, 0, 0, 0)));
+	for (int a = 0; a < 3; a++) {
+		texu(9 + a, 4 + a);
+		glBindTexture(GL_TEXTURE_3D, emissionTex[a]);
+	}
+
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
+	voxLightShad->Unbind();
 }
 
 CE_END_BK_NAMESPACE

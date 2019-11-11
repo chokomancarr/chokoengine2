@@ -1,8 +1,8 @@
 #pragma once
-#include "chokoeditor.hpp"
+#include "chokoengine.hpp"
 #include "utils/glutils.hpp"
 
-CE_BEGIN_ED_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 GLuint GLUtils::_vao = 0;
 
@@ -13,4 +13,4 @@ void GLUtils::DrawArrays(GLenum tp, int n, int o) {
     glBindVertexArray(0);
 }
 
-CE_END_ED_NAMESPACE
+CE_END_NAMESPACE

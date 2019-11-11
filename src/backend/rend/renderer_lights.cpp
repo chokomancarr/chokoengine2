@@ -1,4 +1,5 @@
 #include "backend/chokoengine_backend.hpp"
+#include "utils/glutils.hpp"
 #include "glsl/minVert.h"
 #include "glsl/pointLightFrag.h"
 #include "glsl/pointLightFrag_s.h"
@@ -60,9 +61,8 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 	glUniform1i(pointLightShad->Loc(15), l->_shadowSamples);
 	glUniform1f(pointLightShad->Loc(16), tr ? 1 : 0);
 
-	_emptyVao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	_emptyVao->Unbind();
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
 	pointLightShad->Unbind();
 }
 
@@ -160,9 +160,8 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	}
 	glUniform1f(spotLightShad->Loc(16), tr ? 1 : 0);
 
-	_emptyVao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	_emptyVao->Unbind();
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
 	spotLightShad->Unbind();
 }
 

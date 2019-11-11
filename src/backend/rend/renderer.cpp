@@ -1,4 +1,5 @@
 #include "backend/chokoengine_backend.hpp"
+#include "utils/glutils.hpp"
 #include "glsl/minVert.h"
 #include "glsl/skyFrag.h"
 #include "glsl/probeLightFrag.h"
@@ -37,8 +38,6 @@
  */
 
 CE_BEGIN_BK_NAMESPACE
-
-VertexArray Renderer::_emptyVao;
 
 Shader Renderer::skyShad;
 Shader Renderer::pointLightShad;
@@ -252,9 +251,9 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	glUniform1i(transOverlayShad->Loc(9), 5);
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, ttar->_depth);
-	_emptyVao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	_emptyVao->Unbind();
+	
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
 	transOverlayShad->Unbind();
 
 	tar->UnbindTarget();
@@ -393,16 +392,14 @@ void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip
 		glBindTexture(GL_TEXTURE_2D, Scene::_sky->_pointer);
 		glUniform1f(skyShad->Loc(9), Scene::_sky->_brightness);
 		glUniform1f(skyShad->Loc(10), tr ? 1 : 0);
-		_emptyVao->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		_emptyVao->Unbind();
+		
+		GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
 		skyShad->Unbind();
 	}
 }
 
 bool Renderer::Init() {
-	_emptyVao = std::make_shared<_VertexArray>();
-
 	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
 		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "inSky", "skyStrength", "transparent" });
 	(probeShad = Shader::New(glsl::minVert, glsl::probeLightFrag))

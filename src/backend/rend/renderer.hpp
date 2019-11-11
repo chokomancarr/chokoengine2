@@ -4,8 +4,6 @@
 CE_BEGIN_BK_NAMESPACE
 
 class Renderer {
-	static VertexArray _emptyVao;
-
 	static Shader skyShad;
 
 	static Shader pointLightShad;
@@ -45,7 +43,6 @@ class Renderer {
 	static void ApplyLightProbe(const LightProbe&, int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip);
 
 public:
-	CE_GET_ST_MEMBER(emptyVao);
 
 	static bool Init();
 

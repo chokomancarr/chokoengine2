@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 #include "texture_internal.hpp"
-#include "backend/chokoengine_backend.hpp"
+#include "utils/glutils.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -132,9 +132,7 @@ void _Texture::Blit(const RenderTarget& dst, const Material& mat) {
 	else {
 		mat->SetUniform("mainTex", tex);
 		mat->Bind();
-		Backend::Renderer::emptyVao()->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		Backend::Renderer::emptyVao()->Unbind();
+		GLUtils::DrawArrays(GL_TRIANGLES, 6);
 		mat->Unbind();
 	}
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

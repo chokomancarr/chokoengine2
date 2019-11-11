@@ -1,6 +1,6 @@
 #include "chokoengine.hpp"
 #include "texture_internal.hpp"
-#include "backend/chokoengine_backend.hpp"
+#include "utils/glutils.hpp"
 #include "glsl/minVert.h"
 #include "glsl/presum_ggx_cube.h"
 
@@ -94,9 +94,7 @@ void _CubeMap::ComputeGlossMipmaps() {
 			glUniform3f(ggxBlurShad->Loc(7), dy[a * 3], dy[a * 3 + 1], dy[a * 3 + 2]);
 			glUniform1f(ggxBlurShad->Loc(8), a - 1);
 			tars[f]->BindTarget();
-			Backend::Renderer::emptyVao()->Bind();
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			Backend::Renderer::emptyVao()->Unbind();
+			GLUtils::DrawArrays(GL_TRIANGLES, 6);
 			tars[f]->UnbindTarget();
 			ggxBlurShad->Unbind();
 		}

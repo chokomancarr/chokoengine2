@@ -1,6 +1,6 @@
 #include "chokoeditor.hpp"
 #include "meshutils.hpp"
-#include "glutils.hpp"
+#include "utils/glutils.hpp"
 #include "glsl/minVert.h"
 #include "glsl/uvinfo.h"
 #include "glsl/uvinfo_exp.h"

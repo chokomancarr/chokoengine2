@@ -1,4 +1,5 @@
 target_sources(ChokoEngine PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/glutils.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/math.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/procedural_mesh.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/random.cpp

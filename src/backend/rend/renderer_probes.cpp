@@ -1,4 +1,5 @@
 #include "backend/chokoengine_backend.hpp"
+#include "utils/glutils.hpp"
 
 CE_BEGIN_BK_NAMESPACE
 
@@ -66,9 +67,7 @@ void Renderer::ApplyLightProbe(const LightProbe& lp, int w, int h, const FrameBu
 	glActiveTexture(GL_TEXTURE5);
 	lp->_fbo->_maps[0]->Bind();
 	glUniform1f(probeShad->Loc(8), lp->_strength);
-	_emptyVao->Bind();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	_emptyVao->Unbind();
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 	probeShad->Unbind();
 }
 

@@ -6,11 +6,12 @@ CE_BEGIN_BK_NAMESPACE
 class GI {
 public:
 	class Voxelizer {
-		static Shader voxShad;
+		static Shader voxFillShad;
 		static Shader voxDownAOShad;
 		static Shader voxDownEmShad;
 		static Shader voxDebugAOShad;
 		static Shader voxDebugEmShad;
+		static Shader voxLightShad;
 
 		static GLuint occlusionTex;
 		static std::vector<GLuint> occlusionFbos;
@@ -52,6 +53,8 @@ public:
 		static void DrawDebugAO(const Mat4x4& vp, int mip);
 
 		static void DrawDebugEm(const Mat4x4& vp, int mip);
+
+		static void LightPass(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr);
 	};
 
 	static bool Init();
