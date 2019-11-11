@@ -76,8 +76,7 @@ void GI::Voxelizer::resolution(int r) {
 		SetTexParams<GL_TEXTURE_3D>(_mips - 1, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
 		glBindTexture(GL_TEXTURE_3D, 0);
 
-		occlusionFbos.push_back(0);
-		for (int a = 1; a < _mips; a++) {
+		for (int a = 0; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
 			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 			glFramebufferTexture(GL_FRAMEBUFFER, dbuf[0], occlusionTex, a);
@@ -106,8 +105,7 @@ void GI::Voxelizer::resolution(int r) {
 		}
 		glBindTexture(GL_TEXTURE_3D, 0);
 
-		emissionFbos.push_back(0);
-		for (int a = 1; a < _mips; a++) {
+		for (int a = 0; a < _mips; a++) {
 			glGenFramebuffers(1, &fbo);
 			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 			for (int b = 0; b < 3; b++) {
@@ -151,7 +149,7 @@ bool GI::Voxelizer::InitShaders() {
 		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
 		->AddUniforms({ "num", "_VP", "emitTexX", "emitTexY", "emitTexZ", "mip" });
 
-	(voxLightShad = Shader::New(std::vector<std::string>{ ("#version 330 core\n" + std::string(glsl::minVert)), glsl::voxelDebugEmFrag },
+	(voxLightShad = Shader::New(std::vector<std::string>{ ("#version 330 core\n" + std::string(glsl::minVert)), glsl::voxelLightFrag },
 		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
 		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD",
 			"voxelMips", "voxelMat", "voxelUnit", "emitTexX", "emitTexY", "emitTexZ" });
@@ -160,7 +158,7 @@ bool GI::Voxelizer::InitShaders() {
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
 	resolution(32);
 
-	return !!voxFillShad && !!voxDownAOShad && !!voxDownEmShad && !!voxDebugAOShad && !!voxDebugEmShad;
+	return !!voxFillShad && !!voxDownAOShad && !!voxDownEmShad && !!voxDebugAOShad && !!voxDebugEmShad && !!voxLightShad;
 #endif
 }
 
@@ -175,6 +173,10 @@ void GI::Voxelizer::Bake() {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, occlusionFbos[0]);
 	float zero[4] = {};
 	glClearBufferfv(GL_COLOR, 0, zero);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, emissionFbos[0]);
+	glClearBufferfv(GL_COLOR, 0, zero);
+	glClearBufferfv(GL_COLOR, 1, zero);
+	glClearBufferfv(GL_COLOR, 2, zero);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	glBlendFunc(GL_ZERO, GL_ONE);
@@ -339,6 +341,7 @@ void GI::Voxelizer::LightPass(int w, int h, const FrameBuffer& gbuf, const Mat4x
 		texu(2 + a, a);
 		gbuf->tex(a)->Bind();
 	}
+	texu(5, 3);
 	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
 	glUniform1i(voxLightShad->Loc(6), _mips - 1);
 	glUniformMatrix4fv(voxLightShad->Loc(7), 1, false, &lastVP[0][0]);

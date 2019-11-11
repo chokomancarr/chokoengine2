@@ -12,7 +12,7 @@ uniform sampler2D inGBuf2;
 uniform sampler2D inGBufD;
 
 uniform int voxelMips;
-uniform mat4x4 voxelMat;
+uniform mat4 voxelMat;
 uniform float voxelUnit;
 
 uniform sampler3D emitTexX;
@@ -33,10 +33,10 @@ vec3 decode(vec3 v, float n) {
 vec3 lightAt(vec3 loc, vec3 nrm, float lod) {
 	vec4 loc2 = voxelMat * vec4(loc, 1);
 	loc2 /= loc2.w;
-	lod /= voxelMips;
-	return decode(textureLod(emitTexX, loc, lod), -nrm.x)
-		+ decode(textureLod(emitTexY, loc, lod), -nrm.y)
-		+ decode(textureLod(emitTexZ, loc, lod), -nrm.z);
+	lod *= voxelMips;
+	return decode(textureLod(emitTexX, loc2.xyz, lod).xyz, -nrm.x)
+		+ decode(textureLod(emitTexY, loc2.xyz, lod).xyz, -nrm.y)
+		+ decode(textureLod(emitTexZ, loc2.xyz, lod).xyz, -nrm.z);
 }
 
 void main () {
@@ -44,7 +44,7 @@ void main () {
 	vec4 diffuse = texture(inGBuf0, uv);
 	vec3 normal = texture(inGBuf1, uv).xyz;
 	vec4 gbuf2 = texture(inGBuf2, uv);
-	float metallic = gbuf2.x * (1 - transparent);
+	float metallic = gbuf2.x;
 	float rough = gbuf2.y;
 	float occlu = gbuf2.z;
 	float z = texture(inGBufD, uv).x;
@@ -57,10 +57,8 @@ void main () {
 	
 	fragCol.rgba = vec4(0, 0, 0, 0);
 	if (z < 1) {
-		fragCol.rgb = lightAt(wPos, normal, 1);
+		fragCol.rgb = diffuse.rgb * lightAt(wPos.xyz, normal, 1);
 	}
-
-    fragCol.a = mix(1, fragCol.a, transparent);
 }
 )";
 }

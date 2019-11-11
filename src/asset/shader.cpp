@@ -159,7 +159,7 @@ _Shader::_Shader(const std::string& vert, const std::string& frag) : _Shader() {
 	pointer = pointers[0];
 }
 
-_Shader::_Shader(std::vector<std::string> strs, const std::vector<ShaderType>& typs, const std::vector<std::string>& opts) {
+_Shader::_Shader(std::vector<std::string> strs, const std::vector<ShaderType>& typs, const std::vector<std::string>& opts) : _Shader() {
 	const auto n = strs.size();
 	const GLenum t2e[] = {
 		GL_VERTEX_SHADER,

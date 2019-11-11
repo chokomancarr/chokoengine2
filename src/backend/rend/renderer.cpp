@@ -168,6 +168,8 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 		}
 	}
 
+	GI::Voxelizer::LightPass(_w, _h, gbuf, ip, false);
+
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, gbuf->_pointer);
 
 	glBlitFramebuffer(0, 0, _w, _h, 0, 0, _w, _h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
@@ -326,8 +328,8 @@ void Renderer::RenderCamera(Camera& cam) {
 		glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
 		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
 
-		static int n = 1;
-		static bool e = true;
+		static int n = 0;
+		static bool e = false;
 		if (Input::KeyDown(InputKey::F)) {
 			n = (++n) % 6;
 		}
@@ -337,12 +339,12 @@ void Renderer::RenderCamera(Camera& cam) {
 
 		if (e) GI::Voxelizer::DrawDebugEm(vp, n);
 		else GI::Voxelizer::DrawDebugAO(vp, n);
-
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDepthFunc(GL_ALWAYS);
-		glEnable(GL_CULL_FACE);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_ALWAYS);
+	glEnable(GL_CULL_FACE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	btar->Blit(tar, nullptr);
 
