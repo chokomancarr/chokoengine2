@@ -48,6 +48,21 @@ void ChokoEditor::Main() {
 	Scene::AddObject(((Prefab)EAssetList::Get(EAssetType::Prefab, ".exported/cornell.blend/cornell.blend.prefab", true))->Instantiate());
 	//Scene::objects().back()->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	//Scene::objects().back()->transform()->localRotationEuler(Vec3(0, -5, 0));
+	const auto& cl = Scene::FindByName("Plane");
+	if (!!cl) {
+		const auto& o = Scene::AddNewObject(cl);
+		const auto& l = o->AddComponent<Light>(LightType::Point);
+		l->distance(20);
+		l->strength(1);
+		l->shadow(true);
+		l->shadowStrength(0.7f);
+		l->shadowBias(0.002f);
+		l->radius(0.05f);
+		l->color(Color(1, 0.9f, 0.7f));
+		l->softShadows(true);
+		l->shadowSamples(1);
+		o->transform()->localPosition(Vec3(0, 0.2f, 0));
+	}
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();

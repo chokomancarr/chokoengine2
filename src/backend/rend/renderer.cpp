@@ -329,16 +329,17 @@ void Renderer::RenderCamera(Camera& cam) {
 		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
 
 		static int n = 0;
-		static bool e = false;
+		static int e = 1;
 		if (Input::KeyDown(InputKey::F)) {
 			n = (++n) % 6;
 		}
 		if (Input::KeyDown(InputKey::E)) {
-			e = !e;
+			e = ++e % 3;
 		}
 
-		if (e) GI::Voxelizer::DrawDebugEm(vp, n);
-		else GI::Voxelizer::DrawDebugAO(vp, n);
+		if (e == 0) GI::Voxelizer::DrawDebugAO(vp, n);
+		else if (e == 1) GI::Voxelizer::DrawDebugDf(vp);
+		else GI::Voxelizer::DrawDebugEm(vp, n);
 	}
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -10,11 +10,15 @@ public:
 		static Shader voxDownAOShad;
 		static Shader voxDownEmShad;
 		static Shader voxDebugAOShad;
+		static Shader voxDebugDfShad;
 		static Shader voxDebugEmShad;
 		static Shader voxLightShad;
 
 		static GLuint occlusionTex;
 		static std::vector<GLuint> occlusionFbos;
+
+		static GLuint diffuseTex[3]; //no need to downsample this
+		static GLuint diffuseFbo; //but we need this to clear
 
 		static GLuint emissionTex[3];
 		static std::vector<GLuint> emissionFbos;
@@ -51,7 +55,7 @@ public:
 		static void DrawVoxelAO(const Mat4x4& p);
 
 		static void DrawDebugAO(const Mat4x4& vp, int mip);
-
+		static void DrawDebugDf(const Mat4x4& vp);
 		static void DrawDebugEm(const Mat4x4& vp, int mip);
 
 		static void LightPass(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr);

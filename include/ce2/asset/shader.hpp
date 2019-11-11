@@ -14,6 +14,9 @@ CE_BEGIN_NAMESPACE
 class _Shader : public _Asset { CE_OBJECT_COMMON
 public:
 	struct GIParams {
+		std::string diffuseColVar;
+		std::string diffuseTexVar;
+
 		std::string emissionStrVar;
 		std::string emissionColVar;
 		std::string emissionTexVar;

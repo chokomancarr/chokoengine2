@@ -11,6 +11,8 @@ class _Material : public _Asset { CE_OBJECT_COMMON
 
 	std::vector<ShaderVariable> _variables;
 
+	Color GetGIDiffuseCol();
+	const Texture& GetGIDiffuseTex();
 	float GetGIEmissionStr();
 	Color GetGIEmissionCol();
 	const Texture& GetGIEmissionTex();

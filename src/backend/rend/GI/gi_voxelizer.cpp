@@ -6,6 +6,7 @@
 #include "glsl/voxelDownsampleAO.h"
 #include "glsl/voxelDownsampleEm.h"
 #include "glsl/voxelDebugAO.h"
+#include "glsl/voxelDebugDf.h"
 #include "glsl/voxelDebugEm.h"
 #include "glsl/voxelLight.h"
 
@@ -15,11 +16,14 @@ Shader GI::Voxelizer::voxFillShad;
 Shader GI::Voxelizer::voxDownAOShad;
 Shader GI::Voxelizer::voxDownEmShad;
 Shader GI::Voxelizer::voxDebugAOShad;
+Shader GI::Voxelizer::voxDebugDfShad;
 Shader GI::Voxelizer::voxDebugEmShad;
 Shader GI::Voxelizer::voxLightShad;
 
 GLuint GI::Voxelizer::occlusionTex = 0;
 std::vector<GLuint> GI::Voxelizer::occlusionFbos = {};
+GLuint GI::Voxelizer::diffuseTex[3] = {};
+GLuint GI::Voxelizer::diffuseFbo = 0;
 GLuint GI::Voxelizer::emissionTex[3] = {};
 std::vector<GLuint> GI::Voxelizer::emissionFbos = {};
 
@@ -88,6 +92,30 @@ void GI::Voxelizer::resolution(int r) {
 			occlusionFbos.push_back(fbo);
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
+
+		// ---- diffuse ----
+
+		glGenTextures(3, diffuseTex);
+
+		for (int a = 0; a < 3; a++) {
+			glBindTexture(GL_TEXTURE_3D, diffuseTex[a]);
+			glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, _reso, _reso, _reso, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+			SetTexParams<GL_TEXTURE_3D>(0, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST);
+		}
+		glBindTexture(GL_TEXTURE_3D, 0);
+
+		glGenFramebuffers(1, &diffuseFbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, diffuseFbo);
+		for (int b = 0; b < 3; b++) {
+			glFramebufferTexture(GL_FRAMEBUFFER, dbuf[b], diffuseTex[b], 0);
+		}
+		glDrawBuffers(3, dbuf);
+		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE) {
+			Debug::Error("GI", "Could not create diffuse framebuffer: gl error " + std::to_string(status));
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 		// ---- emission ----
@@ -131,8 +159,8 @@ bool GI::Voxelizer::InitShaders() {
 #else
 	(voxFillShad = Shader::New(std::vector<std::string>{ glsl::voxelFillVert, glsl::voxelFillGeom, glsl::voxelFillFrag },
 			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment },
-			std::vector<std::string>({ "emit_color", "emit_texture" })))
-		->AddUniforms({ "_M", "_MVP", "layerCount", "emitStr", "emitCol", "emitTex" });
+			std::vector<std::string>({ "diffuse_texture", "emit_color", "emit_texture" })))
+		->AddUniforms({ "_M", "_MVP", "layerCount", "diffCol", "diffTex", "emitStr", "emitCol", "emitTex" });
 
 	(voxDownAOShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleAOVert, glsl::voxelDownsampleAOGeom, glsl::voxelDownsampleAOFrag },
 			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
@@ -144,6 +172,10 @@ bool GI::Voxelizer::InitShaders() {
 
 	(voxDebugAOShad = Shader::New(glsl::voxelDebugAOVert, glsl::voxelDebugAOFrag))
 		->AddUniforms({ "num", "_VP", "occluTex", "mip" });
+
+	(voxDebugDfShad = Shader::New(std::vector<std::string>{ glsl::voxelDebugDfVert, glsl::voxelDebugDfFrag },
+		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
+		->AddUniforms({ "num", "_VP", "diffTexX", "diffTexY", "diffTexZ" });
 
 	(voxDebugEmShad = Shader::New(std::vector<std::string>{ glsl::voxelDebugEmVert, glsl::voxelDebugEmFrag },
 		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
@@ -194,9 +226,14 @@ void GI::Voxelizer::Bake() {
 			auto& mat = rend->_materials[a];
 			auto& shad = mat->_shader;
 
+			const bool diffCol = (shad->_giFlags & SHADER_GI_DIFFUSE_COLOR) > 0;
+			const bool diffTex = (shad->_giFlags & SHADER_GI_DIFFUSE_TEXTURE) > 0;
+			Vec4 _diffCol = diffCol ? mat->GetGIDiffuseCol() : Vec4(diffTex ? 1 : 0);
+
 			const bool emitCol = (shad->_giFlags & SHADER_GI_EMIT_COLOR) > 0;
 			const bool emitTex = (shad->_giFlags & SHADER_GI_EMIT_TEXTURE) > 0;
 
+			voxFillShad->SetOption("diffuse_texture", diffTex);
 			voxFillShad->SetOption("emit_color", emitCol);
 			voxFillShad->SetOption("emit_texture", emitTex);
 			voxFillShad->Bind();
@@ -204,19 +241,28 @@ void GI::Voxelizer::Bake() {
 			glUniformMatrix4fv(voxFillShad->Loc(0), 1, false, &M[0][0]);
 			glUniformMatrix4fv(voxFillShad->Loc(1), 1, false, &MVP[0][0]);
 			glUniform1i(voxFillShad->Loc(2), _reso);
+			glUniform3f(voxFillShad->Loc(3), _diffCol.x, _diffCol.y, _diffCol.z);
+			if (diffTex) {
+				glUniform1i(voxFillShad->Loc(4), 0);
+				glActiveTexture(GL_TEXTURE0);
+				mat->GetGIDiffuseTex()->Bind();
+			}
 			if (emitCol || emitTex) {
-				glUniform1f(voxFillShad->Loc(3), mat->GetGIEmissionStr());
+				glUniform1f(voxFillShad->Loc(5), mat->GetGIEmissionStr());
 				if (emitCol) {
 					Color c = mat->GetGIEmissionCol();
-					glUniform3f(voxFillShad->Loc(4), c.r, c.g, c.b);
+					glUniform3f(voxFillShad->Loc(6), c.r, c.g, c.b);
 				}
 				if (emitTex) {
-					glUniform1i(voxFillShad->Loc(5), 0);
-					glActiveTexture(GL_TEXTURE0);
+					glUniform1i(voxFillShad->Loc(7), 1);
+					glActiveTexture(GL_TEXTURE1);
 					mat->GetGIEmissionTex()->Bind();
 				}
 			}
-			glBindImageTexture(3, occlusionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(0, occlusionTex, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+			for (int e = 0; e < 3; e++) {
+				glBindImageTexture(1 + e, diffuseTex[e], 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+			}
 			for (int e = 0; e < 3; e++) {
 				glBindImageTexture(4 + e, emissionTex[e], 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 			}
@@ -302,6 +348,28 @@ void GI::Voxelizer::DrawDebugAO(const Mat4x4& vp, int mip) {
 	GLUtils::DrawArrays(GL_TRIANGLES, sz * sz * sz * 36);
 
 	voxDebugAOShad->Unbind();
+}
+
+void GI::Voxelizer::DrawDebugDf(const Mat4x4& vp) {
+	const auto mvp = vp * lastVP.inverse();
+
+	voxDebugDfShad->Bind();
+
+	glUniform1i(voxDebugDfShad->Loc(0), _reso);
+	glUniformMatrix4fv(voxDebugDfShad->Loc(1), 1, false, &mvp[0][0]);
+	glUniform1i(voxDebugDfShad->Loc(2), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_3D, diffuseTex[0]);
+	glUniform1i(voxDebugDfShad->Loc(3), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_3D, diffuseTex[1]);
+	glUniform1i(voxDebugDfShad->Loc(4), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_3D, diffuseTex[2]);
+
+	GLUtils::DrawArrays(GL_TRIANGLES, _reso * _reso * _reso * 36);
+
+	voxDebugEmShad->Unbind();
 }
 
 void GI::Voxelizer::DrawDebugEm(const Mat4x4& vp, int mip) {

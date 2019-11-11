@@ -301,7 +301,15 @@ CE_E_AL_IMPL(Shader) {
 	SHADER_GI_FLAGS flg = 0;
 	_Shader::GIParams giprm = {};
 	for (auto v : lmp.group) {
-		if (v.key.string == "emission_strength") {
+		if (v.key.string == "diffuse_color") {
+			flg |= SHADER_GI_DIFFUSE_COLOR;
+			giprm.diffuseColVar = v.value.string;
+		}
+		else if (v.key.string == "diffuse_texture") {
+			flg |= SHADER_GI_DIFFUSE_TEXTURE;
+			giprm.diffuseTexVar = v.value.string;
+		}
+		else if (v.key.string == "emission_strength") {
 			giprm.emissionStrVar = v.value.string;
 		}
 		else if (v.key.string == "emission_color") {

@@ -5,7 +5,7 @@ namespace glsl {
 
 layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 nrm;
-layout (location = 2) in vec2 uv;
+layout (location = 3) in vec2 uv;
 
 uniform mat4 _M;
 uniform mat4 _MVP;
@@ -107,6 +107,11 @@ in vec2 g2f_uv;
 	#endif
 #endif
 
+uniform vec3 diffCol;
+#ifdef diffuse_texture
+	uniform sampler2D diffTex;
+#endif
+
 #ifdef has_emit
 	uniform float emitStr;
 	#ifdef emit_color
@@ -117,7 +122,10 @@ in vec2 g2f_uv;
 	#endif
 #endif
 
-uniform layout(binding=3, rgba32f) writeonly image3D occluTexW;
+uniform layout(binding=0, rgba32f) writeonly image3D occluTexW;
+uniform layout(binding=1, rgba32f) writeonly image3D diffTexWx;
+uniform layout(binding=2, rgba32f) writeonly image3D diffTexWy;
+uniform layout(binding=3, rgba32f) writeonly image3D diffTexWz;
 uniform layout(binding=4, rgba32f) writeonly image3D emitTexWx;
 uniform layout(binding=5, rgba32f) writeonly image3D emitTexWy;
 uniform layout(binding=6, rgba32f) writeonly image3D emitTexWz;
@@ -127,6 +135,17 @@ float encode(vec2 v) {
 	uint u2 = uint(v.y * 10000);
 	uint ru = uint(u1 << 16u) + u2;
 	return uintBitsToFloat(ru);
+}
+
+vec3 encodeD(vec3 e, vec2 n) {
+	vec3 e0 = e * n.x;
+	vec3 e1 = e * n.y;
+
+	return vec3(
+		uintBitsToFloat((uint(e0.x * 10000) << 16u) + uint(e1.x * 10000)),
+		uintBitsToFloat((uint(e0.y * 10000) << 16u) + uint(e1.y * 10000)),
+		uintBitsToFloat((uint(e0.z * 10000) << 16u) + uint(e1.z * 10000))
+	);
 }
 
 vec3 encodeE(vec3 e, vec2 n) {
@@ -153,13 +172,22 @@ void main() {
 
 	imageStore(occluTexW, coord, vec4(encode(nx), encode(ny), encode(nz), 1));
 
+	vec3 diff = diffCol;
+#ifdef diffuse_texture
+	diff = texture(diffTex, g2f_uv).rgb;
+#endif
+
+	imageStore(diffTexWx, coord, vec4(encodeD(diff, nx), 1));
+	imageStore(diffTexWy, coord, vec4(encodeD(diff, ny), 1));
+	imageStore(diffTexWz, coord, vec4(encodeD(diff, nz), 1));
+
 #ifdef has_emit
 	vec3 emit = vec3(1, 1, 1) * emitStr;
 	#ifdef emit_color
 		emit *= emitCol;
 	#endif
 	#ifdef emit_texture
-		emit *= texture(emitTex, g2f_uv).xyz;
+		emit *= texture(emitTex, g2f_uv).rgb;
 	#endif
 
 	imageStore(emitTexWx, coord, vec4(encodeE(emit, nx), 0));
