@@ -6,6 +6,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 Background ss;
+Mesh mesh;
 MeshSurfaceData dt;
 Int2 sz;
 Texture tx;
@@ -25,12 +26,22 @@ inline void paint() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(Rect(220, Display::height() - 220, 200, 200), tx);
 
-	const Rect r3(Display::width() - 300, Display::height() - 320, 300, 300);
+	const Rect r3(Display::width() - 400, Display::height() - 420, 400, 400);
 
 	glBlendFunc(GL_ONE, GL_ZERO);
 	//UI::Texture(r3, dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(r3, (Texture)tx2);
+
+	#define tr(_v) r3.x() + r3.w() * _v.x, r3.y2() - r3.h() * _v.y - 1
+
+	for (auto& t : mesh->triangles()) {
+		Vec2 ts[3] = { mesh->texcoords()[t.x], mesh->texcoords()[t.y], mesh->texcoords()[t.z] };
+
+		UI::Line(Vec2(tr(ts[0])), Vec2(tr(ts[1])), Color::white());
+		UI::Line(Vec2(tr(ts[1])), Vec2(tr(ts[2])), Color::white());
+		UI::Line(Vec2(tr(ts[2])), Vec2(tr(ts[0])), Color::white());
+	}
 
 	if (r3.Contains(Input::mousePosition())) {
 		float mul = sz.x / r3.w();
@@ -69,6 +80,8 @@ inline void paint() {
 			+ std::to_string(vc[1]) + ", "
 			+ std::to_string(vc[2]) + ", "
 			+ std::to_string(vc[3]), Color::white());
+
+		UI::Rect(Rect(tr(vj), 2, 2), Color::green());
 	}
 
 	MeshUtils::SurfaceBlur(dt, tx, tx2, tx2t, 10);
@@ -111,7 +124,8 @@ void ChokoEditor::Main() {
 	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/a.blend/a.blend.prefab", true);
 	Scene::AddObject(obj);
 	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
-	dt = MeshUtils::GenSurfaceData(mr->mesh());
+	mesh = mr->mesh();
+	dt = MeshUtils::GenSurfaceData(mesh);
 	dt.GenInfoTex(sz);
 
 	mr->materials({

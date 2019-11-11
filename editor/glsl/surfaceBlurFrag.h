@@ -148,7 +148,7 @@ void main() {
 	ivec4 px = texture(idTex, uvr);
 	if (px.x == 0) {
 		outColor = col;
-		//outColor = vec4(0, 0, 0, 0);
+		outColor = vec4(0, 0, 0, 0);
 		return;
 	}
 

@@ -242,7 +242,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	tar->BindTarget();
 	tar->Clear(Color(0, 0), 1);
 	glActiveTexture(GL_TEXTURE0);
-	tmp->Bind();
+	//tmp->Bind();
 	glUniform2f(blurShad->Loc(10), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
