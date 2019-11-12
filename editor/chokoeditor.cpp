@@ -9,7 +9,7 @@ Background ss;
 Mesh mesh;
 MeshSurfaceData dt;
 Int2 sz;
-Texture tx;
+Texture tx, txp;
 RenderTarget tx2t;
 RenderTarget tx2;
 
@@ -25,6 +25,7 @@ inline void paint() {
 	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(Rect(220, Display::height() - 220, 200, 200), tx);
+	UI::Texture(Rect(430, Display::height() - 220, 200, 200), txp);
 
 	const Rect r3(Display::width() - 400, Display::height() - 420, 400, 400);
 
@@ -118,6 +119,7 @@ void ChokoEditor::Main() {
 	sz = Int2(tx->width(), tx->height());
 
 	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
+	txp = (Texture)RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
@@ -127,6 +129,7 @@ void ChokoEditor::Main() {
 	mesh = mr->mesh();
 	dt = MeshUtils::GenSurfaceData(mesh);
 	dt.GenInfoTex(sz);
+	MeshUtils::PadTexture(dt, tx, (RenderTarget)txp);
 
 	mr->materials({
 		(Material)EAssetList::Get(EAssetType::Material, "unlit.material")

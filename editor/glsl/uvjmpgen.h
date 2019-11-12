@@ -3,8 +3,8 @@ namespace glsl {
 uniform vec2 reso;
 //uv data: tri id (x), edge id (y), edge t (z)
 uniform isampler2D uvinfo;
-//edge data: for each tri [for each edge [uv1(xy) uv2(zw) or -1 if no connection]]
-uniform samplerBuffer edgeData;
+uniform isamplerBuffer iconData;
+uniform samplerBuffer uvcoords;
 
 out vec4 outColor;
 
@@ -37,12 +37,20 @@ void main() {
 		int tid = (info.x);
 		if (tid == 0) continue; //not triangle
 		int eid = (info.y);
-		vec4 data = texelFetch(edgeData, ((tid-1) * 3 + eid) * 2);
-		if (data.x < 0) { //no connection
+		ivec3 icon = texelFetch(iconData, ((tid-1) * 3 + eid) * 2);
+		if (icon.x < 0) { //no connection
 			outColor = vec4(-1, 0, 0, 0);
 			return;
 		}
-		outColor.xy = mix(data.xy, data.zw, info.z * 0.01);
+		vec2 uvs[3];
+		vec2 uvc = vec2(0, 0);
+		for (int a = 0; a < 3; a++) {
+			uvs[a] = texelFetch(uvcoords, icon[a]).xy;
+			uvc += uvs[a];
+		}
+		uvc *= 0.3333333;
+
+		outColor.xy = mix(uvs[0], uvs[1], info.z * 0.01);
 		vec2 dir = normalize(data.zw - data.xy);
 		outColor.xy -= duv / reso;
 		outColor.z = info.z * 0.01;
