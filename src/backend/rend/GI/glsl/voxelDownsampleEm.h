@@ -48,16 +48,20 @@ layout (pixel_center_integer) in vec4 gl_FragCoord;
 flat in int g2f_layer;
 
 uniform int sz;
-uniform sampler3D texX;
-uniform sampler3D texY;
-uniform sampler3D texZ;
+uniform sampler3D texs[3];
 uniform int mip;
 
 layout (location=0) out vec4 outColorX;
 layout (location=1) out vec4 outColorY;
 layout (location=2) out vec4 outColorZ;
 
-ivec3 offs[8] = ivec3[](
+const ivec3 normals[6] = ivec3[](
+	ivec3(-1, 0, 0), ivec3(1, 0, 0),
+	ivec3(0, -1, 0), ivec3(0, 1, 0),
+	ivec3(0, 0, -1), ivec3(0, 0, 1)
+);
+
+const ivec3 offs[8] = ivec3[](
 	ivec3(0, 0, 0), ivec3(1, 0, 0),
 	ivec3(0, 1, 0), ivec3(1, 1, 0),
 	ivec3(0, 0, 1), ivec3(1, 0, 1),
@@ -93,15 +97,15 @@ void main() {
 
 	for (int a = 0; a < 8; a++) {
 		ivec3 crd = coord + offs[a];
-		vec3 tv = texelFetch(texX, crd, mip).xyz;
+		vec3 tv = texelFetch(texs[0], crd, mip).xyz;
 		x1 += decode(tv, 0);
 		x2 += decode(tv, 1);
 
-		tv = texelFetch(texY, crd, mip).xyz;
+		tv = texelFetch(texs[1], crd, mip).xyz;
 		y1 += decode(tv, 0);
 		y2 += decode(tv, 1);
 
-		tv = texelFetch(texZ, crd, mip).xyz;
+		tv = texelFetch(texs[2], crd, mip).xyz;
 		z1 += decode(tv, 0);
 		z2 += decode(tv, 1);
 	}

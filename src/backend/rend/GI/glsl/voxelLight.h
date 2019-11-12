@@ -32,8 +32,7 @@ vec3 decode(vec3 v, float n) {
 
 vec3 lightAt(vec3 loc, vec3 nrm, float lod) {
 	vec4 loc2 = voxelMat * vec4(loc, 1);
-	loc2 /= loc2.w;
-	lod *= voxelMips;
+	loc2.xyz = (loc2.xyz / loc2.w) * 0.5 + 0.5;
 	return decode(textureLod(emitTexX, loc2.xyz, lod).xyz, -nrm.x)
 		+ decode(textureLod(emitTexY, loc2.xyz, lod).xyz, -nrm.y)
 		+ decode(textureLod(emitTexZ, loc2.xyz, lod).xyz, -nrm.z);
@@ -55,9 +54,15 @@ void main () {
 	wPos2 /= wPos2.w;
 	vec3 fwd = normalize(wPos.xyz - wPos2.xyz);
 	
-	fragCol.rgba = vec4(0, 0, 0, 0);
+	fragCol = vec4(0, 0, 0, 0);
 	if (z < 1) {
-		fragCol.rgb = diffuse.rgb * lightAt(wPos.xyz, normal, 1);
+		float dpos = voxelUnit;
+		for (int a = 0; a <= voxelMips; a++) {
+			fragCol.rgb += lightAt(wPos.xyz, normal, a);
+			wPos.xyz += normal * dpos;
+			dpos *= 2;
+		}
+		fragCol.rgb *= diffuse.rgb;
 	}
 }
 )";

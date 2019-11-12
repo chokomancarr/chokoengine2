@@ -176,7 +176,7 @@ bool GI::Voxelizer::InitShaders() {
 
 	(voxDownEmShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleEmVert, glsl::voxelDownsampleEmGeom, glsl::voxelDownsampleEmFrag },
 		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
-		->AddUniforms({ "sz", "texX", "texY", "texZ", "mip" });
+		->AddUniforms({ "sz", "texs", "mip" });
 
 	(voxDebugAOShad = Shader::New(glsl::voxelDebugAOVert, glsl::voxelDebugAOFrag))
 		->AddUniforms({ "num", "_VP", "occluTex", "mip" });
@@ -384,8 +384,9 @@ void GI::Voxelizer::Downsample() {
 
 
 	voxDownEmShad->Bind();
+	int els[] = { 0, 1, 2 };
+	glUniform1iv(voxDownEmShad->Loc(1), 3, els);
 	for (int a = 0; a < 3; a++) {
-		glUniform1i(voxDownEmShad->Loc(1 + a), a);
 		glActiveTexture(GL_TEXTURE0 + a);
 		glBindTexture(GL_TEXTURE_3D, emissionTex[a]);
 	}
@@ -398,7 +399,7 @@ void GI::Voxelizer::Downsample() {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tar);
 
 		glUniform1i(voxDownEmShad->Loc(0), sz);
-		glUniform1i(voxDownEmShad->Loc(4), a - 1);
+		glUniform1i(voxDownEmShad->Loc(2), a - 1);
 
 		GLUtils::DrawArrays(GL_TRIANGLES, 6 * sz);
 	}
@@ -489,12 +490,12 @@ void GI::Voxelizer::LightPass(int w, int h, const FrameBuffer& gbuf, const Mat4x
 	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
 	glUniform1i(voxLightShad->Loc(6), _mips - 1);
 	glUniformMatrix4fv(voxLightShad->Loc(7), 1, false, &lastVP[0][0]);
-	glUniform1f(voxLightShad->Loc(8), glm::length(lastVP * Vec4(1, 0, 0, 0)));
+	glUniform1f(voxLightShad->Loc(8), glm::length(lastVP * Vec4(0.5f, 0, 0, 0)));
 	for (int a = 0; a < 3; a++) {
 		texu(9 + a, 4 + a);
 		glBindTexture(GL_TEXTURE_3D, emissionTex[a]);
 	}
-
+	
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
 	voxLightShad->Unbind();
