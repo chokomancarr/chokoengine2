@@ -329,7 +329,7 @@ void Renderer::RenderCamera(Camera& cam) {
 		glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
 
 		static int n = 0;
-		static int e = 1;
+		static int e = 2;
 		if (Input::KeyDown(InputKey::F)) {
 			n = (++n) % 6;
 		}

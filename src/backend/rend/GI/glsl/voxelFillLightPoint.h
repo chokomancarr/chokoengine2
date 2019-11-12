@@ -41,7 +41,7 @@ void main() {
 )";
 
 	const char voxelFillLightPointFrag[] = R"(
-#version 330 core
+#version 420 core
 
 layout (pixel_center_integer) in vec4 gl_FragCoord;
 
@@ -125,17 +125,18 @@ void main() {
 		gl_FragCoord.x,
 		gl_FragCoord.y,
 		g2f_layer);
+	vec3 tcoord = coord / sz;
 
-	vec3 pos = vec3(x, y, z) + 0.5;
+	vec3 pos = coord + 0.5;
 	vec4 wpos = _V2W * vec4(pos / sz * 2 - 1, 1);
 	wpos /= wpos.w;
 
 	//get diffuse colors
 
 	vec3 diffVs[3] = vec3[](
-		texelFetch(diffTexX, coord),
-		texelFetch(diffTexY, coord),
-		texelFetch(diffTexZ, coord)
+		texture(diffTexX, tcoord).xyz,
+		texture(diffTexY, tcoord).xyz,
+		texture(diffTexZ, tcoord).xyz
 	);
 
 	vec3 diffs[6];
@@ -147,8 +148,9 @@ void main() {
 
 	vec3 p2l = lightPos - wpos.xyz;
 	float lp2l = length(p2l);
-	float falloff = get_falloff(lp2l);
 	vec3 p2li = p2l / lp2l;
+
+	float falloff = get_falloff(lp2l);
 
 	float not_shadow = 1;
 	if (shadowStr > 0) {
@@ -165,9 +167,9 @@ void main() {
 	}
 
 	//add to target value
-	vec3 etx = texelFetch(emitTexX, coord).xyz;
-	vec3 ety = texelFetch(emitTexY, coord).xyz;
-	vec3 etz = texelFetch(emitTexZ, coord).xyz;
+	vec3 etx = texture(emitTexX, tcoord).xyz;
+	vec3 ety = texture(emitTexY, tcoord).xyz;
+	vec3 etz = texture(emitTexZ, tcoord).xyz;
 
 	outColorX.xyz = encodeE(
 		max(emits[0], decodeE(etx, 0)),

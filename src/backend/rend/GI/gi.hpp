@@ -7,6 +7,8 @@ class GI {
 public:
 	class Voxelizer {
 		static Shader voxFillShad;
+		static Shader voxFillLightPointShad;
+		static Shader voxFillLightSpotShad;
 		static Shader voxDownAOShad;
 		static Shader voxDownEmShad;
 		static Shader voxDebugAOShad;
@@ -49,6 +51,7 @@ public:
 		static bool InitShaders();
 
 		static void Bake();
+		static void BakePoint(const Light& l);
 
 		static void Downsample();
 

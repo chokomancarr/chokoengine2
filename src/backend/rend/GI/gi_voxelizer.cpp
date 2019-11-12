@@ -3,6 +3,7 @@
 #include "utils/glutils.hpp"
 #include "glsl/minVert.h"
 #include "glsl/voxelFill.h"
+#include "glsl/voxelFillLightPoint.h"
 #include "glsl/voxelDownsampleAO.h"
 #include "glsl/voxelDownsampleEm.h"
 #include "glsl/voxelDebugAO.h"
@@ -13,6 +14,8 @@
 CE_BEGIN_BK_NAMESPACE
 
 Shader GI::Voxelizer::voxFillShad;
+Shader GI::Voxelizer::voxFillLightPointShad;
+Shader GI::Voxelizer::voxFillLightSpotShad;
 Shader GI::Voxelizer::voxDownAOShad;
 Shader GI::Voxelizer::voxDownEmShad;
 Shader GI::Voxelizer::voxDebugAOShad;
@@ -162,6 +165,11 @@ bool GI::Voxelizer::InitShaders() {
 			std::vector<std::string>({ "diffuse_texture", "emit_color", "emit_texture" })))
 		->AddUniforms({ "_M", "_MVP", "layerCount", "diffCol", "diffTex", "emitStr", "emitCol", "emitTex" });
 
+	(voxFillLightPointShad = Shader::New(std::vector<std::string>{ glsl::voxelFillLightPointVert, glsl::voxelFillLightPointGeom, glsl::voxelFillLightPointFrag },
+		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
+		->AddUniforms({ "_V2W", "sz", "diffTexX", "diffTexY", "diffTexZ", "emitTexX", "emitTexY", "emitTexZ",
+			"lightPos", "lightStr", "lightRad", "lightDst", "lightCol", "falloff", "shadowMap", "shadowStr", "shadowBias" });
+
 	(voxDownAOShad = Shader::New(std::vector<std::string>{ glsl::voxelDownsampleAOVert, glsl::voxelDownsampleAOGeom, glsl::voxelDownsampleAOFrag },
 			std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Geometry, ShaderType::Fragment }))
 		->AddUniforms({ "sz", "tex", "mip" });
@@ -276,12 +284,80 @@ void GI::Voxelizer::Bake() {
 
 	voxFillShad->Unbind();
 
+	for (auto& l : Renderer::lights) {
+		switch (l->_type) {
+		case LightType::Point:
+			BakePoint(l);
+			break;
+		case LightType::Spot:
+			break;
+		case LightType::Directional:
+			//RenderLight_Directional(l, cam);
+			break;
+		}
+	}
+
 	Downsample();
 #endif
 }
 
+#define texu(i, j)\
+	glUniform1i(voxFillLightPointShad->Loc(i), j);\
+	glActiveTexture(GL_TEXTURE0 + j)
+
+void GI::Voxelizer::BakePoint(const Light& l) {
+	glDepthFunc(GL_ALWAYS);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+
+	glViewport(0, 0, _reso, _reso);
+	voxFillLightPointShad->Bind();
+
+	const auto _m = lastVP.inverse();
+
+	glUniformMatrix4fv(voxFillLightPointShad->Loc(0), 1, false, &_m[0][0]);
+	glUniform1i(voxFillLightPointShad->Loc(1), _reso);
+	for (int a = 0; a < 3; a++) {
+		texu(2 + a, a);
+		glBindTexture(GL_TEXTURE_3D, diffuseTex[a]);
+	}
+	for (int a = 0; a < 3; a++) {
+		texu(5 + a, 3 + a);
+		glBindTexture(GL_TEXTURE_3D, emissionTex[a]);
+	}
+	const Vec3& lpos = l->object()->transform()->worldPosition();
+	glUniform3f(voxFillLightPointShad->Loc(8), lpos.x, lpos.y, lpos.z);
+	glUniform1f(voxFillLightPointShad->Loc(9), l->strength());
+	glUniform1f(voxFillLightPointShad->Loc(10), l->radius());
+	glUniform1f(voxFillLightPointShad->Loc(11), l->distance());
+	const auto& col = l->color();
+	glUniform3f(voxFillLightPointShad->Loc(12), col.r, col.g, col.b);
+	glUniform1i(voxFillLightPointShad->Loc(13), (int)l->_falloff);
+	glUniform1i(voxFillLightPointShad->Loc(14), 6);
+	glActiveTexture(GL_TEXTURE6);
+	if (l->_shadow) {
+		glBindTexture(GL_TEXTURE_CUBE_MAP, l->shadowBuffer_Cube->_depth->_pointer);
+		glUniform1f(voxFillLightPointShad->Loc(15), 1);// l->_shadowStrength);
+		glUniform1f(voxFillLightPointShad->Loc(16), l->_shadowBias);
+	}
+	else {
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		glUniform1f(voxFillLightPointShad->Loc(15), 0);
+	}
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, emissionFbos[0]);
+
+	GLUtils::DrawArrays(GL_TRIANGLES, 6 * _reso);
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	voxFillLightPointShad->Unbind();
+
+	glEnable(GL_BLEND);
+}
+
+#undef texu
+
 void GI::Voxelizer::Downsample() {
-	glBlendFunc(GL_ONE, GL_ZERO);
 	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
