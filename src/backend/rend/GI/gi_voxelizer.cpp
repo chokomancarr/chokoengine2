@@ -192,7 +192,7 @@ bool GI::Voxelizer::InitShaders() {
 	(voxLightShad = Shader::New(std::vector<std::string>{ ("#version 330 core\n" + std::string(glsl::minVert)), glsl::voxelLightFrag },
 		std::vector<ShaderType>{ ShaderType::Vertex, ShaderType::Fragment }))
 		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBufD",
-			"voxelMips", "voxelMat", "voxelUnit", "emitTexX", "emitTexY", "emitTexZ" });
+			"voxelMips", "voxelMat", "voxelUnit", "voxelSize", "emitTexX", "emitTexY", "emitTexZ" });
 
 	float sz = 1.1f;
 	region = regionSt{ -sz, sz, -sz, sz, -sz, sz };
@@ -491,8 +491,9 @@ void GI::Voxelizer::LightPass(int w, int h, const FrameBuffer& gbuf, const Mat4x
 	glUniform1i(voxLightShad->Loc(6), _mips - 1);
 	glUniformMatrix4fv(voxLightShad->Loc(7), 1, false, &lastVP[0][0]);
 	glUniform1f(voxLightShad->Loc(8), glm::length(lastVP * Vec4(0.5f, 0, 0, 0)));
+	glUniform1i(voxLightShad->Loc(9), _reso);
 	for (int a = 0; a < 3; a++) {
-		texu(9 + a, 4 + a);
+		texu(10 + a, 4 + a);
 		glBindTexture(GL_TEXTURE_3D, emissionTex[a]);
 	}
 	

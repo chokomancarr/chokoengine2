@@ -14,6 +14,7 @@ uniform sampler2D inGBufD;
 uniform int voxelMips;
 uniform mat4 voxelMat;
 uniform float voxelUnit;
+uniform int voxelSize;
 
 uniform sampler3D emitTexX;
 uniform sampler3D emitTexY;
@@ -31,12 +32,47 @@ vec3 decode(vec3 v, float n) {
 }
 
 vec3 lightAt(vec3 loc, vec3 nrm, float lod) {
-	vec4 loc2 = voxelMat * vec4(loc, 1);
-	loc2.xyz = (loc2.xyz / loc2.w) * 0.5 + 0.5;
-	return decode(textureLod(emitTexX, loc2.xyz, lod).xyz, -nrm.x)
-		+ decode(textureLod(emitTexY, loc2.xyz, lod).xyz, -nrm.y)
-		+ decode(textureLod(emitTexZ, loc2.xyz, lod).xyz, -nrm.z);
+	return decode(textureLod(emitTexX, loc.xyz, lod).xyz, -nrm.x)
+		+ decode(textureLod(emitTexY, loc.xyz, lod).xyz, -nrm.y)
+		+ decode(textureLod(emitTexZ, loc.xyz, lod).xyz, -nrm.z);
 }
+
+vec3 sampleLightAt(vec3 loc, vec3 nrm, int lod) {
+	//return lightAt(loc, nrm, lod);
+	float sz = float(voxelSize >> lod);
+	float isz = 0.5 / sz;
+	vec3 l0 = loc - isz;
+	vec3 l1 = loc + isz;
+	vec3 lp = (loc - l0) * sz;
+
+	vec3 nn = mix( lightAt(l0, nrm, lod),
+		lightAt(vec3(l0.x, l0.y, l1.z), nrm, lod), lp.z);
+	vec3 pn = mix( lightAt(vec3(l1.x, l0.y, l0.z), nrm, lod),
+		lightAt(vec3(l1.x, l0.y, l1.z), nrm, lod), lp.z);
+	vec3 np = mix( lightAt(vec3(l0.x, l1.y, l0.z), nrm, lod),
+		lightAt(vec3(l0.x, l1.y, l1.z), nrm, lod), lp.z);
+	vec3 pp = mix( lightAt(vec3(l1.x, l1.y, l0.z), nrm, lod),
+		lightAt(vec3(l1.x, l1.y, l1.z), nrm, lod), lp.z);
+
+	return mix(
+		mix(nn, np, lp.y),
+		mix(pn, pp, lp.y),
+		lp.x);
+}
+
+vec3 sampleLightAtLod(vec3 loc, vec3 nrm, float lod) {
+	return mix(
+		lightAt(loc, nrm, int(floor(lod))),
+		lightAt(loc, nrm, int(ceil(lod))),
+		lod - floor(lod));
+}
+
+const float r3 = sqrt(3) * 0.5;
+
+const vec3 diffDirs[5] = vec3[](
+	vec3(1, 0, 0), vec3(0.5, r3, 0), vec3(0.5, -r3, 0),
+	vec3(0.5, 0, r3), vec3(0.5, 0, -r3)
+);
 
 void main () {
 	vec2 uv = gl_FragCoord.xy / screenSize;
@@ -48,6 +84,9 @@ void main () {
 	float occlu = gbuf2.z;
 	float z = texture(inGBufD, uv).x;
 
+	vec3 tan = normalize(cross(normal, vec3((abs(normal.y) > 0.99) ? 1 : 0, 1, 0)));
+	vec3 bitan = normalize(cross(normal, tan));
+
 	vec4 wPos = _IP * vec4(uv.x*2-1, uv.y*2-1, z*2-1, 1);
 	wPos /= wPos.w;
 	vec4 wPos2 = _IP * vec4(uv.x*2-1, uv.y*2-1, -1, 1);
@@ -57,12 +96,22 @@ void main () {
 	fragCol = vec4(0, 0, 0, 0);
 	if (z < 1) {
 		float dpos = voxelUnit;
-		for (int a = 0; a <= voxelMips; a++) {
-			fragCol.rgb += lightAt(wPos.xyz, normal, a);
-			wPos.xyz += normal * dpos;
-			dpos *= 2;
+
+		vec3 fcol = vec3(0, 0, 0);
+		for (int n = 0; n < 1; n++) {
+			vec3 dd = diffDirs[n];
+			vec3 nrm = normal * dd.x + tan * dd.y + bitan * dd.z;
+			vec3 wp = wPos.xyz;
+
+			for (int a = 0; a <= voxelMips; a++) {
+				vec4 loc2 = voxelMat * vec4(wp, 1);
+				loc2.xyz = (loc2.xyz / loc2.w) * 0.5 + 0.5;
+				fcol += sampleLightAtLod(loc2.xyz, nrm, a);
+				wp += nrm * dpos;
+				dpos *= 2;
+			}
 		}
-		fragCol.rgb *= diffuse.rgb;
+		fragCol.rgb = diffuse.rgb * fcol * 0.2;
 	}
 }
 )";

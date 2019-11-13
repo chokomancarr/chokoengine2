@@ -319,7 +319,7 @@ void Renderer::RenderCamera(Camera& cam) {
 	glDisable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-	static bool dd = true;
+	static bool dd = false;
 	if (Input::KeyDown(InputKey::D)) {
 		dd = !dd;
 	}
