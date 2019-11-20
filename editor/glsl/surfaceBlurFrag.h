@@ -59,7 +59,7 @@ vec3 orient(vec3 r, vec3 x, vec3 t) {
 
 vec4 sample(
 		vec2 dr, //direction
-		ivec4 px, //first pixel
+		ivec2 px, //first pixel
 		vec2 uv, vec2 dreso) {
 
 	vec2 poso = uv;
@@ -72,17 +72,21 @@ vec4 sample(
 	vec4 col = vec4(0, 0, 0, 0);
 
 	for (int a = 0; a < BLUR_CNT; a++) {
-		vec2 nxt = texture(jmpTex, pos * dreso).xy;
+		vec4 nxt = texture(jmpTex, pos * dreso);
+		ivec2 npx;
 		if (nxt.x >= 0) { //jump here
 			pos = nxt.xy * reso;
+			npx.x = int(nxt.z);
+			npx.y = int(nxt.w);
 		}
-		ivec4 npx = texture(idTex, pos * dreso);
+		else {
+			npx = texture(idTex, pos * dreso).xy;
+			if (npx.x <= 0) { //not triangle, go back
+			//	pos = poso;
+			//	npx = texture(idTex, pos * dreso).xy;
+			}
+		}
 		int tid2 = npx.x - 1;
-		if (tid2 < 0) { //not triangle, go back
-			pos = poso;
-			npx = texture(idTex, pos * dreso);
-			tid2 = npx.x - 1;
-		}
 		if (tid2 < 0) tid2 = tid;
 		if (tid != tid2) {
 			vec4 ed = texelFetch(edatBuf, tid * 3);
@@ -137,19 +141,23 @@ void main() {
 	//this color
 	vec4 col = texture(colTex, uvr);
 
+	ivec2 px;
 	//jump?
 	vec4 jx = texture(jmpTex, uvr);
 	if (jx.x >= 0) {
 		uvr = jx.xy;
 		uv = uvr * reso;
+		px.x = int(jx.z);
+		px.y = int(jx.w);
 	}
-
-	//in triangle?
-	ivec4 px = texture(idTex, uvr);
-	if (px.x == 0) {
-		outColor = col;
-		//outColor = vec4(0, 0, 0, 0);
-		return;
+	else {
+		//in triangle?
+		px = texture(idTex, uvr).xy;
+		if (px.x == 0) {
+			outColor = col;
+			//outColor = vec4(0, 0, 0, 0);
+			return;
+		}
 	}
 
 	outColor = col * kernel[0] +

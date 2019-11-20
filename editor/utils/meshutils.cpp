@@ -90,7 +90,7 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	//--------- triangle links -----------
 
 	//indices to connected triangles
-	std::vector<Int3> icons(data.indCount * 3, Int3(-1));
+	std::vector<Int4> icons(data.indCount * 3, Int4(-1));
 
 	//unmatched edges
 	std::unordered_map<uint64_t, Int4> tvst = {}; //v1, v2, ve, t
@@ -120,13 +120,13 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 			const auto vt2 = vts[es[b][1]];
 			if (tvst.count(COMB(vt1, vt2)) == 1) {
 				const auto& res = tvst[COMB(vt1, vt2)];
-				icons[k] = Int3(res);
-				icons[res.w] = Int3(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]]);
+				icons[k] = Int4(Int3(res), res.w);
+				icons[res.w] = Int4(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]], k);
 			}
 			else if (tvst.count(COMB(vt2, vt1)) == 1) {
 				const auto& res = tvst[COMB(vt2, vt1)];
-				icons[k] = Int3(res);
-				icons[res.w] = Int3(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]]);
+				icons[k] = Int4(Int3(res), res.w);
+				icons[res.w] = Int4(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]], k);
 			}
 			else {
 				tvst[COMB(vt1, vt2)] = Int4(ts[es[b][1]], ts[es[b][0]], ts[es[b][2]], k);
@@ -135,8 +135,8 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	}
 
 	data.iconData = TextureBuffer::New(
-		VertexBuffer_New(false, 3, data.indCount * 3, icons.data()),
-		GL_RGB32I);
+		VertexBuffer_New(false, 4, data.indCount * 3, icons.data()),
+		GL_RGBA32I);
 
 	//--------- uv angles -----------
 

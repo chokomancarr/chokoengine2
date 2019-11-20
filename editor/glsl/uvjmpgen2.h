@@ -43,37 +43,34 @@ vec4 get_tarv(ivec3 icon) {
 	);
 }
 
-vec4 get_output(int id, float c1, float c2) {
-	ivec3 icon = texelFetch(iconData, id).xyz;
+vec4 get_output(int id, int vid, int eid, float c1, float c2, vec2 v1, vec2 v2, vec2 vc) {
+	ivec4 icon = texelFetch(iconData, id);
 	if (icon.x < 0) { //no connection
 		return vec4(-1, 0, 0, 0);
 	}
 
-	vec2 v1 = texelFetch(uvcoords, icon.x).xy;
-	vec2 v2 = texelFetch(uvcoords, icon.y).xy;
-	vec2 v3 = texelFetch(uvcoords, icon.z).xy;
-	vec2 vc = (v1 + v2 + v3) * 0.333333;
-	vec2 dreso = 1.0 / reso;
-	vec2 vc1 = (vc - v1);
+	vec2 tar1 = texelFetch(uvcoords, icon.x).xy;
+	vec2 tar2 = texelFetch(uvcoords, icon.y).xy;
+	
+	vec2 vc1 = vc - v1;
 	float vc1l = length(vc1);
 	vc1 /= vc1l;
-	vec2 vc2 = normalize(vc - v2);
-	vec2 v12 = (v1 + v2) * 0.5;
-	vec2 vc12 = normalize(vc - v12);
-
-	vec2 tarx = v1 + normalize(vc - v1) * dreso / dot(vc1, vc12);
-	vec2 tary = v2 + normalize(vc - v2) * dreso / dot(vc2, vc12);
+	vec2 v21 = (v2 - v1);
+	float v21l = length(v21);
+	v21 /= v21l;
 
 	float a1 = acos(c1);
-	float a2 = acos(c2);
-	vec2 v21 = normalize(v2 - v1);
-	float th1 = acos(dot(vc1, v12));
-	float th2 = 3.14159 - th1 - a1;
+	float a2 = acos(dot(v21, vc1));
+	
+	float th2 = 3.14159 - a1 - a2;
 
-	float lp = (a1 / (a1 + a2));
+	float lx = sin(a1) * vc1l / sin(th2);
+
+	//float lp = (lx / (lx + v21l));
+	float lp = acos(c1) / (acos(c1) + acos(c2));
 	return vec4(
-		mix(tarx, tary, lp),
-		lp, 1);
+		mix(tar1, tar2, lp),
+		icon.w / 3 + 1, icon.w - (icon.w / 3) * 3);
 }
 
 void main() {
@@ -127,13 +124,13 @@ void main() {
 			float u3xu1 = cross2(dc3, dc1);
 
 			if (cpxu1 * cpxu2 < 0 && dot(cp, dc12) > 0) {
-				outColor = get_output((info.x-1)*3, cpdc1, cpdc2);
+				outColor = get_output((info.x-1)*3, info.x, 0, cpdc1, cpdc2, u1, u2, uc);
 			}
 			else if (cpxu2 * cpxu3 < 0 && dot(cp, dc23) > 0) {
-				outColor = get_output((info.x-1)*3 + 1, cpdc2, cpdc3);
+				outColor = get_output((info.x-1)*3 + 1, info.x, 1, cpdc2, cpdc3, u2, u3, uc);
 			}
 			else {
-				outColor = get_output((info.x-1)*3 + 2, cpdc3, cpdc1);
+				outColor = get_output((info.x-1)*3 + 2, info.x, 2, cpdc3, cpdc1, u3, u1, uc);
 			}
 			return;
 		}
