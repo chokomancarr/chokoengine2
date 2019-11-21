@@ -1,19 +1,16 @@
 #pragma once
 #include "chokoeditor.hpp"
-#include "serialized_entry.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
 class ESerializer {
+	static std::unordered_map<ChokoEngine::objectid, int> objectToSceneId;
+
 public:
-    static std::vector<ESerializedGroup> entryGroups;
+	static void UpdateSceneIds();
 
-	static void Init();
-
-    static void AddEntry(const std::string& name, size_t id, pESerializedEntry entry);
+	static int SceneIdOf(const SceneObject&);
+	static int SceneIdOf(ChokoEngine::objectid);
 };
 
 CE_END_ED_NAMESPACE
-
-#include "config/assets.hpp"
-#include "config/components.hpp"

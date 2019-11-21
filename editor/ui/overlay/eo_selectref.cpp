@@ -13,7 +13,7 @@ void EO_SelectRef::Draw() {
 	if (!state->comp) {
 		for (auto& s : _assets) {
 			if (UI::I::Button(Rect(12, y, 200, 16), UIButtonStyle(Color(0.1f, 0.7f)), s) == InputMouseStatus::HoverUp) {
-				state->set((Object)EAssetList::Get(_assetType, s));
+				state->set(EAssetList::Get(_assetType, s));
 				active = false;
 			}
 			y += 16;

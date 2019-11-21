@@ -2,22 +2,28 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-std::vector<ESerializedGroup> ESerializer::entryGroups;
+std::unordered_map<ChokoEngine::objectid, int> ESerializer::objectToSceneId;
 
-void ESerializer::Init() {
-	ES_Assets::Register();
-	ES_Components::Register();
+void ESerializer::UpdateSceneIds() {
+	objectToSceneId.clear();
+	int id = 0;
+	std::function<void(const SceneObject&)> loop = [&](const SceneObject& o) {
+		objectToSceneId[o->id()] = id++;
+		for (const auto& c : o->children()) {
+			loop(c);
+		}
+	};
+
+	for (const auto& c : Scene::objects()) {
+		loop(c);
+	}
 }
 
-void ESerializer::AddEntry(const std::string& name, size_t id, pESerializedEntry entry) {
-    auto g = std::find_if(entryGroups.begin(), entryGroups.end(), [&](const ESerializedGroup& g) {
-        return g.classId == id;
-    });
-    if (g == entryGroups.end()) {
-        entryGroups.push_back(ESerializedGroup(name, id));
-        g = entryGroups.end() - 1;
-    }
-    g->entries.push_back(entry);
+int ESerializer::SceneIdOf(const SceneObject& o) {
+	return SceneIdOf(o->id());
+}
+int ESerializer::SceneIdOf(ChokoEngine::objectid id) {
+	return objectToSceneId.at(id);
 }
 
 CE_END_ED_NAMESPACE

@@ -34,3 +34,4 @@ CE_END_ED_NAMESPACE
 #include "ui/overlaymanager.hpp"
 
 #include "serial/serializer.hpp"
+#include "serial/serialized_object.hpp"

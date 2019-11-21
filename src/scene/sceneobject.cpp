@@ -3,13 +3,9 @@
 CE_BEGIN_NAMESPACE
 
 _SceneObject::_SceneObject(const std::string& nm, 
-        const Vec3& pos, const Quat& rot, const Vec3& scl) : _Asset() {
+        const Vec3& pos, const Quat& rot, const Vec3& scl) : _Object() {
     _name = nm;
 	_transform._object = this;
-}
-
-_SceneObject::~_SceneObject() {
-	Delete();
 }
 
 pTransform _SceneObject::transform() {
@@ -72,7 +68,7 @@ SceneObject _SceneObject::Clone() const {
     std::function<SceneObject(const SceneObject&, const SceneObject&)> doclone = 
             [&](const SceneObject& o, const SceneObject& p) {
         SceneObject copy = SceneObject::New();
-        copy->_CopyInfo((Object)o);
+        copy->_CopyInfo(o);
         copy->_transform = o->_transform;
 		copy->_transform._object = copy.object().get();
         for (auto& c : o->_components) {

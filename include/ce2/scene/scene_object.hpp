@@ -4,9 +4,8 @@
 CE_BEGIN_NAMESPACE
 
 /* Objects in a scene
- * This is technically an asset because of prefabs
  */
-class _SceneObject : public _Asset { CE_OBJECT_COMMON
+class _SceneObject : public _Object { CE_OBJECT_COMMON
 	Transform _transform;
 
 	std::vector<Component> _components;
@@ -19,8 +18,6 @@ public:
 			const Vec3& pos = Vec3(),
 			const Quat& rot = Quat(1, 0, 0, 0),
 			const Vec3& scl = Vec3(1));
-
-	~_SceneObject();
 
 	_SceneObject(const _SceneObject&) = delete;
 

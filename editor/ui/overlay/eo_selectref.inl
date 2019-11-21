@@ -9,7 +9,7 @@ void EO_SelectRef::ScanComps() {
 	std::function<void(const SceneObject& o)> doscan = [&](const SceneObject& o) {
 		const auto& c = o->GetComponent<T>();
 		if (!!c) {
-			_comps.push_back((Component)c);
+			_comps.push_back(c);
 		}
 		for (auto& o2 : o->children()) {
 			doscan(o2);

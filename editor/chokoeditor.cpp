@@ -31,7 +31,6 @@ void ChokoEditor::Main() {
 	EImages::Init();
 	EIcons::Init();
 	EWindowManager::Init();
-	ESerializer::Init();
 	EOverlayManager::Init();
 
 	assetPath = IO::path() + "project/assets/";

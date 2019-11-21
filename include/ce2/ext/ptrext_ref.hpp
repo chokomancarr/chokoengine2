@@ -19,9 +19,14 @@ public:
 
 	Ref(std::nullptr_t);
 
-	template <class U>
-	explicit Ref(const Ref<U>& ref);
+	template <class U, typename std::enable_if<
+		std::is_base_of<T, U>::value, U>::type* = nullptr>
+	Ref(const Ref<U>& ref);
 
+	template <class U, typename std::enable_if<
+		!std::is_base_of<T, U>::value, U>::type* = nullptr>
+	explicit Ref(const Ref<U>& ref);
+	
 	template <class... Args>
 	static Ref<T> New(Args&&... args);
 

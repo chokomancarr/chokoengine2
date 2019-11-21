@@ -18,7 +18,13 @@ Ref<T> Ref<T>::FromPtr(T* ptr) {
 }
 
 template <class T>
-template <class U>
+template <class U, typename std::enable_if<
+	std::is_base_of<T, U>::value, U>::type*>
+Ref<T>::Ref(const Ref<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
+
+template <class T>
+template <class U, typename std::enable_if<
+	!std::is_base_of<T, U>::value, U>::type*>
 Ref<T>::Ref(const Ref<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
 
 template <class T>

@@ -1,10 +1,10 @@
+#pragma once
 #include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
-class ES_Components {
-public:
-	static void Register();
-};
+CE_ES_IMPL_COMP(Rig) {
+
+}
 
 CE_END_ED_NAMESPACE

@@ -26,7 +26,7 @@
 	protected:\
 	Component Clone() const override {\
 		typedef std::remove_cv<std::remove_reference<decltype(*this)>::type>::type _BaseTp;\
-	    return (Component)Ref<_BaseTp>::New(*this);\
+	    return Ref<_BaseTp>::New(*this);\
 	}\
 	private:
 
