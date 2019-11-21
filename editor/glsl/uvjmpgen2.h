@@ -23,6 +23,14 @@ float cross2(vec2 v1, vec2 v2) {
 	return v1.x * v2.y - v1.y * v2.x;
 }
 
+float lineline(vec2 p1, vec2 p2, vec2 p3, vec2 p4) {
+	float n1 = (p1.x - p3.x) * (p3.y - p4.y);
+	float n2 = (p1.y - p3.y) * (p3.x - p4.x);
+	float d1 = (p1.x - p2.x) * (p3.y - p4.y);
+	float d2 = (p1.y - p2.y) * (p3.x - p4.x);
+	return (n1 - n2) / (d1 - d2);
+}
+
 ivec4 smp(vec2 v) {
 	return texture(uvinfo, v / reso);
 }
@@ -43,7 +51,7 @@ vec4 get_tarv(ivec3 icon) {
 	);
 }
 
-vec4 get_output(int id, int vid, int eid, float c1, float c2, vec2 v1, vec2 v2, vec2 vc) {
+vec4 get_output(int id, int vid, int eid, vec2 p, vec2 v1, vec2 v2, vec2 vc) {
 	ivec4 icon = texelFetch(iconData, id);
 	if (icon.x < 0) { //no connection
 		return vec4(-1, 0, 0, 0);
@@ -52,22 +60,10 @@ vec4 get_output(int id, int vid, int eid, float c1, float c2, vec2 v1, vec2 v2, 
 	vec2 tar1 = texelFetch(uvcoords, icon.x).xy;
 	vec2 tar2 = texelFetch(uvcoords, icon.y).xy;
 	
-	vec2 vc1 = vc - v1;
-	float vc1l = length(vc1);
-	vc1 /= vc1l;
-	vec2 v21 = (v2 - v1);
-	float v21l = length(v21);
-	v21 /= v21l;
-
-	float a1 = acos(c1);
-	float a2 = acos(dot(v21, vc1));
-	
-	float th2 = 3.14159 - a1 - a2;
-
-	float lx = sin(a1) * vc1l / sin(th2);
+	float lp = lineline(v1, v2, vc, p);
 
 	//float lp = (lx / (lx + v21l));
-	float lp = acos(c1) / (acos(c1) + acos(c2));
+	//float lp = acos(c1) / (acos(c1) + acos(c2));
 	return vec4(
 		mix(tar1, tar2, lp),
 		icon.w / 3 + 1, icon.w - (icon.w / 3) * 3);
@@ -103,7 +99,8 @@ void main() {
 			vec2 dc23 = dc2 + dc3;
 			vec2 dc31 = dc3 + dc1;
 
-			vec2 cp = normalize(uv / reso - uc);
+			vec2 uvr = uv / reso;
+			vec2 cp = normalize(uvr - uc);
 
 			float cpdc1 = dot(cp, dc1);
 			float cpdc2 = dot(cp, dc2);
@@ -124,13 +121,13 @@ void main() {
 			float u3xu1 = cross2(dc3, dc1);
 
 			if (cpxu1 * cpxu2 < 0 && dot(cp, dc12) > 0) {
-				outColor = get_output((info.x-1)*3, info.x, 0, cpdc1, cpdc2, u1, u2, uc);
+				outColor = get_output((info.x-1)*3, info.x, 0, uvr, u1, u2, uc);
 			}
 			else if (cpxu2 * cpxu3 < 0 && dot(cp, dc23) > 0) {
-				outColor = get_output((info.x-1)*3 + 1, info.x, 1, cpdc2, cpdc3, u2, u3, uc);
+				outColor = get_output((info.x-1)*3 + 1, info.x, 1, uvr, u2, u3, uc);
 			}
 			else {
-				outColor = get_output((info.x-1)*3 + 2, info.x, 2, cpdc3, cpdc1, u3, u1, uc);
+				outColor = get_output((info.x-1)*3 + 2, info.x, 2, uvr, u3, u1, uc);
 			}
 			return;
 		}
