@@ -5,6 +5,8 @@ CE_BEGIN_ED_NAMESPACE
 
 class ESerializedPrefab : public ESerializedObject {
 public:
+	ESerializedPrefab(const SceneObject&);
+
 	std::string name;
 	bool enabled;
 	struct {
@@ -16,6 +18,8 @@ public:
 	std::vector<pESerializedComponent> components;
 
 	std::vector<pESerializedPrefab> children;
+
+	JsonObject ToJson() const override;
 };
 
 CE_END_ED_NAMESPACE

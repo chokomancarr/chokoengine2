@@ -63,11 +63,11 @@ void Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
     for (auto& oo : vec) {
         if (oo == o) {
-            Debug::Warning("Scene", "Cannot add object: object already exists in scene!");
+            Debug::Warning("Scene", "Cannot add object: object already exists in scene / parent!");
             return;
         }
     }
-    _objects.push_back(o);
+    vec.push_back(o);
     o->_parent = parent;
 }
 

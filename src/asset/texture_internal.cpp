@@ -28,15 +28,20 @@ bool Texture_I::FromJPG(const std::string& path, uint& w, uint& h, byte& channel
 	struct jpeg_error_mgr err;          //the error handler
 
 	FILE* file = fopen(path.c_str(), "rb");  //open the file
-	info.err = jpeg_std_error(&err);
-	jpeg_create_decompress(&info);   //fills info structure
 
 	if (!file) {					//if the jpeg file doesn't load
 		Debug::Error("Texture", "Read jpg error: cannot open file!");
 		return false;
 	}
 
+	info.err = jpeg_std_error(&err);
+	err.error_exit = [](j_common_ptr) {
+		abort();
+	};
+	jpeg_create_decompress(&info);   //fills info structure
+
 	jpeg_stdio_src(&info, file);
+
 	jpeg_read_header(&info, TRUE);   // read jpeg file header
 
 	jpeg_start_decompress(&info);    // decompress the file

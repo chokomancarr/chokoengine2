@@ -14,8 +14,9 @@ void ESerializer::UpdateSceneIds() {
 		}
 	};
 
-	for (const auto& c : Scene::objects()) {
-		loop(c);
+	auto& oo = Scene::objects();
+	for (auto it = oo.begin() + 1; it != oo.end(); it++) {
+		loop(*it);
 	}
 }
 

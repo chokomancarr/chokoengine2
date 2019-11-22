@@ -48,6 +48,8 @@ public:
 	ESerializedItem(const Component&);
 	template <typename T, typename std::enable_if<std::is_enum<T>::value, T>::type* = nullptr>
 	ESerializedItem(const T&);
+
+	JsonObject ToJson() const;
 };
 
 CE_END_ED_NAMESPACE

@@ -38,6 +38,13 @@ JsonObject JsonParser::Parse(std::string text) {
 	return JsonObject::ParseNext(ss);
 }
 
+std::string JsonParser::Export(const JsonObject& o, bool min) {
+	auto res = o.DoExport(min ? -1 : 0);
+	res.pop_back();
+	return res;
+}
+
+
 JsonObject::JsonObject(Type t) : type(t), group({}), list({}), string("") {}
 
 JsonObject::JsonObject(const std::string& val) : type(Type::String), group({}), list({}), string(val) {}
@@ -97,6 +104,39 @@ Color JsonObject::ToColor() const {
 		std::stof(list[2].string),
 		std::stof(list[3].string)
 	);
+}
+
+JsonObject JsonObject::FromVec2(const Vec2& v) {
+	return JsonObject({
+		JsonObject(std::to_string(v.x)),
+		JsonObject(std::to_string(v.y))
+	});
+}
+
+JsonObject JsonObject::FromVec3(const Vec3& v) {
+	return JsonObject({
+		JsonObject(std::to_string(v.x)),
+		JsonObject(std::to_string(v.y)),
+		JsonObject(std::to_string(v.z))
+	});
+}
+
+JsonObject JsonObject::FromVec4(const Vec4& v) {
+	return JsonObject({
+		JsonObject(std::to_string(v.x)),
+		JsonObject(std::to_string(v.y)),
+		JsonObject(std::to_string(v.z)),
+		JsonObject(std::to_string(v.w))
+	});
+}
+
+JsonObject JsonObject::FromQuat(const Quat& q) {
+	return JsonObject({
+		JsonObject(std::to_string(q.w)),
+		JsonObject(std::to_string(q.x)),
+		JsonObject(std::to_string(q.y)),
+		JsonObject(std::to_string(q.z))
+	});
 }
 
 JsonObject JsonObject::FromColor(const Color& c) {
@@ -176,6 +216,42 @@ JsonObject JsonObject::ParseString(std::istringstream& ss) {
 		obj.string += s2;
 	} while (s2.back() == '\\');
 	return obj;
+}
+
+#pragma optimize( "", off )
+std::string JsonObject::DoExport(int ind) const {
+	const bool min = ind < 0;
+	std::string res;
+#define nl if (!min) res += "\n"
+#define tb(i) if (!min) res.insert(res.end(), (i) * 2, ' ');
+#define nltb(i) nl;tb(i)
+	switch (type) {
+	case Type::Group:
+		if (group.empty()) return "{},";
+		res = "{";
+		for (auto& g : group) {
+			nltb(ind + 1);
+			res += "\"" + g.key.string + "\":" + g.value.DoExport(ind + 1);
+		}
+		res.pop_back(); nltb(ind);
+		res += "},";
+		return res;
+	case Type::List:
+		if (list.empty()) return "[],";
+		res = "[";
+		for (auto& s : list) {
+			nltb(ind + 1);
+			res += s.DoExport(ind + 1);
+		}
+		res.pop_back(); nltb(ind);
+		res += "],";
+		return res;
+	case Type::String:
+		return "\"" + string + "\",";
+	default:
+		return "\"???\",";
+		break;
+	}
 }
 
 CE_END_NAMESPACE

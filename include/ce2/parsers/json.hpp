@@ -8,7 +8,9 @@ class JsonPair;
 
 class JsonParser {
 public:
-	static JsonObject Parse(std::string text);
+	static JsonObject Parse(std::string);
+
+	static std::string Export(const JsonObject&, bool min = false);
 };
 
 class JsonObject {
@@ -42,10 +44,16 @@ public:
 	template <typename T>
 	T ToEnum(const std::initializer_list<std::string>& entries) const;
 
+	static JsonObject FromVec2(const Vec2& v);
+	static JsonObject FromVec3(const Vec3& v);
+	static JsonObject FromVec4(const Vec4& v);
+	static JsonObject FromQuat(const Quat& q);
 	static JsonObject FromColor(const Color& c);
 
 	static JsonObject ParseNext(std::istringstream& ss);
 	static JsonObject ParseString(std::istringstream& ss);
+
+	std::string DoExport(int ind) const;
 };
 
 class JsonPair {

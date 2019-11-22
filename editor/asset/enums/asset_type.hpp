@@ -18,6 +18,19 @@ enum class EAssetType {
     Unknown = 0xff
 };
 
+const std::array<std::string, (int)EAssetType::_COUNT> EAssetTypeStr = {
+	"AnimClip",
+	"AnimGraph",
+	"Armature",
+	"Font",
+	"Material",
+	"Mesh",
+	"Prefab",
+	"Shader",
+	"Texture",
+	"VShader"
+};
+
 template <typename T>
 struct EAssetTypeOf;
 

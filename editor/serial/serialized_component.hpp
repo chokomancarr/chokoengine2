@@ -21,6 +21,8 @@ public:
 	ComponentType type;
 
 	bool enabled;
+
+	JsonObject ToJson() const override;
 };
 
 CE_END_ED_NAMESPACE
