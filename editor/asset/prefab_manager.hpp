@@ -6,14 +6,24 @@ CE_BEGIN_ED_NAMESPACE
 /* I dunno if this works
  */
 class PrefabManager {
-	struct PrefabInfo {
+public:
+	class Info {
+	public:
+		static Info null;
+
 		Prefab prefab;
 		std::vector<pSceneObject> objects;
+
+		bool operator !() const;
 	};
-	static std::unordered_map<ChokoEngine::objectid, PrefabInfo> _map;
+
+private:
+	static std::unordered_map<ChokoEngine::objectid, Info> _map;
+
 public:
 	static SceneObject Instantiate(const Prefab&);
 
+	static Info& GetInfo(const SceneObject&);
 	static bool IsPrefab(const SceneObject&);
 
 	static void Apply(const SceneObject&);

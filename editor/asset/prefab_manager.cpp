@@ -2,7 +2,14 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-std::unordered_map<ChokoEngine::objectid, PrefabManager::PrefabInfo> PrefabManager::_map;
+PrefabManager::Info PrefabManager::Info::null = {};
+
+bool PrefabManager::Info::operator!() const {
+	return this == &null;
+}
+
+
+std::unordered_map<ChokoEngine::objectid, PrefabManager::Info> PrefabManager::_map;
 
 SceneObject PrefabManager::Instantiate(const Prefab& prefab) {
 	typedef std::vector<pSceneObject>& _sos;
@@ -19,6 +26,12 @@ SceneObject PrefabManager::Instantiate(const Prefab& prefab) {
 	info.prefab = prefab;
 	rego(info.objects, res);
 	return res;
+}
+
+PrefabManager::Info& PrefabManager::GetInfo(const SceneObject& o) {
+	auto it = _map.find(o->id());
+	if (it == _map.end()) return Info::null;
+	else return it->second;
 }
 
 bool PrefabManager::IsPrefab(const SceneObject& o) {

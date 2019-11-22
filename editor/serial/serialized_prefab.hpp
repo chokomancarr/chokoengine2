@@ -17,7 +17,7 @@ public:
 
 	std::vector<pESerializedComponent> components;
 
-	std::vector<pESerializedPrefab> children;
+	std::vector<pESerializedObject> children;
 
 	JsonObject ToJson() const override;
 };

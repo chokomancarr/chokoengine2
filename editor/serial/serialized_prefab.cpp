@@ -17,12 +17,17 @@ ESerializedPrefab::ESerializedPrefab(const SceneObject& o)
 	auto& cch = o->children();
 	children.reserve(cch.size());
 	for (auto& c : cch) {
-		children.push_back(ESerializedPrefab_New(c));
+		auto& info = PrefabManager::GetInfo(c);
+		if (!info)
+			children.push_back(ESerializedPrefab_New(c));
+		else
+			children.push_back(ESerializedPrefabExt_New(c, info));
 	}
 }
 
 JsonObject ESerializedPrefab::ToJson() const {
 	auto res = ESerializedObject::ToJson();
+	res.group.push_back(JsonPair(JsonObject("type"), JsonObject("object")));
 	res.group.push_back(JsonPair(JsonObject("name"), name));
 	res.group.push_back(JsonPair(JsonObject("enabled"), JsonObject(enabled ? "1" : "0")));
 	res.group.push_back(JsonPair(JsonObject("position"), JsonObject::FromVec3(transform.position)));

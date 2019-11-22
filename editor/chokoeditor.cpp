@@ -47,7 +47,7 @@ void ChokoEditor::Main() {
 	//Scene::sky()->brightness(1);
 	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
 
-	auto rb = ((Prefab)EAssetList::Get(EAssetType::Prefab, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true))->Instantiate();
+	auto rb = PrefabManager::Instantiate((Prefab)EAssetList::Get(EAssetType::Prefab, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true));
 	Scene::AddObject(rb, scenebase);
 	rb->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	rb->transform()->localRotationEuler(Vec3(0, -5, 0));
