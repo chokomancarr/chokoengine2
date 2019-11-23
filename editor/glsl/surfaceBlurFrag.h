@@ -82,8 +82,8 @@ vec4 sample(
 		else {
 			npx = texture(idTex, pos * dreso).xy;
 			if (npx.x <= 0) { //not triangle, go back
-			//	pos = poso;
-			//	npx = texture(idTex, pos * dreso).xy;
+				pos = poso;
+				npx = texture(idTex, pos * dreso).xy;
 			}
 		}
 		int tid2 = npx.x - 1;

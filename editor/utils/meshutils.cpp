@@ -52,7 +52,7 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 		VertexBuffer_New(true, 2, data.vertCount, m->texcoords().data()),
 		GL_RG32F);
 	data.indices = TextureBuffer::New(
-		VertexBuffer_New(false, 3, data.vertCount, m->triangles().data()),
+		VertexBuffer_New(false, 3, data.indCount, m->triangles().data()),
 		GL_RGB32I);
 
 	//unique vert indices
@@ -242,7 +242,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	tar->BindTarget();
 	tar->Clear(Color(0, 0), 1);
 	glActiveTexture(GL_TEXTURE0);
-	//tmp->Bind();
+	tmp->Bind();
 	glUniform2f(blurShad->Loc(10), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
