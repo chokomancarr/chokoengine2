@@ -23,7 +23,11 @@ public:
 		Object
 	} type;
 
+	CE_S_ObjectRef target;
+
 	pESerializedPrefab object;
+
+	JsonObject ToJson() const;
 };
 
 CE_END_ED_NAMESPACE

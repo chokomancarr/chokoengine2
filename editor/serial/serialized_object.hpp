@@ -1,6 +1,8 @@
 #pragma once
 #include "chokoeditor.hpp"
 
+#include "serial_objectref.hpp"
+
 CE_BEGIN_ED_NAMESPACE
 
 class ESerializedPrefab;

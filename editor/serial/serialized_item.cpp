@@ -26,12 +26,11 @@ ESerializedItem::ESerializedItem(const Asset& a) : value({}), type(Type::Asset) 
 	av.assetType = EAssetList::TypeOf(av.sig).assetType;
 }
 ESerializedItem::ESerializedItem(const SceneObject& s) : value({}), type(Type::SceneObject) {
-	auto& sv = value.scobjref;
-	sv.id = ESerializer::SceneIdOf(s);
+	value.scobjref = CE_S_ObjectRef(s, Scene::objects()[1]);
 }
 ESerializedItem::ESerializedItem(const Component& c) : value({}), type(Type::Component) {
 	auto& cv = value.compref;
-	cv.obj.id = ESerializer::SceneIdOf(c->object());
+	cv.obj = CE_S_ObjectRef(c->object(), Scene::objects()[1]);
 	cv.type = c->componentType;
 }
 

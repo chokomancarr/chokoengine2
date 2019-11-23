@@ -1,4 +1,5 @@
 target_sources(ChokoEditor PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/serial_objectref.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/serializer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/serialized_component.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/serialized_item.cpp

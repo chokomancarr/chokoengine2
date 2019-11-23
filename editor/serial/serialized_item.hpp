@@ -26,11 +26,9 @@ public:
 			EAssetType assetType;
 			std::string sig;
 		} assetref;
-		struct _scobjrefst {
-			int id;
-		} scobjref;
+		CE_S_ObjectRef scobjref;
 		struct _comprefst {
-			_scobjrefst obj;
+			CE_S_ObjectRef obj;
 			ComponentType type;
 		} compref;
 	} value;
