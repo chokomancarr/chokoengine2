@@ -9,6 +9,8 @@ uniform isampler2D idTex;
 uniform sampler2D jmpTex;
 //model coords
 uniform samplerBuffer posBuf;
+//triangle elements
+uniform isamplerBuffer indBuf;
 //for each tri [i(xy) j(xy)]
 uniform samplerBuffer edatBuf;
 //for each tri [for each edge [i1, i2, it]]
@@ -45,6 +47,23 @@ vec2 rebase3(vec3 v, vec3 i, vec3 j) {
 	return (inverse(m) * v).xy;
 }
 
+vec3 getvertex(int t, int e) {
+	return texelFetch(posBuf, texelFetch(indBuf, t)[e]).xyz;
+}
+
+vec3 getcenter(int i) {
+	ivec3 ids = texelFetch(indBuf, i).xyz;
+	return (texelFetch(posBuf, ids.x).xyz +
+		texelFetch(posBuf, ids.y).xyz +
+		texelFetch(posBuf, ids.z).xyz) * 0.333333;
+}
+
+vec3 getperp(vec3 v, vec3 n) {
+	vec3 t = cross(v, n);
+	return normalize(cross(n, t));
+}
+
+//rotates r to plane xt, rotated along x
 vec3 orient(vec3 r, vec3 x, vec3 t) {
 	x = normalize(x);
 	t = normalize(t);
@@ -85,39 +104,52 @@ vec4 sample(
 		int tid2 = npx.x - 1;
 		if (tid2 < 0) tid2 = tid;
 		if (tid != tid2) {
+			//get texture vectors
 			vec4 ed = texelFetch(edatBuf, tid * 3);
+
+			//convert to triangle space
 			vec2 ts1 = rebase2(dr, ed.xy, ed.zw);
 
-			vec3 t1i = texelFetch(edatBuf, tid * 3 + 1).xyz;
-			vec3 t1j = texelFetch(edatBuf, tid * 3 + 2).xyz;
+			//get world vectors
+			vec3 t1i = texelFetch(edatBuf, tid * 3 + 1).xyz; //AB
+			vec3 t1j = texelFetch(edatBuf, tid * 3 + 2).xyz; //AC
 
-			vec3 t1k = t1i;
-			if (eid == 2) t1k = t1j;
-			else if (eid == 1) t1k = normalize(t1j - t1i);
+			//get rotation axis
+			vec3 t1k = t1i; //edge 1: AB
+			if (eid == 1) t1k = normalize(t1j - t1i); //edge 2: BC = AC - AB
+			else if (eid == 2) t1k = -t1j; //edge 3: CA
 			vec3 t2k = -t1k;
+			
+			//get point on axis
+			vec3 tpt = getvertex(tid, eid);
 
+			//get world space
 			vec3 ws = normalize(t1i * ts1.x + t1j * ts1.y);
 
+			//get world vectors 2
 			vec3 t2i = texelFetch(edatBuf, tid2 * 3 + 1).xyz;
 			vec3 t2j = texelFetch(edatBuf, tid2 * 3 + 2).xyz;
 
-			ivec3 icon = texelFetch(iconBuf, tid * 3 + eid).xyz;
-			vec3 t23 = texelFetch(posBuf, icon.z).xyz - texelFetch(posBuf, icon.y).xyz;
+			//get world center 2
+			vec3 wc2 = getcenter(tid2);
 
-			vec3 t2n = cross(t2k, t23);
-			vec3 t2t = normalize(cross(t2n, t2k));
+			//get plane direction 2
+			vec3 t2t = getperp(wc2 - tpt, t2k);
 
+			//orient vector
 			vec3 ws2 = orient(ws, t2k, t2t);
+
+			//get new triangle space
 			vec2 ts2 = rebase3(ws2, t2i, t2j);
+
+			//get texture vectors 2
+			vec4 tcd = texelFetch(edatBuf, tid * 3);
 
 			//new coords
 			tid = tid2;
-			vec4 tcd = texelFetch(edatBuf, tid * 3);
 			dr = tcd.xy * ts2.x + tcd.zw * ts2.y;
 			dr = normalize(dr);
 			drr = dr * dreso;
-
-			//col = vec4(dr, icon.z, 1);//+= texture(colTex, pos * dreso);
 		}
 		eid = npx.y;
 		poso = pos;

@@ -6,7 +6,7 @@
 #include "glsl/surfaceBlurFrag.h"
 #include "glsl/uvinfo.h"
 #include "glsl/uvinfo_exp.h"
-#include "glsl/uvjmpgen2.h"
+#include "glsl/uvjmpgen.h"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -21,7 +21,7 @@ void MeshUtils::Init() {
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
 			"sres", "reso", "colTex", "idTex", 
-			"jmpTex", "posBuf", "edatBuf",
+			"jmpTex", "posBuf", "indBuf", "edatBuf",
 			"iconBuf", "dir0", "blurcnt"
 		});
 
@@ -198,14 +198,17 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	glUniform1i(blurShad->Loc(5), 3);
 	glActiveTexture(GL_TEXTURE3);
 	data.positions->Bind();
-	glUniform1i(blurShad->Loc(6), 5);
+	glUniform1i(blurShad->Loc(6), 4);
+	glActiveTexture(GL_TEXTURE4);
+	data.indices->Bind();
+	glUniform1i(blurShad->Loc(7), 5);
 	glActiveTexture(GL_TEXTURE5);
 	data.edgeData->Bind();
-	glUniform1i(blurShad->Loc(7), 6);
+	glUniform1i(blurShad->Loc(8), 6);
 	glActiveTexture(GL_TEXTURE6);
 	data.iconData->Bind();
-	glUniform2f(blurShad->Loc(8), 1, 0);
-	glUniform1i(blurShad->Loc(9), (int)size);
+	glUniform2f(blurShad->Loc(9), 1, 0);
+	glUniform1i(blurShad->Loc(10), (int)size);
 
 	tmp->BindTarget();
 	tmp->Clear(Color(0, 0), 1);
@@ -215,7 +218,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	tar->Clear(Color(0, 0), 1);
 	glActiveTexture(GL_TEXTURE0);
 	tmp->Bind();
-	glUniform2f(blurShad->Loc(8), 0, 1);
+	glUniform2f(blurShad->Loc(9), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
 	tar->UnbindTarget();
