@@ -21,8 +21,8 @@ void MeshUtils::Init() {
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
 			"sres", "reso", "colTex", "idTex", 
-			"jmpTex", "posBuf", "indBuf", "edatBuf",
-			"iconBuf", "conBuf", "dir0", "blurcnt"
+			"jmpTex", "posBuf", "edatBuf",
+			"iconBuf", "dir0", "blurcnt"
 		});
 
 	initd = true;
@@ -138,28 +138,6 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 		VertexBuffer_New(false, 4, data.indCount * 3, icons.data()),
 		GL_RGBA32I);
 
-	//--------- uv angles -----------
-
-	std::vector<Vec4> cons(data.indCount * 6, Vec4(-1));
-	for (int a = 0; a < data.indCount; a++) {
-		for (int b = 0; b < 3; b++) {
-			const int k = a * 3 + b;
-			const auto& ic = icons[k];
-			if (ic.x > -1) {
-				cons[k*2] = glm::vec4(uvs[ic.x], uvs[ic.y]);
-				const auto tv = glm::normalize(uvs[inds[a][(b == 2) ? 0 : b + 1]] - uvs[inds[a][b]]);
-				float t = std::acos(tv.x) * Math::rad2deg;
-				if (tv.y > 0) t = 360 - t;
-				t -= 90;
-				cons[a * 2 + 1].x = t;
-			}
-		}
-	}
-
-	data.conData = TextureBuffer::New(
-		VertexBuffer_New(true, 4, data.indCount * 6, cons.data()),
-		GL_RGBA32F);
-
 	return data;
 }
 
@@ -220,20 +198,14 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	glUniform1i(blurShad->Loc(5), 3);
 	glActiveTexture(GL_TEXTURE3);
 	data.positions->Bind();
-	glUniform1i(blurShad->Loc(6), 4);
-	glActiveTexture(GL_TEXTURE4);
-	data.indices->Bind();
-	glUniform1i(blurShad->Loc(7), 5);
+	glUniform1i(blurShad->Loc(6), 5);
 	glActiveTexture(GL_TEXTURE5);
 	data.edgeData->Bind();
-	glUniform1i(blurShad->Loc(8), 6);
+	glUniform1i(blurShad->Loc(7), 6);
 	glActiveTexture(GL_TEXTURE6);
 	data.iconData->Bind();
-	glUniform1i(blurShad->Loc(9), 7);
-	glActiveTexture(GL_TEXTURE7);
-	data.conData->Bind();
-	glUniform2f(blurShad->Loc(10), 1, 0);
-	glUniform1i(blurShad->Loc(11), (int)size);
+	glUniform2f(blurShad->Loc(8), 1, 0);
+	glUniform1i(blurShad->Loc(9), (int)size);
 
 	tmp->BindTarget();
 	tmp->Clear(Color(0, 0), 1);
@@ -243,7 +215,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	tar->Clear(Color(0, 0), 1);
 	glActiveTexture(GL_TEXTURE0);
 	tmp->Bind();
-	glUniform2f(blurShad->Loc(10), 0, 1);
+	glUniform2f(blurShad->Loc(8), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
 	tar->UnbindTarget();

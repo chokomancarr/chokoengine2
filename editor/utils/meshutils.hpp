@@ -40,7 +40,6 @@ public:
 	TextureBuffer indices; //triangle indices
 	TextureBuffer edgeData; //texture space (u1-u0, u2-u0), model space (p1-p0, 0), model space (p2-p0, 0)
 	TextureBuffer iconData; //connected triangle indices
-	TextureBuffer conData; //connected vectors (why is this needed????????), angle
 
 	struct infoTexSt {
 		FrameBuffer uvInfoTex;

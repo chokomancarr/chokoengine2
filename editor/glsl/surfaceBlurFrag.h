@@ -9,14 +9,10 @@ uniform isampler2D idTex;
 uniform sampler2D jmpTex;
 //model coords
 uniform samplerBuffer posBuf;
-//index to element
-uniform isamplerBuffer indBuf;
 //for each tri [i(xy) j(xy)]
 uniform samplerBuffer edatBuf;
 //for each tri [for each edge [i1, i2, it]]
 uniform isamplerBuffer iconBuf;
-//for each tri [for each edge [uv1(xy) uv2(zw) or -1 if no connection]]
-uniform samplerBuffer conBuf;
 uniform vec2 dir0;
 
 out vec4 outColor;
