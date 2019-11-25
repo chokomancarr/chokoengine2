@@ -24,4 +24,17 @@ JsonObject ESerializedComponent::ToJson() const {
 	return res;
 }
 
+void ESerializedComponent::Instantiate(SceneObject& o) const {
+#define CS(tp) case ComponentType::tp: Instantiate ## tp(o); break;
+	switch (type) {
+		CS(Camera)
+		CS(Animator)
+		CS(Light)
+		CS(MeshRenderer)
+		CS(Rig)
+	default:
+		CE_NOT_IMPLEMENTED
+	}
+}
+
 CE_END_ED_NAMESPACE

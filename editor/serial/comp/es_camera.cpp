@@ -14,4 +14,9 @@ CE_ES_IMPL_COMP(Camera) {
 	CE_ES_ADD(clearColor);
 }
 
+CE_ES_IMPL_COMP_INST(Camera) {
+	auto& c = o->AddComponent<Camera>();
+
+}
+
 CE_END_ED_NAMESPACE

@@ -20,6 +20,10 @@ public:
 	std::vector<pESerializedObject> children;
 
 	JsonObject ToJson() const override;
+
+	SceneObject Instantiate() const;
+
+	void Revert() const;
 };
 
 CE_END_ED_NAMESPACE

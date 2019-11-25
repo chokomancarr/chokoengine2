@@ -50,4 +50,12 @@ JsonObject ESerializedPrefab::ToJson() const {
 	return res;
 }
 
+SceneObject ESerializedPrefab::Instantiate() const {
+	SceneObject res = SceneObject::New(name, transform.position, transform.rotation, transform.scale);
+	for (auto& c : components) {
+		c->Instantiate(res);
+	}
+	return res;
+}
+
 CE_END_ED_NAMESPACE

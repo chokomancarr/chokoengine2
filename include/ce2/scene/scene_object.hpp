@@ -41,12 +41,16 @@ public:
 	/* Adds a new component to the object
 	 */
 	template<class T, class... Args>
-	T AddComponent(Args&&... args);
+	typename std::enable_if<std::is_base_of<_Component,
+		typename T::_TpBase>::value, T>::type
+	AddComponent(Args&&... args);
 
 	/* Retrieves a component in the object
 	 */
 	template <class T>
-	T GetComponent() const;
+	typename std::enable_if<std::is_base_of<_Component,
+		typename T::_TpBase>::value, T>::type
+	GetComponent() const;
 
 	/* Removes a component from the object
 	 */
