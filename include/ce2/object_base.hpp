@@ -17,7 +17,7 @@ protected:
 	virtual void _CopyInfo(const Object& tar);
 
 	template <typename T>
-	std::shared_ptr<T> get_shared() const;
+	Ref<T> get_shared() const;
 public:
     virtual ~_Object() = default;
 

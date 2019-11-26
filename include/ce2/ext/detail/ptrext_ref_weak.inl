@@ -53,22 +53,26 @@ bool Ref_w<T>::operator !() const {
 
 template <class T>
 bool Ref_w<T>::operator ==(const Ref<T>& rhs) const {
-    return this->_object == rhs._object;
+	if (_object.expired()) return !rhs; //both null
+    else return _object.lock() == rhs._object;
 }
 
 template <class T>
 bool Ref_w<T>::operator ==(const Ref_w<T>& rhs) const {
-    return this->_object == rhs._object;
+	if (_object.expired()) return _object.expired(); //both null
+	else return _object.lock() == rhs._object.lock();
 }
 
 template <class T>
 bool Ref_w<T>::operator !=(const Ref<T>& rhs) const {
-    return this->_object != rhs._object;
+	if (_object.expired()) return !!rhs; //both null
+	else return _object.lock() != rhs._object;
 }
 
 template <class T>
 bool Ref_w<T>::operator !=(const Ref_w<T>& rhs) const {
-    return this->_object != rhs._object;
+	if (_object.expired()) return !_object.expired(); //both null
+	else return _object.lock() != rhs._object.lock();
 }
 
 template <class T>

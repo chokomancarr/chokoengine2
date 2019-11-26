@@ -38,7 +38,7 @@ public:
 	/* Parent object this object is attached to
 	 */
 	CE_GET_MEMBER(parent);
-	CE_SET_MEMBER_F(parent);
+	void parent(const SceneObject& p);
 
 	/* Scene this object is attached to
 	 */

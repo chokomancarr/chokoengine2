@@ -12,7 +12,8 @@ pTransform _SceneObject::transform() {
     return &_transform;
 }
 
-void _SceneObject::parent(const SceneObject& p) {
+void _SceneObject::parent(const SceneObject& _p) {
+	const pSceneObject p(_p);
     if (p == _parent) return;
 
     /* Checks for circular parenting
@@ -21,7 +22,7 @@ void _SceneObject::parent(const SceneObject& p) {
         Debug::Warning("SceneObject", "Cannot set object parent: parent is self!");
         return;
     }
-    SceneObject tp = p->_parent;
+    pSceneObject tp = p->_parent;
     while (!!tp) {
         if (tp.operator->() == this) {
             Debug::Warning("SceneObject", "Cannot set object parent: parent is a child of object!");
@@ -46,7 +47,7 @@ void _SceneObject::parent(const SceneObject& p) {
     /* Add to new parent
      */
     _parent = p;
-    p->_children.push_back(SceneObject(get_shared<_SceneObject>()));
+    p->_children.push_back(get_shared<_SceneObject>());
 
     _transform.UpdateParentMatrix();
 }
@@ -82,7 +83,7 @@ SceneObject _SceneObject::Clone() const {
         return copy;
     };
 
-    return doclone(SceneObject(get_shared<_SceneObject>()), nullptr);
+    return doclone(get_shared<_SceneObject>(), nullptr);
 }
 
 void _SceneObject::Delete() {

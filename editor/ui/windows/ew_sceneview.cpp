@@ -16,7 +16,7 @@ void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 void EW_SceneView::DrawMenu() {
 	const Rect& r = Rect(position.x(), position.y() + 20, position.w(), position.h() - 20);
 	glBlendFunc(GL_ONE, GL_ZERO);
-	UI::Texture(r, static_cast<Texture>(_target));
+	UI::Texture(r, _target);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if (r.Contains(Input::mouseDownPosition())) {

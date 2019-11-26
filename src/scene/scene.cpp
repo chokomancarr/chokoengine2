@@ -56,6 +56,7 @@ SceneObject _Scene::AddNewObject(const SceneObject& parent) {
     auto o = SceneObject::New("New Object");
     vec.push_back(o);
     o->_parent = parent;
+	o->_scene = get_shared<_Scene>();
     return o;
 }
 
@@ -69,6 +70,7 @@ void _Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
     }
     vec.push_back(o);
     o->_parent = parent;
+	o->_scene = get_shared<_Scene>();
 }
 
 void _Scene::RemoveObject(const SceneObject& o) {
@@ -80,6 +82,7 @@ void _Scene::RemoveObject(const SceneObject& o) {
     if (oo == vec.end()) {
         Debug::Warning("Scene", "Cannot remove object: object is not a part of the scene!");
     }
+	(*oo)->_scene = pScene();
     std::swap(*oo, vec.back());
     _objects.pop_back();
 }

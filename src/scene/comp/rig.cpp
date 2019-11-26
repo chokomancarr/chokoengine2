@@ -10,7 +10,7 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
         if (std::isnan(rot.x) || std::isnan(rot.y) || std::isnan(rot.z) || std::isnan(rot.w)) {
             rot = Quat::identity();
         }
-        auto obj = Scene::AddNewObject(parent);
+        auto obj = parent->scene()->AddNewObject(parent);
 
         obj->name(b.name);
         auto tr = obj->transform();
@@ -31,10 +31,11 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
 void _Rig::armature(const Armature& arma) {
     if (!!_armature) {
         for (auto& b : _boneObjs) {
-            if (b.obj->components().size() > 0) {
+			auto obj = b.obj.lock();
+            if (obj->components().size() > 0) {
                 Debug::Warning("Rig::armature (set)", "Deleting bone \"" + b.bone.sig + " with components attached!");
             }
-            Scene::RemoveObject(b.obj.lock());
+			obj->scene()->RemoveObject(obj);
         }
         _boneObjs.clear();
     }

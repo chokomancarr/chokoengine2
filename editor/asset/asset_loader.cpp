@@ -121,7 +121,7 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 }
 
 #define CE_E_LD(nm) case EAssetType::nm: {\
-	auto res = static_cast<Asset>(Load ## nm(path, async));\
+	auto res = Load ## nm(path, async);\
 	if (!res)\
 		Debug::Error("EAssetLoader", "Failed to load \"" + path + "\" (nullptr returned by loader)!");\
 	res->assetSignature(path);\
