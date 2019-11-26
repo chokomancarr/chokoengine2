@@ -50,6 +50,7 @@ std::vector<Camera> Renderer::cameras;
 std::vector<Light> Renderer::lights;
 std::vector<MeshRenderer> Renderer::orends, Renderer::trends;
 std::vector<LightProbe> Renderer::probes;
+Background Renderer::sky;
 
 void Renderer::ScanObjects(const std::vector<SceneObject>& oo) {
 	for (auto& o : oo) {
@@ -343,7 +344,7 @@ void Renderer::RenderCamera(Camera& cam) {
 }
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
-	if (!Scene::_sky || !Scene::_sky->loaded()) {
+	if (!sky || !sky->loaded()) {
 		gbuf->Bind(true);
 		glReadBuffer(GL_COLOR_ATTACHMENT3);
 		glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
@@ -371,8 +372,8 @@ void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip
 		glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
 		glUniform1i(skyShad->Loc(8), 5);
 		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_2D, Scene::_sky->_pointer);
-		glUniform1f(skyShad->Loc(9), Scene::_sky->_brightness);
+		glBindTexture(GL_TEXTURE_2D, sky->_pointer);
+		glUniform1f(skyShad->Loc(9), sky->_brightness);
 		glUniform1f(skyShad->Loc(10), tr ? 1 : 0);
 		_emptyVao->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -394,14 +395,16 @@ bool Renderer::Init() {
 	return !!skyShad && !!probeShad && InitLightShaders() && GI::Voxelizer::InitShaders();
 }
 
-void Renderer::Render() {
+void Renderer::Render(Scene& scene) {
 	cameras.clear();
 	lights.clear();
 	orends.clear();
 	trends.clear();
 	probes.clear();
 
-	ScanObjects(Scene::objects());
+	ScanObjects(scene->objects());
+
+	sky = scene->_sky;
 
 	for (auto& p : probes) {
 		if (p->_dirty || (p->updateFrequency() == LightProbeUpdateFrequency::Realtime)) {

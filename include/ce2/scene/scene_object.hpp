@@ -11,7 +11,9 @@ class _SceneObject : public _Object { CE_OBJECT_COMMON
 	std::vector<Component> _components;
 
 	std::vector<SceneObject> _children;
-	SceneObject _parent;
+	
+	pScene _scene;
+	pSceneObject _parent;
 
 public:
 	_SceneObject(const std::string& nm = "", 
@@ -37,6 +39,10 @@ public:
 	 */
 	CE_GET_MEMBER(parent);
 	CE_SET_MEMBER_F(parent);
+
+	/* Scene this object is attached to
+	 */
+	CE_GET_MEMBER(scene);
 
 	/* Adds a new component to the object
 	 */
@@ -64,7 +70,7 @@ public:
 
 	void Delete() override;
 
-	friend class Scene;
+	friend class _Scene;
 };
 
 CE_END_NAMESPACE

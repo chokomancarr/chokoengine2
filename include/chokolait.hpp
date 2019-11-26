@@ -24,6 +24,7 @@ class ChokoLait {
 
 	static bool initd;
 
+	static CE_EXPORT Scene mainScene;
 	static CE_EXPORT Camera mainCamera;
     
 public:

@@ -6,47 +6,51 @@ CE_BEGIN_NAMESPACE
 /* The Scene class contains the objects and
  * details of the game world.
  */
-class Scene { CE_CLASS_COMMON
-	static CE_EXPORT std::vector<SceneObject> _objects;
+class _Scene : public _Object { CE_OBJECT_COMMON
+	std::vector<SceneObject> _objects;
 	
-	static CE_EXPORT Background _sky;
+	Background _sky;
 
-	static void DoTree(std::string& s, const std::vector<SceneObject>& o, const std::vector<bool>& level);
+	void DoTree(std::string& s, const std::vector<SceneObject>& o, const std::vector<bool>& level);
 
-	static SceneObject DoFindByName(const std::vector<SceneObject>& o, const std::string& nm);
+	SceneObject DoFindByName(const std::vector<SceneObject>& o, const std::string& nm);
 
-	static void Update(const std::vector<SceneObject>& o);
+	void DoUpdate(const std::vector<SceneObject>& o);
+	
+	void Update();
 
 public:
-	CE_GET_ST_MEMBER(objects);
+	_Scene();
 
-	CE_GET_SET_ST_MEMBER(sky);
+	CE_GET_MEMBER(objects);
+
+	CE_GET_SET_MEMBER(sky);
 
 	/* Adds a new sceneobject to the scene
 	 */
-	static SceneObject AddNewObject(const SceneObject& parent = nullptr);
+	SceneObject AddNewObject(const SceneObject& parent = nullptr);
 
 	/* Adds an existing sceneobject to the scene
 	 */
-	static void AddObject(const SceneObject& o, const SceneObject& parent = nullptr);
+	void AddObject(const SceneObject& o, const SceneObject& parent = nullptr);
 
 	/* Removes a sceneobject from the scene
 	 */
-	static void RemoveObject(const SceneObject& o);
+	void RemoveObject(const SceneObject& o);
 
 	/* Removes all sceneobjects from the scene
 	 */
-	static void ClearObjects();
+	void ClearObjects();
 
 	/* Returns the first object with the name \p nm
 	 */
-	static SceneObject FindByName(const std::string& nm);
+	SceneObject FindByName(const std::string& nm);
 
 	/* Returns all objects satisfying the condition
 	 */
-	static std::vector<SceneObject> FindAllByPred(std::function<bool(const SceneObject&)>);
+	std::vector<SceneObject> FindAllByPred(std::function<bool(const SceneObject&)>);
 
-	static std::string Tree();
+	std::string Tree();
 };
 
 CE_END_NAMESPACE

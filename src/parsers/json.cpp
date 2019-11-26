@@ -54,13 +54,15 @@ JsonObject::JsonObject(const std::vector<JsonPair>& pairs) : type(Type::Group), 
 JsonObject::JsonObject(const std::vector<JsonObject>& items) : type(Type::List), group({}), list(items), string("") {}
 
 const JsonObject& JsonObject::Get(const std::string& k) const {
+	static JsonObject null = {};
 	if (type != Type::Group) {
 		Debug::Warning("JsonObject", "[] operator cannot be used on non-group object!");
-		return JsonObject();
+		return null;
 	}
 	for (auto& g : group) {
 		if (g.key.string == k) return g.value;
 	}
+	return null;
 }
 
 bool JsonObject::ToBool() const {
@@ -107,7 +109,7 @@ Color JsonObject::ToColor() const {
 }
 
 JsonObject JsonObject::FromVec2(const Vec2& v) {
-	return JsonObject({
+	return JsonObject(std::vector<JsonObject>{
 		JsonObject(std::to_string(v.x)),
 		JsonObject(std::to_string(v.y))
 	});

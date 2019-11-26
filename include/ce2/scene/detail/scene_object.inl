@@ -4,7 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 template<class T, class... Args>
-typename std::enable_if<std::is_base_of<_Component, typename T::_TpBase>::value, typename T>::type
+typename std::enable_if<std::is_base_of<_Component, typename T::_TpBase>::value, T>::type
  _SceneObject::AddComponent(Args&&... args) {
 	auto nt = T::New(std::forward<Args>(args)...);
 	_components.push_back(static_cast<Component>(nt));

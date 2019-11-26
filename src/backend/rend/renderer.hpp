@@ -17,16 +17,17 @@ class Renderer {
 	static std::vector<Light> lights;
 	static std::vector<MeshRenderer> orends, trends;
 	static std::vector<LightProbe> probes;
+	static Background sky;
 
 	static bool InitLightShaders();
 
-    static void ScanObjects(const std::vector<SceneObject>&);
+	static void ScanObjects(const std::vector<SceneObject>&);
 
 	static void RenderMesh(const MeshRenderer& rend, const Mat4x4& P);
 
 	static void RenderScene(const RenderTarget& tar, const RenderTarget& ttar, const Mat4x4& p, const FrameBuffer& gbuf, std::function<void()> preBlit, bool useProbes);
 
-    static void RenderCamera(Camera& cam);
+	static void RenderCamera(Camera& cam);
 
 	static void RenderProbe_CubeMap(const CubeMap&);
 
@@ -49,7 +50,7 @@ public:
 
 	static bool Init();
 
-    static void Render();
+	static void Render(Scene& scene);
 
 	friend class GI;
 };

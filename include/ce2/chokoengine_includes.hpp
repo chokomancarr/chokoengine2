@@ -95,10 +95,10 @@ CE_OBJECT(TextureBuffer)
 
 /* scene
  */
-class Scene;
+CE_OBJECT(Scene)
+CE_OBJECT(SceneObject)
 class Transform;
 typedef Transform* pTransform;
-CE_OBJECT(SceneObject)
 
 /* components
  */
