@@ -7,9 +7,12 @@ class EW_GameView : public EWindow {
 	RenderTarget _target;
 
 protected:
+	void DrawMenu() override;
 
 public:
 	EW_GameView();
+
+	bool Init() override;
 
 	void Update() override;
 

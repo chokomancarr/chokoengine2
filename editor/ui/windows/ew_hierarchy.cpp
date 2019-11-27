@@ -60,7 +60,7 @@ void EW_Hierarchy::DrawMenu() {
 	//}
 	static EUILayout::ScrollState st = {};
 	float off = EUILayout::BeginScroll(Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21), st);
-    DrawMenuObject(off, ChokoEditor::scene->objects(), 0);
+    DrawMenuObject(off, ChokoEditor::scene->objects()[1]->children(), 0);
 	EUILayout::EndScroll(st, off);
 }
 

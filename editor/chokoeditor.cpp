@@ -59,6 +59,11 @@ void ChokoEditor::Main() {
 	rb->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	rb->transform()->localRotationEuler(Vec3(0, -5, 0));
 
+	const auto& oc = scene->AddNewObject(scenebase);
+	oc->transform()->localPosition(Vec3(-3, 0.5f, 4));
+	oc->transform()->localRotationEuler(Vec3(-5, -30, 0));
+	oc->AddComponent<Camera>();
+
 	//auto scr = rb->AddComponent<DummyScript>();
 	//scr->name("Turner (Script)");
 	//scr->info(EAssetList::GetScr("turner.hpp"));
