@@ -13,11 +13,14 @@ class Renderer {
 	static Shader probeShad;
 	static Shader transOverlayShad;
 
+public:
 	static std::vector<Camera> cameras;
 	static std::vector<Light> lights;
 	static std::vector<MeshRenderer> orends, trends;
 	static std::vector<LightProbe> probes;
 	static Background sky;
+
+private:
 
 	static bool InitLightShaders();
 
@@ -27,8 +30,6 @@ class Renderer {
 
 	static void RenderScene(const RenderTarget& tar, const RenderTarget& ttar, const Mat4x4& p, const FrameBuffer& gbuf, std::function<void()> preBlit, bool useProbes);
 
-	static void RenderCamera(Camera& cam);
-
 	static void RenderProbe_CubeMap(const CubeMap&);
 
 	static void RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr);
@@ -37,7 +38,7 @@ class Renderer {
 	static void RenderLight_Point_Shadow(const Light&);
 	
 	static void RenderLight_Spot(const Light&, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget&, bool tr);
-	static Mat4x4 RenderLight_Spot_Shadow(const Light&);
+	static void RenderLight_Spot_Shadow(const Light&);
 
 	static void RenderLight_Directional(const Light&, const Camera&);
 
@@ -50,7 +51,17 @@ public:
 
 	static bool Init();
 
-	static void Render(Scene& scene);
+	static void RegisterScene(const Scene& scene);
+
+	static void RenderAuxProbes();
+
+	static void RenderAuxLights();
+
+	static void RenderAuxiliary();
+
+	static void Render(const Scene& scene);
+
+	static void RenderCamera(const Camera& cam);
 
 	friend class GI;
 };

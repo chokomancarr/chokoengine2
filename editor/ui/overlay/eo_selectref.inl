@@ -17,7 +17,7 @@ void EO_SelectRef::ScanComps() {
 	};
 
 	_comps.clear();
-	for (auto& o : Scene::objects()) {
+	for (auto& o : ChokoEditor::scene->objects()) {
 		doscan(o);
 	}
 }

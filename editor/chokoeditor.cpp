@@ -5,6 +5,9 @@
 CE_BEGIN_ED_NAMESPACE
 
 inline void paint() {
+	ChokoEditor::scene->PrepareSceneForRendering();
+	EWindowManager::Render();
+
 	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
 	EWindowManager::Draw();
 
@@ -42,7 +45,7 @@ void ChokoEditor::Main() {
 
 	scene->AddNewObject()
 		->name("__Editor_Cameras__");
-	auto& scenebase = scene->AddNewObject();
+	auto scenebase = scene->AddNewObject();
 	scenebase->name("__scene__");
 
 	//ss = Background::New(IO::path() + "res/sky.hdr", 6, false);

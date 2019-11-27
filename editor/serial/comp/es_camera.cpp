@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
@@ -15,7 +14,7 @@ CE_ES_IMPL_COMP(Camera) {
 }
 
 CE_ES_IMPL_COMP_INST(Camera) {
-	auto& c = o->AddComponent<Camera>();
+	auto c = o->AddComponent<Camera>();
 
 }
 

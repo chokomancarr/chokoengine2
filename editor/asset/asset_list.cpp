@@ -193,7 +193,8 @@ const ScriptInfo& EAssetList::GetScr(const std::string& sig) {
 	});
 	if (i == ar.end()) {
 		Debug::Error("AssetList", "Cannot find script \"" + sig + "\"!");
-		return nullptr;
+		static ScriptInfo null = nullptr;
+		return null;
 	}
 	return i->info;
 }

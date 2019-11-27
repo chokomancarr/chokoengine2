@@ -37,8 +37,6 @@ _Texture::_Texture(const std::string& path, const TextureOptions& opts, bool asy
 		CE_OBJECT_SET_ASYNC_LOADING;
 		std::string ss = path.substr(path.find_last_of('.') + 1, std::string::npos);
 
-		GLenum rgb = GL_RGB, rgba = GL_RGBA;
-
 		if (ss == "jpg") {
 			if (!Texture_I::FromJPG(path, _width, _height, _channels, _pixels))
 				return;

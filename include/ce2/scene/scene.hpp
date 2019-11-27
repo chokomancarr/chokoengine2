@@ -17,8 +17,6 @@ class _Scene : public _Object { CE_OBJECT_COMMON
 
 	void DoUpdate(const std::vector<SceneObject>& o);
 	
-	void Update();
-
 public:
 	_Scene();
 
@@ -50,14 +48,38 @@ public:
 	 */
 	std::vector<SceneObject> FindAllByPred(std::function<bool(const SceneObject&)>);
 
-	/* Renders all probes, cameras, and lights in the scene
+	/* Explicitly updates all scene components
+	 */
+	void Update();
+
+	/* Explicitly renders all probes, cameras, and lights in the scene
 	 */
 	void Render();
 
-	/* Render the selected cameras
+	/* Explicitly renders all non-camera objects
+	 * i.e. bakes probes, light shadow maps etc
+	 * and updates the scene hierarchy for rendering
+	 * This is called automatically by Render()
+	 * but not by RenderCameras()
+	 */
+	void PrepareSceneForRendering();
+
+	/* Returns the list of active cameras in the scene
+	 * populated from PrepareSceneForRendering()
+	 */
+	std::vector<Camera> GetActiveCameras();
+
+	/* Explicitly renders the selected cameras
+	 * All cameras must be of objects attached to this scene
+	 * PrepareSceneForRendering() must be called at least once
+	 * every frame before this is called, or when
+	 * a different scene was rendered before this
 	 */
 	void RenderCameras(const std::vector<Camera>&);
 
+	/* Generates a readable string for the scene hierarchy
+	 * Useful for logging to console
+	 */
 	std::string Tree();
 };
 

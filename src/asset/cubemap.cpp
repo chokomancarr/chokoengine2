@@ -57,7 +57,6 @@ void _CubeMap::ComputeGlossMipmaps() {
 	if (!initd)
 		Init();
 
-	GLuint src = _pointer;
 	const float vec[] = {
 		1, 0, 0,	-1, 0, 0,
 		0, 1, 0,	0, -1, 0,

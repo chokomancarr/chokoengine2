@@ -143,8 +143,8 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	glDisable(GL_CULL_FACE);
 
 	//we render to the temporary target
-	//because we want to multi-sample it later
-	//for the transparent pass
+	//because we want to random-sample from it
+	//later for the transparent pass
 	ttar->BindTarget();
 
 	if (preBlit) preBlit();
@@ -165,7 +165,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 			RenderLight_Spot(l, gbuf, ip, ttar, false);
 			break;
 		case LightType::Directional:
-			//RenderLight_Directional(l, cam);
+			CE_NOT_IMPLEMENTED
 			break;
 		}
 	}
@@ -261,19 +261,124 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	tar->UnbindTarget();
 }
 
-void Renderer::RenderCamera(Camera& cam) {
+void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
+	if (!sky || !sky->loaded()) {
+		gbuf->Bind(true);
+		glReadBuffer(GL_COLOR_ATTACHMENT3);
+		glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		gbuf->Unbind(true);
+	}
+	else {
+		skyShad->Bind();
+		glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+		glUniform2f(skyShad->Loc(1), w, h);
+		glUniform1i(skyShad->Loc(2), false); //is_ortho
+		glUniform1i(skyShad->Loc(3), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
+		glUniform1i(skyShad->Loc(4), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
+		glUniform1i(skyShad->Loc(5), 2);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
+		glUniform1i(skyShad->Loc(6), 3);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[3]->_pointer);
+		glUniform1i(skyShad->Loc(7), 4);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+		glUniform1i(skyShad->Loc(8), 5);
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, sky->_pointer);
+		glUniform1f(skyShad->Loc(9), sky->_brightness);
+		glUniform1f(skyShad->Loc(10), tr ? 1 : 0);
+		_emptyVao->Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		_emptyVao->Unbind();
+		skyShad->Unbind();
+	}
+}
+
+bool Renderer::Init() {
+	_emptyVao = std::make_shared<_VertexArray>();
+
+	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
+		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "inSky", "skyStrength", "transparent" });
+	(probeShad = Shader::New(glsl::minVert, glsl::probeLightFrag))
+		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "cubemap", "skyStrength" });
+	(transOverlayShad = Shader::New(glsl::minVert, glsl::transOverlayFrag))
+		->AddUniforms({ "_P", "_IP", "screenSize", "camPos", "trTex", "trNrm", "trPrm", "trDep", "opTex", "opDep" });
+
+	return !!skyShad && !!probeShad && InitLightShaders() && GI::Voxelizer::InitShaders();
+}
+
+void Renderer::RegisterScene(const Scene& scene) {
+	cameras.clear();
+	lights.clear();
+	orends.clear();
+	trends.clear();
+	probes.clear();
+
+	ScanObjects(scene->objects());
+
+	sky = scene->_sky;
+}
+
+void Renderer::RenderAuxProbes() {
+	for (auto& p : probes) {
+		if (p->_dirty || (p->updateFrequency() == LightProbeUpdateFrequency::Realtime)) {
+			RenderLightProbe(p);
+			p->_dirty = false;
+		}
+	}
+}
+
+void Renderer::RenderAuxLights() {
+	for (auto& l : lights) {
+		if (!l->shadow()) continue;
+		switch(l->_type) {
+		case LightType::Point:
+			RenderLight_Point_Shadow(l);
+			break;
+		case LightType::Spot:
+			RenderLight_Spot_Shadow(l);
+			break;
+		case LightType::Directional:
+			CE_NOT_IMPLEMENTED
+			break;
+		}
+	}
+}
+
+void Renderer::RenderAuxiliary() {
+	RenderAuxProbes();
+	RenderAuxLights();
+	glViewport(0, 0, Display::width(), Display::height());
+}
+
+void Renderer::Render(const Scene& scene) {
+	RegisterScene(scene);
+
+	RenderAuxiliary();
+
+	for (auto& c : cameras) {
+		RenderCamera(c);
+	}
+}
+
+void Renderer::RenderCamera(const Camera& cam) {
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPreRender();
 	}
-
-	const auto v = cam->object()->transform()->worldMatrix().inverse();
-	//GI::Voxelizer::Bake(v, 20);
 
 	const auto& tar = cam->_target;
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
-	const auto& p = cam->_lastViewProjectionMatrix = glm::perspectiveFov<float>(cam->fov() * Math::deg2rad, _w, _h, cam->nearClip(), cam->farClip())
+	const auto& p = cam->_lastViewProjectionMatrix = 
+		glm::perspectiveFov<float>(cam->fov() * Math::deg2rad,
+			_w, _h, cam->nearClip(), cam->farClip())
 		* cam->object()->transform()->worldMatrix().inverse();
 
 	auto& gbuf = cam->_deferredBuffer;
@@ -340,81 +445,6 @@ void Renderer::RenderCamera(Camera& cam) {
 
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostRender();
-	}
-}
-
-void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
-	if (!sky || !sky->loaded()) {
-		gbuf->Bind(true);
-		glReadBuffer(GL_COLOR_ATTACHMENT3);
-		glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		gbuf->Unbind(true);
-	}
-	else {
-		skyShad->Bind();
-		glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
-		glUniform2f(skyShad->Loc(1), w, h);
-		glUniform1i(skyShad->Loc(2), false); //is_ortho
-		glUniform1i(skyShad->Loc(3), 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
-		glUniform1i(skyShad->Loc(4), 1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
-		glUniform1i(skyShad->Loc(5), 2);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
-		glUniform1i(skyShad->Loc(6), 3);
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[3]->_pointer);
-		glUniform1i(skyShad->Loc(7), 4);
-		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
-		glUniform1i(skyShad->Loc(8), 5);
-		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_2D, sky->_pointer);
-		glUniform1f(skyShad->Loc(9), sky->_brightness);
-		glUniform1f(skyShad->Loc(10), tr ? 1 : 0);
-		_emptyVao->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		_emptyVao->Unbind();
-		skyShad->Unbind();
-	}
-}
-
-bool Renderer::Init() {
-	_emptyVao = std::make_shared<_VertexArray>();
-
-	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
-		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "inSky", "skyStrength", "transparent" });
-	(probeShad = Shader::New(glsl::minVert, glsl::probeLightFrag))
-		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "cubemap", "skyStrength" });
-	(transOverlayShad = Shader::New(glsl::minVert, glsl::transOverlayFrag))
-		->AddUniforms({ "_P", "_IP", "screenSize", "camPos", "trTex", "trNrm", "trPrm", "trDep", "opTex", "opDep" });
-
-	return !!skyShad && !!probeShad && InitLightShaders() && GI::Voxelizer::InitShaders();
-}
-
-void Renderer::Render(Scene& scene) {
-	cameras.clear();
-	lights.clear();
-	orends.clear();
-	trends.clear();
-	probes.clear();
-
-	ScanObjects(scene->objects());
-
-	sky = scene->_sky;
-
-	for (auto& p : probes) {
-		if (p->_dirty || (p->updateFrequency() == LightProbeUpdateFrequency::Realtime)) {
-			RenderLightProbe(p);
-			p->_dirty = false;
-		}
-	}
-
-	for (auto& c : cameras) {
-		RenderCamera(c);
 	}
 }
 

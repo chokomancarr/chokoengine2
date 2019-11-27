@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 #include "utils/glutils.hpp"
 

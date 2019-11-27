@@ -81,4 +81,8 @@ void EW_SceneView::Update() {
 	}
 }
 
+void EW_SceneView::Render() {
+	ChokoEditor::scene->RenderCameras({_camera});
+}
+
 CE_END_ED_NAMESPACE

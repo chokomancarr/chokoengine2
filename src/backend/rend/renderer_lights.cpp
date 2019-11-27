@@ -18,12 +18,6 @@ bool Renderer::InitLightShaders() {
 void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar, bool tr) {
 	const auto& pos = l->object()->transform()->worldPosition();
 
-	if (l->_shadow && !tr) {
-		RenderLight_Point_Shadow(l);
-		tar->BindTarget();
-		glViewport(0, 0, tar->_width, tar->_height);
-	}
-
 	pointLightShad->Bind();
 	glUniformMatrix4fv(pointLightShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
 	glUniform2f(pointLightShad->Loc(1), tar->_width, tar->_height);
@@ -108,22 +102,11 @@ void Renderer::RenderLight_Point_Shadow(const Light& l) {
 
 		l->shadowBuffer_Cube->Unbind();
 	}
-
-	glBlendFunc(GL_ONE, GL_ONE);
-	glDepthFunc(GL_ALWAYS);
-	glDisable(GL_CULL_FACE);
 }
 
 void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const Mat4x4& ip, const RenderTarget& tar, bool tr) {
 	const auto& pos = l->object()->transform()->worldPosition();
 	const auto& fwd = l->object()->transform()->forward();
-
-	Mat4x4 pShad;
-	if (l->_shadow && !tr) {
-		pShad = RenderLight_Spot_Shadow(l);
-		tar->BindTarget();
-		glViewport(0, 0, tar->_width, tar->_height);
-	}
 
 	spotLightShad->Bind();
 	glUniformMatrix4fv(spotLightShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
@@ -151,7 +134,7 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	if (l->_shadow && !tr) {
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, l->shadowBuffer_2D->_depth->_pointer);
-		glUniformMatrix4fv(spotLightShad->Loc(14), 1, GL_FALSE, &pShad[0][0]);
+		glUniformMatrix4fv(spotLightShad->Loc(14), 1, GL_FALSE, &l->_lastShadowMatrix[0][0]);
 		glUniform1f(spotLightShad->Loc(15), l->_shadowStrength);
 		glUniform1f(spotLightShad->Loc(16), l->_shadowBias);
 	}
@@ -166,9 +149,9 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	spotLightShad->Unbind();
 }
 
-Mat4x4 Renderer::RenderLight_Spot_Shadow(const Light& l) {
+void Renderer::RenderLight_Spot_Shadow(const Light& l) {
 	if (l->shadowBuffer_2D->_lastUpdated >= Time::millis()) {
-		return l->_lastShadowMatrix;
+		return;
 	}
 	l->shadowBuffer_2D->_lastUpdated = Time::millis();
 
@@ -189,13 +172,7 @@ Mat4x4 Renderer::RenderLight_Spot_Shadow(const Light& l) {
 		RenderMesh(r, p);
 	}
 
-	glBlendFunc(GL_ONE, GL_ONE);
-	glDepthFunc(GL_ALWAYS);
-	glDisable(GL_CULL_FACE);
-
 	l->shadowBuffer_2D->Unbind();
-
-	return p;
 }
 
 void Renderer::RenderLight_Directional(const Light& l, const Camera& cam) {

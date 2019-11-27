@@ -64,7 +64,7 @@ JsonObject ESerializedItem::ToJson() const {
 		res = JsonObject::FromVec4(value.v4);
 		break;
 	case Type::Asset:
-		res = JsonObject({
+		res = JsonObject(std::vector<JsonPair>{
 			JsonPair(JsonObject("type"), EAssetTypeStr[(int)value.assetref.assetType]),
 			JsonPair(JsonObject("sig"), JsonObject(value.assetref.sig))
 		});
@@ -74,7 +74,7 @@ JsonObject ESerializedItem::ToJson() const {
 		break;
 	}
 
-	return JsonObject({
+	return JsonObject(std::vector<JsonPair>{
 		JsonPair(JsonObject("type"), CE_ES_TypeS[(int)type]),
 		JsonPair(JsonObject("value"), res)
 	});

@@ -3,6 +3,7 @@
 
 #include "window.hpp"
 #include "windows/ew_browser.hpp"
+#include "windows/ew_gameview.hpp"
 #include "windows/ew_hierarchy.hpp"
 #include "windows/ew_inspector.hpp"
 #include "windows/ew_sceneview.hpp"
@@ -18,6 +19,7 @@ public:
 	static void LoadWindows();
 	static void Update();
 	static void Draw();
+	static void Render();
 };
 
 CE_END_ED_NAMESPACE

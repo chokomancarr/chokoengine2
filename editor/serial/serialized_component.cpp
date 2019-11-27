@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
@@ -15,6 +14,7 @@ ESerializedComponent::ESerializedComponent(const Component& c)
 	default:
 		CE_NOT_IMPLEMENTED
 	}
+#undef CS
 }
 
 JsonObject ESerializedComponent::ToJson() const {

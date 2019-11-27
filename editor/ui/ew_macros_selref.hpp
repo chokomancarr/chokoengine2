@@ -7,7 +7,7 @@
 #define CE_E_ASSET_SELECT(nm) {\
 	const auto& _vl = nm();\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(_vl)) == InputMouseStatus::HoverUp) {\
-			EO_SelectRef::RegAsset(_vl, std::function<void(const decltype(_vl)&)>([&](const decltype(_vl)& vl) {\
+			EO_SelectRef::RegAsset(_vl, std::function<void(decltype(_vl))>([&](decltype(_vl) vl) {\
 				nm(vl);\
 		}));\
 	}\
@@ -15,7 +15,7 @@
 
 #define CE_E_ASSET_SELECT_FV(nm) {\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(nm)) == InputMouseStatus::HoverUp) {\
-			EO_SelectRef::RegAsset(nm, std::function<void(const decltype(nm)&)>([&](const decltype(nm)& vl) {\
+			EO_SelectRef::RegAsset(nm, std::function<void(decltype(nm))>([&](decltype(nm) vl) {\
 				nm = vl;\
 		}));\
 	}\

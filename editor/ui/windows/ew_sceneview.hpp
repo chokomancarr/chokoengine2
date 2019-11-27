@@ -24,6 +24,8 @@ public:
 
 	void Update() override;
 
+	void Render() override;
+
 	class Ops;
 
 	class CaptureCallbacks;

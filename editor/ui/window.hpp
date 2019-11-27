@@ -21,6 +21,7 @@ public:
 	virtual void Refresh() {}
 	virtual void Update() {}
 	void Draw();
+	virtual void Render() {}
 };
 
 CE_END_ED_NAMESPACE

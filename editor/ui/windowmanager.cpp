@@ -33,4 +33,10 @@ void EWindowManager::Draw() {
 	}
 }
 
+void EWindowManager::Render() {
+	for (auto& w : windows) {
+		w->Render();
+	}
+}
+
 CE_END_ED_NAMESPACE

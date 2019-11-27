@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
@@ -22,7 +21,7 @@ CE_ES_IMPL_COMP(Light) {
 }
 
 CE_ES_IMPL_COMP_INST(Light) {
-	auto& c = o->AddComponent<Light>(items.at("type").Get<LightType>());
+	auto c = o->AddComponent<Light>(items.at("type").Get<LightType>());
 	CE_ES_SET(strength, float);
 	CE_ES_SET(distance, float);
 	CE_ES_SET(radius, float);

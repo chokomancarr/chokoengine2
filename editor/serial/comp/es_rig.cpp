@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
@@ -8,7 +7,7 @@ CE_ES_IMPL_COMP(Rig) {
 }
 
 CE_ES_IMPL_COMP_INST(Rig) {
-	auto& c = o->AddComponent<Rig>();
+	auto c = o->AddComponent<Rig>();
 
 }
 
