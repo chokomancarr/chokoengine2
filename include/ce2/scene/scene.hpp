@@ -50,6 +50,14 @@ public:
 	 */
 	std::vector<SceneObject> FindAllByPred(std::function<bool(const SceneObject&)>);
 
+	/* Renders all probes, cameras, and lights in the scene
+	 */
+	void Render();
+
+	/* Render the selected cameras
+	 */
+	void RenderCameras(const std::vector<Camera>&);
+
 	std::string Tree();
 };
 

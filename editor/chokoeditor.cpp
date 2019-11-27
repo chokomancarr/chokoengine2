@@ -15,6 +15,8 @@ inline void paint() {
 
 std::string ChokoEditor::assetPath;
 
+Scene ChokoEditor::scene;
+
 void ChokoEditor::Init() {
 	
 }
@@ -36,9 +38,11 @@ void ChokoEditor::Main() {
 	assetPath = IO::path() + "project/assets/";
 	EAssetList::Rescan();
 
-	Scene::AddNewObject()
+	scene = Scene::New();
+
+	scene->AddNewObject()
 		->name("__Editor_Cameras__");
-	auto& scenebase = Scene::AddNewObject();
+	auto& scenebase = scene->AddNewObject();
 	scenebase->name("__scene__");
 
 	//ss = Background::New(IO::path() + "res/sky.hdr", 6, false);
@@ -48,7 +52,7 @@ void ChokoEditor::Main() {
 	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
 
 	auto rb = PrefabManager::Instantiate((Prefab)EAssetList::Get(EAssetType::Prefab, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true));
-	Scene::AddObject(rb, scenebase);
+	scene->AddObject(rb, scenebase);
 	rb->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
 	rb->transform()->localRotationEuler(Vec3(0, -5, 0));
 
@@ -56,9 +60,9 @@ void ChokoEditor::Main() {
 	//scr->name("Turner (Script)");
 	//scr->info(EAssetList::GetScr("turner.hpp"));
 
-	const auto& cl = Scene::FindByName("celing lamp");
+	const auto& cl = scene->FindByName("celing lamp");
 	if (!!cl) {
-		const auto& o = Scene::AddNewObject(cl);
+		const auto& o = scene->AddNewObject(cl);
 		const auto& l = o->AddComponent<Light>(LightType::Point);
 		l->distance(20);
 		l->strength(3);
@@ -73,7 +77,7 @@ void ChokoEditor::Main() {
 	}
 
 	ESerializer::UpdateSceneIds();
-	const pESerializedPrefab pfb(new ESerializedPrefab(Scene::objects()[1]));
+	const pESerializedPrefab pfb(new ESerializedPrefab(scene->objects()[1]));
 	JsonObject pfbj = pfb->ToJson();
 	std::string pfbs = JsonParser::Export(pfbj);
 	{
@@ -86,7 +90,7 @@ void ChokoEditor::Main() {
 
 	//EW_ShaderEditor::target = (VShader)EAssetList::Get(EAssetType::VShader, "test.visualshader");
 
-	std::cout << Scene::Tree() << std::endl;
+	std::cout << scene->Tree() << std::endl;
 
 	UIButtonStyle style(Color(0.1f, 1));
 	style.textNormal(Color::white());

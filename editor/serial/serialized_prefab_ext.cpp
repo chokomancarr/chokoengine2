@@ -15,7 +15,7 @@ ESerializedPrefabExt::ESerializedPrefabExt(const SceneObject& obj, const PrefabM
 		else {
 			auto mod = ESerializedPrefabMod_New();
 			mod->type = ESerializedPrefabMod::Type::Object;
-			mod->target = CE_S_ObjectRef(o->parent(), obj->parent());
+			mod->target = CE_S_ObjectRef(o->parent().lock(), obj->parent().lock());
 			mod->target.path[0].second = 0;
 			mod->object = ESerializedPrefab_New(o);
 			mods.push_back(std::move(mod));

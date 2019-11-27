@@ -14,7 +14,7 @@ void ESerializer::UpdateSceneIds() {
 		}
 	};
 
-	auto& oo = Scene::objects();
+	auto& oo = ChokoEditor::scene->objects();
 	for (auto it = oo.begin() + 1; it != oo.end(); it++) {
 		loop(*it);
 	}

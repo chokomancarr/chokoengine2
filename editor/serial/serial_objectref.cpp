@@ -22,7 +22,7 @@ CE_S_ObjectRef::CE_S_ObjectRef(SceneObject tar, const SceneObject& base) : path(
 
 	do {
 		path.push_back(std::make_pair(tar->name(), indexof(tar->parent()->children(), tar)));
-		tar = tar->parent();
+		tar = tar->parent().lock();
 	} while (tar != base);
 	std::reverse(path.begin(), path.end());
 }

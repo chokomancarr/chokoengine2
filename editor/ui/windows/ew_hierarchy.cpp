@@ -60,7 +60,7 @@ void EW_Hierarchy::DrawMenu() {
 	//}
 	static EUILayout::ScrollState st = {};
 	float off = EUILayout::BeginScroll(Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21), st);
-    DrawMenuObject(off, Scene::objects(), 0);
+    DrawMenuObject(off, ChokoEditor::scene->objects(), 0);
 	EUILayout::EndScroll(st, off);
 }
 
@@ -71,11 +71,11 @@ bool EW_Hierarchy::Init() {
 }
 
 void EW_Hierarchy::ExpandAll() {
-	DoExpandCollapse(true, Scene::objects());
+	DoExpandCollapse(true, ChokoEditor::scene->objects());
 }
 
 void EW_Hierarchy::CollapseAll() {
-	DoExpandCollapse(false, Scene::objects());
+	DoExpandCollapse(false, ChokoEditor::scene->objects());
 }
 
 CE_END_ED_NAMESPACE

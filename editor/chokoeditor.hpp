@@ -10,6 +10,8 @@ class ChokoEditor {
 public:
 	static std::string assetPath;
 
+	static Scene scene;
+
 	static void Main();
 };
 

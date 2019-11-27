@@ -3,7 +3,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 void EW_SceneView::CaptureCallbacks::OnPostBlit() {
-    parent->DoDrawScene(Scene::objects());
+    parent->DoDrawScene(ChokoEditor::scene->objects());
 
 	if (!!ESceneInfo::selectedObject) {
 		for (auto& c : ESceneInfo::selectedObject->components()) {

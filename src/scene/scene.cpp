@@ -51,6 +51,8 @@ void _Scene::Update() {
 	DoUpdate(_objects);
 }
 
+_Scene::_Scene() : _objects(0), _sky(nullptr) {}
+
 SceneObject _Scene::AddNewObject(const SceneObject& parent) {
     auto& vec = (!parent)? _objects : parent->_children;
     auto o = SceneObject::New("New Object");
