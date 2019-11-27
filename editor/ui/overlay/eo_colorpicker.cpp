@@ -18,6 +18,9 @@ EO_ColorPicker::EO_ColorPicker() {
 
 void EO_ColorPicker::Draw() {
 	UI::Rect(Rect(pos.x, pos.y, 150, 200), Color(0.1f, 0.7f));
+	if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && !Rect(pos.x, pos.y, 150, 200).Contains(Input::mouseDownPosition())) {
+		active = false;
+	}
 	const auto& vl = state->get();
 	Color hb = Color(Math::Clamp(std::abs(vl.h * 6 - 3) - 1.f, 0.f, 1.f),
 		1 - Math::Clamp(std::abs(vl.h * 6 - 2) - 1.f, 0.f, 1.f),

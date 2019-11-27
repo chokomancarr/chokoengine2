@@ -54,14 +54,7 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 						break;
 					}
 					case ShaderVariableType::Color: {
-						CE_E_LBL(v.name());
-						UI::Rect(CE_E_VL_RECT, v.val_v4());
-						if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(v.val_v4())) == InputMouseStatus::HoverUp) {
-							EO_ColorPicker::Reg(CE_E_VL_RECT, v.val_v4(), std::function<void(const Color&)>([&](const Color& vl) {
-								v.val_v4(vl);
-							}));
-						}
-						CE_E_INC_Y();
+						CE_E_EDIT_CL_FV(v., v.name(), val_v4);
 						break;
 					}
 					case ShaderVariableType::Texture: {

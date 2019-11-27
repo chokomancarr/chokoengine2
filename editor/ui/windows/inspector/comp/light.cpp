@@ -6,6 +6,14 @@
 CE_BEGIN_ED_NAMESPACE
 
 CE_E_BEGIN_DRAWCOMP(Light)
+CE_E_LBL("Color");
+UI::Rect(CE_E_VL_RECT, c->color());
+if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(c->color())) == InputMouseStatus::HoverUp) {
+    EO_ColorPicker::Reg(CE_E_VL_RECT, c->color(), std::function<void(const Color&)>([c](const Color& vl) {
+        c->color(vl);
+    }));
+}
+CE_E_EDIT_CL_FV(c->, "Color", color);
 CE_E_EDIT_F_FV(c->, "Strength", strength);
 CE_E_EDIT_F_FV(c->, "Distance", distance);
 CE_E_EDIT_F_FV(c->, "Radius", radius);
