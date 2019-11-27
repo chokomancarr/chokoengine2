@@ -35,6 +35,8 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
+	//glFrontFace(GL_CW);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	Time::Reset();
 

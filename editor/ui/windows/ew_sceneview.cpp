@@ -65,15 +65,13 @@ bool EW_SceneView::Init() {
 }
 
 void EW_SceneView::Update() {
-	/*
-	_pivot->transform()->localRotation(
-		//Quat::FromEuler(Vec3(Math::Clamp(Input::mousePosition().y * 180.f / Display::height() - 90.f, -90.f, 90.f), 0, 0)) *
-		Quat::FromEuler(Vec3(0, Time::time() * 15.f, 0))
-	);
-	static float z = -5;
-	z = glm::clamp(z + Input::mouseDelta().y * 5 / Display::height(), -5.f, -2.f);
-	_camera->object()->transform()->localPosition(Vec3(0, 0, z));
-	*/
+	auto sw = (uint)position.w(), sh = (uint)(position.h() - 20);
+
+	if (sw != _target->width() || sh != _target->height()) {
+		_target = RenderTarget::New(sw, sh, true, true);
+		_camera->target(_target);
+	}
+
 	if (Input::KeyDown(InputKey::F)) {
 		auto args = ECallbackArgs();
 		args.Add(ECallbackArg("isOrtho", (int)(!_camera->orthographic())));

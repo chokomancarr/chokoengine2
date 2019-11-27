@@ -43,7 +43,14 @@ bool Display::InitWindow(const std::string& title, uint w, uint h) {
 	_width = w;
 	_height = h;
 
+	glfwSetWindowSizeCallback(_window, OnWindowSizeChanged);
+
 	return true;
+}
+
+void Display::OnWindowSizeChanged(GLFWwindow* window, int w, int h) {
+	_width = w;
+	_height = h;
 }
 
 Rect Display::fullscreenRect() {

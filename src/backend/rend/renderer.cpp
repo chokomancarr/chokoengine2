@@ -384,12 +384,12 @@ void Renderer::RenderCamera(const Camera& cam) {
 	auto& gbuf = cam->_deferredBuffer;
 	auto& btar = cam->_blitTargets[0];
 
-	if (!gbuf) {
+	if (!gbuf || gbuf->tex(0)->_width != _w || gbuf->tex(0)->_height != _h) {
 		gbuf = FrameBuffer_New(_w, _h, {
 			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
 		});
 	}
-	if (!btar) {
+	if (!btar || btar->_width != _w || btar->_height != _h) {
 		for (auto& t : cam->_blitTargets) {
 			t = RenderTarget::New(_w, _h, true, true);
 		}

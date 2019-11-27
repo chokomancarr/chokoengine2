@@ -6,7 +6,7 @@ Mat4x4 UI::W::_matrix = Mat4x4::Identity();
 
 void UI::W::Line(const Vec3& p1, const Vec3& p2, const Color& col) {
 	auto cv = [](const Vec4& v) {
-		return *(Vec3*)glm::value_ptr((glm::vec4)v) / v.w;
+		return *(Vec3*)&v / v.w;
 	};
 
 	const Vec3 vs[] = {

@@ -13,7 +13,7 @@ public:
 	virtual ~EWindow() = default;
 
 	std::string title;
-	Rect position;
+	Rect _position, position;
 
 	std::vector<EDropdownMenu> menus;
 

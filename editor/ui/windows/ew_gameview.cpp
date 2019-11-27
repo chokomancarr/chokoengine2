@@ -19,7 +19,11 @@ bool EW_GameView::Init() {
 }
 
 void EW_GameView::Update() {
+	auto sw = (uint)position.w(), sh = (uint)(position.h() - 20);
 
+	if (sw != _target->width() || sh != _target->height()) {
+		_target = RenderTarget::New(sw, sh, true, true);
+	}
 }
 
 void EW_GameView::Render() {

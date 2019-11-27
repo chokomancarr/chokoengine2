@@ -26,6 +26,8 @@ public:
 
 	Rect operator +(const Rect& rhs) const;
 
+	Rect operator *(const Vec2& v) const;
+
     /* Checks if point \p v is inside this rect.
      */
     bool Contains(const Vec2& v) const;

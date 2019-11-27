@@ -11,6 +11,8 @@ class Display { CE_CLASS_COMMON
 
 	static bool Init();
 	static bool InitWindow(const std::string& title, uint w, uint h);
+
+	static void OnWindowSizeChanged(GLFWwindow* window, int w, int h);
 public:
 
 	CE_GET_ST_MEMBER(width);

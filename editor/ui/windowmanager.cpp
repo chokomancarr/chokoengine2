@@ -9,23 +9,27 @@ void EWindowManager::Init() {
 }
 
 void EWindowManager::LoadWindows() {
+	const auto ds = Vec2(1.0f / Display::width(), 1.0f / Display::height());
+#define SETPOS(vl) windows.back()->position = vl; windows.back()->_position = vl * ds;
+
 	windows.push_back(std::make_shared<EW_SceneView>());
-	windows.back()->position = Rect(0, 0, 600, 350);
+	SETPOS(Rect(0, 0, 600, 350));
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Browser>());
-	windows.back()->position = Rect(0, 351, 399, 249);
+	SETPOS(Rect(0, 350, 400, 250));
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_GameView>());
-	windows.back()->position = Rect(400, 351, 350, 249);
+	SETPOS(Rect(400, 350, 350, 250));
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Hierarchy>());
-	windows.back()->position = Rect(601, 0, 149, 350);
+	SETPOS(Rect(600, 0, 150, 350));
 	windows.push_back(std::make_shared<EW_Inspector>());
-	windows.back()->position = Rect(751, 0, 249, 600);
+	SETPOS(Rect(750, 0, 250, 600));
 }
 
 void EWindowManager::Update() {
 	for (auto& w : windows) {
+		w->position = w->_position * Vec2(Display::width(), Display::height()) + Rect(0, 0, -1, -1);
 		w->Update();
 	}
 }
