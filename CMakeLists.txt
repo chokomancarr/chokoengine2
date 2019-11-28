@@ -129,16 +129,31 @@ add_subdirectory(src)
 target_link_libraries(ChokoEngine ${LIBS})
 
 
+set(LIBS
+	${LIBS}
+	ChokoEngine
+)
+
+#------player------
+
+add_library(ChokoPlayer SHARED "")
+add_subdirectory(player)
+
+target_include_directories(ChokoPlayer PRIVATE player)
+
+target_link_libraries(ChokoPlayer ${LIBS})
+
+
+set(LIBS
+	${LIBS}
+	ChokoPlayer
+)
+
 #------editor-------
 
 add_executable(ChokoEditor "")
 add_subdirectory(editor)
 
 target_include_directories(ChokoEditor PRIVATE editor)
-
-set(LIBS
-	${LIBS}
-	ChokoEngine
-)
 
 target_link_libraries(ChokoEditor ${LIBS})

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project (hello_world)
+project (rotating_cube)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../cmake/")
 
@@ -18,5 +18,5 @@ endif()
 endif()
 
 include_directories(${CE2_INCLUDE_DIRS})
-add_executable(hello_world main.cpp)
-target_link_libraries(hello_world ${CE2_LIBRARIES})
+add_executable(rotating_cube main.cpp)
+target_link_libraries(rotating_cube ${CE2_LIBRARIES})
