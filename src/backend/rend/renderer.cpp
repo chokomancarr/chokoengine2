@@ -379,6 +379,7 @@ void Renderer::RenderCamera(const Camera& cam) {
 	const auto& p = cam->_lastViewProjectionMatrix = 
 		glm::perspectiveFov<float>(cam->fov() * Math::deg2rad,
 			_w, _h, cam->nearClip(), cam->farClip())
+		* Quat::FromAxisAngle(Vec3(0, 1, 0), 180).matrix()
 		* cam->object()->transform()->worldMatrix().inverse();
 
 	auto& gbuf = cam->_deferredBuffer;

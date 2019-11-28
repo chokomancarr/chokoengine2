@@ -30,7 +30,7 @@ void EW_S_Rig::Init() {
 		->AddUniforms({ "MVP", "len", "color" });
 }
 
-void EW_S_Rig::DrawActive(const Component& c) {
+void EW_S_Rig::DrawActive(const Component& c, const Mat4x4& p) {
 	const auto& rig = static_cast<Rig>(c);
 	const auto& arm = (rig->armature());
 	if (!arm)

@@ -7,7 +7,7 @@ void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 		if (o == ESceneInfo::selectedObject) continue;
 		for (auto& c : o->components()) {
 			const auto& f = EW_S_DrawCompList::funcs[(int)c->componentType];
-			if (f) f(c);
+			if (f) f(c, _camera->lastViewProjectionMatrix());
 		}
 		DoDrawScene(o->children());
 	}
@@ -31,6 +31,7 @@ void EW_SceneView::DrawMenu() {
 }
 
 bool EW_SceneView::_Init() {
+	EW_S_Camera::Init();
 	EW_S_Light::Init();
 	EW_S_Rig::Init();
 
@@ -48,6 +49,7 @@ bool EW_SceneView::Init() {
 	auto o = ChokoEditor::scene->AddNewObject(_pivot);
 	o->name("SceneView Camera");
 	o->transform()->localPosition(Vec3(0, 0, 3));
+	o->transform()->localRotationEuler(Vec3(0, 180, 0));
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0, 0));
 	_camera->target(_target);

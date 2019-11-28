@@ -48,10 +48,9 @@ void ChokoEditor::Main() {
 	auto scenebase = scene->AddNewObject();
 	scenebase->name("__scene__");
 
-	//ss = Background::New(IO::path() + "res/sky.hdr", 6, false);
-
-	//Scene::sky(ss);
-	//Scene::sky()->brightness(1);
+	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
+	//scene->sky()->brightness(1);
+	
 	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
 
 	auto rb = PrefabManager::Instantiate((Prefab)EAssetList::Get(EAssetType::Prefab, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true));
@@ -61,7 +60,7 @@ void ChokoEditor::Main() {
 
 	const auto& oc = scene->AddNewObject(scenebase);
 	oc->transform()->localPosition(Vec3(-3, 0.5f, 4));
-	oc->transform()->localRotationEuler(Vec3(-5, -30, 0));
+	oc->transform()->localRotationEuler(Vec3(-5, 150, 0));
 	oc->AddComponent<Camera>();
 
 	//auto scr = rb->AddComponent<DummyScript>();

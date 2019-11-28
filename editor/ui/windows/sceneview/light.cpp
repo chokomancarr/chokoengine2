@@ -7,11 +7,11 @@ void EW_S_Light::Init() {
 	EW_S_DrawCompList::activeFuncs[(int)ComponentType::Light] = &DrawActive;
 }
 
-void EW_S_Light::Draw(const Component& c) {
+void EW_S_Light::Draw(const Component& c, const Mat4x4& p) {
 
 }
 
-void EW_S_Light::DrawActive(const Component& c) {
+void EW_S_Light::DrawActive(const Component& c, const Mat4x4& p) {
 	const auto& lht = static_cast<Light>(c);
 	const auto& tr = lht->object()->transform();
 

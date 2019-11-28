@@ -4,6 +4,12 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EPreview {
+	struct {
+		Scene scene;
+		MeshRenderer rend;
+		Camera cam;
+	} _mat;
+
 public:
 	static void Init();
 
