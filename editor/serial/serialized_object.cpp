@@ -13,6 +13,15 @@ CE_BEGIN_ED_NAMESPACE
  *   { /custom data/ }
  * }
  */
+
+ESerializedObject::ESerializedObject(const JsonObject& json) {
+	auto& ii = json.Get("items");
+	items.reserve(ii.group.size());
+	for (auto& i : ii.group) {
+		//items.emplace(i.key.string, i.value.ToInt());
+	}
+}
+
 JsonObject ESerializedObject::ToJson() const {
 	JsonObject its(JsonObject::Type::Group);
 	if (items.empty()) return its;

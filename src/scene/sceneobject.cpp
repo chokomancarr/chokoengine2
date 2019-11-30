@@ -6,6 +6,9 @@ _SceneObject::_SceneObject(const std::string& nm,
         const Vec3& pos, const Quat& rot, const Vec3& scl) : _Object() {
     _name = nm;
 	_transform._object = this;
+	_transform._localPosition = pos;
+	_transform._localScale = scl;
+	_transform.localRotation(rot);
 }
 
 pTransform _SceneObject::transform() {

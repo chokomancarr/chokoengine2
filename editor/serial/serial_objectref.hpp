@@ -7,6 +7,7 @@ class CE_S_ObjectRef {
 public:
 	CE_S_ObjectRef() = default;
 	CE_S_ObjectRef(SceneObject tar, const SceneObject& base);
+	CE_S_ObjectRef(const JsonObject&);
 
 	std::vector<std::pair<std::string, int>> path;
 

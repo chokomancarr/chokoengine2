@@ -1,0 +1,10 @@
+{
+  "paths":{
+    
+  },
+  "build":{
+    "cmake_vars": {
+      "CMAKE_TOOLCHAIN_FILE":"C:/Users/Pua Kai/Documents/GitHub/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    }
+  }
+}

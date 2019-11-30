@@ -29,12 +29,16 @@ class ESerializedObject {
 protected:
 	ESerializedObject() = default;
 
+	ESerializedObject(const JsonObject&);
+
 public:
 	virtual ~ESerializedObject() = default;
 
 	std::unordered_map<std::string, ESerializedItem> items = {};
 
 	virtual JsonObject ToJson() const;
+
+	virtual SceneObject Instantiate(const SceneObject&) const = 0;
 };
 
 typedef std::unique_ptr<ESerializedObject> pESerializedObject;

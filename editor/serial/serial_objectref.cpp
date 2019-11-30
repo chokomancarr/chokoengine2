@@ -26,6 +26,12 @@ CE_S_ObjectRef::CE_S_ObjectRef(SceneObject tar, const SceneObject& base) : path(
 	std::reverse(path.begin(), path.end());
 }
 
+CE_S_ObjectRef::CE_S_ObjectRef(const JsonObject& json) {
+	for (auto& p : json.group) {
+		path.push_back(std::make_pair(p.key.string, p.value.ToInt()));
+	}
+}
+
 const SceneObject& CE_S_ObjectRef::Seek(const std::vector<SceneObject>& objs) {
 	typedef decltype(path)::iterator _it;
 	static SceneObject null = nullptr;

@@ -17,6 +17,11 @@ ESerializedComponent::ESerializedComponent(const Component& c)
 #undef CS
 }
 
+ESerializedComponent::ESerializedComponent(const JsonObject& json) : ESerializedObject(json) {
+	type = (ComponentType)(std::find(ComponentTypeStr.begin(), ComponentTypeStr.end(), json.Get("type").string) - ComponentTypeStr.begin());
+	enabled = json.Get("enabled").ToBool();
+}
+
 JsonObject ESerializedComponent::ToJson() const {
 	auto res = ESerializedObject::ToJson();
 	res.group.push_back(JsonPair(JsonObject("type"), ComponentTypeStr[(int)type]));
@@ -24,7 +29,7 @@ JsonObject ESerializedComponent::ToJson() const {
 	return res;
 }
 
-void ESerializedComponent::Instantiate(SceneObject& o) const {
+SceneObject ESerializedComponent::Instantiate(const SceneObject& o) const {
 #define CS(tp) case ComponentType::tp: Instantiate ## tp(o); break;
 	switch (type) {
 		CS(Camera)
@@ -35,6 +40,8 @@ void ESerializedComponent::Instantiate(SceneObject& o) const {
 	default:
 		CE_NOT_IMPLEMENTED
 	}
+
+	return nullptr;
 }
 
 CE_END_ED_NAMESPACE

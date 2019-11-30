@@ -28,11 +28,16 @@ class ChokoLait {
 	static CE_EXPORT Camera mainCamera;
     
 public:
+	struct InitOptionsSt {
+		std::string title = "ChokoLait App";
+		bool visible = true;
+	};
+
     /* Initializes ChokoLait.
      * This function must be called before using any
      * ChokoLait or ChokoEngine API functions.
      */
-	static bool Init(const std::string& title, int w, int h);
+	static bool Init(int w, int h, const InitOptionsSt& opts = InitOptionsSt());
 
     /* Checks if the window is not closed
      * Can be used as the main loop condition

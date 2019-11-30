@@ -9,13 +9,17 @@ Scene ChokoLait::mainScene;
 
 Camera ChokoLait::mainCamera;
 
-bool ChokoLait::Init(const std::string& title, int w, int h) {
+bool ChokoLait::Init(int w, int h, const InitOptionsSt& opts) {
 	if (initd) {
 		Debug::Warning("ChokoLait", "Init called more than once!");
+		return true;
 	}
 
 	Display::Init();
-	Display::InitWindow(title, w, h);
+	if (!opts.visible) {
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+	}
+	Display::InitWindow(opts.title, w, h);
 
 	if (!ChokoEngine::Init()) {
 		return false;
@@ -27,8 +31,6 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 
 	mainScene = Scene::New();
 
-	initd = true;
-
 	glClearColor(0, 0, 0, 0);
 	glClearDepth(1);
 
@@ -39,6 +41,8 @@ bool ChokoLait::Init(const std::string& title, int w, int h) {
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	Time::Reset();
+
+	initd = true;
 
 	return true;
 }

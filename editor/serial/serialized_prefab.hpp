@@ -5,7 +5,9 @@ CE_BEGIN_ED_NAMESPACE
 
 class ESerializedPrefab : public ESerializedObject {
 public:
-	ESerializedPrefab(const SceneObject&);
+	ESerializedPrefab(const SceneObject&, bool uselinks);
+
+	ESerializedPrefab(const JsonObject&);
 
 	std::string name;
 	bool enabled;
@@ -21,7 +23,7 @@ public:
 
 	JsonObject ToJson() const override;
 
-	SceneObject Instantiate() const;
+	SceneObject Instantiate(const SceneObject&) const override;
 
 	void Revert() const;
 };

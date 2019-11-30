@@ -2,7 +2,7 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-ESerializedPrefab::ESerializedPrefab(const SceneObject& o)
+ESerializedPrefab::ESerializedPrefab(const SceneObject& o, bool lnk)
 		: name(o->name()), enabled(true), transform({
 			o->transform()->localPosition(),
 			o->transform()->localRotation(),
@@ -16,11 +16,32 @@ ESerializedPrefab::ESerializedPrefab(const SceneObject& o)
 	auto& cch = o->children();
 	children.reserve(cch.size());
 	for (auto& c : cch) {
-		auto& info = PrefabManager::GetInfo(c);
-		if (!info)
-			children.push_back(ESerializedPrefab_New(c));
+		if (lnk) {
+			auto& info = PrefabManager::GetInfo(c);
+			if (!!info) {
+				children.push_back(ESerializedPrefabExt_New(c, info));
+				continue;
+			}
+		}
+		children.push_back(ESerializedPrefab_New(c, lnk));
+	}
+}
+
+ESerializedPrefab::ESerializedPrefab(const JsonObject& json) : ESerializedObject(json) {
+	name = json.Get("name").string;
+	enabled = json.Get("enabled").ToBool();
+	transform.position = json.Get("position").ToVec3();
+	transform.rotation = json.Get("rotation").ToQuat();
+	transform.scale = json.Get("scale").ToVec3();
+	for (auto& c : json.Get("components").list) {
+		components.push_back(ESerializedComponent_New(c));
+	}
+	for (auto& c : json.Get("children").list) {
+		if (c.Get("type").string == "link") {
+			children.push_back(ESerializedPrefabExt_New(c));
+		}
 		else
-			children.push_back(ESerializedPrefabExt_New(c, info));
+			children.push_back(ESerializedPrefab_New(c));
 	}
 }
 
@@ -49,11 +70,17 @@ JsonObject ESerializedPrefab::ToJson() const {
 	return res;
 }
 
-SceneObject ESerializedPrefab::Instantiate() const {
+SceneObject ESerializedPrefab::Instantiate(const SceneObject& pr) const {
 	SceneObject res = SceneObject::New(name, transform.position, transform.rotation, transform.scale);
 	for (auto& c : components) {
 		c->Instantiate(res);
 	}
+	for (auto& c : children) {
+		c->Instantiate(res);
+	}
+
+	res->parent(pr);
+
 	return res;
 }
 

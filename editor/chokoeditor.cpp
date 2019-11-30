@@ -25,7 +25,9 @@ void ChokoEditor::Init() {
 }
 
 void ChokoEditor::Main() {
-	ChokoLait::Init("ChokoEditor", 1000, 600);
+	ChokoLait::InitOptionsSt opts;
+	opts.title = "ChokoEditor";
+	ChokoLait::Init(1000, 600, opts);
 
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);
@@ -43,59 +45,14 @@ void ChokoEditor::Main() {
 
 	scene = Scene::New();
 
-	scene->AddNewObject()
-		->name("__Editor_Cameras__");
-	auto scenebase = scene->AddNewObject();
-	scenebase->name("__scene__");
+	ESceneManager::Init();
 
-	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
-	//scene->sky()->brightness(1);
-	
-	//auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
+	ESceneManager::Load("a.scene");
 
-	auto rb = PrefabManager::Instantiate((Prefab)EAssetList::Get(EAssetType::Prefab, ".exported/rb/rabbit house.blend/rabbit house.blend.prefab", true));
-	scene->AddObject(rb, scenebase);
-	rb->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
-	rb->transform()->localRotationEuler(Vec3(0, -5, 0));
-
-	const auto& oc = scene->AddNewObject(scenebase);
-	oc->transform()->localPosition(Vec3(-3, 0.5f, 4));
-	oc->transform()->localRotationEuler(Vec3(-5, 150, 0));
-	oc->AddComponent<Camera>();
-
-	//auto scr = rb->AddComponent<DummyScript>();
-	//scr->name("Turner (Script)");
-	//scr->info(EAssetList::GetScr("turner.hpp"));
-
-	const auto& cl = scene->FindByName("celing lamp");
-	if (!!cl) {
-		const auto& o = scene->AddNewObject(cl);
-		const auto& l = o->AddComponent<Light>(LightType::Point);
-		l->distance(20);
-		l->strength(3);
-		l->shadow(true);
-		l->shadowStrength(0.7f);
-		l->shadowBias(0.002f);
-		l->radius(0.05f);
-		l->color(Color(1, 0.9f, 0.7f));
-		l->softShadows(true);
-		l->shadowSamples(1);
-		o->transform()->localPosition(Vec3(0, -0.7f, 0));
-	}
-
-	ESerializer::UpdateSceneIds();
-	const pESerializedPrefab pfb(new ESerializedPrefab(scene->objects()[1]));
-	JsonObject pfbj = pfb->ToJson();
-	std::string pfbs = JsonParser::Export(pfbj);
-	{
-		std::ofstream pfbf(IO::path() + "a.json");
-		pfbf << pfbs;
-	}
+	scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
-
-	//EW_ShaderEditor::target = (VShader)EAssetList::Get(EAssetType::VShader, "test.visualshader");
 
 	std::cout << scene->Tree() << std::endl;
 

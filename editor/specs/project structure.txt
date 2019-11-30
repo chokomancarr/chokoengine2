@@ -1,0 +1,13 @@
+project_base/
+  +-- assets/
+    +-- .internal/
+    | +-- 
+    +-- .exported/
+  +-- config/
+    +-- system.json
+    +-- graphics.json
+  +-- system/
+    +-- CMakeLists.txt
+    +-- game_scripts.cmake
+  +-- temp/
+    +-- 

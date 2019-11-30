@@ -17,7 +17,7 @@ ESerializedPrefabExt::ESerializedPrefabExt(const SceneObject& obj, const PrefabM
 			mod->type = ESerializedPrefabMod::Type::Object;
 			mod->target = CE_S_ObjectRef(o->parent().lock(), obj->parent().lock());
 			mod->target.path[0].second = 0;
-			mod->object = ESerializedPrefab_New(o);
+			mod->object = ESerializedPrefab_New(o, true);
 			mods.push_back(std::move(mod));
 		}
 	};
@@ -25,11 +25,36 @@ ESerializedPrefabExt::ESerializedPrefabExt(const SceneObject& obj, const PrefabM
 	find(obj);
 }
 
+ESerializedPrefabExt::ESerializedPrefabExt(const JsonObject& json) : ESerializedObject(json) {
+	static const std::string TypeStr[]{
+		"Modify",
+		"Object"
+	};
+
+	sig = json.Get("sig").string;
+	name = json.Get("name").string;
+	enabled = json.Get("enabled").ToBool();
+	transform.position = json.Get("position").ToVec3();
+	transform.rotation = json.Get("rotation").ToQuat();
+	transform.scale = json.Get("scale").ToVec3();
+	for (auto& m : json.Get("mods").list) {
+		auto mod = ESerializedPrefabMod_New();
+		mod->type = (ESerializedPrefabMod::Type)(std::find(TypeStr, TypeStr + 2, m.Get("type").string) - TypeStr);
+		mod->target = CE_S_ObjectRef(m.Get("target"));
+		mod->object = ESerializedPrefab_New(m.Get("object"));
+		mods.push_back(std::move(mod));
+	}
+}
+
 JsonObject ESerializedPrefabExt::ToJson() const {
 	auto res = ESerializedObject::ToJson();
 	res.group.push_back(JsonPair(JsonObject("type"), JsonObject("link")));
 	res.group.push_back(JsonPair(JsonObject("sig"), sig));
+	res.group.push_back(JsonPair(JsonObject("name"), name));
 	res.group.push_back(JsonPair(JsonObject("enabled"), JsonObject(enabled ? "1" : "0")));
+	res.group.push_back(JsonPair(JsonObject("position"), JsonObject::FromVec3(transform.position)));
+	res.group.push_back(JsonPair(JsonObject("rotation"), JsonObject::FromQuat(transform.rotation)));
+	res.group.push_back(JsonPair(JsonObject("scale"), JsonObject::FromVec3(transform.scale)));
 	if (!mods.empty()) {
 		JsonObject chds(JsonObject::Type::List);
 		for (auto& c : mods) {
@@ -37,6 +62,18 @@ JsonObject ESerializedPrefabExt::ToJson() const {
 		}
 		res.group.push_back(JsonPair(JsonObject("mods"), chds));
 	}
+	return res;
+}
+
+SceneObject ESerializedPrefabExt::Instantiate(const SceneObject& pr) const {
+	auto res = PrefabManager::Instantiate((Prefab)EAssetList::Get(EAssetType::Prefab, sig, true));
+	res->name(name);
+	res->transform()->localPosition(transform.position);
+	res->transform()->localRotation(transform.rotation);
+	res->transform()->localScale(transform.scale);
+
+	res->parent(pr);
+
 	return res;
 }
 

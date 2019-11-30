@@ -143,6 +143,15 @@ target_include_directories(ChokoPlayer PRIVATE player)
 
 target_link_libraries(ChokoPlayer ${LIBS})
 
+#------debug player------
+
+#add_executable(ChokoPlayerD "")
+#add_subdirectory(player_debug)
+
+#target_include_directories(ChokoPlayerD PRIVATE player_debug)
+
+#target_link_libraries(ChokoPlayerD ${LIBS})
+
 
 set(LIBS
 	${LIBS}

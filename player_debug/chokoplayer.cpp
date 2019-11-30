@@ -12,8 +12,7 @@ void ChokoPlayer::Init() {
 
 void ChokoPlayer::Main() {
 	ChokoLait::InitOptionsSt opts;
-	opts.visible = false;
-	ChokoLait::Init(1000, 600);
+	ChokoLait::Init(1000, 600, opts);
 
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);
