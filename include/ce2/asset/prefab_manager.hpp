@@ -1,11 +1,9 @@
 #pragma once
-#include "chokoeditor.hpp"
+#include "chokoengine.hpp"
 
-CE_BEGIN_ED_NAMESPACE
+CE_BEGIN_NAMESPACE
 
-/* I dunno if this works
- */
-class PrefabManager {
+class PrefabManager { CE_CLASS_COMMON
 public:
 	class Info {
 	public:
@@ -29,4 +27,4 @@ public:
 	static void Apply(const SceneObject&);
 };
 
-CE_END_ED_NAMESPACE
+CE_END_NAMESPACE

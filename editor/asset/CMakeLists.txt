@@ -1,7 +1,6 @@
 target_sources(ChokoEditor PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/asset_list.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/asset_loader.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/prefab_manager.cpp
 )
 
 add_subdirectory(ext)

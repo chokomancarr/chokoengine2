@@ -1,6 +1,6 @@
-#include "chokoeditor.hpp"
+#include "chokoengine.hpp"
 
-CE_BEGIN_ED_NAMESPACE
+CE_BEGIN_NAMESPACE
 
 PrefabManager::Info PrefabManager::Info::null = {};
 
@@ -42,4 +42,4 @@ void PrefabManager::Apply(const SceneObject& o) {
 
 }
 
-CE_END_ED_NAMESPACE
+CE_END_NAMESPACE

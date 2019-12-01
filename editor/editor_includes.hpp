@@ -27,7 +27,6 @@ CE_END_ED_NAMESPACE
 
 #include "asset/asset_list.hpp"
 #include "asset/asset_loader.hpp"
-#include "asset/prefab_manager.hpp"
 
 #include "scene/scenemanager.hpp"
 #include "scene/sceneinfo.hpp"

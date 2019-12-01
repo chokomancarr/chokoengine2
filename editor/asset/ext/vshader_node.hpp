@@ -1,6 +1,5 @@
 #pragma once
 #include "visual_shader.hpp"
-#include "ce2/parsers/json.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

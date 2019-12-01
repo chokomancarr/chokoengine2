@@ -1,0 +1,31 @@
+#pragma once
+#include "chokoengine.hpp"
+
+CE_BEGIN_NAMESPACE
+
+typedef _Prefab::_ObjBase _PrefabObjBase;
+typedef std::unique_ptr<_PrefabObjBase> PrefabObjBase;
+
+class _PrefabObj;
+typedef std::unique_ptr<_PrefabObj> PrefabObj;
+#define PrefabObj_New(...) PrefabObj(new _PrefabObj(__VA_ARGS__))
+class _PrefabLink;
+typedef std::unique_ptr<_PrefabLink> PrefabLink;
+#define PrefabLink_New(...) PrefabLink(new _PrefabLink(__VA_ARGS__))
+class _PrefabMod;
+typedef std::unique_ptr<_PrefabMod> PrefabMod;
+#define PrefabMod_New(...) PrefabMod(new _PrefabMod(__VA_ARGS__))
+class _PrefabComp;
+typedef std::unique_ptr<_PrefabComp> PrefabComp;
+#define PrefabComp_New(...) PrefabComp(new _PrefabComp(__VA_ARGS__))
+class PrefabItem;
+
+CE_END_NAMESPACE
+
+#include "prefab_objref.hpp"
+#include "prefab_objbase.hpp"
+#include "prefab_obj.hpp"
+#include "prefab_link.hpp"
+#include "prefab_mod.hpp"
+#include "prefab_comp.hpp"
+#include "prefab_item.hpp"

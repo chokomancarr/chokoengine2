@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/asset_types.hpp"
 
 CE_BEGIN_NAMESPACE
 

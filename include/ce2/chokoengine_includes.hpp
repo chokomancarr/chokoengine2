@@ -71,6 +71,8 @@ class Random;
 class Subprocess;
 class UniqueCallerList;
 
+class PrefabManager;
+
 CE_OBJECT(Object)
 
 /* assets
@@ -118,6 +120,9 @@ CE_OBJECT(Script)
 
 CE_END_NAMESPACE
 
+#include "parsers/json.hpp"
+#include "parsers/mesh.hpp"
+
 #include "types/color.hpp"
 #include "types/vec2.hpp"
 #include "types/vec3.hpp"
@@ -144,6 +149,7 @@ CE_END_NAMESPACE
 #include "object_base.hpp"
 
 #include "asset/asset.hpp"
+#include "asset/prefab_manager.hpp"
 
 #include "types/texturebuffer.hpp"
 #include "types/depth_texture.hpp"

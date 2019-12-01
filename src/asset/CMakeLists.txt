@@ -20,4 +20,5 @@ target_sources(ChokoEngine PRIVATE
 
 add_subdirectory(animclip)
 add_subdirectory(animgraph)
+add_subdirectory(prefab)
 add_subdirectory(shader)
