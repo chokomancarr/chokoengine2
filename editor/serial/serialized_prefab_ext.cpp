@@ -15,7 +15,7 @@ ESerializedPrefabExt::ESerializedPrefabExt(const SceneObject& obj, const PrefabM
 		else {
 			auto mod = ESerializedPrefabMod_New();
 			mod->type = ESerializedPrefabMod::Type::Object;
-			mod->target = CE_S_ObjectRef(o->parent().lock(), obj->parent().lock());
+			mod->target = CE_S_ObjectRef(o, obj);
 			mod->target.path[0].second = 0;
 			mod->object = ESerializedPrefab_New(o, true);
 			mods.push_back(std::move(mod));
@@ -74,6 +74,10 @@ SceneObject ESerializedPrefabExt::Instantiate(const SceneObject& pr) const {
 
 	res->parent(pr);
 
+	for (auto& m : mods) {
+		m->Instantiate(res);
+	}
+
 	return res;
 }
 
@@ -89,6 +93,28 @@ JsonObject ESerializedPrefabMod::ToJson() const {
 	res.group.push_back(JsonPair(JsonObject("target"), target.ToJson()));
 	res.group.push_back(JsonPair(JsonObject("object"), object->ToJson()));
 	return res;
+}
+
+void ESerializedPrefabMod::Instantiate(const SceneObject& par) const {
+	const auto fnd = [&](const std::vector<SceneObject>& cc, const std::pair<std::string, int>& nm) -> SceneObject {
+		int n = 0;
+		for (auto& c : cc) {
+			if (c->name() == nm.first) {
+				if (n++ == nm.second) {
+					return c;
+				}
+			}
+		}
+		return nullptr;
+	};
+
+	SceneObject p = par;
+	for (auto& t : target.path) {
+		p = fnd(p->children(), t);
+		if (!p) return;
+	}
+
+	object->Instantiate(p);
 }
 
 CE_END_ED_NAMESPACE

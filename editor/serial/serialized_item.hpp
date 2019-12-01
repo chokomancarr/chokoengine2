@@ -47,6 +47,8 @@ public:
 	template <typename T, typename std::enable_if<std::is_enum<T>::value, T>::type* = nullptr>
 	ESerializedItem(const T&);
 
+	ESerializedItem(const JsonObject&);
+
 	template <typename T>
 	typename std::enable_if<std::is_enum<T>::value, T>::type
 	Get() const;

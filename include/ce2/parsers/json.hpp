@@ -38,7 +38,9 @@ public:
 	bool ToBool() const;
 	int ToInt() const;
 	float ToFloat() const;
+	Vec2 ToVec2() const;
 	Vec3 ToVec3() const;
+	Vec4 ToVec4() const;
 	Quat ToQuat() const;
 	Color ToColor() const;
 	template <typename T>

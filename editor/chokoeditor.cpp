@@ -49,7 +49,7 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Load("a.scene");
 
-	scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
+	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();

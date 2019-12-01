@@ -34,6 +34,35 @@ ESerializedItem::ESerializedItem(const Component& c) : value({}), type(Type::Com
 	cv.type = c->componentType;
 }
 
+ESerializedItem::ESerializedItem(const JsonObject& json) : value({}) {
+	const auto& tp = json.Get("type").string;
+	const auto& vl = json.Get("value");
+	if (tp == "Float") {
+		value.f = vl.ToFloat();
+	}
+	else if (tp == "Int") {
+		value.i = vl.ToInt();
+	}
+	else if (tp == "Vec2") {
+		value.v2 = vl.ToVec2();
+	}
+	else if (tp == "Vec3") {
+		value.v3 = vl.ToVec3();
+	}
+	else if (tp == "Vec4") {
+		value.v4 = vl.ToVec4();
+	}
+	else if (tp == "Asset") {
+
+	}
+	else if (tp == "SceneObject") {
+
+	}
+	else if (tp == "Component") {
+
+	}
+}
+
 const std::string CE_ES_TypeS[] = {
 	"Float",
 	"Int",

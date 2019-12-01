@@ -31,7 +31,7 @@ void _SceneObject::parent(const SceneObject& _p) {
             Debug::Warning("SceneObject", "Cannot set object parent: parent is a child of object!");
             return;
         }
-        tp = p->_parent;
+        tp = tp->_parent;
     }
 
     /* Removes the old parent if it exists

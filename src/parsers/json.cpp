@@ -82,11 +82,27 @@ float JsonObject::ToFloat() const {
 	return std::stof(string);
 }
 
+Vec2 JsonObject::ToVec2() const {
+	return Vec2(
+		std::stof(list[0].string),
+		std::stof(list[1].string)
+	);
+}
+
 Vec3 JsonObject::ToVec3() const {
 	return Vec3(
 		std::stof(list[0].string),
 		std::stof(list[1].string),
 		std::stof(list[2].string)
+	);
+}
+
+Vec4 JsonObject::ToVec4() const {
+	return Vec4(
+		std::stof(list[0].string),
+		std::stof(list[1].string),
+		std::stof(list[2].string),
+		std::stof(list[3].string)
 	);
 }
 
