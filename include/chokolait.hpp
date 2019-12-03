@@ -29,8 +29,16 @@ class ChokoLait {
     
 public:
 	struct InitOptionsSt {
-		std::string title = "ChokoLait App";
-		bool visible = true;
+		std::string title;
+		bool visible;
+
+        /* We need to explicit-construct these
+         * or else clang bugs out
+         */
+        InitOptionsSt() :
+            title("ChokoLait App"),
+            visible(true) 
+            {}
 	};
 
     /* Initializes ChokoLait.

@@ -5,11 +5,11 @@ CE_BEGIN_NAMESPACE
 
 class _PrefabLink : public _PrefabObjBase {
 public:
-	_PrefabLink(const SceneObject&, const PrefabManager::Info&);
+	_PrefabLink(const SceneObject&);
 
 	_PrefabLink(const JsonObject&);
 
-	std::string sig;
+	Prefab tar;
 
 	std::string name;
 	bool enabled;

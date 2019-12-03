@@ -1,0 +1,14 @@
+#include "../prefab_inc.hpp"
+
+CE_BEGIN_NAMESPACE
+
+CE_PR_IMPL_COMP(Rig) {
+
+}
+
+CE_PR_IMPL_COMP_INST(Rig) {
+	auto c = o->AddComponent<Rig>();
+
+}
+
+CE_END_NAMESPACE

@@ -15,6 +15,8 @@ class _SceneObject : public _Object { CE_OBJECT_COMMON
 	pScene _scene;
 	pSceneObject _parent;
 
+	pPrefab _prefab;
+
 public:
 	_SceneObject(const std::string& nm = "", 
 			const Vec3& pos = Vec3(),
@@ -39,6 +41,10 @@ public:
 	 */
 	CE_GET_MEMBER(parent);
 	void parent(const SceneObject& p);
+
+	/* Prefab asset this object is spawned from
+	 */
+	CE_GET_MEMBER(prefab);
 
 	/* Scene this object is attached to
 	 */

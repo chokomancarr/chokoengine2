@@ -3,6 +3,11 @@
 
 CE_BEGIN_NAMESPACE
 
+namespace PrefabState {
+    extern _Prefab::_Sig2Prb sig2PrbFn;
+    extern _Prefab::_Sig2Ass sig2AssFn;
+}
+
 typedef _Prefab::_ObjBase _PrefabObjBase;
 typedef std::unique_ptr<_PrefabObjBase> PrefabObjBase;
 

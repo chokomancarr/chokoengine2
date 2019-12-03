@@ -3,8 +3,8 @@
 
 CE_BEGIN_NAMESPACE
 
-#define CE_PR_IMPL_COMP(nm) void ESerializedComponent::Set ## nm (const nm& c)
-#define CE_PR_IMPL_COMP_INST(nm) void ESerializedComponent::Instantiate ## nm(const SceneObject& o) const
+#define CE_PR_IMPL_COMP(nm) void _PrefabComp::Set ## nm (const nm& c)
+#define CE_PR_IMPL_COMP_INST(nm) void _PrefabComp::Instantiate ## nm(const SceneObject& o) const
 
 #define CE_PR_ADD(nm) items.insert(std::make_pair(#nm, c->nm()))
 

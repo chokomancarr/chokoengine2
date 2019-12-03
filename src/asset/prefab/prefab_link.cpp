@@ -2,23 +2,28 @@
 
 CE_BEGIN_NAMESPACE
 
-_PrefabLink::_PrefabLink(const SceneObject& obj, const PrefabManager::Info& info)
-	: sig(info.prefab->assetSignature()), enabled(true), mods(0) {
+_PrefabLink::_PrefabLink(const SceneObject& obj)
+	: tar(obj->prefab().lock()), enabled(true), mods(0) {
 	int i = 0;
 	std::function<void(const SceneObject&)> find = [&](const SceneObject& o) {
-		if (info.objects[i].lock() == o) {
+		if (o->prefab() == tar) {
 			i++;
 			for (auto& c : o->children()) {
 				find(c);
 			}
 		}
 		else {
-			auto mod = PrefabMod_New();
-			mod->type = _PrefabMod::Type::Object;
-			mod->target = Prefab_ObjRef(o, obj);
-			mod->target.path[0].second = 0;
-			mod->object = PrefabObj_New(o, true);
-			mods.push_back(std::move(mod));
+			if (!o->prefab()) {
+				auto mod = PrefabMod_New();
+				mod->type = _PrefabMod::Type::Object;
+				mod->target = Prefab_ObjRef(o, obj);
+				mod->target.path[0].second = 0;
+				mod->object = PrefabObj_New(o, true);
+				mods.push_back(std::move(mod));
+			}
+			else {
+				CE_NOT_IMPLEMENTED
+			}
 		}
 	};
 
@@ -31,7 +36,7 @@ _PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {
 		"Object"
 	};
 
-	sig = json.Get("sig").string;
+	tar = PrefabState::sig2PrbFn(json.Get("sig").string);
 	name = json.Get("name").string;
 	enabled = json.Get("enabled").ToBool();
 	transform.position = json.Get("position").ToVec3();
@@ -49,7 +54,7 @@ _PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {
 JsonObject _PrefabLink::ToJson() const {
 	auto res = _PrefabObjBase::ToJson();
 	res.group.push_back(JsonPair(JsonObject("type"), JsonObject("link")));
-	res.group.push_back(JsonPair(JsonObject("sig"), sig));
+	res.group.push_back(JsonPair(JsonObject("sig"), tar->assetSignature()));
 	res.group.push_back(JsonPair(JsonObject("name"), name));
 	res.group.push_back(JsonPair(JsonObject("enabled"), JsonObject(enabled ? "1" : "0")));
 	res.group.push_back(JsonPair(JsonObject("position"), JsonObject::FromVec3(transform.position)));
@@ -66,7 +71,7 @@ JsonObject _PrefabLink::ToJson() const {
 }
 
 SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
-	auto res = PrefabManager::Instantiate((Prefab)AssetList::Get(AssetType::Prefab, sig, true));
+	auto res = tar->Instantiate(PrefabState::sig2AssFn);
 	res->name(name);
 	res->transform()->localPosition(transform.position);
 	res->transform()->localRotation(transform.rotation);

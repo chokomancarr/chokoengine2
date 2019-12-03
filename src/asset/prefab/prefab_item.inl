@@ -32,11 +32,9 @@ CE_ES_SPEC(Vec3, v3)
 CE_ES_SPEC(Vec4, v4)
 CE_ES_SPEC(Color, v4)
 
-/*
 CE_ES_SPEC_F(Asset) {
 	auto& av = value.assetref;
-	return EAssetList::Get(av.assetType, av.sig, true);
+	return PrefabState::sig2AssFn(av.assetType, av.sig);
 }
-*/
 
 CE_END_NAMESPACE
