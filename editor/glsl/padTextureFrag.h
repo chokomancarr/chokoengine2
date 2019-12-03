@@ -2,8 +2,7 @@ namespace glsl {
 	const char padTextureFrag[] = R"(
 uniform vec2 reso;
 uniform sampler2D colTex;
-uniform sampler2D jmpTex;
-uniform isampler2D idTex;
+uniform isampler2D infoTex;
 
 out vec4 outColor;
 
@@ -11,15 +10,14 @@ void main() {
 	vec2 uv = gl_FragCoord.xy;
 	vec2 uvr = uv / reso;
 
-	ivec4 id = texture(idTex, uvr);
-	if (id.x > 0) {
+	ivec4 info = texture(infoTex, uvr);
+	if (info.x == 0 && info.z > 0) { //in triangle
 		outColor = texture(colTex, uvr);
 		return;
 	}
 
-	vec4 jx = texture(jmpTex, uvr);
-	if (jx.x >= 0) { //jump here
-		outColor = texture(colTex, jx.xy);
+	if (info.x > 0) { //jump here
+		outColor = texture(colTex, (info.xy - 1) / 100000.0);
 		return;
 	}
 	
@@ -33,9 +31,9 @@ void main() {
 	for (int a = 0; a < CNT; a++) {
 		vec2 duv = vec2(kernel[a*2], kernel[a*2 + 1]);
 		vec2 uv2 = uvr + duv / reso;
-		id = texture(idTex, uv2);
-		if (id.x > 0) {
-			outColor = texture(colTex, uv2);
+		info = texture(infoTex, uv2);
+		if (info.x == 0 && info.z > 0) {
+			outColor = texture(colTex, (info.xy - 1) / 100000.0);
 			return;
 		}
 	}

@@ -21,11 +21,8 @@ inline void paint() {
 
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
 
-	glBlendFunc(GL_ONE, GL_ZERO);
-	UI::Texture(Rect(10, Display::height() - 220, 200, 200), dt.GetInfoTex(sz).jmpInfoTex->tex(0));
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	UI::Texture(Rect(220, Display::height() - 220, 200, 200), tx);
-	UI::Texture(Rect(430, Display::height() - 220, 200, 200), txp);
+	UI::Texture(Rect(10, Display::height() - 300, 300, 300), tx);
+	UI::Texture(Rect(320, Display::height() - 300, 300, 300), txp);
 
 	const Rect r3(Display::width() - 400, Display::height() - 420, 400, 400);
 
@@ -57,8 +54,8 @@ inline void paint() {
 
 		auto& fb2 = dt.GetInfoTex(sz).jmpInfoTex;
 		fb2->Bind(true);
-		Vec4 vj;
-		glReadPixels(px, py, 1, 1, GL_RGBA, GL_FLOAT, &vj);
+		Int4 vj;
+		glReadPixels(px, py, 1, 1, GL_RGBA_INTEGER, GL_INT, &vj);
 		fb2->Unbind(true);
 
 		tx2->BindTarget(true);
@@ -82,11 +79,12 @@ inline void paint() {
 			+ std::to_string(vc[2]) + ", "
 			+ std::to_string(vc[3]), Color::white());
 
-		UI::Rect(Rect(tr(vj), 2, 2), Color::green());
+		Vec2 pj = Vec2(vj.x - 1, vj.y - 1) / 100000.f;
+		UI::Rect(Rect(tr(pj), 2, 2), Color::green());
 	}
 
 	for (int a = 0; a < 3; a++) {
-		MeshUtils::SurfaceBlur(dt, !a ? tx : (Texture)tx2, tx2, tx2t, 10);
+		MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, 10);
 	}
 }
 
@@ -117,7 +115,7 @@ void ChokoEditor::Main() {
 	Scene::AddNewObject()
 		->name("__Editor_Cameras__");
 
-	tx = (Texture)EAssetList::Get(EAssetType::Texture, "grid2.png");
+	tx = (Texture)EAssetList::Get(EAssetType::Texture, "t.png");
 	sz = Int2(tx->width(), tx->height());
 
 	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
@@ -125,7 +123,7 @@ void ChokoEditor::Main() {
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
-	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/untitled.blend/untitled.blend.prefab", true);
+	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/a.blend/a.blend.prefab", true);
 	Scene::AddObject(obj);
 	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
 	mesh = mr->mesh();
