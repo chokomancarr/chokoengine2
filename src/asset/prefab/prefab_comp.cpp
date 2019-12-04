@@ -23,10 +23,9 @@ _PrefabComp::_PrefabComp(const JsonObject& json) : _PrefabObjBase(json) {
 }
 
 JsonObject _PrefabComp::ToJson() const {
-	auto res = _PrefabObjBase::ToJson();
-	res.group.push_back(JsonPair(JsonObject("type"), ComponentTypeStr[(int)type]));
+	auto res = JsonObject(JsonObject::Type::Group);
 	res.group.push_back(JsonPair(JsonObject("enabled"), JsonObject(enabled ? "1" : "0")));
-	return res;
+	return JsonObject({JsonPair(JsonObject(ComponentTypeStr[(int)type]), res)});
 }
 
 SceneObject _PrefabComp::Instantiate(const SceneObject& o) const {

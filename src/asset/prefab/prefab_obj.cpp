@@ -45,17 +45,16 @@ _PrefabObj::_PrefabObj(const JsonObject& json) : _PrefabObjBase(json) {
 }
 
 JsonObject _PrefabObj::ToJson() const {
-	auto res = _PrefabObjBase::ToJson();
-	res.group.push_back(JsonPair(JsonObject("type"), JsonObject("object")));
+	auto res = JsonObject(JsonObject::Type::Group);
 	res.group.push_back(JsonPair(JsonObject("name"), name));
 	res.group.push_back(JsonPair(JsonObject("enabled"), JsonObject(enabled ? "1" : "0")));
 	res.group.push_back(JsonPair(JsonObject("position"), JsonObject::FromVec3(transform.position)));
 	res.group.push_back(JsonPair(JsonObject("rotation"), JsonObject::FromQuat(transform.rotation)));
 	res.group.push_back(JsonPair(JsonObject("scale"), JsonObject::FromVec3(transform.scale)));
 	if (!components.empty()) {
-		JsonObject cmps(JsonObject::Type::List);
+		JsonObject cmps(JsonObject::Type::Group);
 		for (auto& c : components) {
-			cmps.list.push_back(c->ToJson());
+			cmps.group.push_back(JsonPair(JsonObject("components"), c->ToJson()));
 		}
 		res.group.push_back(JsonPair(JsonObject("components"), cmps));
 	}
@@ -66,7 +65,7 @@ JsonObject _PrefabObj::ToJson() const {
 		}
 		res.group.push_back(JsonPair(JsonObject("children"), chds));
 	}
-	return res;
+	return JsonObject({JsonPair(JsonObject("object"), res)});
 }
 
 SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
