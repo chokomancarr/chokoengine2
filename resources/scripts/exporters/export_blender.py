@@ -65,11 +65,11 @@ class CE_Exporter():
         prefab_file = open(self.fd + self.fn + ".prefab", "wb")
         self.write(prefab_file, '{\n  "object":{\n')
         indent2 = 4 * ' '
-        self.write(prefab_file, indent2 + '"name":"' + self.fn + '",\n')
-        self.write(prefab_file, indent2 + '"position":[ "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"rotation":[ "1", "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"scale":[ "1", "1", "1" ],\n')
-        self.write(prefab_file, indent2 + '"children":{\n')
+        self.write(prefab_file, indent2 + '"name.String":"' + self.fn + '",\n')
+        self.write(prefab_file, indent2 + '"position.Vec3":[ "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"rotation.Quat":[ "1", "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"scale.Vec3":[ "1", "1", "1" ],\n')
+        self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
         
         self.export_entries(prefab_file, object_entries, 6 * ' ')
 
@@ -93,41 +93,40 @@ class CE_Exporter():
         indent5 = indent4 + 2 * " "
         n = len(entries)
         for i, e in enumerate(entries, 1):
-            print ("object " + e.obj.name)
+            print ("object " + str(i) + "/" + str(n) + ": " + e.obj.name)
             self.write(prefab_file, indent + '"object":{\n')
-            self.write(prefab_file, indent2 + '"name":"' + e.obj.name + '",\n')
+            self.write(prefab_file, indent2 + '"name.String":"' + e.obj.name + '",\n')
             if e.obj.parent_type == "BONE":
-                self.write(prefab_file, indent2 + '"parent_bone":"' + e.obj.parent_bone + '",\n')
+                self.write(prefab_file, indent2 + '"parent_bone.String":"' + e.obj.parent_bone + '",\n')
             elif e.rig:
-                self.write(prefab_file, indent2 + '"rig":"' + e.rig.name + '",\n')
+                self.write(prefab_file, indent2 + '"rig.String":"' + e.rig.name + '",\n')
             poss = e.obj.location
-            self.write(prefab_file, indent2 + '"position":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
+            self.write(prefab_file, indent2 + '"position.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
             rott = e.obj.rotation_euler.to_quaternion()
-            self.write(prefab_file, indent2 + '"rotation":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
+            self.write(prefab_file, indent2 + '"rotation.Quat":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
             scll = e.obj.scale
-            self.write(prefab_file, indent2 + '"scale":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
+            self.write(prefab_file, indent2 + '"scale.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
 
             if e.obj.type == 'MESH':
-                self.write(prefab_file, indent2 + '"components":{\n' + indent3 + '"MeshRenderer":{\n')
-                self.write(prefab_file, indent4 + '"mesh":"' + self.relfd + e.obj.name + '.mesh' + '",\n')
-                self.write(prefab_file, indent4 + '"modifiers":{},\n')
-                self.write(prefab_file, indent4 + '"materials":[\n')
-                for i in range(len(e.obj.data.materials)):
-                    self.write(prefab_file, indent5 + '"def.material",\n')
-                self.write(prefab_file, indent5 + '"def.material"\n')
-                self.write(prefab_file, indent4 + ']\n')
+                self.write(prefab_file, indent2 + '"components.ObjGroup":{\n' + indent3 + '"MeshRenderer":{\n')
+                self.write(prefab_file, indent4 + '"mesh.Asset":"' + self.relfd + e.obj.name + '.mesh' + '",\n')
+                self.write(prefab_file, indent4 + '"modifiers.ItemGroup":{},\n')
+                self.write(prefab_file, indent4 + '"materials.ItemGroup":{\n')
+                for j in range(max(len(e.obj.data.materials)+1, 1)):
+                    self.write(prefab_file, indent5 + '"' + str(j) + '.Asset":"def.material",\n')
+                self.write(prefab_file, indent4 + '}\n')
                 self.write(prefab_file, indent3 + '}\n')
                 self.export_mesh(self.fd + e.obj.name + '.mesh', e.obj)
             elif e.obj.type == 'ARMATURE':
-                self.write(prefab_file, indent2 + '"components":{\n' + indent3 + '"Rig":{\n')
-                self.write(prefab_file, indent4 + '"armature":"' + self.relfd + e.obj.name + '.armature' + '"\n')
+                self.write(prefab_file, indent2 + '"components.ObjGroup":{\n' + indent3 + '"Rig":{\n')
+                self.write(prefab_file, indent4 + '"armature.Asset":"' + self.relfd + e.obj.name + '.armature' + '"\n')
                 self.write(prefab_file, indent3 + '}\n')
                 self.export_armature(self.fd + e.obj.name + '.armature', e.obj)
                 self.export_anim(self.fd + self.fn + '.blend/', e.obj)
 
             if len(e.children) > 0:
                 self.write(prefab_file, indent2 + '},\n')
-                self.write(prefab_file, indent2 + '"children":{\n')
+                self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
                 self.export_entries(prefab_file, e.children, indent3)
                 self.write(prefab_file, indent2 + '}\n')
             else:
