@@ -13,10 +13,12 @@ void ESceneManager::Init() {
 void ESceneManager::Load(const std::string& path) {
 	auto& scene = ChokoEditor::scene;
 	auto json = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	auto prb = ESerializedPrefab_New(json);
+	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
+		return (Prefab)EAssetList::Get(EAssetType::Prefab, s, true);
+	});
 
-	scene->RemoveObject(scene->objects()[1]);
-	scene->AddObject(prb->Instantiate(nullptr));
+	//scene->RemoveObject(scene->objects()[1]);
+	//scene->AddObject(prb->Instantiate(nullptr));
 }
 
 void ESceneManager::Unload() {
@@ -24,6 +26,13 @@ void ESceneManager::Unload() {
 	scene->RemoveObject(scene->objects()[1]);
 	scene->AddNewObject()
 		->name("__scene__");
+}
+
+void ESceneManager::Save(const std::string& path) {
+	auto& scene = ChokoEditor::scene;
+	auto res = Prefab::New(scene->objects()[1], true)->ToJson();
+	std::ofstream strm(path);
+	strm << JsonParser::Export(res);
 }
 
 CE_END_ED_NAMESPACE

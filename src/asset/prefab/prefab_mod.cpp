@@ -9,9 +9,9 @@ JsonObject _PrefabMod::ToJson() const {
 	};
 
 	JsonObject res(JsonObject::Type::Group);
-	res.group.push_back(JsonPair(JsonObject("type"), TypeStr[(int)type]));
-	res.group.push_back(JsonPair(JsonObject("target"), target.ToJson()));
-	res.group.push_back(JsonPair(JsonObject("object"), object->ToJson()));
+//	res.group.push_back(JsonPair(JsonObject("type"), TypeStr[(int)type]));
+//	res.group.push_back(JsonPair(JsonObject("target"), target.ToJson()));
+//	res.group.push_back(JsonPair(JsonObject("object"), object->ToJson()));
 	return res;
 }
 

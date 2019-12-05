@@ -21,7 +21,7 @@ public:
 
 	std::vector<PrefabMod> mods;
 
-	JsonObject ToJson() const override;
+	JsonPair ToJson() const override;
 
 	SceneObject Instantiate(const SceneObject&) const override;
 };

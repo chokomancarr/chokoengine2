@@ -22,10 +22,10 @@ _PrefabComp::_PrefabComp(const JsonObject& json) : _PrefabObjBase(json) {
 	enabled = json.Get("enabled").ToBool();
 }
 
-JsonObject _PrefabComp::ToJson() const {
+JsonPair _PrefabComp::ToJson() const {
 	auto res = JsonObject(JsonObject::Type::Group);
 	res.group.push_back(JsonPair(JsonObject("enabled"), JsonObject(enabled ? "1" : "0")));
-	return JsonObject({JsonPair(JsonObject(ComponentTypeStr[(int)type]), res)});
+	return JsonPair(JsonObject(ComponentTypeStr[(int)type]), res);
 }
 
 SceneObject _PrefabComp::Instantiate(const SceneObject& o) const {

@@ -329,10 +329,9 @@ CE_E_AL_IMPL(Texture) {
 CE_E_AL_IMPL(Prefab) {
 	const auto meta = LoadMeta(path);
 	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	if (data.group[0].key.string != "object") {
-		Debug::Error("AssetLoader::LoadPrefab", "Object entry missing!");
-	}
-	return Prefab::New(JsonToObject(data.group[0].value, async));
+	return Prefab::New(data, [](const std::string& s) -> Prefab {
+		return (Prefab)EAssetList::Get(EAssetType::Prefab, s, true);
+	});
 }
 
 CE_E_AL_IMPL_EX(Model) {

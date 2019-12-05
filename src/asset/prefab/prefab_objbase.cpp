@@ -2,33 +2,18 @@
 
 CE_BEGIN_NAMESPACE
 
-/* serialized object json
- * {
- *   "items":{
- *     "item_name":{
- *       "type":"type_name",
- *       "value":{ /value/ }
- *     }
- *   },
- *   { /custom data/ }
- * }
- */
-
 _Prefab::_ObjBase::_ObjBase(const JsonObject& json) {
-	auto& ii = json.Get("items");
-	items.reserve(ii.group.size());
-	for (auto& i : ii.group) {
-		items.emplace(i.key.string, PrefabItem(i.value));
+	for (auto& i : json.group) {
+		items.push_back(std::make_pair(i.key.string, PrefabItem(i.value)));
 	}
 }
 
-JsonObject _Prefab::_ObjBase::ToJson() const {
-	JsonObject its(JsonObject::Type::Group);
-	if (items.empty()) return its;
+JsonPair _Prefab::_ObjBase::ToJson() const {
+	JsonObject res(JsonObject::Type::Group);
 	for (auto& i : items) {
-		its.group.push_back(JsonPair(i.first, i.second.ToJson()));
+		res.group.push_back(i.second.ToJson(i.first));
 	}
-	return JsonObject({ JsonPair(JsonObject("items"), its) });
+	return JsonPair(JsonObject(name), res);
 }
 
 CE_END_NAMESPACE

@@ -51,8 +51,8 @@ _PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {
 	}
 }
 
-JsonObject _PrefabLink::ToJson() const {
-	auto res = _PrefabObjBase::ToJson();
+JsonPair _PrefabLink::ToJson() const {
+	auto res = _PrefabObjBase::ToJson();/*
 	res.group.push_back(JsonPair(JsonObject("type"), JsonObject("link")));
 	res.group.push_back(JsonPair(JsonObject("sig"), tar->assetSignature()));
 	res.group.push_back(JsonPair(JsonObject("name"), name));
@@ -66,7 +66,7 @@ JsonObject _PrefabLink::ToJson() const {
 			chds.list.push_back(c->ToJson());
 		}
 		res.group.push_back(JsonPair(JsonObject("mods"), chds));
-	}
+	}*/
 	return res;
 }
 

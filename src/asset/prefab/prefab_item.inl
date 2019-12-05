@@ -3,7 +3,8 @@
 
 CE_BEGIN_NAMESPACE
 
-template <typename T, typename std::enable_if<std::is_enum<T>::value, T>::type*>
+template <typename T, typename std::enable_if<
+	std::is_enum<T>::value && !std::is_same<T, PrefabItem::Type>::value, T>::type*>
 PrefabItem::PrefabItem(const T& e) : value({}), type(Type::Int) {
 	value.i = (int)e;
 }
@@ -30,8 +31,12 @@ CE_ES_SPEC(int, i)
 CE_ES_SPEC(Vec2, v2)
 CE_ES_SPEC(Vec3, v3)
 CE_ES_SPEC(Vec4, v4)
+CE_ES_SPEC(std::string, s)
 CE_ES_SPEC(Color, v4)
 
+CE_ES_SPEC_F(Quat) {
+	return *(Quat*)&value.v4;
+}
 CE_ES_SPEC_F(Asset) {
 	auto& av = value.assetref;
 	return PrefabState::sig2AssFn(av.assetType, av.sig);

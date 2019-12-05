@@ -21,7 +21,7 @@ CE_PR_IMPL_COMP(Light) {
 }
 
 CE_PR_IMPL_COMP_INST(Light) {
-	auto c = o->AddComponent<Light>(items.at("type").Get<LightType>());
+	auto c = o->AddComponent<Light>(CE_PR_GET(type, LightType));
 	CE_PR_SET(strength, float);
 	CE_PR_SET(distance, float);
 	CE_PR_SET(radius, float);

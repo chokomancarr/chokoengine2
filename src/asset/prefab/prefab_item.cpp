@@ -2,6 +2,10 @@
 
 CE_BEGIN_NAMESPACE
 
+/* Construct from values
+ */
+
+PrefabItem::PrefabItem(Type t) : value({}), type(t) {}
 PrefabItem::PrefabItem(float f) : value({}), type(Type::Float) {
 	value.f = f;
 }
@@ -17,8 +21,11 @@ PrefabItem::PrefabItem(const Vec3& v) : value({}), type(Type::Vec3) {
 PrefabItem::PrefabItem(const Vec4& v) : value({}), type(Type::Vec4) {
 	value.v4 = v;
 }
-PrefabItem::PrefabItem(const Color& v) : value({}), type(Type::Vec4) {
-	value.v4 = v;
+PrefabItem::PrefabItem(const std::string& s) : value({}), type(Type::String) {
+	value.s = s;
+}
+PrefabItem::PrefabItem(const Color& c) : value({}), type(Type::Vec4) {
+	value.v4 = c;
 }
 PrefabItem::PrefabItem(const Asset& a) : value({}), type(Type::Asset) {
 	auto& av = value.assetref;
@@ -33,6 +40,9 @@ PrefabItem::PrefabItem(const Component& c) : value({}), type(Type::Component) {
 	//cv.obj = Prefab_ObjRef(c->object(), ChokoEditor::scene->objects()[1]);
 	//cv.type = c->componentType;
 }
+
+/* Construct from json object
+ */
 
 PrefabItem::PrefabItem(const JsonObject& json) : value({}) {
 	const auto& tp = json.Get("type").string;
@@ -52,6 +62,9 @@ PrefabItem::PrefabItem(const JsonObject& json) : value({}) {
 	else if (tp == "Vec4") {
 		value.v4 = vl.ToVec4();
 	}
+	else if (tp == "String") {
+		value.s = vl.string;
+	}
 	else if (tp == "Asset") {
 
 	}
@@ -59,6 +72,12 @@ PrefabItem::PrefabItem(const JsonObject& json) : value({}) {
 
 	}
 	else if (tp == "Component") {
+
+	}
+	else if (tp == "ItemGroup") {
+
+	}
+	else if (tp == "ObjGroup") {
 
 	}
 }
@@ -69,12 +88,19 @@ const std::string CE_ES_TypeS[] = {
 	"Vec2",
 	"Vec3",
 	"Vec4",
+	"String",
 	"Asset",
 	"SceneObject",
-	"Component"
+	"Component",
+	"ItemGroup",
+	"ObjGroup"
 };
 
-JsonObject PrefabItem::ToJson() const {
+/* Export to json object
+ * "name.type": (contents)
+ */
+
+JsonPair PrefabItem::ToJson(const std::string& nm) const {
 	JsonObject res;
 	switch (type) {
 	case Type::Float:
@@ -92,21 +118,35 @@ JsonObject PrefabItem::ToJson() const {
 	case Type::Vec4:
 		res = JsonObject::FromVec4(value.v4);
 		break;
+	case Type::String:
+		res = JsonObject(value.s);
+		break;
 	case Type::Asset:
 		res = JsonObject(std::vector<JsonPair>{
 			JsonPair(JsonObject("type"), AssetTypeStr[(int)value.assetref.assetType]),
 				JsonPair(JsonObject("sig"), JsonObject(value.assetref.sig))
 		});
 		break;
+	case Type::ItemGroup: {
+		res = JsonObject(JsonObject::Type::Group);
+		for (auto& g : value.group) {
+			res.group.push_back(g.ToJson(""));
+		}
+		break;
+	}
+	case Type::ObjGroup: {
+		res = JsonObject(JsonObject::Type::Group);
+		for (auto& g : value.objgroup) {
+			res.group.push_back(g->ToJson());
+		}
+		break;
+	}
 	default:
 		res = JsonObject("not_implemented!");
 		break;
 	}
 
-	return JsonObject(std::vector<JsonPair>{
-		JsonPair(JsonObject("type"), CE_ES_TypeS[(int)type]),
-			JsonPair(JsonObject("value"), res)
-	});
+	return JsonPair(JsonObject(nm + "." + CE_ES_TypeS[(int)type]), res);
 }
 
 CE_END_NAMESPACE

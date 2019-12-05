@@ -3,6 +3,9 @@
 
 CE_BEGIN_NAMESPACE
 
+typedef std::vector<PrefabItem> PrefabItemGroup;
+typedef std::vector<PrefabObjBase> PrefabObjGroup;
+
 class PrefabItem {
 public:
 	enum class Type {
@@ -11,9 +14,12 @@ public:
 		Vec2,
 		Vec3,
 		Vec4,
+		String,
 		Asset,
 		SceneObject,
-		Component
+		Component,
+		ItemGroup,
+		ObjGroup
 	};
 
 	struct {
@@ -22,6 +28,7 @@ public:
 		Vec2 v2;
 		Vec3 v3;
 		Vec4 v4;
+		std::string s;
 		struct _assetrefst {
 			AssetType assetType;
 			std::string sig;
@@ -31,20 +38,25 @@ public:
 			Prefab_ObjRef obj;
 			ComponentType type;
 		} compref;
+		PrefabItemGroup group;
+		PrefabObjGroup objgroup;
 	} value;
 
 	Type type;
 
+	PrefabItem(Type);
 	PrefabItem(float);
 	PrefabItem(int);
 	PrefabItem(const Vec2&);
 	PrefabItem(const Vec3&);
 	PrefabItem(const Vec4&);
+	PrefabItem(const std::string&);
 	PrefabItem(const Color&);
 	PrefabItem(const Asset&);
 	PrefabItem(const SceneObject&);
 	PrefabItem(const Component&);
-	template <typename T, typename std::enable_if<std::is_enum<T>::value, T>::type* = nullptr>
+	template <typename T, typename std::enable_if<
+		std::is_enum<T>::value && !std::is_same<T, Type>::value, T>::type* = nullptr>
 	PrefabItem(const T&);
 
 	PrefabItem(const JsonObject&);
@@ -60,7 +72,7 @@ public:
 	template <typename T>
 	T _Get() const;
 
-	JsonObject ToJson() const;
+	JsonPair ToJson(const std::string&) const;
 };
 
 CE_END_NAMESPACE

@@ -11,6 +11,8 @@ public:
 	static void Load(const std::string& path);
 
 	static void Unload();
+
+	static void Save(const std::string& path);
 };
 
 CE_END_ED_NAMESPACE

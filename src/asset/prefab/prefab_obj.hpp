@@ -8,7 +8,7 @@ public:
 	_PrefabObj(const SceneObject&, bool uselinks);
 
 	_PrefabObj(const JsonObject&);
-
+	/*
 	std::string name;
 	bool enabled;
 	struct {
@@ -20,8 +20,7 @@ public:
 	std::vector<PrefabComp> components;
 
 	std::vector<PrefabObjBase> children;
-
-	JsonObject ToJson() const override;
+	*/
 
 	SceneObject Instantiate(const SceneObject&) const override;
 };

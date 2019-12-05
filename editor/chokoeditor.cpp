@@ -47,9 +47,18 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
-	ESceneManager::Load("a.scene");
+	//ESceneManager::Load("a.scene");
 
 	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
+
+	auto pr = scene->objects()[1];
+
+	auto o2 = scene->AddNewObject(pr);
+	o2->transform()->localRotationEuler(Vec3(0, 45, 90));
+	scene->AddNewObject(o2)->transform()->localPosition(Vec3(1, 2, 4));
+	scene->AddNewObject(pr)->transform()->localScale(Vec3(2, 1, 0.5f));
+
+	ESceneManager::Save(IO::path() + "aa.scene");
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();

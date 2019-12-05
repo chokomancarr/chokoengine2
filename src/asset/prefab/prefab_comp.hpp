@@ -6,10 +6,14 @@ CE_BEGIN_NAMESPACE
 #define CE_PR_IMPL_COMP(nm) void _PrefabComp::Set ## nm (const nm& c)
 #define CE_PR_IMPL_COMP_INST(nm) void _PrefabComp::Instantiate ## nm(const SceneObject& o) const
 
-#define CE_PR_ADD(nm) items.insert(std::make_pair(#nm, c->nm()))
+#define CE_PR_GETI(nm) std::find_if(items.begin(), items.end(),\
+	[](const std::pair<std::string, PrefabItem>& p){\
+		return p.first == #nm;\
+	})->second
+#define CE_PR_GET(nm, tp) CE_PR_GETI(nm).Get<tp>()
 
-#define CE_PR_SET(nm, tp) c->nm(items.at(#nm).Get<tp>())
-#define CE_PR_SET_A(nm, tp) c->nm((tp)items.at(#nm).Get<Asset>())
+#define CE_PR_SET(nm, tp) c->nm(CE_PR_GET(nm, tp))
+#define CE_PR_SET_A(nm, tp) c->nm((tp)CE_PR_GET(nm, Asset))
 
 /* We should change this to class template if possible
  */
@@ -34,7 +38,7 @@ public:
 
 	bool enabled;
 
-	JsonObject ToJson() const override;
+	JsonPair ToJson() const override;
 
 	SceneObject Instantiate(const SceneObject&) const override;
 };
