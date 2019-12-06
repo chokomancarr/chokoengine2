@@ -67,7 +67,7 @@ class CE_Exporter():
         indent2 = 4 * ' '
         self.write(prefab_file, indent2 + '"name.String":"' + self.fn + '",\n')
         self.write(prefab_file, indent2 + '"position.Vec3":[ "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"rotation.Vec4":[ "1", "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"rotation.Quat":[ "1", "0", "0", "0" ],\n')
         self.write(prefab_file, indent2 + '"scale.Vec3":[ "1", "1", "1" ],\n')
         self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
         
@@ -103,7 +103,7 @@ class CE_Exporter():
             poss = e.obj.location
             self.write(prefab_file, indent2 + '"position.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
             rott = e.obj.rotation_euler.to_quaternion()
-            self.write(prefab_file, indent2 + '"rotation.Vec4":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
+            self.write(prefab_file, indent2 + '"rotation.Quat":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
             scll = e.obj.scale
             self.write(prefab_file, indent2 + '"scale.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
 

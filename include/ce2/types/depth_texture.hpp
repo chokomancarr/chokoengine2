@@ -11,6 +11,8 @@ class _DepthTexture { CE_OBJECT_COMMON
 public:
 	_DepthTexture(uint w, uint h);
 
+	virtual ~_DepthTexture();
+
     CE_GET_MEMBER(width);
     CE_GET_MEMBER(height);
 

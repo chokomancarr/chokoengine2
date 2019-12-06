@@ -51,14 +51,12 @@ void ChokoEditor::Main() {
 
 	scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
 	
-	EAssetLoader::Load(".exported/rb/rabbit house.blend/rabbit house.blend.prefab", AssetType::Prefab);
-
 	scene->AddObject(((Prefab)EAssetList::Get(AssetType::Prefab,
 		".exported/rb/rabbit house.blend/rabbit house.blend.prefab")
 		)->Instantiate([](AssetType t, const std::string& s) -> Asset {
-			return EAssetList::Get(t, s, false);
+			return EAssetList::Get(t, s, true);
 		}), scene->objects()[1]);
-
+		
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
 

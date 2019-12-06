@@ -11,6 +11,10 @@ _DepthTexture::_DepthTexture(uint w, uint h) : _width(w), _height(h) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+_DepthTexture::~_DepthTexture() {
+	glDeleteTextures(1, &_pointer);
+}
+
 DepthTexture DepthTexture_New(uint w, uint h) {
 	return std::make_shared<_DepthTexture>(w, h);
 }
