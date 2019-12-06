@@ -81,9 +81,14 @@ inline void paint() {
 
 		Vec2 pj = Vec2(vj.x - 1, vj.y - 1) / 100000.f;
 		UI::Rect(Rect(tr(pj), 2, 2), Color::green());
+		UI::Rect(Rect(r3.x() + r3.w() * vc[0], r3.y2() - r3.h() * vc[1] - 1, 4, 4), Color::red());
 	}
 
-	for (int a = 0; a < 3; a++) {
+	static int nb = 1;
+
+	nb = StrExt::ToInt(UI::I::TextField(Rect(20, 20, 100, 20), std::to_string(nb), Color(0.2f)), 1);
+
+	for (int a = 0; a < nb; a++) {
 		MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, 10);
 	}
 }
@@ -93,6 +98,9 @@ std::string ChokoEditor::assetPath;
 void ChokoEditor::Init() {
 	
 }
+
+#define tex "grid2"
+#define model "untitled"
 
 void ChokoEditor::Main() {
 	ChokoLait::Init("ChokoEditor", 1000, 600);
@@ -115,7 +123,7 @@ void ChokoEditor::Main() {
 	Scene::AddNewObject()
 		->name("__Editor_Cameras__");
 
-	tx = (Texture)EAssetList::Get(EAssetType::Texture, "t.png");
+	tx = (Texture)EAssetList::Get(EAssetType::Texture, tex ".png");
 	sz = Int2(tx->width(), tx->height());
 
 	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
@@ -123,7 +131,7 @@ void ChokoEditor::Main() {
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
-	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/a.blend/a.blend.prefab", true);
+	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/" model ".blend/" model ".blend.prefab", true);
 	Scene::AddObject(obj);
 	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
 	mesh = mr->mesh();

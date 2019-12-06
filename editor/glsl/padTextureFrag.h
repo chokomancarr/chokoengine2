@@ -33,11 +33,11 @@ void main() {
 		vec2 uv2 = uvr + duv / reso;
 		info = texture(infoTex, uv2);
 		if (info.x == 0 && info.z > 0) {
-			outColor = texture(colTex, (info.xy - 1) / 100000.0);
+			outColor = texture(colTex, uv2);
 			return;
 		}
 	}
-	outColor = vec4(0, 0, 0, 1);
+	outColor = vec4(1, 1, 0, 1);
 }
 )";
 }

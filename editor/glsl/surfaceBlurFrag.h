@@ -17,39 +17,42 @@ const int tolerance = 2;
 const int BLUR_CNT = 10;
 
 const float kernel[11] = float[](
-	0.100346, 0.097274, 0.088613, 0.075856,
-	0.061021, 0.046128, 0.032768, 0.021874,
-	0.013722, 0.008089, 0.004481 );
+	0.082607, 0.080977, 0.076276,
+	0.069041, 0.060049, 0.050187,
+	0.040306, 0.031105, 0.023066,
+	0.016436, 0.011254 );
 
 vec4 sample(
 		vec2 dr, //direction
-		ivec2 px, //first pixel
+		ivec4 npx, //first data
 		vec2 uv, vec2 dreso) {
 
 	vec2 poso = uv;
 
 	vec2 drr = dr * dreso;
-	vec2 pos = uv + dr;
-	int tid = px.x - 1;
-	int eid = px.y;
+	vec2 pos = uv;
+	int tid = npx.z - 1;
+	int eid = npx.w;
+
+	ivec4 npxo;
 
 	vec4 col = vec4(0, 0, 0, 0);
 
 	for (int a = 0; a < BLUR_CNT; a++) {
-		ivec4 npx = texture(infoTex, pos * dreso);
+		pos += dr;
+		npxo = npx;
+		npx = texture(infoTex, pos * dreso);
 		if (npx.x > 0) { //jump here
 			pos = (npx.xy - 1) / 100000.0 * reso;
 		}
 		else {
 			if (npx.z == 0) { //not triangle, go back
 				pos = poso;
-				npx = texture(infoTex, pos * dreso);
+				npx = npxo;
 			}
 		}
 		int tid2 = npx.z - 1;
-		if (tid2 < 0) tid2 = tid;
 		if (tid != tid2) {
-			
 			vec4 rmatv = texelFetch(matTex, tid * 3 + eid);
 			mat2 rmat = mat2(rmatv.xy, rmatv.zw);
 			dr = rmat * dr;
@@ -59,9 +62,8 @@ vec4 sample(
 			dr = normalize(dr);
 			drr = dr * dreso;
 		}
-		eid = npx.w;
 		poso = pos;
-		pos += dr;
+		eid = npx.w;
 
 		col += texture(colTex, pos * dreso) * kernel[a+1];
 	}
@@ -89,8 +91,8 @@ void main() {
 	}
 
 	outColor = col * kernel[0] +
-		sample(dir0, info.zw, uv, dreso) + 
-		sample(-dir0, info.zw, uv, dreso);
+		sample(dir0, info, uv, dreso) + 
+		sample(-dir0, info, uv, dreso);
 }
 )";
 }
