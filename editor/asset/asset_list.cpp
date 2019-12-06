@@ -14,8 +14,8 @@ EAssetList::_ScriptEntry::_ScriptEntry(const std::string& scr)
 	: sig(scr), info({}), modtime(0) {}
 
 
-std::array<std::vector<EAssetList::_Entry>, (int)EAssetType::_COUNT> EAssetList::_entries = {};
-std::array<std::vector<std::string>, (int)EAssetType::_COUNT> EAssetList::_exts = {};
+std::array<std::vector<EAssetList::_Entry>, (int)AssetType::_COUNT> EAssetList::_entries = {};
+std::array<std::vector<std::string>, (int)AssetType::_COUNT> EAssetList::_exts = {};
 
 std::array<std::vector<std::string>, (int)EExportType::_COUNT> EAssetList::_export_exts = {};
 std::vector<EAssetList::_ScriptEntry> EAssetList::_scriptEntries;
@@ -51,7 +51,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 			}
 			goto next;
 		}
-        for (int a = 0; a < (int)EAssetType::_COUNT; a++) {
+        for (int a = 0; a < (int)AssetType::_COUNT; a++) {
             for (auto& e : _exts[a]) {
                 if (e == ext) {
                     auto& ent = _entries[a];
@@ -68,11 +68,11 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
                     if (it->modtime < mt) {
                         Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
                         if (!!it->obj) {
-                            it->obj = EAssetLoader::Load(sig, (EAssetType)a);
+                            it->obj = EAssetLoader::Load(sig, (AssetType)a);
                             //it->obj->dirty(true);
                         }
                         if (!IO::FileExists(ffd + f + ".meta")) {
-                            EAssetLoader::GenDefaultMeta(sig, (EAssetType)a);
+                            EAssetLoader::GenDefaultMeta(sig, (AssetType)a);
                         }
                         it->modtime = mt;
                         //dirty = true;
@@ -135,13 +135,12 @@ void EAssetList::UpdateModTime(const std::string& fl, bool now) {
 }
 
 void EAssetList::Init() {
-    _exts[(int)EAssetType::Armature] = { "armature" };
-    _exts[(int)EAssetType::Material] = { "material" };
-    _exts[(int)EAssetType::Mesh] = { "obj", "mesh" };
-    _exts[(int)EAssetType::Shader] = { "shader" };
-	_exts[(int)EAssetType::VShader] = { "visualshader" };
-    _exts[(int)EAssetType::Texture] = { "png", "jpg", "bmp" };
-    _exts[(int)EAssetType::Prefab] = { "prefab" };
+    _exts[(int)AssetType::Armature] = { "armature" };
+    _exts[(int)AssetType::Material] = { "material" };
+    _exts[(int)AssetType::Mesh] = { "obj", "mesh" };
+    _exts[(int)AssetType::Shader] = { "shader" };
+    _exts[(int)AssetType::Texture] = { "png", "jpg", "bmp" };
+    _exts[(int)AssetType::Prefab] = { "prefab" };
 
     _export_exts[(int)EExportType::Model] = { "blend" };
     _export_exts[(int)EExportType::Image] = { "psd" };
@@ -158,7 +157,7 @@ void EAssetList::Rescan() {
     Debug::Message("AssetList", "Scanning complete.");
 }
 
-const Asset& EAssetList::Get(EAssetType t, const std::string& sig, bool async) {
+const Asset& EAssetList::Get(AssetType t, const std::string& sig, bool async) {
     auto& ar = _entries[(int)t];
     auto i = std::find_if(ar.begin(), ar.end(), [&](const _Entry& e) {
         return e.sig == sig;
@@ -178,7 +177,7 @@ const Asset& EAssetList::Get(EAssetType t, const std::string& sig, bool async) {
 	return i->obj;
 }
 
-std::vector<std::string> EAssetList::GetList(EAssetType t) {
+std::vector<std::string> EAssetList::GetList(AssetType t) {
 	std::vector<std::string> res;
 	for (auto& e : _entries[(int)t]) {
 		res.push_back(e.sig);
@@ -201,21 +200,21 @@ const ScriptInfo& EAssetList::GetScr(const std::string& sig) {
 
 EAssetList::TypeOfSt EAssetList::TypeOf(const std::string& f) {
 	const auto ext = StrExt::ExtensionOf(f);
-	for (int a = 0; a < (int)EAssetType::_COUNT; a++) {
+	for (int a = 0; a < (int)AssetType::_COUNT; a++) {
 		for (auto& e : _exts[a]) {
 			if (e == ext) {
-				return TypeOfSt{ false, (EAssetType)a, EExportType::Unknown };
+				return TypeOfSt{ false, (AssetType)a, EExportType::Unknown };
 			}
 		}
 	}
 	for (int a = 0; a < (int)EExportType::_COUNT; a++) {
 		for (auto& e : _exts[a]) {
 			if (e == ext) {
-				return TypeOfSt{ true, EAssetType::Unknown, (EExportType)a };
+				return TypeOfSt{ true, AssetType::Unknown, (EExportType)a };
 			}
 		}
 	}
-	return TypeOfSt{ true, EAssetType::Unknown, EExportType::Unknown };
+	return TypeOfSt{ true, AssetType::Unknown, EExportType::Unknown };
 }
 
 CE_END_ED_NAMESPACE

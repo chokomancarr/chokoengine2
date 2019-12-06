@@ -31,15 +31,19 @@ CE_ES_SPEC(int, i)
 CE_ES_SPEC(Vec2, v2)
 CE_ES_SPEC(Vec3, v3)
 CE_ES_SPEC(Vec4, v4)
+CE_ES_SPEC(Quat, q)
 CE_ES_SPEC(std::string, s)
 CE_ES_SPEC(Color, v4)
 
-CE_ES_SPEC_F(Quat) {
-	return *(Quat*)&value.v4;
-}
 CE_ES_SPEC_F(Asset) {
 	auto& av = value.assetref;
 	return PrefabState::sig2AssFn(av.assetType, av.sig);
+}
+CE_ES_SPEC_F(const PrefabItemGroup&) {
+	return value.group;
+}
+CE_ES_SPEC_F(const PrefabObjGroup&) {
+	return value.objgroup;
 }
 
 CE_END_NAMESPACE

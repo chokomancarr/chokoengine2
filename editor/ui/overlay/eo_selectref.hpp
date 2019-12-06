@@ -34,7 +34,7 @@ class EO_SelectRef : public EOverlay {
 		void set(const Object& o) override { value = (V)o; }
 	};
 
-	EAssetType _assetType;
+	AssetType _assetType;
 
 	std::unique_ptr<_State> state;
 

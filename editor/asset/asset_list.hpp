@@ -22,8 +22,8 @@ class EAssetList { CE_CLASS_COMMON
 	};
     /* List of all asset data
      */
-    static std::array<std::vector<_Entry>, (int)EAssetType::_COUNT> _entries;
-    static std::array<std::vector<std::string>, (int)EAssetType::_COUNT> _exts;
+    static std::array<std::vector<_Entry>, (int)AssetType::_COUNT> _entries;
+    static std::array<std::vector<std::string>, (int)AssetType::_COUNT> _exts;
     /* These files are not assets directly, but will generate them
      */
     static std::array<std::vector<std::string>, (int)EExportType::_COUNT> _export_exts;
@@ -36,7 +36,7 @@ class EAssetList { CE_CLASS_COMMON
 public:
     struct TypeOfSt {
 		bool exported;
-		EAssetType assetType;
+		AssetType assetType;
 		EExportType exportType;
 	};
 
@@ -44,8 +44,8 @@ public:
     
     static void Rescan();
 
-    static const Asset& Get(EAssetType t, const std::string& sig, bool async = false);
-	static std::vector<std::string> GetList(EAssetType t);
+    static const Asset& Get(AssetType t, const std::string& sig, bool async = false);
+	static std::vector<std::string> GetList(AssetType t);
 	static const ScriptInfo& GetScr(const std::string& sig);
 
 	static TypeOfSt TypeOf(const std::string& f);

@@ -20,7 +20,7 @@ public:
 	};
 
 	Type type;
-	EAssetType typeAsset;
+	AssetType typeAsset;
 	ComponentType typeComp;
 	pScriptTypeExt typeExt;
 	std::string typeName;

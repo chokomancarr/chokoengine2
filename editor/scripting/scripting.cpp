@@ -45,10 +45,10 @@ inline bool parseVar(const std::string& ln, size_t& st, ScriptVar& vr, const Scr
 			return true;
 		}
 	}
-	for (int a = 0; a < (int)EAssetType::_COUNT; a++) {
+	for (int a = 0; a < (int)AssetType::_COUNT; a++) {
 		if (tp == EAssetTypeStrs[a]) {
 			vr.type = ScriptVar::Type::Asset;
-			vr.typeAsset = (EAssetType)a;
+			vr.typeAsset = (AssetType)a;
 			return true;
 		}
 	}

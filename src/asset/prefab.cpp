@@ -14,6 +14,8 @@ _Prefab::_Prefab(const JsonObject& json, _Sig2Prb fn) {
 	_data = PrefabObj_New(json.group[0].value);
 }
 
+_Prefab::~_Prefab() {}
+
 JsonObject _Prefab::ToJson() const {
 	return JsonObject({ _data->ToJson() });
 }

@@ -96,16 +96,15 @@ void EAssetLoader::GenDefaultScriptMeta(const std::string& path) {
 	strm << meta::Script;
 }
 
-void EAssetLoader::GenDefaultMeta(const std::string& path, const EAssetType t) {
+void EAssetLoader::GenDefaultMeta(const std::string& path, const AssetType t) {
 	switch (t) {
-		CE_E_MKM(EAssetType, AnimClip)
-		CE_E_MKM(EAssetType, Armature)
-		CE_E_MKM(EAssetType, Material)
-		CE_E_MKM(EAssetType, Mesh)
-		CE_E_MKM(EAssetType, Prefab)
-		CE_E_MKM(EAssetType, Shader)
-		CE_E_MKM(EAssetType, VShader)
-		CE_E_MKM(EAssetType, Texture)
+		CE_E_MKM(AssetType, AnimClip)
+		CE_E_MKM(AssetType, Armature)
+		CE_E_MKM(AssetType, Material)
+		CE_E_MKM(AssetType, Mesh)
+		CE_E_MKM(AssetType, Prefab)
+		CE_E_MKM(AssetType, Shader)
+		CE_E_MKM(AssetType, Texture)
 		default:
 			break;
 	}
@@ -120,7 +119,7 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 	}
 }
 
-#define CE_E_LD(nm) case EAssetType::nm: {\
+#define CE_E_LD(nm) case AssetType::nm: {\
 	auto res = Load ## nm(path, async);\
 	if (!res)\
 		Debug::Error("EAssetLoader", "Failed to load \"" + path + "\" (nullptr returned by loader)!");\
@@ -128,7 +127,7 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 	res->name(StrExt::RemoveExt(StrExt::RemoveFd(path)));\
 	return res; }
 
-Asset EAssetLoader::Load(const std::string& path, const EAssetType t, bool async) {
+Asset EAssetLoader::Load(const std::string& path, const AssetType t, bool async) {
 	switch (t) {
 		CE_E_LD(AnimClip)
 		CE_E_LD(Armature)
@@ -137,7 +136,6 @@ Asset EAssetLoader::Load(const std::string& path, const EAssetType t, bool async
 		CE_E_LD(Prefab)
 		CE_E_LD(Shader)
 		CE_E_LD(Texture)
-		CE_E_LD(VShader)
 		default:
 			break;
 	}
@@ -218,7 +216,7 @@ CE_E_AL_IMPL(Material) {
 		Debug::Error("AssetLoader::Material", "shader entry missing!");
 		return nullptr;
 	}
-	auto shad = static_cast<Shader>(EAssetList::Get(EAssetType::Shader, data.group[0].value.string));
+	auto shad = static_cast<Shader>(EAssetList::Get(AssetType::Shader, data.group[0].value.string));
 	auto mat = Material::New();
 	mat->shader(shad);
 	for (auto& d : data.group) {
@@ -237,7 +235,7 @@ CE_E_AL_IMPL(Material) {
 		CE_E_ME(Float)
 		else CE_E_ME(Color)
 		else if (d.key.string == "Texture") {
-			mat->SetUniform(vrnm, static_cast<Texture>(EAssetList::Get(EAssetType::Texture, vrvl.string, async)));
+			mat->SetUniform(vrnm, static_cast<Texture>(EAssetList::Get(AssetType::Texture, vrvl.string, async)));
 		}
 	}
 	return mat;
@@ -330,7 +328,7 @@ CE_E_AL_IMPL(Prefab) {
 	const auto meta = LoadMeta(path);
 	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	return Prefab::New(data, [](const std::string& s) -> Prefab {
-		return (Prefab)EAssetList::Get(EAssetType::Prefab, s, true);
+		return (Prefab)EAssetList::Get(AssetType::Prefab, s, true);
 	});
 }
 

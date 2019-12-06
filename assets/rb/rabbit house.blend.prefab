@@ -1,1162 +1,1162 @@
 {
   "object":{
-    "name":"rabbit house.blend",
-    "position":[ "0", "0", "0" ],
-    "rotation":[ "1", "0", "0", "0" ],
-    "scale":[ "1", "1", "1" ],
-    "children":{
+    "name.String":"rabbit house.blend",
+    "position.Vec3":[ "0", "0", "0" ],
+    "rotation.Vec4":[ "1", "0", "0", "0" ],
+    "scale.Vec3":[ "1", "1", "1" ],
+    "children.ObjGroup":{
       "object":{
-        "name":"Plane",
-        "position":[ "0.000000", "0.000000", "-0.000000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"Plane",
+        "position.Vec3":[ "0.000000", "0.000000", "-0.000000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/Plane.mesh",
-            "modifiers":{},
-            "materials":[
-              "rb/nw.material",
-              "rb/hr.material",
-              "rb/wd.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/Plane.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"rb/nw.material"},
+              "1.Asset":{"Material":"rb/hr.material"},
+              "2.Asset":{"Material":"rb/wd.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar top",
-        "position":[ "-3.850000", "0.000000", "-3.750000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar top",
+        "position.Vec3":[ "-3.850000", "0.000000", "-3.750000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar top.mesh",
-            "modifiers":{},
-            "materials":[
-              "rb/bt.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar top.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"rb/bt.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar cupboard",
-        "position":[ "-3.850000", "0.000000", "-5.750000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar cupboard",
+        "position.Vec3":[ "-3.850000", "0.000000", "-5.750000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar cupboard.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar cupboard.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.017",
-        "position":[ "-2.900000", "1.993642", "-3.997649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.017",
+        "position.Vec3":[ "-2.900000", "1.993642", "-3.997649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.017.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.017.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.016",
-        "position":[ "-2.900000", "1.993642", "-3.827649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.016",
+        "position.Vec3":[ "-2.900000", "1.993642", "-3.827649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.016.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.016.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.015",
-        "position":[ "-2.900000", "1.993642", "-3.912649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.015",
+        "position.Vec3":[ "-2.900000", "1.993642", "-3.912649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.015.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.015.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.014",
-        "position":[ "-3.200000", "1.993642", "-3.912649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.014",
+        "position.Vec3":[ "-3.200000", "1.993642", "-3.912649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.014.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.014.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.013",
-        "position":[ "-3.200000", "1.993642", "-3.827649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.013",
+        "position.Vec3":[ "-3.200000", "1.993642", "-3.827649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.013.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.013.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.012",
-        "position":[ "-3.200000", "1.993642", "-3.997649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.012",
+        "position.Vec3":[ "-3.200000", "1.993642", "-3.997649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.012.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.012.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.011",
-        "position":[ "-3.500000", "1.993642", "-3.997649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.011",
+        "position.Vec3":[ "-3.500000", "1.993642", "-3.997649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.011.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.011.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.010",
-        "position":[ "-3.500000", "1.993642", "-3.827649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.010",
+        "position.Vec3":[ "-3.500000", "1.993642", "-3.827649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.010.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.010.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.009",
-        "position":[ "-3.500000", "1.993642", "-3.912649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.009",
+        "position.Vec3":[ "-3.500000", "1.993642", "-3.912649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.009.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.009.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.008",
-        "position":[ "-3.350000", "1.993642", "-3.912649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.008",
+        "position.Vec3":[ "-3.350000", "1.993642", "-3.912649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.008.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.008.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.007",
-        "position":[ "-3.350000", "1.993642", "-3.827649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.007",
+        "position.Vec3":[ "-3.350000", "1.993642", "-3.827649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.007.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.007.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.006",
-        "position":[ "-3.350000", "1.993642", "-3.997649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.006",
+        "position.Vec3":[ "-3.350000", "1.993642", "-3.997649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.006.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.006.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.005",
-        "position":[ "-3.050000", "1.993642", "-3.997649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.005",
+        "position.Vec3":[ "-3.050000", "1.993642", "-3.997649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.005.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.005.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.004",
-        "position":[ "-3.050000", "1.993642", "-3.827649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.004",
+        "position.Vec3":[ "-3.050000", "1.993642", "-3.827649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.004.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.004.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.003",
-        "position":[ "-3.050000", "1.993642", "-3.912649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.003",
+        "position.Vec3":[ "-3.050000", "1.993642", "-3.912649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.003.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.003.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.002",
-        "position":[ "-2.750000", "1.993642", "-3.912649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.002",
+        "position.Vec3":[ "-2.750000", "1.993642", "-3.912649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.002.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.002.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass.001",
-        "position":[ "-2.750000", "1.993642", "-3.827649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass.001",
+        "position.Vec3":[ "-2.750000", "1.993642", "-3.827649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"wine glass",
-        "position":[ "-2.750000", "1.993642", "-3.997649" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"wine glass",
+        "position.Vec3":[ "-2.750000", "1.993642", "-3.997649" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/wine glass.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/wine glass.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar table",
-        "position":[ "-3.850000", "0.000000", "-3.750000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar table",
+        "position.Vec3":[ "-3.850000", "0.000000", "-3.750000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar table.mesh",
-            "modifiers":{},
-            "materials":[
-              "rb/bb.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar table.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"rb/bb.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"rabbit house pillar lamp.005",
-        "position":[ "1.000000", "2.393962", "4.250000" ],
-        "rotation":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"rabbit house pillar lamp.005",
+        "position.Vec3":[ "1.000000", "2.393962", "4.250000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.005.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.005.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"table.003",
-        "position":[ "0.000000", "0.000000", "2.560000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"table.003",
+        "position.Vec3":[ "0.000000", "0.000000", "2.560000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/table.003.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/table.003.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.012",
-        "position":[ "0.400000", "0.000000", "1.960000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.012",
+        "position.Vec3":[ "0.400000", "0.000000", "1.960000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.012.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.012.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.011",
-        "position":[ "-0.400000", "0.000000", "1.960000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.011",
+        "position.Vec3":[ "-0.400000", "0.000000", "1.960000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.011.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.011.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.010",
-        "position":[ "-3.400000", "0.000000", "1.960000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.010",
+        "position.Vec3":[ "-3.400000", "0.000000", "1.960000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.010.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.010.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.009",
-        "position":[ "-2.600000", "0.000000", "1.960000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.009",
+        "position.Vec3":[ "-2.600000", "0.000000", "1.960000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.009.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.009.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"table.002",
-        "position":[ "-3.000000", "0.000000", "2.560000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"table.002",
+        "position.Vec3":[ "-3.000000", "0.000000", "2.560000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/table.002.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/table.002.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"table.001",
-        "position":[ "-3.000000", "0.000000", "-0.740000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"table.001",
+        "position.Vec3":[ "-3.000000", "0.000000", "-0.740000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/table.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/table.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.008",
-        "position":[ "-2.600000", "0.000000", "-0.140000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.008",
+        "position.Vec3":[ "-2.600000", "0.000000", "-0.140000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.008.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.008.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.007",
-        "position":[ "-3.400000", "0.000000", "-0.140000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.007",
+        "position.Vec3":[ "-3.400000", "0.000000", "-0.140000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.007.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.007.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.006",
-        "position":[ "-2.600000", "0.000000", "-1.340000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.006",
+        "position.Vec3":[ "-2.600000", "0.000000", "-1.340000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.006.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.006.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.005",
-        "position":[ "-3.400000", "0.000000", "-1.340000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.005",
+        "position.Vec3":[ "-3.400000", "0.000000", "-1.340000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.005.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.005.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.004",
-        "position":[ "-0.400000", "0.000000", "-1.340000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.004",
+        "position.Vec3":[ "-0.400000", "0.000000", "-1.340000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.004.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.004.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.003",
-        "position":[ "0.400000", "0.000000", "-1.340000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.003",
+        "position.Vec3":[ "0.400000", "0.000000", "-1.340000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.003.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.003.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.002",
-        "position":[ "-0.400000", "0.000000", "-0.140000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.002",
+        "position.Vec3":[ "-0.400000", "0.000000", "-0.140000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.002.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.002.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2.001",
-        "position":[ "0.400000", "0.000000", "-0.140000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2.001",
+        "position.Vec3":[ "0.400000", "0.000000", "-0.140000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"table",
-        "position":[ "0.000000", "0.000000", "-0.740000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"table",
+        "position.Vec3":[ "0.000000", "0.000000", "-0.740000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/table.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/table.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"rabbit house pillar lamp.004",
-        "position":[ "-3.849999", "2.393962", "-2.250000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"rabbit house pillar lamp.004",
+        "position.Vec3":[ "-3.849999", "2.393962", "-2.250000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.004.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.004.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 2",
-        "position":[ "3.591040", "0.000000", "-0.140000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 2",
+        "position.Vec3":[ "3.591040", "0.000000", "-0.140000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 2.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 2.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 3",
-        "position":[ "3.591040", "0.000000", "-1.340000" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 3",
+        "position.Vec3":[ "3.591040", "0.000000", "-1.340000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 3.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 3.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair 1",
-        "position":[ "3.591040", "0.000000", "1.874818" ],
-        "rotation":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair 1",
+        "position.Vec3":[ "3.591040", "0.000000", "1.874818" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "1.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair 1.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair 1.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side chair",
-        "position":[ "3.591040", "0.000000", "3.145182" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side chair",
+        "position.Vec3":[ "3.591040", "0.000000", "3.145182" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side chair.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side chair.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side table.001",
-        "position":[ "3.591040", "0.000000", "-0.740000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side table.001",
+        "position.Vec3":[ "3.591040", "0.000000", "-0.740000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side table.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side table.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"side table",
-        "position":[ "3.591040", "0.000000", "2.510000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"side table",
+        "position.Vec3":[ "3.591040", "0.000000", "2.510000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/side table.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/side table.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"rabbit house pillar lamp.003",
-        "position":[ "1.000000", "2.393962", "-2.250000" ],
-        "rotation":[ "-0.707107", "0.000000", "-0.707107", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"rabbit house pillar lamp.003",
+        "position.Vec3":[ "1.000000", "2.393962", "-2.250000" ],
+        "rotation.Vec4":[ "-0.707107", "0.000000", "-0.707107", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.003.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.003.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"rabbit house pillar lamp.002",
-        "position":[ "1.000000", "2.393962", "-2.250000" ],
-        "rotation":[ "0.000000", "0.000000", "-1.000000", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"rabbit house pillar lamp.002",
+        "position.Vec3":[ "1.000000", "2.393962", "-2.250000" ],
+        "rotation.Vec4":[ "0.000000", "0.000000", "-1.000000", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.002.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.002.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"rabbit house pillar lamp.001",
-        "position":[ "1.000000", "2.393962", "-2.250000" ],
-        "rotation":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"rabbit house pillar lamp.001",
+        "position.Vec3":[ "1.000000", "2.393962", "-2.250000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"rabbit house pillar lamp",
-        "position":[ "1.000000", "2.393962", "-2.250000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"rabbit house pillar lamp",
+        "position.Vec3":[ "1.000000", "2.393962", "-2.250000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/rabbit house pillar lamp.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowR.005",
-        "position":[ "4.155000", "1.000000", "-0.250000" ],
-        "rotation":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowR.005",
+        "position.Vec3":[ "4.155000", "1.000000", "-0.250000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowR.005.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowR.005.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowL.005",
-        "position":[ "4.155000", "1.000000", "-1.250000" ],
-        "rotation":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowL.005",
+        "position.Vec3":[ "4.155000", "1.000000", "-1.250000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowL.005.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowL.005.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowL.004",
-        "position":[ "4.155000", "1.000000", "2.000000" ],
-        "rotation":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowL.004",
+        "position.Vec3":[ "4.155000", "1.000000", "2.000000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowL.004.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowL.004.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowR.004",
-        "position":[ "4.155000", "1.000000", "3.000000" ],
-        "rotation":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowR.004",
+        "position.Vec3":[ "4.155000", "1.000000", "3.000000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "0.707107", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowR.004.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowR.004.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowL.003",
-        "position":[ "-3.855000", "1.000000", "-0.250000" ],
-        "rotation":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowL.003",
+        "position.Vec3":[ "-3.855000", "1.000000", "-0.250000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowL.003.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowL.003.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowR.003",
-        "position":[ "-3.855000", "1.000000", "-1.250000" ],
-        "rotation":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowR.003",
+        "position.Vec3":[ "-3.855000", "1.000000", "-1.250000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowR.003.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowR.003.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowR.002",
-        "position":[ "-3.855000", "1.000000", "2.000000" ],
-        "rotation":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowR.002",
+        "position.Vec3":[ "-3.855000", "1.000000", "2.000000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowR.002.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowR.002.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowL.002",
-        "position":[ "-3.855000", "1.000000", "3.000000" ],
-        "rotation":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowL.002",
+        "position.Vec3":[ "-3.855000", "1.000000", "3.000000" ],
+        "rotation.Vec4":[ "0.707107", "0.000000", "-0.707107", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowL.002.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowL.002.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowL.001",
-        "position":[ "-2.050000", "1.000000", "4.255000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowL.001",
+        "position.Vec3":[ "-2.050000", "1.000000", "4.255000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowL.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowL.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowR.001",
-        "position":[ "-3.050000", "1.000000", "4.255000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowR.001",
+        "position.Vec3":[ "-3.050000", "1.000000", "4.255000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowR.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowR.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowR",
-        "position":[ "-0.550000", "1.000000", "4.255000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowR",
+        "position.Vec3":[ "-0.550000", "1.000000", "4.255000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowR.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowR.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"windowL",
-        "position":[ "0.450000", "1.000000", "4.255000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"windowL",
+        "position.Vec3":[ "0.450000", "1.000000", "4.255000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/windowL.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/windowL.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"entrance door",
-        "position":[ "1.850000", "0.000000", "4.255000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"entrance door",
+        "position.Vec3":[ "1.850000", "0.000000", "4.255000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/entrance door.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/entrance door.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"def.material"},
+              "2.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"celing lamp.001",
-        "position":[ "2.650000", "3.550000", "2.587337" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"celing lamp.001",
+        "position.Vec3":[ "2.650000", "3.550000", "2.587337" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/celing lamp.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/celing lamp.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"rb/em.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"celing lamp",
-        "position":[ "2.650000", "3.550000", "-0.412663" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"celing lamp",
+        "position.Vec3":[ "2.650000", "3.550000", "-0.412663" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/celing lamp.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material",
-              "rb/em.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/celing lamp.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"},
+              "1.Asset":{"Material":"rb/em.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"long chair",
-        "position":[ "-3.830000", "0.000000", "4.230000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"long chair",
+        "position.Vec3":[ "-3.830000", "0.000000", "4.230000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/long chair.mesh",
-            "modifiers":{},
-            "materials":[
-              "rb/em.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/long chair.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"door.001",
-        "position":[ "2.655000", "0.000000", "-3.050000" ],
-        "rotation":[ "-0.707107", "0.000000", "-0.707107", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"door.001",
+        "position.Vec3":[ "2.655000", "0.000000", "-3.050000" ],
+        "rotation.Vec4":[ "-0.707107", "0.000000", "-0.707107", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/door.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/door.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"door",
-        "position":[ "1.650000", "0.000000", "-5.750000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"door",
+        "position.Vec3":[ "1.650000", "0.000000", "-5.750000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/door.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/door.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar chair.005",
-        "position":[ "0.341865", "0.000000", "-3.190056" ],
-        "rotation":[ "0.997544", "0.000000", "0.070049", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar chair.005",
+        "position.Vec3":[ "0.341865", "0.000000", "-3.190056" ],
+        "rotation.Vec4":[ "0.997544", "0.000000", "0.070049", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar chair.005.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar chair.005.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar chair.004",
-        "position":[ "-0.408135", "0.000000", "-3.190056" ],
-        "rotation":[ "0.995886", "0.000000", "-0.090620", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar chair.004",
+        "position.Vec3":[ "-0.408135", "0.000000", "-3.190056" ],
+        "rotation.Vec4":[ "0.995886", "0.000000", "-0.090620", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar chair.004.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar chair.004.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar chair.003",
-        "position":[ "-1.158135", "0.000000", "-3.190056" ],
-        "rotation":[ "0.998431", "0.000000", "-0.055989", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar chair.003",
+        "position.Vec3":[ "-1.158135", "0.000000", "-3.190056" ],
+        "rotation.Vec4":[ "0.998431", "0.000000", "-0.055989", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar chair.003.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar chair.003.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar chair.002",
-        "position":[ "-1.908135", "0.000000", "-3.190056" ],
-        "rotation":[ "0.993433", "0.000000", "0.114413", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar chair.002",
+        "position.Vec3":[ "-1.908135", "0.000000", "-3.190056" ],
+        "rotation.Vec4":[ "0.993433", "0.000000", "0.114413", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar chair.002.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar chair.002.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar chair.001",
-        "position":[ "-2.658134", "0.000000", "-3.190056" ],
-        "rotation":[ "0.974189", "0.000000", "-0.225733", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar chair.001",
+        "position.Vec3":[ "-2.658134", "0.000000", "-3.190056" ],
+        "rotation.Vec4":[ "0.974189", "0.000000", "-0.225733", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar chair.001.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar chair.001.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"bar chair",
-        "position":[ "-3.408134", "0.000000", "-3.190056" ],
-        "rotation":[ "0.991013", "0.000000", "-0.133766", "0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"bar chair",
+        "position.Vec3":[ "-3.408134", "0.000000", "-3.190056" ],
+        "rotation.Vec4":[ "0.991013", "0.000000", "-0.133766", "0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/bar chair.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/bar chair.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       },
       "object":{
-        "name":"guest toilet",
-        "position":[ "0.000000", "0.000000", "-0.000000" ],
-        "rotation":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
-        "scale":[ "1.000000", "1.000000", "1.000000" ],
-        "components":{
+        "name.String":"guest toilet",
+        "position.Vec3":[ "0.000000", "0.000000", "-0.000000" ],
+        "rotation.Vec4":[ "1.000000", "0.000000", "0.000000", "-0.000000" ],
+        "scale.Vec3":[ "1.000000", "1.000000", "1.000000" ],
+        "components.ObjGroup":{
           "MeshRenderer":{
-            "mesh":".exported/rb/rabbit house.blend/guest toilet.mesh",
-            "modifiers":{},
-            "materials":[
-              "def.material"
-            ]
+            "mesh.Asset":{"Mesh":".exported/rb/rabbit house.blend/guest toilet.mesh"},
+            "modifiers.ItemGroup":{},
+            "materials.ItemGroup":{
+              "0.Asset":{"Material":"def.material"}
+            }
           }
         }
       }

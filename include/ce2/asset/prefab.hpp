@@ -23,6 +23,8 @@ public:
 
 	_Prefab(const JsonObject&, _Sig2Prb);
 
+	~_Prefab(); //explicit destructor where _ObjBase is defined
+
 	JsonObject ToJson() const;
 
     SceneObject Instantiate(_Sig2Ass) const;

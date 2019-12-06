@@ -4,7 +4,9 @@ CE_BEGIN_NAMESPACE
 
 _Prefab::_ObjBase::_ObjBase(const JsonObject& json) {
 	for (auto& i : json.group) {
-		items.push_back(std::make_pair(i.key.string, PrefabItem(i.value)));
+		auto lc = i.key.string.find_last_of('.');
+		items.push_back(std::make_pair(i.key.string.substr(0, lc),
+			PrefabItem(i.key.string.substr(lc+1), i.value)));
 	}
 }
 

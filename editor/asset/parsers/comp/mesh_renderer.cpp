@@ -9,7 +9,7 @@ CE_E_AL_IMPL_J(MeshRenderer) {
         const auto& k = g.key.string;
         const auto& v = g.value;
         if (k == "mesh") {
-            mr->mesh(static_cast<Mesh>(EAssetList::Get(EAssetType::Mesh, v.string)));
+            mr->mesh(static_cast<Mesh>(EAssetList::Get(AssetType::Mesh, v.string)));
         }
 		else if (k == "modifiers") {
 			for (auto& g : g.value.group) {
@@ -25,7 +25,7 @@ CE_E_AL_IMPL_J(MeshRenderer) {
             std::vector<Material> mats;
             for (auto& m : v.list) {
                 if (m.string != "") {
-                    mats.push_back(static_cast<Material>(EAssetList::Get(EAssetType::Material, m.string, async)));
+                    mats.push_back(static_cast<Material>(EAssetList::Get(AssetType::Material, m.string, async)));
                 }
             }
             mr->materials(mats);

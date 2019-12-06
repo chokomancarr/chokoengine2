@@ -25,10 +25,10 @@ class EAssetLoader { CE_CLASS_COMMON
 public:
 
 	static void GenDefaultScriptMeta(const std::string& path);
-    static void GenDefaultMeta(const std::string& path, const EAssetType t);
+    static void GenDefaultMeta(const std::string& path, const AssetType t);
     static void GenDefaultMeta(const std::string& path, const EExportType t);
 
-    static Asset Load(const std::string& path, const EAssetType t, bool async = false);
+    static Asset Load(const std::string& path, const AssetType t, bool async = false);
 
     static bool Load(const std::string& path, const EExportType t);
 

@@ -9,7 +9,7 @@ CE_E_AL_IMPL_J(Rig) {
         const auto& k = g.key.string;
         const auto& v = g.value;
         if (k == "armature") {
-            mr->armature(static_cast<Armature>(EAssetList::Get(EAssetType::Armature, v.string)));
+            mr->armature(static_cast<Armature>(EAssetList::Get(AssetType::Armature, v.string)));
         }
     }
 

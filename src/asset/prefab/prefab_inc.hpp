@@ -1,6 +1,9 @@
 #pragma once
 #include "chokoengine.hpp"
 
+#define CE_GET_IT(it, nm, vl) auto it = std::find(nm.begin(), nm.end(), vl);\
+	if(it != nm.end())
+
 CE_BEGIN_NAMESPACE
 
 namespace PrefabState {
@@ -29,8 +32,8 @@ CE_END_NAMESPACE
 
 #include "prefab_objref.hpp"
 #include "prefab_objbase.hpp"
+#include "prefab_item.hpp"
 #include "prefab_obj.hpp"
 #include "prefab_link.hpp"
 #include "prefab_mod.hpp"
 #include "prefab_comp.hpp"
-#include "prefab_item.hpp"

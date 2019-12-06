@@ -67,7 +67,7 @@ class CE_Exporter():
         indent2 = 4 * ' '
         self.write(prefab_file, indent2 + '"name.String":"' + self.fn + '",\n')
         self.write(prefab_file, indent2 + '"position.Vec3":[ "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"rotation.Quat":[ "1", "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"rotation.Vec4":[ "1", "0", "0", "0" ],\n')
         self.write(prefab_file, indent2 + '"scale.Vec3":[ "1", "1", "1" ],\n')
         self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
         
@@ -103,23 +103,25 @@ class CE_Exporter():
             poss = e.obj.location
             self.write(prefab_file, indent2 + '"position.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
             rott = e.obj.rotation_euler.to_quaternion()
-            self.write(prefab_file, indent2 + '"rotation.Quat":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
+            self.write(prefab_file, indent2 + '"rotation.Vec4":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
             scll = e.obj.scale
             self.write(prefab_file, indent2 + '"scale.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
 
             if e.obj.type == 'MESH':
                 self.write(prefab_file, indent2 + '"components.ObjGroup":{\n' + indent3 + '"MeshRenderer":{\n')
-                self.write(prefab_file, indent4 + '"mesh.Asset":"' + self.relfd + e.obj.name + '.mesh' + '",\n')
+                self.write(prefab_file, indent4 + '"mesh.Asset":{"Mesh":"' + self.relfd + e.obj.name + '.mesh' + '"},\n')
                 self.write(prefab_file, indent4 + '"modifiers.ItemGroup":{},\n')
                 self.write(prefab_file, indent4 + '"materials.ItemGroup":{\n')
-                for j in range(max(len(e.obj.data.materials)+1, 1)):
-                    self.write(prefab_file, indent5 + '"' + str(j) + '.Asset":"def.material",\n')
+                ml = len(e.obj.data.materials)
+                for j in range(max(ml-1, 0)):
+                    self.write(prefab_file, indent5 + '"' + str(j) + '.Asset":{"Material":"def.material"},\n')
+                self.write(prefab_file, indent5 + '"' + str(ml) + '.Asset":{"Material":"def.material"}\n')
                 self.write(prefab_file, indent4 + '}\n')
                 self.write(prefab_file, indent3 + '}\n')
                 self.export_mesh(self.fd + e.obj.name + '.mesh', e.obj)
             elif e.obj.type == 'ARMATURE':
                 self.write(prefab_file, indent2 + '"components.ObjGroup":{\n' + indent3 + '"Rig":{\n')
-                self.write(prefab_file, indent4 + '"armature.Asset":"' + self.relfd + e.obj.name + '.armature' + '"\n')
+                self.write(prefab_file, indent4 + '"armature.Asset":{"Armature":"' + self.relfd + e.obj.name + '.armature' + '"}\n')
                 self.write(prefab_file, indent3 + '}\n')
                 self.export_armature(self.fd + e.obj.name + '.armature', e.obj)
                 self.export_anim(self.fd + self.fn + '.blend/', e.obj)
@@ -150,7 +152,7 @@ class CE_Exporter():
             bm.from_mesh(obj.to_mesh())
             bpy.context.view_layer.objects.active = obj
         else:
-            bm.from_mesh(obj.to_mesh(bpy.context.scene, False, 'PREVIEW'));
+            bm.from_mesh(obj.to_mesh(bpy.context.scene, False, 'PREVIEW'))
             bpy.context.scene.objects.active = obj
         if bm.verts.layers.shape.keys():
             obj.modifiers.clear()
@@ -163,7 +165,7 @@ class CE_Exporter():
         if self.is_28:
             while (len(obj.modifiers) > 0):
                 bpy.ops.object.modifier_apply(apply_as='DATA', modifier=obj.modifiers[0].name)
-            m = obj.to_mesh();
+            m = obj.to_mesh()
         else:
             m = obj.to_mesh(bpy.context.scene, True, 'PREVIEW')
         

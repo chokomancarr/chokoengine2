@@ -14,6 +14,7 @@ public:
 		Vec2,
 		Vec3,
 		Vec4,
+		Quat,
 		String,
 		Asset,
 		SceneObject,
@@ -28,6 +29,7 @@ public:
 		Vec2 v2;
 		Vec3 v3;
 		Vec4 v4;
+		Quat q;
 		std::string s;
 		struct _assetrefst {
 			AssetType assetType;
@@ -50,6 +52,7 @@ public:
 	PrefabItem(const Vec2&);
 	PrefabItem(const Vec3&);
 	PrefabItem(const Vec4&);
+	PrefabItem(const Quat&);
 	PrefabItem(const std::string&);
 	PrefabItem(const Color&);
 	PrefabItem(const Asset&);
@@ -59,7 +62,7 @@ public:
 		std::is_enum<T>::value && !std::is_same<T, Type>::value, T>::type* = nullptr>
 	PrefabItem(const T&);
 
-	PrefabItem(const JsonObject&);
+	PrefabItem(const std::string& tp, const JsonObject&);
 
 	template <typename T>
 	typename std::enable_if<std::is_enum<T>::value, T>::type

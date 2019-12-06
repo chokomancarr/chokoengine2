@@ -21,20 +21,20 @@ CE_PR_IMPL_COMP(Light) {
 }
 
 CE_PR_IMPL_COMP_INST(Light) {
-	auto c = o->AddComponent<Light>(CE_PR_GET(type, LightType));
-	CE_PR_SET(strength, float);
-	CE_PR_SET(distance, float);
-	CE_PR_SET(radius, float);
-	CE_PR_SET(angle, float);
-	CE_PR_SET(color, Color);
-	CE_PR_SET(shadow, bool);
-	CE_PR_SET(shadowDistance, float);
-	CE_PR_SET(shadowStrength, float);
-	CE_PR_SET(shadowResolution, int);
-	CE_PR_SET(shadowBias, float);
-	CE_PR_SET(shadowOnly, bool);
-	CE_PR_SET(softShadows, bool);
-	CE_PR_SET(shadowSamples, int);
+	auto c = o->AddComponent<Light>(CE_PR_GET(type, LightType::Point));
+	CE_PR_SET(strength);
+	CE_PR_SET(distance);
+	CE_PR_SET(radius);
+	CE_PR_SET(angle);
+	CE_PR_SET(color);
+	CE_PR_SET(shadow);
+	CE_PR_SET(shadowDistance);
+	CE_PR_SET(shadowStrength);
+	CE_PR_SET(shadowResolution);
+	CE_PR_SET(shadowBias);
+	CE_PR_SET(shadowOnly);
+	CE_PR_SET(softShadows);
+	CE_PR_SET(shadowSamples);
 }
 
 CE_END_NAMESPACE

@@ -14,7 +14,7 @@ void ESceneManager::Load(const std::string& path) {
 	auto& scene = ChokoEditor::scene;
 	auto json = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
-		return (Prefab)EAssetList::Get(EAssetType::Prefab, s, true);
+		return (Prefab)EAssetList::Get(AssetType::Prefab, s, true);
 	});
 
 	//scene->RemoveObject(scene->objects()[1]);
