@@ -1,20 +1,11 @@
 namespace glsl {
 	const char surfBlurFrag[] = R"(
-uniform vec2 sres;
 uniform vec2 reso;
 uniform sampler2D colTex;
-//tri id (x), edge id (y), edge t (z)
-uniform isampler2D idTex;
 //px py t1 t2
-uniform sampler2D jmpTex;
-//model coords
-uniform samplerBuffer posBuf;
-//triangle elements
-uniform isamplerBuffer indBuf;
-//for each tri [i(xy) j(xy)]
-uniform samplerBuffer edatBuf;
-//for each tri [for each edge [i1, i2, it]]
-uniform isamplerBuffer iconBuf;
+uniform isampler2D infoTex;
+//matrices
+uniform samplerBuffer matTex;
 uniform vec2 dir0;
 
 out vec4 outColor;
@@ -26,134 +17,53 @@ const int tolerance = 2;
 const int BLUR_CNT = 10;
 
 const float kernel[11] = float[](
-	0.100346, 0.097274, 0.088613, 0.075856,
-	0.061021, 0.046128, 0.032768, 0.021874,
-	0.013722, 0.008089, 0.004481 );
-
-float length2(vec3 r) {
-	return dot(r, r);
-}
-
-vec2 rebase2(vec2 v, vec2 i, vec2 j) {
-	mat2 m;
-	m[0] = i; m[1] = j;
-	return inverse(m) * v;
-}
-
-vec2 rebase3(vec3 v, vec3 i, vec3 j) {
-	vec3 k = cross(i, j);
-	mat3 m;
-	m[0] = i; m[1] = j; m[2] = k;
-	return (inverse(m) * v).xy;
-}
-
-vec3 getvertex(int t, int e) {
-	return texelFetch(posBuf, texelFetch(indBuf, t)[e]).xyz;
-}
-
-vec3 getcenter(int i) {
-	ivec3 ids = texelFetch(indBuf, i).xyz;
-	return (texelFetch(posBuf, ids.x).xyz +
-		texelFetch(posBuf, ids.y).xyz +
-		texelFetch(posBuf, ids.z).xyz) * 0.333333;
-}
-
-vec3 getperp(vec3 v, vec3 n) {
-	vec3 t = cross(v, n);
-	return normalize(cross(n, t));
-}
-
-//rotates r to plane xt, rotated along x
-vec3 orient(vec3 r, vec3 x, vec3 t) {
-	x = normalize(x);
-	t = normalize(t);
-	float th = dot(r, x);
-	float lt = sqrt(length2(r) - th * th);
-	return th * x + lt * t;
-}
+	0.082607, 0.080977, 0.076276,
+	0.069041, 0.060049, 0.050187,
+	0.040306, 0.031105, 0.023066,
+	0.016436, 0.011254 );
 
 vec4 sample(
 		vec2 dr, //direction
-		ivec2 px, //first pixel
+		ivec4 npx, //first data
 		vec2 uv, vec2 dreso) {
 
 	vec2 poso = uv;
 
 	vec2 drr = dr * dreso;
-	vec2 pos = uv + dr;
-	int tid = px.x - 1;
-	int eid = px.y;
+	vec2 pos = uv;
+	int tid = npx.z - 1;
+	int eid = npx.w;
+
+	ivec4 npxo;
 
 	vec4 col = vec4(0, 0, 0, 0);
 
 	for (int a = 0; a < BLUR_CNT; a++) {
-		vec4 nxt = texture(jmpTex, pos * dreso);
-		ivec2 npx;
-		if (nxt.x >= 0) { //jump here
-			pos = nxt.xy * reso;
-			npx.x = int(nxt.z);
-			npx.y = int(nxt.w);
+		pos += dr;
+		npxo = npx;
+		npx = texture(infoTex, pos * dreso);
+		if (npx.x > 0) { //jump here
+			pos = (npx.xy - 1) / 100000.0 * reso;
 		}
 		else {
-			npx = texture(idTex, pos * dreso).xy;
-			if (npx.x <= 0) { //not triangle, go back
+			if (npx.z == 0) { //not triangle, go back
 				pos = poso;
-				npx = texture(idTex, pos * dreso).xy;
+				npx = npxo;
 			}
 		}
-		int tid2 = npx.x - 1;
-		if (tid2 < 0) tid2 = tid;
+		int tid2 = npx.z - 1;
 		if (tid != tid2) {
-			//get texture vectors
-			vec4 ed = texelFetch(edatBuf, tid * 3);
-
-			//convert to triangle space
-			vec2 ts1 = rebase2(dr, ed.xy, ed.zw);
-
-			//get world vectors
-			vec3 t1i = texelFetch(edatBuf, tid * 3 + 1).xyz; //AB
-			vec3 t1j = texelFetch(edatBuf, tid * 3 + 2).xyz; //AC
-
-			//get rotation axis
-			vec3 t1k = t1i; //edge 1: AB
-			if (eid == 1) t1k = normalize(t1j - t1i); //edge 2: BC = AC - AB
-			else if (eid == 2) t1k = -t1j; //edge 3: CA
-			vec3 t2k = -t1k;
-			
-			//get point on axis
-			vec3 tpt = getvertex(tid, eid);
-
-			//get world space
-			vec3 ws = normalize(t1i * ts1.x + t1j * ts1.y);
-
-			//get world vectors 2
-			vec3 t2i = texelFetch(edatBuf, tid2 * 3 + 1).xyz;
-			vec3 t2j = texelFetch(edatBuf, tid2 * 3 + 2).xyz;
-
-			//get world center 2
-			vec3 wc2 = getcenter(tid2);
-
-			//get plane direction 2
-			vec3 t2t = getperp(wc2 - tpt, t2k);
-
-			//orient vector
-			vec3 ws2 = orient(ws, t2k, t2t);
-
-			//get new triangle space
-			vec2 ts2 = rebase3(ws2, t2i, t2j);
-
-			//get texture vectors 2
-			vec4 tcd = texelFetch(edatBuf, tid * 3);
+			vec4 rmatv = texelFetch(matTex, tid * 3 + eid);
+			mat2 rmat = mat2(rmatv.xy, rmatv.zw);
+			dr = rmat * dr;
 
 			//new coords
 			tid = tid2;
-			dr = tcd.xy * ts2.x + tcd.zw * ts2.y;
 			dr = normalize(dr);
 			drr = dr * dreso;
 		}
-		eid = npx.y;
 		poso = pos;
-		pos += dr;
+		eid = npx.w;
 
 		col += texture(colTex, pos * dreso) * kernel[a+1];
 	}
@@ -163,34 +73,26 @@ vec4 sample(
 void main() {
 	vec2 uv = gl_FragCoord.xy;
 	vec2 dreso = 1.0 / reso;
-	vec2 uvr = uv / sres;
-	uv = uvr * reso;
+	vec2 uvr = uv * dreso;
 
 	//this color
 	vec4 col = texture(colTex, uvr);
 
-	ivec2 px;
-	//jump?
-	vec4 jx = texture(jmpTex, uvr);
-	if (jx.x >= 0) {
-		uvr = jx.xy;
+	ivec4 info = texture(infoTex, uvr);
+	if (info.x > 0) { //jump here
+		uvr = (info.xy - 1) / 100000.0;
 		uv = uvr * reso;
-		px.x = int(jx.z);
-		px.y = int(jx.w);
 	}
 	else {
-		//in triangle?
-		px = texture(idTex, uvr).xy;
-		if (px.x == 0) {
+		if (info.z == 0) { //not triangle, end
 			outColor = col;
-			//outColor = vec4(0, 0, 0, 0);
 			return;
 		}
 	}
 
 	outColor = col * kernel[0] +
-		sample(dir0, px, uv, dreso) + 
-		sample(-dir0, px, uv, dreso);
+		sample(dir0, info, uv, dreso) + 
+		sample(-dir0, info, uv, dreso);
 }
 )";
 }

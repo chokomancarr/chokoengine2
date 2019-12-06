@@ -7,6 +7,7 @@
 #include "glsl/uvinfo.h"
 #include "glsl/uvinfo_exp.h"
 #include "glsl/uvjmpgen.h"
+#include <iomanip>
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -17,12 +18,10 @@ Shader MeshUtils::blurShad;
 
 void MeshUtils::Init() {
 	(padShad = Shader::New(glsl::minVert, glsl::padTextureFrag))
-		->AddUniforms({ "reso", "colTex", "jmpTex", "idTex" });
+		->AddUniforms({ "reso", "colTex", "infoTex" });
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
-			"sres", "reso", "colTex", "idTex", 
-			"jmpTex", "posBuf", "indBuf", "edatBuf",
-			"iconBuf", "dir0", "blurcnt"
+			"reso", "colTex", "infoTex", "matTex", "dir0"
 		});
 
 	initd = true;
@@ -37,12 +36,19 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 
 	MeshSurfaceData data = {};
 
+	data.vertCount = m->vertexCount();
+	data.indCount = m->triangleCount();
+
+	std::vector<glm::mat2x2> mTex2Tri(data.indCount);
+	std::vector<glm::mat2x3> mTri2Mesh(data.indCount);
+	std::vector<glm::mat3x3> mAlignPlane(data.indCount * 3);
+	std::vector<glm::mat3x2> mMesh2Tri(data.indCount);
+	std::vector<glm::mat2x2> mTri2Tex(data.indCount);
+	std::vector<glm::mat2x2> mTransform(data.indCount * 3);
+
 	const auto& poss = m->positions();
 	const auto& uvs = m->texcoords();
 	const auto& inds = m->triangles();
-
-	data.vertCount = m->vertexCount();
-	data.indCount = m->triangleCount();
 
 	//--------- mesh buffers -----------
 	data.positions = TextureBuffer::New(
@@ -138,6 +144,85 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 		VertexBuffer_New(false, 4, data.indCount * 3, icons.data()),
 		GL_RGBA32I);
 
+	//--------- transform matrices -----------
+
+#define _m(v) (v >= 0 ? " " : "") << v
+
+	const auto printm2 = [](std::string nm, glm::mat2x2 m) {
+		std::cout << nm << std::fixed << std::setprecision(5) << " = [ " << _m(m[0][0]) << " , " << _m(m[1][0]) << "\n"
+			<< std::string(nm.length() + 5, ' ') << _m(m[0][1]) << " , " << _m(m[1][1]) << " ]" << std::endl;
+	};
+	const auto printm32 = [](std::string nm, glm::mat3x2 m) {
+		std::cout << nm << std::fixed << std::setprecision(5) << " = [ " << _m(m[0][0]) << " , " << _m(m[1][0]) << " , " << _m(m[2][0]) << "\n"
+			<< std::string(nm.length() + 5, ' ') << _m(m[0][1]) << " , " << _m(m[1][1]) << " , " << _m(m[2][1]) << " ]" << std::endl;
+	};
+	const auto printm23 = [](std::string nm, glm::mat2x3 m) {
+		std::cout << nm << std::fixed << std::setprecision(5) << " = [ " << _m(m[0][0]) << " , " << _m(m[1][0]) << "\n"
+			<< std::string(nm.length() + 5, ' ') << _m(m[0][1]) << " , " << _m(m[1][1]) << "\n"
+			<< std::string(nm.length() + 5, ' ') << _m(m[0][2]) << " , " << _m(m[1][2]) << " ]" << std::endl;
+	};
+	const auto printm3 = [](std::string nm, glm::mat3x3 m) {
+		std::cout << nm << std::fixed << std::setprecision(5) << " = [ " << _m(m[0][0]) << " , " << _m(m[1][0]) << " , " << _m(m[2][0]) << "\n"
+			<< std::string(nm.length() + 5, ' ') << _m(m[0][1]) << " , " << _m(m[1][1]) << " , " << _m(m[2][1]) << "\n"
+			<< std::string(nm.length() + 5, ' ') << _m(m[0][2]) << " , " << _m(m[1][2]) << " , " << _m(m[2][2]) << " ]" << std::endl;
+	};
+
+#undef _m
+
+	for (auto i = 0; i < data.indCount; i++) {
+		const auto& v = edata[i*3];
+		printm2("mTri2Tex " + std::to_string(i), mTri2Tex[i] = glm::mat2x2(v.x, v.y, v.z, v.w));
+		printm2("mTex2Tri " + std::to_string(i), mTex2Tri[i] = glm::inverse(mTri2Tex[i]));
+		const auto vm1 = (glm::vec3)edata[i*3 + 1];
+		const auto vm2 = (glm::vec3)edata[i*3 + 2];
+		const auto vm3 = glm::cross(vm1, vm2);
+		printm23("mTri2Mesh " + std::to_string(i), mTri2Mesh[i] = glm::mat2x3(vm1, vm2));
+		const auto m3 = glm::mat3x3(vm1, vm2, vm3);
+		printm32("mMesh2Tri " + std::to_string(i), mMesh2Tri[i] = (glm::mat3x2)glm::inverse(m3));
+		
+		const glm::vec3 axes[3] = {
+			vm1, vm2 - vm1, -vm2
+		};
+		for (int e = 0; e < 3; e++) {
+			auto ic = icons[i * 3 + e];
+			int c = ic.z;
+			if (c == -1) continue;
+			int j = ic.w / 3;
+			if (j > i) continue;
+			int f = ic.w - j * 3;
+			const auto& x = axes[e];
+			const auto& xp = *(glm::vec3*)&m->positions()[m->triangles()[i][e]];
+			const auto xc = (
+				m->positions()[m->triangles()[i][0]] +
+				m->positions()[m->triangles()[i][1]] +
+				m->positions()[m->triangles()[i][2]]
+			) * 0.333333f;
+			const auto tp = *(glm::vec3*)&m->positions()[c];
+			auto tmp = glm::cross(tp - xp, x);
+			auto td = normalize(glm::cross(x, tmp));
+			tmp = glm::cross(x, *(glm::vec3*)&xc - xp);
+			auto ts = normalize(glm::cross(x, tmp));
+			float a = std::acos(glm::dot(ts, td)) * 180 / 3.14159f;
+			if (dot(tmp, td) < 0) a = 360 - a;
+			std::cout << "axis angle " + std::to_string(i) + ":" + std::to_string(e)
+				+ " = (" << x.x << ", " << x.y << ", " << x.z << ") " << a << std::endl;
+			auto q = Quat::FromAxisAngle(*(Vec3*)&x, a);
+			printm3("rotation " + std::to_string(i) + ":" + std::to_string(e),
+				mAlignPlane[i * 3 + e] = glm::mat3_cast(*(glm::quat*)&q)
+			);
+			printm2("transform " + std::to_string(i) + ":" + std::to_string(e),
+				mTransform[i * 3 + e] = mTri2Tex[j] * mMesh2Tri[j] * mAlignPlane[i * 3 + e] * mTri2Mesh[i] * mTex2Tri[i]
+			);
+			printm2("transform " + std::to_string(j) + ":" + std::to_string(f),
+				mTransform[j * 3 + f] = glm::inverse(mTransform[i * 3 + e])
+			);
+		}
+	}
+
+	data.uvMats = TextureBuffer::New(
+		VertexBuffer_New(true, 4, data.indCount * 3, mTransform.data()),
+		GL_RGBA32F);
+
 	return data;
 }
 
@@ -159,9 +244,6 @@ void MeshUtils::PadTexture(MeshSurfaceData& data, const Texture& src, const Rend
 	glUniform1i(padShad->Loc(2), 1);
 	glActiveTexture(GL_TEXTURE1);
 	info.jmpInfoTex->tex(0)->Bind();
-	glUniform1i(padShad->Loc(3), 2);
-	glActiveTexture(GL_TEXTURE2);
-	info.uvInfoTex->tex(0)->Bind();
 
 	tar->BindTarget();
 	tar->Clear(Color(0, 0), 1);
@@ -185,30 +267,16 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	blurShad->Bind();
 
 	glUniform2f(blurShad->Loc(0), w, h);
-	glUniform2f(blurShad->Loc(1), w, h);
-	glUniform1i(blurShad->Loc(2), 0);
+	glUniform1i(blurShad->Loc(1), 0);
 	glActiveTexture(GL_TEXTURE0);
 	src->Bind();
-	glUniform1i(blurShad->Loc(3), 1);
+	glUniform1i(blurShad->Loc(2), 1);
 	glActiveTexture(GL_TEXTURE1);
-	info.uvInfoTex->tex(0)->Bind();
-	glUniform1i(blurShad->Loc(4), 2);
-	glActiveTexture(GL_TEXTURE2);
 	info.jmpInfoTex->tex(0)->Bind();
-	glUniform1i(blurShad->Loc(5), 3);
-	glActiveTexture(GL_TEXTURE3);
-	data.positions->Bind();
-	glUniform1i(blurShad->Loc(6), 4);
-	glActiveTexture(GL_TEXTURE4);
-	data.indices->Bind();
-	glUniform1i(blurShad->Loc(7), 5);
-	glActiveTexture(GL_TEXTURE5);
-	data.edgeData->Bind();
-	glUniform1i(blurShad->Loc(8), 6);
-	glActiveTexture(GL_TEXTURE6);
-	data.iconData->Bind();
-	glUniform2f(blurShad->Loc(9), 1, 0);
-	glUniform1i(blurShad->Loc(10), (int)size);
+	glUniform1i(blurShad->Loc(3), 2);
+	glActiveTexture(GL_TEXTURE2);
+	data.uvMats->Bind();
+	glUniform2f(blurShad->Loc(4), 1, 0);
 
 	tmp->BindTarget();
 	tmp->Clear(Color(0, 0), 1);
@@ -218,7 +286,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	tar->Clear(Color(0, 0), 1);
 	glActiveTexture(GL_TEXTURE0);
 	tmp->Bind();
-	glUniform2f(blurShad->Loc(9), 0, 1);
+	glUniform2f(blurShad->Loc(4), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
 	tar->UnbindTarget();
@@ -289,7 +357,7 @@ const MeshSurfaceData::infoTexSt& MeshSurfaceData::GenInfoTex(const Int2& res) {
 */
 	uvInfoShad->Unbind();
 
-	jmpInfoTex = FrameBuffer_New(res.x, res.y, { GL_RGBA32F });
+	jmpInfoTex = FrameBuffer_New(res.x, res.y, { GL_RGBA32I });
 	jmpInfoTex->Bind();
 	jmpInfoTex->Clear();
 

@@ -7,7 +7,7 @@ uniform samplerBuffer uvcoords;
 uniform isampler2D uvinfo;
 uniform isamplerBuffer iconData;
 
-out vec4 outColor;
+out ivec4 outColor;
 
 const float rad2deg = 180 / 3.14159;
 	
@@ -34,7 +34,7 @@ float lineline(vec2 p1, vec2 p2, vec2 p3, vec2 p4) {
 ivec4 smp(vec2 v) {
 	return texture(uvinfo, v / reso);
 }
-
+ 
 vec4 get_tarv(ivec3 icon) {
 	vec2 v1 = texelFetch(uvcoords, icon.x).xy;
 	vec2 v2 = texelFetch(uvcoords, icon.y).xy;
@@ -51,10 +51,10 @@ vec4 get_tarv(ivec3 icon) {
 	);
 }
 
-vec4 get_output(int id, int vid, int eid, vec2 p, vec2 v1, vec2 v2, vec2 vc) {
+ivec4 get_output(int id, int vid, int eid, vec2 p, vec2 v1, vec2 v2, vec2 vc) {
 	ivec4 icon = texelFetch(iconData, id);
 	if (icon.x < 0) { //no connection
-		return vec4(-1, 0, 0, 0);
+		return ivec4(0, 0, 0, 0);
 	}
 
 	vec2 tar1 = texelFetch(uvcoords, icon.x).xy;
@@ -62,10 +62,10 @@ vec4 get_output(int id, int vid, int eid, vec2 p, vec2 v1, vec2 v2, vec2 vc) {
 	
 	float lp = lineline(v1, v2, vc, p);
 
-	//float lp = (lx / (lx + v21l));
-	//float lp = acos(c1) / (acos(c1) + acos(c2));
-	return vec4(
-		mix(tar1, tar2, lp),
+	vec2 lr = mix(tar1, tar2, lp);
+	
+	return ivec4(
+		int(100000 * lr.x) + 1, int(100000 * lr.y) + 1,
 		icon.w / 3 + 1, icon.w - (icon.w / 3) * 3);
 }
 
@@ -74,7 +74,7 @@ void main() {
 
 	ivec4 info = smp(uv);
 	if (info.x > 0) { //pixel inside triangle
-		outColor = vec4(-1, info.x * 0.3, 0.1 + info.y * 0.3, 0);
+		outColor = ivec4(0, 0, info.x, info.y);
 		return;
 	}
 
@@ -133,7 +133,7 @@ void main() {
 		}
 	}
 
-	outColor = vec4(-1, 0, 0, 0); //blank
+	outColor = ivec4(0, 0, 0, 0); //blank
 }
 )";
 }
