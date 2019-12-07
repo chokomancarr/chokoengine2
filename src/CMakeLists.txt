@@ -1,6 +1,7 @@
 target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/chokoengine.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/chokolait.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/object_base.cpp
 )
 
 add_subdirectory(3rdparty)

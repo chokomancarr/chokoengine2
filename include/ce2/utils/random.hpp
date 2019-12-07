@@ -3,11 +3,13 @@
 
 CE_BEGIN_NAMESPACE
 
-class Random { CE_CLASS_COMMON
+namespace Random {
 
-    static float RadicalInverse(uint bits);
-public:
-    static std::vector<Vec2> Hammersley(uint n);
-};
+	float Value();
+
+	float Range(float min, float max);
+
+    std::vector<Vec2> Hammersley(uint n);
+}
 
 CE_END_NAMESPACE

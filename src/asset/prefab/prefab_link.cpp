@@ -2,86 +2,65 @@
 
 CE_BEGIN_NAMESPACE
 
-_PrefabLink::_PrefabLink(const SceneObject& obj)
-	: tar(obj->prefab().lock()), enabled(true), mods(0) {
-	int i = 0;
-	std::function<void(const SceneObject&)> find = [&](const SceneObject& o) {
-		if (o->prefab() == tar) {
-			i++;
-			for (auto& c : o->children()) {
-				find(c);
+_PrefabLink::_PrefabLink(const SceneObject& obj, bool flnk)
+	: tar(obj->prefab()) {
+	name = "prefab";
+
+	CE_PR_ADDV(target, tar);
+	CE_PR_ADDV(name, obj->name());
+	const auto& tr = obj->transform();
+	CE_PR_ADDV(position, tr->localPosition());
+	CE_PR_ADDV(rotation, tr->localRotation());
+	CE_PR_ADDV(scale, tr->localScale());
+
+	PrefabObjGroup chlds = {};
+
+	/* if flnk, look for child objects that are not a part of sub-prefabs
+	 * in that case, the first parent prefab should be us
+	 */
+	static const std::function<void(const SceneObject&)> find = [&](const SceneObject& o) {
+		auto& pr = o->prefab();
+		/* we check if the object is spawned by any prefab other than the base object
+		 * as prefabs may contain other prefabs as well
+		 */
+		if (pr == PrefabState::activePrefabs.top()) { //this object is with the base object
+			if (flnk) { //only the topmost link writes extra objects
+				chlds.push_back(PrefabObj_New(o, true, false));
 			}
 		}
+		else if (pr != tar) { //different prefab, spawn
+			chlds.push_back(PrefabLink_New(o, false));
+		}
 		else {
-			if (!o->prefab()) {
-				auto mod = PrefabMod_New();
-				mod->type = _PrefabMod::Type::Object;
-				mod->target = Prefab_ObjRef(o, obj);
-				mod->target.path[0].second = 0;
-				mod->object = PrefabObj_New(o, true);
-				mods.push_back(std::move(mod));
-			}
-			else {
-				CE_NOT_IMPLEMENTED
+			for (auto& c : o->children()) {
+				find(c);
 			}
 		}
 	};
 
 	find(obj);
-}
-
-_PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {
-	static const std::string TypeStr[]{
-		"Modify",
-		"Object"
-	};
-
-	tar = PrefabState::sig2PrbFn(json.Get("sig").string);
-	name = json.Get("name").string;
-	enabled = json.Get("enabled").ToBool();
-	transform.position = json.Get("position").ToVec3();
-	transform.rotation = json.Get("rotation").ToQuat();
-	transform.scale = json.Get("scale").ToVec3();
-	for (auto& m : json.Get("mods").list) {
-		auto mod = PrefabMod_New();
-		mod->type = (_PrefabMod::Type)(std::find(TypeStr, TypeStr + 2, m.Get("type").string) - TypeStr);
-		mod->target = Prefab_ObjRef(m.Get("target"));
-		mod->object = PrefabObj_New(m.Get("object"));
-		mods.push_back(std::move(mod));
+	if (chlds.size() > 0) {
+		CE_PR_ADDV(children, std::move(chlds));
 	}
 }
 
-JsonPair _PrefabLink::ToJson() const {
-	auto res = _PrefabObjBase::ToJson();/*
-	res.group.push_back(JsonPair(JsonObject("type"), JsonObject("link")));
-	res.group.push_back(JsonPair(JsonObject("sig"), tar->assetSignature()));
-	res.group.push_back(JsonPair(JsonObject("name"), name));
-	res.group.push_back(JsonPair(JsonObject("enabled"), JsonObject(enabled ? "1" : "0")));
-	res.group.push_back(JsonPair(JsonObject("position"), JsonObject::FromVec3(transform.position)));
-	res.group.push_back(JsonPair(JsonObject("rotation"), JsonObject::FromQuat(transform.rotation)));
-	res.group.push_back(JsonPair(JsonObject("scale"), JsonObject::FromVec3(transform.scale)));
-	if (!mods.empty()) {
-		JsonObject chds(JsonObject::Type::List);
-		for (auto& c : mods) {
-			chds.list.push_back(c->ToJson());
-		}
-		res.group.push_back(JsonPair(JsonObject("mods"), chds));
-	}*/
-	return res;
-}
+_PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {}
 
 SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
 	auto res = tar->Instantiate(PrefabState::sig2AssFn);
-	res->name(name);
-	res->transform()->localPosition(transform.position);
-	res->transform()->localRotation(transform.rotation);
-	res->transform()->localScale(transform.scale);
+	res->name(_CE_PR_GET<std::string>(this, "name", res->name()));
+	res->transform()->localPosition(CE_PR_GET(position, Vec3()));
+	res->transform()->localRotation(CE_PR_GET(rotation, Quat::identity()));
+	res->transform()->localScale(CE_PR_GET(scale, Vec3(1)));
+
+	const auto& chlds = CE_PR_GETI(children);
+	CE_PR_IFVALID(chlds) {
+		for (auto& c : chlds->second.value.objgroup) {
+			c->Instantiate(res);
+		}
+	}
 
 	res->parent(pr);
-
-	for (auto& m : mods) {
-		m->Instantiate(res);
-	}
 
 	return res;
 }

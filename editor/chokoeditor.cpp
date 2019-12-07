@@ -57,6 +57,10 @@ void ChokoEditor::Main() {
 			return EAssetList::Get(t, s, true);
 		}), scene->objects()[1]);
 
+	auto json = Prefab::New(scene->objects()[1], true)->ToJson();
+	
+	std::ofstream(IO::path() + "b.json") << JsonParser::Export(json);
+
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
 

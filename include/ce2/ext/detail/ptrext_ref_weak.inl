@@ -13,11 +13,23 @@ template <class T>
 Ref_w<T>::Ref_w(std::nullptr_t) : _object(_TpPtr()) {}
 
 template <class T>
-template <class U>
+template <class U, typename std::enable_if<
+	std::is_base_of<T, U>::value, U>::type*>
 Ref_w<T>::Ref_w(const Ref<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
 
 template <class T>
-template <class U>
+template <class U, typename std::enable_if<
+	!std::is_base_of<T, U>::value, U>::type*>
+Ref_w<T>::Ref_w(const Ref<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
+
+template <class T>
+template <class U, typename std::enable_if<
+	std::is_base_of<T, U>::value, U>::type*>
+Ref_w<T>::Ref_w(const Ref_w<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
+
+template <class T>
+template <class U, typename std::enable_if<
+	!std::is_base_of<T, U>::value, U>::type*>
 Ref_w<T>::Ref_w(const Ref_w<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
 
 template <class T>

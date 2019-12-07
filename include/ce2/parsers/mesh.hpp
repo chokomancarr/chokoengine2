@@ -3,10 +3,9 @@
 
 CE_BEGIN_NAMESPACE
 
-class MeshLoader {
-public:
-	static Mesh LoadObj(const std::string& path);
-	static Mesh LoadMesh(const std::string& path);
-};
+namespace MeshLoader {
+	Mesh LoadObj(const std::string& path);
+	Mesh LoadMesh(const std::string& path);
+}
 
 CE_END_NAMESPACE

@@ -19,10 +19,20 @@ public:
 
 	Ref_w(std::nullptr_t);
 
-	template <class U>
+	template <class U, typename std::enable_if<
+		std::is_base_of<T, U>::value, U>::type* = nullptr>
+	Ref_w(const Ref<U>& ref);
+
+	template <class U, typename std::enable_if<
+		!std::is_base_of<T, U>::value, U>::type* = nullptr>
 	explicit Ref_w(const Ref<U>& ref);
 
-	template <class U>
+	template <class U, typename std::enable_if<
+		std::is_base_of<T, U>::value, U>::type* = nullptr>
+	Ref_w(const Ref_w<U>& ref);
+
+	template <class U, typename std::enable_if<
+		!std::is_base_of<T, U>::value, U>::type* = nullptr>
 	explicit Ref_w(const Ref_w<U>& ref);
 
 	Ref_w<T>& operator =(const Ref<T>& rhs);

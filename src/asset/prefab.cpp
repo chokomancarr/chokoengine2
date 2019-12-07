@@ -2,9 +2,14 @@
 
 CE_BEGIN_NAMESPACE
 
-_Prefab::_Prefab(const SceneObject& o, bool link) : _data(new _PrefabObj(o, link)) {}
+_Prefab::_Prefab(const SceneObject& o, bool link) : _Asset(AssetType::Prefab) {
+	PrefabState::activePrefabs.swap(std::stack<Prefab>());
+	PrefabState::activePrefabs.push(o->prefab());
+	_data = PrefabObj(new _PrefabObj(o, link, true));
+	PrefabState::activePrefabs.pop();
+}
 
-_Prefab::_Prefab(const JsonObject& json, _Sig2Prb fn) {
+_Prefab::_Prefab(const JsonObject& json, _Sig2Prb fn) : _Asset(AssetType::Prefab) {
 	PrefabState::sig2PrbFn = fn;
 	if (json.group[0].key.string != "object") {
 		Debug::Warning("Prefab", "Cannot create from json: no object entry!");
@@ -22,7 +27,11 @@ JsonObject _Prefab::ToJson() const {
 
 SceneObject _Prefab::Instantiate(_Sig2Ass fn) const {
 	PrefabState::sig2AssFn = fn;
-	return _data->Instantiate(nullptr);
+	PrefabState::activePrefabs.swap(std::stack<Prefab>());
+	PrefabState::activePrefabs.push(get_shared<_Prefab>());
+	const auto& res = _data->Instantiate(nullptr);
+	PrefabState::activePrefabs.pop();
+	return res;
 }
 
 CE_END_NAMESPACE

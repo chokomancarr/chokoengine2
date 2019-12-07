@@ -65,12 +65,6 @@ typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
 class _VertexArray;
 typedef std::shared_ptr<_VertexArray> VertexArray;
 
-class Math;
-class Procedurals;
-class Random;
-class Subprocess;
-class UniqueCallerList;
-
 class PrefabManager;
 
 CE_OBJECT(Object)

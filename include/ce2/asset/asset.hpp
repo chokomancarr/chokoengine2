@@ -6,11 +6,13 @@ CE_BEGIN_NAMESPACE
 
 class _Asset : public _Object { CE_OBJECT_COMMON
 protected:
-    _Asset();
+    _Asset(AssetType);
 
     std::string _assetSignature;
 public:
     virtual ~_Asset() = default;
+
+	const AssetType assetType;
 
     CE_GET_SET_MEMBER(assetSignature);
 };

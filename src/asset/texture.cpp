@@ -4,14 +4,13 @@
 
 CE_BEGIN_NAMESPACE
 
-_Texture::_Texture(std::nullptr_t)
-		: _pointer(0), _width(0), _height(0), _hdr(false) {}
+_Texture::_Texture(std::nullptr_t) : _Texture(0, 0, 0) {}
 
 _Texture::_Texture(uint w, uint h, GLuint ptr)
-		: _pointer(ptr), _width(w), _height(h), _hdr(false) {}
+		: _Asset(AssetType::Texture), _pointer(ptr), _width(w), _height(h), _hdr(false) {}
 
 _Texture::_Texture(uint w, uint h, bool hdr, const TextureOptions& opts)
-		: _width(w), _height(h), _channels(4), _hdr(hdr) {
+		: _Asset(AssetType::Texture), _width(w), _height(h), _channels(4), _hdr(hdr) {
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
 	std::vector<byte> data(w * h * 4);
@@ -21,7 +20,7 @@ _Texture::_Texture(uint w, uint h, bool hdr, const TextureOptions& opts)
 }
 
 _Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts, const void* pixels, const GLenum pixelFmt, const GLenum pixelType)
-		: _width(w), _height(h) {
+		: _Texture(w, h, 0) {
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
 	glTexImage2D(GL_TEXTURE_2D, 0, type, (int)w, (int)h, 0, pixelFmt, pixelType, pixels);
@@ -33,7 +32,7 @@ _Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts, cons
 }
 
 _Texture::_Texture(const std::string& path, const TextureOptions& opts, bool async)
-			: _pointer(0), _width(0), _height(0), _hdr(false), _opts(opts), _pixels({}) {
+			: _Asset(AssetType::Texture), _pointer(0), _width(0), _height(0), _hdr(false), _opts(opts), _pixels({}) {
 	_asyncThread = std::thread([&](const std::string& path) {
 		CE_OBJECT_SET_ASYNC_LOADING;
 		std::string ss = path.substr(path.find_last_of('.') + 1, std::string::npos);
@@ -123,7 +122,7 @@ void _Texture::Unbind() const {
 void _Texture::Blit(const RenderTarget& dst, const Material& mat) {
 	dst->BindTarget();
 	glViewport(0, 0, dst->width(), dst->height());
-	Ref<_Texture> tex(std::static_pointer_cast<_Texture>(shared_from_this()));
+	auto tex = get_shared<_Texture>();
 	glBlendFunc(GL_ONE, GL_ZERO);
 	if (!mat) {
 		UI::Texture(Rect(0, 0, Display::width(), Display::height()), tex);

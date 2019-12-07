@@ -76,7 +76,9 @@ void _Background::LoadAsync() {
 	_loading = false;
 }
 
-_Background::_Background(const std::string& path, int div, bool async) : _pointer(0), _width(0), _height(0), _layers(div), _brightness(1) {
+/* vvvvv change to background assettype
+ */
+_Background::_Background(const std::string& path, int div, bool async) : _Asset(AssetType::Texture), _pointer(0), _width(0), _height(0), _layers(div), _brightness(1) {
     if (!initd)
         Init();
 

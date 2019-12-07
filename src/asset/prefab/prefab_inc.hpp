@@ -9,6 +9,10 @@ CE_BEGIN_NAMESPACE
 namespace PrefabState {
     extern _Prefab::_Sig2Prb sig2PrbFn;
     extern _Prefab::_Sig2Ass sig2AssFn;
+
+	extern std::stack<Prefab> activePrefabs;
+
+	extern std::stack<SceneObject> activeBaseObjs;
 }
 
 typedef _Prefab::_ObjBase _PrefabObjBase;

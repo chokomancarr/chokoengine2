@@ -29,7 +29,7 @@ PR_CTOR(const Color&, Vec4, v4);
 PrefabItem::PrefabItem(const Asset& a) : value({}), type(Type::Asset) {
 	auto& av = value.assetref;
 	av.sig = a->assetSignature();
-	//av.assetType = AssetList::TypeOf(av.sig).assetType;
+	av.assetType = a->assetType;
 }
 PrefabItem::PrefabItem(const SceneObject& s) : value({}), type(Type::SceneObject) {
 	//value.scobjref = Prefab_ObjRef(s, ChokoEditor::scene->objects()[1]);
@@ -38,6 +38,12 @@ PrefabItem::PrefabItem(const Component& c) : value({}), type(Type::Component) {
 	//auto& cv = value.compref;
 	//cv.obj = Prefab_ObjRef(c->object(), ChokoEditor::scene->objects()[1]);
 	//cv.type = c->componentType;
+}
+PrefabItem::PrefabItem(PrefabItemGroup g) : value({}), type(Type::ItemGroup) {
+	value.group = std::move(g);
+}
+PrefabItem::PrefabItem(PrefabObjGroup g) : value({}), type(Type::ObjGroup) {
+	value.objgroup = std::move(g);
 }
 
 /* Construct from json object

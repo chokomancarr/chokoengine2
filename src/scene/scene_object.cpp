@@ -3,8 +3,8 @@
 CE_BEGIN_NAMESPACE
 
 _SceneObject::_SceneObject(const std::string& nm, 
-        const Vec3& pos, const Quat& rot, const Vec3& scl) : _Object() {
-    _name = nm;
+        const Vec3& pos, const Quat& rot, const Vec3& scl) : _Object(nm),
+		_components(0), _children(0), _scene(nullptr), _parent(nullptr), _prefabs(0) {
 	_transform._object = this;
 	_transform._localPosition = pos;
 	_transform._localScale = scl;
@@ -53,6 +53,11 @@ void _SceneObject::parent(const SceneObject& _p) {
     p->_children.push_back(get_shared<_SceneObject>());
 
     _transform.UpdateParentMatrix();
+}
+
+Prefab _SceneObject::prefab() {
+	if (!_prefabs.size() || !_prefabs[0]) return nullptr;
+	return _prefabs[0].lock();
 }
 
 void _SceneObject::RemoveComponent(const Component& c) {

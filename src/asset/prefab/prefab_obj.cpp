@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_PrefabObj::_PrefabObj(const SceneObject& o, bool lnk) {
+_PrefabObj::_PrefabObj(const SceneObject& o, bool lnk, bool flnk) {
 	name = "object";
 	CE_PR_ADDV(name, o->name());
 	const auto& tr = o->transform();
@@ -16,17 +16,18 @@ _PrefabObj::_PrefabObj(const SceneObject& o, bool lnk) {
 			comps.push_back(PrefabComp_New(c));
 		}
 	}
+	const auto pl = o->prefabs().size();
 	auto& cch = o->children();
 	if (cch.size() > 0) {
 		auto& childs = CE_PR_ADDGROUP(children);
 		for (auto& c : cch) {
 			if (lnk) {
-				if (!!c->prefab()) {
-					childs.push_back(PrefabLink_New(c));
+				if (c->prefabs().size() > pl) {
+					childs.push_back(PrefabLink_New(c, flnk));
 					continue;
 				}
 			}
-			childs.push_back(PrefabObj_New(c, lnk));
+			childs.push_back(PrefabObj_New(c, lnk, flnk));
 		}
 	}
 }
@@ -40,6 +41,14 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 		CE_PR_GET(rotation, Quat::identity()),
 		CE_PR_GET(scale, Vec3(1))
 	);
+
+	std::vector<pPrefab> prefabs;
+	if (!!pr) {
+		prefabs = pr->prefabs();
+	}
+	prefabs.push_back(PrefabState::activePrefabs.top());
+	res->prefabs(prefabs);
+
 	const auto& comps = CE_PR_GETI(components);
 	CE_PR_IFVALID(comps) {
 		for (auto& c : comps->second.value.objgroup) {

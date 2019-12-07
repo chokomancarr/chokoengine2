@@ -5,23 +5,11 @@ CE_BEGIN_NAMESPACE
 
 class _PrefabLink : public _PrefabObjBase {
 public:
-	_PrefabLink(const SceneObject&);
+	_PrefabLink(const SceneObject&, bool mod);
 
 	_PrefabLink(const JsonObject&);
 
 	Prefab tar;
-
-	std::string name;
-	bool enabled;
-	struct {
-		Vec3 position;
-		Quat rotation;
-		Vec3 scale;
-	} transform;
-
-	std::vector<PrefabMod> mods;
-
-	JsonPair ToJson() const override;
 
 	SceneObject Instantiate(const SceneObject&) const override;
 };

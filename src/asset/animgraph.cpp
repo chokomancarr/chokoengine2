@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_AnimGraph::_AnimGraph() : _nodes({}), _vars({}) {}
+_AnimGraph::_AnimGraph() : _Asset(AssetType::AnimGraph), _nodes({}), _vars({}) {}
 
 _AnimGraph::Node& _AnimGraph::AddNode() {
     _nodes.push_back(Node::New());

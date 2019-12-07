@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_Material::_Material() : _shader(nullptr), _variables({}) {}
+_Material::_Material() : _Asset(AssetType::Material), _shader(nullptr), _variables({}) {}
 
 void _Material::shader(const Shader& s) {
 	_shader = s;

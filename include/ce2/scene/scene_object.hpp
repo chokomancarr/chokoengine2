@@ -15,7 +15,7 @@ class _SceneObject : public _Object { CE_OBJECT_COMMON
 	pScene _scene;
 	pSceneObject _parent;
 
-	pPrefab _prefab;
+	std::vector<pPrefab> _prefabs;
 
 public:
 	_SceneObject(const std::string& nm = "", 
@@ -42,9 +42,15 @@ public:
 	CE_GET_MEMBER(parent);
 	void parent(const SceneObject& p);
 
-	/* Prefab asset this object is spawned from
+	/* Prefab hierarchy this object is spawned from,
+	 * ordered from the nearest parent
 	 */
-	CE_GET_MEMBER(prefab);
+	CE_GET_SET_MEMBER(prefabs);
+
+	/* Closest prefab asset this object is spawned from
+	 * May be null
+	 */
+	Prefab prefab();
 
 	/* Scene this object is attached to
 	 */

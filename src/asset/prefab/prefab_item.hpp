@@ -61,6 +61,8 @@ public:
 	template <typename T, typename std::enable_if<
 		std::is_enum<T>::value && !std::is_same<T, Type>::value, T>::type* = nullptr>
 	PrefabItem(const T&);
+	PrefabItem(PrefabItemGroup);
+	PrefabItem(PrefabObjGroup);
 
 	PrefabItem(const std::string& tp, const JsonObject&);
 

@@ -124,7 +124,7 @@ void _Shader::ApplyFlags() {
 	}
 }
 
-_Shader::_Shader() : pointer(0), _queue(ShaderQueue::Opaque), _ztest(ShaderZTest::LessEqual), _blendSrc(ShaderBlend::SrcAlpha), _blendDst(ShaderBlend::OneMinusSrcAlpha) {}
+_Shader::_Shader() : _Asset(AssetType::Shader), pointer(0), _queue(ShaderQueue::Opaque), _ztest(ShaderZTest::LessEqual), _blendSrc(ShaderBlend::SrcAlpha), _blendDst(ShaderBlend::OneMinusSrcAlpha) {}
 
 _Shader::_Shader(const std::string& vert, const std::string& frag) : _Shader() {
 	uint vers = 1;
@@ -153,7 +153,7 @@ _Shader::_Shader(const std::string& vert, const std::string& frag) : _Shader() {
 	pointer = pointers[0];
 }
 
-_Shader::_Shader(const std::vector<std::string>& strs, const std::vector<ShaderType>& typs) {
+_Shader::_Shader(const std::vector<std::string>& strs, const std::vector<ShaderType>& typs) : _Shader() {
 	const auto n = strs.size();
 	const GLenum t2e[] = {
 		GL_VERTEX_SHADER,

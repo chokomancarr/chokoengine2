@@ -21,7 +21,7 @@ void _Mesh::GenBuffers() {
 	}
 }
 
-_Mesh::_Mesh() : _positions({}), _normals({}), _tangents({}), _texcoords({}),
+_Mesh::_Mesh() : _Asset(AssetType::Mesh), _positions({}), _normals({}), _tangents({}), _texcoords({}),
 		_triangles({}), _matTriangles({}), _vertexGroups({}), _shapeKeys({}) {}
 
 size_t _Mesh::vertexCount() const {

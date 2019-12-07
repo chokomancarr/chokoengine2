@@ -6,12 +6,11 @@ CE_BEGIN_NAMESPACE
 class JsonObject;
 class JsonPair;
 
-class JsonParser {
-public:
-	static JsonObject Parse(std::string);
+namespace JsonParser {
+	JsonObject Parse(std::string);
 
-	static std::string Export(const JsonObject&, bool min = false);
-};
+	std::string Export(const JsonObject&, bool min = false);
+}
 
 class JsonObject {
 public:
