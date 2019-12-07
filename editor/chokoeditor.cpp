@@ -56,7 +56,7 @@ void ChokoEditor::Main() {
 		)->Instantiate([](AssetType t, const std::string& s) -> Asset {
 			return EAssetList::Get(t, s, true);
 		}), scene->objects()[1]);
-		
+
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
 

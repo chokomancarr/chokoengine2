@@ -292,7 +292,8 @@ void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip
 		glActiveTexture(GL_TEXTURE5);
 		glBindTexture(GL_TEXTURE_2D, sky->_pointer);
 		glUniform1f(skyShad->Loc(9), sky->_brightness);
-		glUniform1f(skyShad->Loc(10), tr ? 1 : 0);
+		glUniform1i(skyShad->Loc(10), sky->_layers - 1);
+		glUniform1f(skyShad->Loc(11), tr ? 1 : 0);
 		_emptyVao->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		_emptyVao->Unbind();
@@ -304,7 +305,7 @@ bool Renderer::Init() {
 	_emptyVao = std::make_shared<_VertexArray>();
 
 	(skyShad = Shader::New(glsl::minVert, glsl::skyFrag))
-		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "inSky", "skyStrength", "transparent" });
+		->AddUniforms({ "_IP", "screenSize", "isOrtho", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "inSky", "skyStrength", "skymips", "transparent" });
 	(probeShad = Shader::New(glsl::minVert, glsl::probeLightFrag))
 		->AddUniforms({ "_IP", "screenSize", "inGBuf0", "inGBuf1", "inGBuf2", "inGBuf3", "inGBufD", "cubemap", "skyStrength" });
 	(transOverlayShad = Shader::New(glsl::minVert, glsl::transOverlayFrag))

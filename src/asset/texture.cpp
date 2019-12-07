@@ -94,7 +94,7 @@ void _Texture::LoadAsync() {
 	}
 	if (_opts.mipmaps > 0) glGenerateMipmap(GL_TEXTURE_2D);
 	const GLenum wraps[] = { GL_CLAMP_TO_EDGE, GL_REPEAT, GL_MIRRORED_REPEAT };
-	SetTexParams<>(0,
+	SetTexParams<>(_opts.mipmaps,
 		wraps[(int)_opts.xwrap],
 		wraps[(int)_opts.ywrap],
 		(_opts.linear) ? (

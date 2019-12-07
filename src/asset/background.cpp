@@ -11,7 +11,8 @@ Shader _Background::ggxBlurShad;
 Material _Background::ggxBlurMat;
 TextureBuffer _Background::noiseTex;
 
-#define SAMPLES 1024
+#define SAMPLES 2000
+#define SAMPLESN 1
 
 void _Background::Init() {
     //auto noise = Random::Hammersley(SAMPLES);
@@ -26,12 +27,11 @@ void _Background::Init() {
     ggxBlurShad->AddUniform("mainTex", ShaderVariableType::Texture);
     ggxBlurShad->AddUniform("rough", ShaderVariableType::Float);
     ggxBlurShad->AddUniform("screenSize", ShaderVariableType::Vec2);
-    ggxBlurShad->AddUniform("noise", ShaderVariableType::Texture);
     ggxBlurShad->AddUniform("samples", ShaderVariableType::Int);
+	ggxBlurShad->AddUniform("level", ShaderVariableType::Int);
 
     ggxBlurMat = Material::New();
     ggxBlurMat->shader(ggxBlurShad);
-    ggxBlurMat->SetUniform("noise", static_cast<Texture>(noiseTex));
     ggxBlurMat->SetUniform("samples", (int)SAMPLES);
 
     initd = true;
@@ -49,10 +49,13 @@ void _Background::LoadAsync() {
         ggxBlurMat->SetUniform("screenSize", Vec2(w, h));
         tmp0->Blit(target2, ggxBlurMat);
         mips[a - 1] = target2;
-        tmp0 = static_cast<Texture>(target2); //this is wrong, but it reduces noise for now
+        //tmp0 = static_cast<Texture>(target2); //this is wrong, but it reduces noise for now
         w /= 2;
         h /= 2;
-    }
+		glFlush();
+		glFinish();
+		glfwPollEvents();
+	}
 
     glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
@@ -93,22 +96,41 @@ _Background::_Background(const std::string& path, int div, bool async) : _pointe
 	//}, path);
 
 	//CE_OBJECT_INIT_ASYNC;
-    std::vector<RenderTarget> mips(_layers - 1, nullptr);
+
+	uint szn = std::min(_width, _height) / 16;
+	_layers = 1;
+	while (szn > 0) {
+		szn = szn >> 1;
+		_layers++;
+	}
+
+	std::vector<RenderTarget> mips(_layers, nullptr);
 
     auto tmp0 = //Texture::New(_width, _height, GL_RGB32F, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true), _pixels.data(), GL_RGB, GL_FLOAT);
-        Texture::New(path, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true));
+        Texture::New(path, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, _layers, true));
     uint w = _width / 2, h = _height / 2;
     ggxBlurMat->SetUniform("mainTex", tmp0);
-    for (int a = 1; a < _layers; a++) {
+    for (int a = 1; a <= _layers; a++) {
         RenderTarget target2 = RenderTarget::New(w, h, true, false);
-        ggxBlurMat->SetUniform("rough", a * 1.f / _layers);
+		//RenderTarget target2t = RenderTarget::New(w, h, true, false);
+        ggxBlurMat->SetUniform("rough", a * 1.0f / _layers);
         ggxBlurMat->SetUniform("screenSize", Vec2(w, h));
-        tmp0->Blit(target2, ggxBlurMat);
+		ggxBlurMat->SetUniform("level", a);
+		tmp0->Blit(target2, ggxBlurMat);
+		glfwPollEvents();
+		/*
+		for (int b = 1; b < SAMPLESN; b++) {
+			ggxBlurMat->SetUniform("resTex", target2);
+			ggxBlurMat->SetUniform("resWeight", b / (b + 1.f));
+			tmp0->Blit(target2t, ggxBlurMat);
+			std::swap(target2, target2t);
+			glfwPollEvents();
+		}
+		*/
         mips[a - 1] = target2;
-        tmp0 = static_cast<Texture>(target2); //this is wrong, but it reduces noise for now
         w /= 2;
         h /= 2;
-    } //no crash until here
+    }
 
     glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);

@@ -13,6 +13,7 @@ uniform sampler2D inGBufD;
 
 uniform sampler2D inSky;
 uniform float skyStrength;
+uniform int skymips;
 uniform float transparent;
 
 out vec4 fragCol;
@@ -59,7 +60,7 @@ void main () {
 		vec3 refl = normalize(reflect(fwd, normal));
 		float fres = mix(fresnel(fwd, normal), 1, 0.1);
 		vec4 diffCol = vec4(skyColAt(normal, 5).rgb, 1) * diffuse;
-        vec4 reflCol = vec4(skyColAt(refl, rough * 5).rgb * mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres)), 1);
+        vec4 reflCol = vec4(skyColAt(refl, rough * skymips).rgb * mix(vec3(1, 1, 1), diffuse.rgb, metallic * (1 - fres)), 1);
 		fragCol = mix(diffCol, reflCol, mix(fres, 1, metallic)) * skyStrength * occlu + emit;
 	}
 }
