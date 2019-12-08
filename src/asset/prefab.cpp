@@ -3,7 +3,6 @@
 CE_BEGIN_NAMESPACE
 
 _Prefab::_Prefab(const SceneObject& o, bool link) : _Asset(AssetType::Prefab) {
-	PrefabState::activePrefabs.swap(std::stack<Prefab>());
 	PrefabState::activePrefabs.push(o->prefab());
 	_data = PrefabObj(new _PrefabObj(o, o->parent().lock(), link, true, true));
 	PrefabState::activePrefabs.pop();
@@ -27,9 +26,10 @@ JsonObject _Prefab::ToJson() const {
 
 SceneObject _Prefab::Instantiate(_Sig2Ass fn) const {
 	PrefabState::sig2AssFn = fn;
-	PrefabState::activePrefabs.swap(std::stack<Prefab>());
 	PrefabState::activePrefabs.push(get_shared<_Prefab>());
+	PrefabState::activeBaseObjs.push(nullptr);
 	const auto& res = _data->Instantiate(nullptr);
+	PrefabState::activeBaseObjs.pop();
 	PrefabState::activePrefabs.pop();
 	return res;
 }

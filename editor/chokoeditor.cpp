@@ -47,10 +47,10 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
-	//ESceneManager::Load("a.scene");
+	ESceneManager::Load("b.scene");
 
 	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
-	
+	/*
 	auto rb = ((Prefab)EAssetList::Get(AssetType::Prefab,
 		".exported/rb/rabbit house.blend/rabbit house.blend.prefab")
 		)->Instantiate([](AssetType t, const std::string& s) -> Asset {
@@ -81,10 +81,11 @@ void ChokoEditor::Main() {
 		l->shadowSamples(1);
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
 	}
-
+	*/
 	auto json = Prefab::New(scene->objects()[1], true)->ToJson();
 	
-	std::ofstream(IO::path() + "b.json") << JsonParser::Export(json);
+	std::ofstream(IO::path() + "c.json") << JsonParser::Export(json);
+	
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();

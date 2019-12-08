@@ -29,7 +29,7 @@ _PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, boo
 		auto& childs = CE_PR_ADDGROUP(children);
 		for (auto& c : cch) {
 			if (lnk) {
-				if (c->prefabs().size() > pl) {
+				if (c->prefabs().size() > pl && !!c->prefab()) {
 					childs.push_back(PrefabLink_New(c, o, flnk));
 					continue;
 				}
@@ -49,12 +49,30 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 		CE_PR_GET(scale, Vec3(1))
 	);
 
+	const bool istop = !PrefabState::activeBaseObjs.top();
+
+	if (istop) PrefabState::activeBaseObjs.top() = res;
+
 	std::vector<pPrefab> prefabs;
 	if (!!pr) {
 		prefabs = pr->prefabs();
 	}
 	prefabs.push_back(PrefabState::activePrefabs.top());
 	res->prefabs(prefabs);
+
+	const auto& par = CE_PR_GETI(parent);
+	CE_PR_IFVALID(par) {
+		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top()->children());
+		if (!!pr2) {
+			res->parent(pr2);
+		}
+		else {
+			return nullptr;
+		}
+	}
+	else {
+		res->parent(pr);
+	}
 
 	const auto& comps = CE_PR_GETI(components);
 	CE_PR_IFVALID(comps) {
@@ -68,8 +86,6 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 			c->Instantiate(res);
 		}
 	}
-
-	res->parent(pr);
 
 	return res;
 }

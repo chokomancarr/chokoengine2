@@ -39,3 +39,5 @@
 #define CE_GET_SET_ST_MEMBER(nm)\
     CE_GET_ST_MEMBER(nm)\
     CE_SET_ST_MEMBER(nm)
+	
+#define CE_PR_IFVALID(it) if (it != items.end())

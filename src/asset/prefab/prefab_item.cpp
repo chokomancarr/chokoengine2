@@ -103,6 +103,10 @@ PrefabItem::PrefabItem(const std::string& tp, const JsonObject& vl) : value({}) 
 				}
 				break;
 			}
+			case Type::SceneObject: {
+				value.scobjref = Prefab_ObjRef(vl);
+				break;
+			}
 			case Type::ItemGroup: {
 				for (auto& g2 : vl.group) {
 					auto lc = g2.key.string.find_last_of('.');
@@ -116,8 +120,8 @@ PrefabItem::PrefabItem(const std::string& tp, const JsonObject& vl) : value({}) 
 					if (k == "object") {
 						value.objgroup.push_back(PrefabObj_New(g2.value));
 					}
-					else if (k == "link") {
-						CE_NOT_IMPLEMENTED
+					else if (k == "prefab") {
+						value.objgroup.push_back(PrefabLink_New(g2.value));
 					}
 					else {
 						value.objgroup.push_back(PrefabComp_New(g2));

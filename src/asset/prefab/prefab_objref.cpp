@@ -32,8 +32,8 @@ Prefab_ObjRef::Prefab_ObjRef(const JsonObject& json) {
 	}
 }
 
-const SceneObject& Prefab_ObjRef::Seek(const std::vector<SceneObject>& objs) {
-	typedef decltype(path)::iterator _it;
+const SceneObject& Prefab_ObjRef::Seek(const std::vector<SceneObject>& objs) const {
+	typedef decltype(path)::const_iterator _it;
 	static SceneObject null = nullptr;
 
 	const std::function<const SceneObject&(_it, const std::vector<SceneObject>&)> seek = 

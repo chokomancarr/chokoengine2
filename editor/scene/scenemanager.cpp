@@ -17,8 +17,10 @@ void ESceneManager::Load(const std::string& path) {
 		return (Prefab)EAssetList::Get(AssetType::Prefab, s, true);
 	});
 
-	//scene->RemoveObject(scene->objects()[1]);
-	//scene->AddObject(prb->Instantiate(nullptr));
+	scene->RemoveObject(scene->objects()[1]);
+	scene->AddObject(prb->Instantiate([](AssetType t, const std::string& s) -> Asset {
+		return EAssetList::Get(t, s, true);
+	}));
 }
 
 void ESceneManager::Unload() {

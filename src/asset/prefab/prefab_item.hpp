@@ -34,6 +34,10 @@ public:
 		struct _assetrefst {
 			AssetType assetType;
 			std::string sig;
+			template <typename T>
+			T Load(AssetType t) const {
+				return (T)PrefabState::sig2AssFn(t, sig);
+			}
 		} assetref;
 		Prefab_ObjRef scobjref;
 		struct _comprefst {

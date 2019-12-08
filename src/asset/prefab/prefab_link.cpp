@@ -3,7 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool flnk)
-	: tar(obj->prefab()) {
+		: tar(obj->prefab()) {
 	name = "prefab";
 
 	CE_PR_ADDV(target, tar);
@@ -17,7 +17,7 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 	}
 
 	PrefabObjGroup chlds = {};
-
+	
 	/* if flnk, look for child objects that are not a part of sub-prefabs
 	 * in that case, the first parent prefab should be us
 	 */
@@ -50,11 +50,33 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 _PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {}
 
 SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
-	auto res = tar->Instantiate(PrefabState::sig2AssFn);
+	auto prb = CE_PR_GETI(target)->second.value.assetref.Load<Prefab>(AssetType::Prefab);
+	auto res = prb->Instantiate(PrefabState::sig2AssFn);
 	res->name(_CE_PR_GET<std::string>(this, "name", res->name()));
 	res->transform()->localPosition(CE_PR_GET(position, Vec3()));
 	res->transform()->localRotation(CE_PR_GET(rotation, Quat::identity()));
 	res->transform()->localScale(CE_PR_GET(scale, Vec3(1)));
+
+	std::vector<pPrefab> prefabs;
+	if (!!pr) {
+		prefabs = pr->prefabs();
+	}
+	prefabs.insert(prefabs.begin(), prb);
+	res->prefabs(prefabs);
+
+	const auto& par = CE_PR_GETI(parent);
+	CE_PR_IFVALID(par) {
+		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top()->children());
+		if (!!pr2) {
+			res->parent(pr2);
+		}
+		else {
+			return nullptr;
+		}
+	}
+	else {
+		res->parent(pr);
+	}
 
 	const auto& chlds = CE_PR_GETI(children);
 	CE_PR_IFVALID(chlds) {
@@ -62,8 +84,6 @@ SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
 			c->Instantiate(res);
 		}
 	}
-
-	res->parent(pr);
 
 	return res;
 }
