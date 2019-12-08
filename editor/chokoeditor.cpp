@@ -49,13 +49,38 @@ void ChokoEditor::Main() {
 
 	//ESceneManager::Load("a.scene");
 
-	scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
+	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
 	
-	scene->AddObject(((Prefab)EAssetList::Get(AssetType::Prefab,
+	auto rb = ((Prefab)EAssetList::Get(AssetType::Prefab,
 		".exported/rb/rabbit house.blend/rabbit house.blend.prefab")
 		)->Instantiate([](AssetType t, const std::string& s) -> Asset {
-			return EAssetList::Get(t, s, true);
-		}), scene->objects()[1]);
+		return EAssetList::Get(t, s, true);
+	});
+	scene->AddObject(rb, scene->objects()[1]);
+
+	rb->transform()->localPosition(Vec3(-1.2f, -1.5f, 2));
+	rb->transform()->localRotationEuler(Vec3(0, -5, 0));
+
+	const auto& oc = scene->AddNewObject(scene->objects()[1]);
+	oc->transform()->localPosition(Vec3(-3, 0.5f, 4));
+	oc->transform()->localRotationEuler(Vec3(-5, 150, 0));
+	oc->AddComponent<Camera>();
+
+	const auto& cl = scene->FindByName("celing lamp");
+	if (!!cl) {
+		const auto& o = scene->AddNewObject(cl);
+		const auto& l = o->AddComponent<Light>(LightType::Point);
+		l->distance(20);
+		l->strength(3);
+		l->shadow(true);
+		l->shadowStrength(0.7f);
+		l->shadowBias(0.002f);
+		l->radius(0.05f);
+		l->color(Color(1, 0.9f, 0.7f));
+		l->softShadows(true);
+		l->shadowSamples(1);
+		o->transform()->localPosition(Vec3(0, -0.7f, 0));
+	}
 
 	auto json = Prefab::New(scene->objects()[1], true)->ToJson();
 	

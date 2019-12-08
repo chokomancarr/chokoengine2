@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_PrefabLink::_PrefabLink(const SceneObject& obj, bool flnk)
+_PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool flnk)
 	: tar(obj->prefab()) {
 	name = "prefab";
 
@@ -12,6 +12,9 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, bool flnk)
 	CE_PR_ADDV(position, tr->localPosition());
 	CE_PR_ADDV(rotation, tr->localRotation());
 	CE_PR_ADDV(scale, tr->localScale());
+	if (obj->parent() != par) {
+		CE_PR_ADDV(parent, Prefab_ObjRef(obj, par));
+	}
 
 	PrefabObjGroup chlds = {};
 
@@ -25,11 +28,11 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, bool flnk)
 		 */
 		if (pr == PrefabState::activePrefabs.top()) { //this object is with the base object
 			if (flnk) { //only the topmost link writes extra objects
-				chlds.push_back(PrefabObj_New(o, true, false));
+				chlds.push_back(PrefabObj_New(o, obj, true, false, false));
 			}
 		}
 		else if (pr != tar) { //different prefab, spawn
-			chlds.push_back(PrefabLink_New(o, false));
+			chlds.push_back(PrefabLink_New(o, obj, false));
 		}
 		else {
 			for (auto& c : o->children()) {

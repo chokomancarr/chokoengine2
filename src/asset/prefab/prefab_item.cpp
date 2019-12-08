@@ -31,8 +31,8 @@ PrefabItem::PrefabItem(const Asset& a) : value({}), type(Type::Asset) {
 	av.sig = a->assetSignature();
 	av.assetType = a->assetType;
 }
-PrefabItem::PrefabItem(const SceneObject& s) : value({}), type(Type::SceneObject) {
-	//value.scobjref = Prefab_ObjRef(s, ChokoEditor::scene->objects()[1]);
+PrefabItem::PrefabItem(const Prefab_ObjRef& s) : value({}), type(Type::SceneObject) {
+	value.scobjref = s;
 }
 PrefabItem::PrefabItem(const Component& c) : value({}), type(Type::Component) {
 	//auto& cv = value.compref;
@@ -169,6 +169,9 @@ JsonPair PrefabItem::ToJson(const std::string& nm) const {
 			JsonObject(AssetTypeStr[(int)value.assetref.assetType]),
 			JsonObject(value.assetref.sig)
 		)});
+		break;
+	case Type::SceneObject:
+		res = value.scobjref.ToJson();
 		break;
 	case Type::ItemGroup: {
 		res = JsonObject(JsonObject::Type::Group);

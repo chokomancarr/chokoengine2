@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 _Prefab::_Prefab(const SceneObject& o, bool link) : _Asset(AssetType::Prefab) {
 	PrefabState::activePrefabs.swap(std::stack<Prefab>());
 	PrefabState::activePrefabs.push(o->prefab());
-	_data = PrefabObj(new _PrefabObj(o, link, true));
+	_data = PrefabObj(new _PrefabObj(o, o->parent().lock(), link, true, true));
 	PrefabState::activePrefabs.pop();
 }
 

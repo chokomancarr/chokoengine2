@@ -2,13 +2,19 @@
 
 CE_BEGIN_NAMESPACE
 
-_PrefabObj::_PrefabObj(const SceneObject& o, bool lnk, bool flnk) {
+_PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, bool flnk, bool first) {
 	name = "object";
 	CE_PR_ADDV(name, o->name());
-	const auto& tr = o->transform();
-	CE_PR_ADDV(position, tr->localPosition());
-	CE_PR_ADDV(rotation, tr->localRotation());
-	CE_PR_ADDV(scale, tr->localScale());
+	if (!first) {
+		const auto& tr = o->transform();
+		CE_PR_ADDV(position, tr->localPosition());
+		CE_PR_ADDV(rotation, tr->localRotation());
+		CE_PR_ADDV(scale, tr->localScale());
+		if (o->parent() != p) {
+			CE_PR_ADDV(parent, Prefab_ObjRef(o, p));
+		}
+	}
+
 	auto& cc = o->components();
 	if (cc.size() > 0) {
 		auto& comps = CE_PR_ADDGROUP(components);
@@ -16,6 +22,7 @@ _PrefabObj::_PrefabObj(const SceneObject& o, bool lnk, bool flnk) {
 			comps.push_back(PrefabComp_New(c));
 		}
 	}
+
 	const auto pl = o->prefabs().size();
 	auto& cch = o->children();
 	if (cch.size() > 0) {
@@ -23,11 +30,11 @@ _PrefabObj::_PrefabObj(const SceneObject& o, bool lnk, bool flnk) {
 		for (auto& c : cch) {
 			if (lnk) {
 				if (c->prefabs().size() > pl) {
-					childs.push_back(PrefabLink_New(c, flnk));
+					childs.push_back(PrefabLink_New(c, o, flnk));
 					continue;
 				}
 			}
-			childs.push_back(PrefabObj_New(c, lnk, flnk));
+			childs.push_back(PrefabObj_New(c, o, lnk, flnk, false));
 		}
 	}
 }

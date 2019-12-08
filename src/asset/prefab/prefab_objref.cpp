@@ -20,8 +20,8 @@ Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path(0)
 	};
 
 	do {
-		path.push_back(std::make_pair(tar->name(), indexof(tar->parent()->children(), tar)));
 		tar = tar->parent().lock();
+		path.push_back(std::make_pair(tar->name(), indexof(tar->parent()->children(), tar)));
 	} while (tar != base);
 	std::reverse(path.begin(), path.end());
 }

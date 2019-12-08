@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 
 class _PrefabObj : public _PrefabObjBase {
 public:
-	_PrefabObj(const SceneObject&, bool uselinks, bool firstlink);
+	_PrefabObj(const SceneObject&, const SceneObject&, bool uselinks, bool firstlink, bool first);
 
 	_PrefabObj(const JsonObject&);
 
