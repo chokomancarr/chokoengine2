@@ -48,8 +48,12 @@ void ChokoEditor::Main() {
 	ESceneManager::Init();
 
 	ESceneManager::Load("b.scene");
+
+	scene->AddObject(((Prefab)EAssetList::Get(AssetType::Prefab, ".exported/untitled.blend/untitled.blend.prefab"))
+		->Instantiate([](AssetType t, const std::string& s) -> Asset {
+		return EAssetList::Get(t, s, true);
+	}), scene->objects()[1]->children()[0]->children()[2]);
 	
-	/*
 	std::cout << EDebug::ObjTree(scene->objects()[1]->children(), [](const SceneObject& o) {
 		std::string res = o->name() + ":";
 		for (auto& p : o->prefabs()) {
@@ -58,7 +62,6 @@ void ChokoEditor::Main() {
 		}
 		return res;
 	}) << std::endl;
-	*/
 
 	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
 	/*

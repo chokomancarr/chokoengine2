@@ -45,12 +45,28 @@ void _SceneObject::parent(const SceneObject& _p) {
         }
         std::swap(*cc, _children.back());
         _children.pop_back();
+
+        /* TODO: clear prefabs if this object was a child object defined in a prefab,
+         * where the whole instance should become unrelated
+         */
     }
 
     /* Add to new parent
      */
     _parent = p;
     p->_children.push_back(get_shared<_SceneObject>());
+
+    const std::function<void(const SceneObject&)> addp = [&addp, &p](const SceneObject& o) {
+        o->_prefabs.insert(o->_prefabs.end(), p->_prefabs.begin(), p->_prefabs.end());
+        for (auto& c : o->children()) {
+            addp(c);
+        }
+    };
+
+    _prefabs.insert(_prefabs.end(), p->_prefabs.begin(), p->_prefabs.end());
+    for (auto& c : _children) {
+        addp(c);
+    }
 
     _transform.UpdateParentMatrix();
 }

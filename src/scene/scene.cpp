@@ -50,25 +50,17 @@ void _Scene::DoUpdate(const std::vector<SceneObject>& oo) {
 _Scene::_Scene() : _objects(0), _sky(nullptr) {}
 
 SceneObject _Scene::AddNewObject(const SceneObject& parent) {
-	auto& vec = (!parent)? _objects : parent->_children;
 	auto o = SceneObject::New("New Object");
-	vec.push_back(o);
-	o->_parent = parent;
 	o->_scene = get_shared<_Scene>();
+	if (!parent) _objects.push_back(o);
+	else o->parent(parent);
 	return o;
 }
 
 void _Scene::AddObject(const SceneObject& o, const SceneObject& parent) {
-	auto& vec = (!parent)? _objects : parent->_children;
-	for (auto& oo : vec) {
-		if (oo == o) {
-			Debug::Warning("Scene", "Cannot add object: object already exists in scene / parent!");
-			return;
-		}
-	}
-	vec.push_back(o);
-	o->_parent = parent;
 	o->_scene = get_shared<_Scene>();
+	if (!parent) _objects.push_back(o);
+	else o->parent(parent);
 }
 
 void _Scene::RemoveObject(const SceneObject& o) {
