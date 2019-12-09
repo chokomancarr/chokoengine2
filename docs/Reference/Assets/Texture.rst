@@ -1,4 +1,4 @@
-Texture Class
+Texture
 =============
 
 Definition
@@ -49,7 +49,7 @@ Method functions
     If the material is null, the texture is copied directly.
 
 
-Texture Options Struct
+Texture Options
 ======================
 
 Definition
@@ -60,21 +60,24 @@ Definition
 Variables
 ---------
 
-.. var:: TextureWrap xwrap
+.. var:: TextureWrap TextureOptions::xwrap
 
-.. var:: TextureWrap ywrap
+.. var:: TextureWrap TextureOptions::ywrap
 
-.. var:: int mipmaps
+.. var:: int TextureOptions::mipmaps
 
-.. var:: bool linear
+.. var:: bool TextureOptions::linear
 
-Texture Wrap Enum
+Texture Wrap
 =================
 
 Definition
 ----------
 
 .. enum-class:: TextureWrap
+
+Values
+------
 
 .. enumerator:: TextureWrap::Clamp
 

@@ -1,4 +1,4 @@
-Shader Class
+Shader
 ==================================
 
 Definition
@@ -83,7 +83,7 @@ Method functions
     Example: :expr:`glUniform1i(shader->Loc(0), 1)`.
 
 
-Shader Type Enum
+Shader Type
 =================
 
 Definition
@@ -101,7 +101,7 @@ Definition
 
 .. enumerator:: ShaderType::Fragment
 
-Shader Queue Enum
+Shader Queue
 =================
 
 Definition
@@ -113,7 +113,7 @@ Definition
 
 .. enumerator:: ShaderQueue::Transparent
 
-Shader Z Test Enum
+Shader Z Test
 =================
 
 Definition
@@ -121,7 +121,7 @@ Definition
 
 .. enum-class:: ShaderZTest
 
-Shader Blend Enum
+Shader Blend
 =================
 
 Definition
