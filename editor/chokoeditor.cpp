@@ -47,13 +47,8 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
-	ESceneManager::Load("b.scene");
+	ESceneManager::Load("c.scene");
 
-	scene->AddObject(((Prefab)EAssetList::Get(AssetType::Prefab, ".exported/untitled.blend/untitled.blend.prefab"))
-		->Instantiate([](AssetType t, const std::string& s) -> Asset {
-		return EAssetList::Get(t, s, true);
-	}), scene->objects()[1]->children()[0]->children()[2]);
-	
 	std::cout << EDebug::ObjTree(scene->objects()[1]->children(), [](const SceneObject& o) {
 		std::string res = o->name() + ":";
 		for (auto& p : o->prefabs()) {
@@ -98,7 +93,7 @@ void ChokoEditor::Main() {
 	*/
 	auto json = Prefab::New(scene->objects()[1], true)->ToJson();
 	
-	std::ofstream(IO::path() + "c.json") << JsonParser::Export(json);
+	std::ofstream(IO::path() + "d.json") << JsonParser::Export(json);
 	
 
 	Debug::Message("Editor", "Loading windows");

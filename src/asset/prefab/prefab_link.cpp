@@ -21,7 +21,7 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 	/* if flnk, look for child objects that are not a part of sub-prefabs
 	 * in that case, the first parent prefab should be us
 	 */
-	static const std::function<void(const SceneObject&)> find = [&](const SceneObject& o) {
+	const std::function<void(const SceneObject&)> find = [&](const SceneObject& o) {
 		const auto& pr = o->prefab();
 		/* we check if the object is spawned by any prefab other than the base object
 		 * as prefabs may contain other prefabs as well
@@ -32,6 +32,7 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 			}
 		}
 		else if (pr != tar) { //different prefab, spawn
+			std::cout << pr->assetSignature() << "  :  " << tar->assetSignature() << std::endl;
 			chlds.push_back(PrefabLink_New(o, obj, false));
 		}
 		else {
