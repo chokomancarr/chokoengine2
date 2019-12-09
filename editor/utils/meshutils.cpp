@@ -146,6 +146,8 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 
 	//--------- transform matrices -----------
 
+#if 0
+
 #define _m(v) (v >= 0 ? " " : "") << v
 
 	const auto printm2 = [](std::string nm, glm::mat2x2 m) {
@@ -168,6 +170,13 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	};
 
 #undef _m
+
+#else
+	#define printm2(...)
+	#define printm32(...)
+	#define printm23(...)
+	#define printm3(...)
+#endif
 
 	for (auto i = 0; i < data.indCount; i++) {
 		const auto& v = edata[i*3];
@@ -202,19 +211,15 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 			auto td = normalize(glm::cross(x, tmp));
 			tmp = glm::cross(x, *(glm::vec3*)&xc - xp);
 			auto ts = normalize(glm::cross(x, tmp));
-			float a = std::acos(glm::dot(ts, td)) * 180 / 3.14159f;
+			float ca = glm::clamp(glm::dot(ts, td), -0.99999999f, 0.9999999f);
+			float a = std::acos(ca) * 180 / 3.14159f;
 			if (dot(tmp, td) < 0) a = 360 - a;
-			std::cout << "axis angle " + std::to_string(i) + ":" + std::to_string(e)
-				+ " = (" << x.x << ", " << x.y << ", " << x.z << ") " << a << std::endl;
 			auto q = Quat::FromAxisAngle(*(Vec3*)&x, a);
 			printm3("rotation " + std::to_string(i) + ":" + std::to_string(e),
 				mAlignPlane[i * 3 + e] = glm::mat3_cast(*(glm::quat*)&q)
 			);
 			printm2("transform " + std::to_string(i) + ":" + std::to_string(e),
 				mTransform[i * 3 + e] = mTri2Tex[j] * mMesh2Tri[j] * mAlignPlane[i * 3 + e] * mTri2Mesh[i] * mTex2Tri[i]
-			);
-			printm2("transform " + std::to_string(j) + ":" + std::to_string(f),
-				mTransform[j * 3 + f] = glm::inverse(mTransform[i * 3 + e])
 			);
 		}
 	}

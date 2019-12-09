@@ -99,8 +99,13 @@ void ChokoEditor::Init() {
 	
 }
 
+#if 1
 #define tex "grid2"
 #define model "untitled"
+#else 
+#define tex "t"
+#define model "a"
+#endif
 
 void ChokoEditor::Main() {
 	ChokoLait::Init("ChokoEditor", 1000, 600);
@@ -156,6 +161,8 @@ void ChokoEditor::Main() {
 			UI_Ext::PreLoop();
 			EWindowManager::Update();
 			EOverlayManager::Update();
+
+			//Scene::objects()[1]->transform()->localRotationEuler(Vec3(0, Time::time() * 45, 0));
 		});
 		ChokoLait::Paint(0, paint);
 	}

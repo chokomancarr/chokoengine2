@@ -12,6 +12,8 @@ out vec4 outColor;
 
 const float rad2deg = 180 / 3.14159;
 
+const int tolerance = 2;
+
 const int BLUR_CNT = 10;
 
 const float kernel[11] = float[](
@@ -20,9 +22,10 @@ const float kernel[11] = float[](
 	0.040306, 0.031105, 0.023066,
 	0.016436, 0.011254 );
 
-vec4 sample(vec2 dr, //direction
-			ivec4 npx, //first data
-			vec2 uv, vec2 dreso) {
+vec4 sample(
+		vec2 dr, //direction
+		ivec4 npx, //first data
+		vec2 uv, vec2 dreso) {
 
 	vec2 poso = uv;
 
@@ -35,47 +38,34 @@ vec4 sample(vec2 dr, //direction
 
 	vec4 col = vec4(0, 0, 0, 0);
 
-	float cost = 1;
-	float hcost = cost * 0.5;
-	float hp = 1;
-	int a = 0;
-	
-	while (a < BLUR_CNT) {
-		while (hp >= hcost) {
-			pos += dr;
-			npxo = npx;
-			npx = texture(infoTex, pos * dreso);
-			if (npx.x > 0) { //jump here
-				pos = (npx.xy - 1) / 100000.0 * reso;
-			}
-			else if (npx.z == 0) { //not triangle, go back
+	for (int a = 0; a < BLUR_CNT; a++) {
+		pos += dr;
+		npxo = npx;
+		npx = texture(infoTex, pos * dreso);
+		if (npx.x > 0) { //jump here
+			pos = (npx.xy - 1) / 100000.0 * reso;
+		}
+		else {
+			if (npx.z == 0) { //not triangle, go back
 				pos = poso;
 				npx = npxo;
 			}
-			int tid2 = npx.z - 1;
-			if (tid != tid2) {
-				vec4 rmatv = texelFetch(matTex, tid * 3 + eid);
-				mat2 rmat = mat2(rmatv.xy, rmatv.zw);
-				dr = rmat * dr;
+		}
+		int tid2 = npx.z - 1;
+		if (tid != tid2) {
+			vec4 rmatv = texelFetch(matTex, tid * 3 + eid);
+			mat2 rmat = mat2(rmatv.xy, rmatv.zw);
+			dr = rmat * dr;
 
-				//new coords
-				tid = tid2;
-				float ldr = 1.0 / length(dr);
-				cost *= ldr;
-				dr *= ldr;
-				hcost = cost * 0.5;
-				drr = dr * dreso;
-			}
-			poso = pos;
-			eid = npx.w;
-			hp -= cost;
+			//new coords
+			tid = tid2;
+			dr = normalize(dr);
+			drr = dr * dreso;
 		}
-		vec4 rcol = texture(colTex, pos * dreso);
-		while (hp < hcost && a < BLUR_CNT) {
-			a += 1;
-			col += rcol * kernel[a];
-			hp += 1;
-		}
+		poso = pos;
+		eid = npx.w;
+
+		col += texture(colTex, pos * dreso) * kernel[a+1];
 	}
 	return col;
 }
