@@ -48,6 +48,17 @@ void ChokoEditor::Main() {
 	ESceneManager::Init();
 
 	ESceneManager::Load("b.scene");
+	
+	/*
+	std::cout << EDebug::ObjTree(scene->objects()[1]->children(), [](const SceneObject& o) {
+		std::string res = o->name() + ":";
+		for (auto& p : o->prefabs()) {
+			if (!p) res += " (e)";
+			else res += " " + StrExt::RemoveFd(StrExt::RemoveExt(p->assetSignature()));
+		}
+		return res;
+	}) << std::endl;
+	*/
 
 	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
 	/*
@@ -90,7 +101,7 @@ void ChokoEditor::Main() {
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
 
-	std::cout << scene->Tree() << std::endl;
+	//std::cout << scene->Tree() << std::endl;
 
 	UIButtonStyle style(Color(0.1f, 1));
 	style.textNormal(Color::white());

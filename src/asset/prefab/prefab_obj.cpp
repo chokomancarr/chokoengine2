@@ -53,13 +53,6 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 
 	if (istop) PrefabState::activeBaseObjs.top() = res;
 
-	std::vector<pPrefab> prefabs;
-	if (!!pr) {
-		prefabs = pr->prefabs();
-	}
-	prefabs.push_back(PrefabState::activePrefabs.top());
-	res->prefabs(prefabs);
-
 	const auto& par = CE_PR_GETI(parent);
 	CE_PR_IFVALID(par) {
 		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top()->children());
@@ -73,6 +66,10 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 	else {
 		res->parent(pr);
 	}
+
+	auto prbs = PrefabState::prefabStack;
+	std::reverse(prbs.begin(), prbs.end());
+	res->prefabs(prbs);
 
 	const auto& comps = CE_PR_GETI(components);
 	CE_PR_IFVALID(comps) {

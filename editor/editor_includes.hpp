@@ -35,4 +35,6 @@ CE_END_ED_NAMESPACE
 #include "ui/windowmanager.hpp"
 #include "ui/overlaymanager.hpp"
 
+#include "utils/debug2.hpp"
+
 #include "serial/serializer.hpp"

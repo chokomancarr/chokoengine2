@@ -6,7 +6,7 @@ namespace PrefabState {
     _Prefab::_Sig2Prb sig2PrbFn = nullptr;
     _Prefab::_Sig2Ass sig2AssFn = nullptr;
 
-	std::stack<Prefab> activePrefabs = {};
+	std::vector<pPrefab> prefabStack = {};
 
 	std::stack<SceneObject> activeBaseObjs = {};
 }

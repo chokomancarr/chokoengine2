@@ -22,11 +22,11 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 	 * in that case, the first parent prefab should be us
 	 */
 	static const std::function<void(const SceneObject&)> find = [&](const SceneObject& o) {
-		auto& pr = o->prefab();
+		const auto& pr = o->prefab();
 		/* we check if the object is spawned by any prefab other than the base object
 		 * as prefabs may contain other prefabs as well
 		 */
-		if (pr == PrefabState::activePrefabs.top()) { //this object is with the base object
+		if (PrefabState::prefabStack.back() == pr) { //this object is with the base object
 			if (flnk) { //only the topmost link writes extra objects
 				chlds.push_back(PrefabObj_New(o, obj, true, false, false));
 			}
@@ -52,17 +52,13 @@ _PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {}
 SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
 	auto prb = CE_PR_GETI(target)->second.value.assetref.Load<Prefab>(AssetType::Prefab);
 	auto res = prb->Instantiate(PrefabState::sig2AssFn);
+	/* Note: prefab instantiates will write to the prefab stack,
+	 * so no need to write it here.
+	 */
 	res->name(_CE_PR_GET<std::string>(this, "name", res->name()));
 	res->transform()->localPosition(CE_PR_GET(position, Vec3()));
 	res->transform()->localRotation(CE_PR_GET(rotation, Quat::identity()));
 	res->transform()->localScale(CE_PR_GET(scale, Vec3(1)));
-
-	std::vector<pPrefab> prefabs;
-	if (!!pr) {
-		prefabs = pr->prefabs();
-	}
-	prefabs.insert(prefabs.begin(), prb);
-	res->prefabs(prefabs);
 
 	const auto& par = CE_PR_GETI(parent);
 	CE_PR_IFVALID(par) {
