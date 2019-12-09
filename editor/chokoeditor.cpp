@@ -47,16 +47,7 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
-	ESceneManager::Load("c.scene");
-
-	std::cout << EDebug::ObjTree(scene->objects()[1]->children(), [](const SceneObject& o) {
-		std::string res = o->name() + ":";
-		for (auto& p : o->prefabs()) {
-			if (!p) res += " (e)";
-			else res += " " + StrExt::RemoveFd(StrExt::RemoveExt(p->assetSignature()));
-		}
-		return res;
-	}) << std::endl;
+	ESceneManager::Load("te.scene");
 
 	//scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
 	/*
@@ -91,7 +82,6 @@ void ChokoEditor::Main() {
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
 	}
 	*/
-	ESceneManager::Save("../../te.scene");
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();

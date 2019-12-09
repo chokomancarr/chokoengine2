@@ -20,43 +20,6 @@ JsonObject EAssetLoader::LoadMeta(const std::string& path) {
 	return obj;
 }
 
-SceneObject EAssetLoader::JsonToObject(const JsonObject& data, bool async) {
-	auto obj = SceneObject::New();
-	for (auto& g : data.group) {
-		const auto& k = g.key.string;
-		const auto& v = g.value;
-		if (k == "name") {
-			obj->name(v.string);
-		}
-		else if (k == "position") {
-			obj->transform()->localPosition(v.ToVec3());
-		}
-		else if (k == "rotation") {
-			obj->transform()->localRotation(v.ToQuat());
-		}
-		else if (k == "scale") {
-			obj->transform()->localScale(v.ToVec3());
-		}
-		else if (k == "components") {
-			for (auto& c : v.group) {
-				#define CE_E_SW(nm) if (c.key.string == #nm) {\
-					Load ## nm(c.value, obj, async);\
-				}
-				CE_E_SW(MeshRenderer)
-				CE_E_SW(Rig)
-			}
-		}
-		else if (k == "children") {
-			for (auto& c : v.group) {
-				if (c.key.string == "object") {
-					JsonToObject(c.value, async)->parent(obj);
-				}
-			}
-		}
-	}
-	return obj;
-}
-
 std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
 	std::vector<Bone> res;
 	res.reserve(data.group.size());
@@ -100,6 +63,7 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const AssetType t) {
 	switch (t) {
 		CE_E_MKM(AssetType, AnimClip)
 		CE_E_MKM(AssetType, Armature)
+		CE_E_MKM(AssetType, Background)
 		CE_E_MKM(AssetType, Material)
 		CE_E_MKM(AssetType, Mesh)
 		CE_E_MKM(AssetType, Prefab)
@@ -131,6 +95,7 @@ Asset EAssetLoader::Load(const std::string& path, const AssetType t, bool async)
 	switch (t) {
 		CE_E_LD(AnimClip)
 		CE_E_LD(Armature)
+		CE_E_LD(Background)
 		CE_E_LD(Material)
 		CE_E_LD(Mesh)
 		CE_E_LD(Prefab)
@@ -207,6 +172,11 @@ CE_E_AL_IMPL(Armature) {
 	auto arm = Armature::New();
 	arm->bones(LoadBones(data.group[0].value));
 	return arm;
+}
+
+CE_E_AL_IMPL(Background) {
+	const auto meta = LoadMeta(path);
+	return Background::New(ChokoEditor::assetPath + path, 5, async);
 }
 
 CE_E_AL_IMPL(Material) {

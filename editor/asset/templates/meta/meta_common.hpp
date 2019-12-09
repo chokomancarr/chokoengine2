@@ -18,6 +18,7 @@ CE_END_META_NAMESPACE
 
 #include "animclip.hpp"
 #include "armature.hpp"
+#include "background.hpp"
 #include "material.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"

@@ -19,8 +19,6 @@ CE_BEGIN_ED_NAMESPACE
 class EAssetLoader { CE_CLASS_COMMON
     static JsonObject LoadMeta(const std::string& path);
 
-    static SceneObject JsonToObject(const JsonObject& data, bool async = false);
-
     static std::vector<Bone> LoadBones(const JsonObject& data);
 public:
 
@@ -34,6 +32,7 @@ public:
 
 	CE_E_DEF(AnimClip);
     CE_E_DEF(Armature);
+    CE_E_DEF(Background);
     CE_E_DEF(Material);
     CE_E_DEF(Mesh);
     CE_E_DEF(Prefab);

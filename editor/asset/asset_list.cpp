@@ -136,6 +136,7 @@ void EAssetList::UpdateModTime(const std::string& fl, bool now) {
 
 void EAssetList::Init() {
     _exts[(int)AssetType::Armature] = { "armature" };
+    _exts[(int)AssetType::Background] = { "hdr", "exr" };
     _exts[(int)AssetType::Material] = { "material" };
     _exts[(int)AssetType::Mesh] = { "obj", "mesh" };
     _exts[(int)AssetType::Shader] = { "shader" };
