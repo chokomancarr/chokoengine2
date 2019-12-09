@@ -33,7 +33,9 @@ void ESceneManager::Unload() {
 void ESceneManager::Save(const std::string& path) {
 	auto& scene = ChokoEditor::scene;
 	auto res = Prefab::New(scene->objects()[1], true)->ToJson();
-	std::ofstream strm(path);
+
+	res.group.push_back(JsonPair(JsonObject("sky"), EAssetManager::ToJson(scene->sky(), AssetType::Texture)));
+	std::ofstream strm(ChokoEditor::assetPath + path);
 	strm << JsonParser::Export(res);
 }
 

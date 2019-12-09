@@ -58,7 +58,7 @@ void ChokoEditor::Main() {
 		return res;
 	}) << std::endl;
 
-	//scene->sky(Background::New(IO::path() + "res/sky.hdr", 4, false));
+	//scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
 	/*
 	auto rb = ((Prefab)EAssetList::Get(AssetType::Prefab,
 		".exported/rb/rabbit house.blend/rabbit house.blend.prefab")
@@ -91,10 +91,7 @@ void ChokoEditor::Main() {
 		o->transform()->localPosition(Vec3(0, -0.7f, 0));
 	}
 	*/
-	auto json = Prefab::New(scene->objects()[1], true)->ToJson();
-	
-	std::ofstream(IO::path() + "d.json") << JsonParser::Export(json);
-	
+	ESceneManager::Save("../../te.scene");
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
