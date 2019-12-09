@@ -1,7 +1,7 @@
-Assets
-======
+Extensions
+==========
 
 .. toctree::
    :maxdepth: 3
    
-   Texture
+   Ref.rst
