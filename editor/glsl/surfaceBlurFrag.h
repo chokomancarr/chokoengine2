@@ -6,11 +6,13 @@ uniform sampler2D colTex;
 uniform isampler2D infoTex;
 //matrices
 uniform samplerBuffer matTex;
+//center, angles
+uniform isamplerBuffer angTex;
 uniform vec2 dir0;
 
 out vec4 outColor;
 
-const float rad2deg = 180 / 3.14159;
+const float pi2 = 3.14159 * 2;
 
 const int BLUR_CNT = 10;
 
@@ -19,6 +21,27 @@ const float kernel[11] = float[](
 	0.069041, 0.060049, 0.050187,
 	0.040306, 0.031105, 0.023066,
 	0.016436, 0.011254 );
+
+int get_eid(vec2 p, int tid) {
+	ivec4 angi = texelFetch(angTex, tid);
+
+	vec2 c = angi.xy * 0.00001;
+	float t0 = (angi.z >> 10) * 0.00001;
+	float t1 = (angi.w >> 10) * 0.00001;
+	const int mask = (1 << 10) - 1;
+	float t2 = (((angi.z & mask) << 10) | (angi.w & mask)) * 0.00001;
+
+	vec2 dp = normalize(p - c);
+	float tp = acos(dp.x);
+	tp = (dp.y > 0) ? tp : pi2 - tp;
+
+	tp -= t0;
+	tp = (tp < 0) ? pi2 + tp : tp;
+
+	if (tp > t2) return 2;
+	else if (tp > t1) return 1;
+	else return 0;
+}
 
 vec4 sample(vec2 dr, //direction
 			ivec4 npx, //first data
@@ -29,7 +52,6 @@ vec4 sample(vec2 dr, //direction
 	vec2 drr = dr * dreso;
 	vec2 pos = uv;
 	int tid = npx.z - 1;
-	int eid = npx.w;
 
 	ivec4 npxo;
 
@@ -43,6 +65,7 @@ vec4 sample(vec2 dr, //direction
 	while (a < BLUR_CNT) {
 		while (hp >= hcost) {
 			pos += dr;
+			int eid = get_eid(pos * dreso, tid);
 			npxo = npx;
 			npx = texture(infoTex, pos * dreso);
 			if (npx.x > 0) { //jump here
@@ -67,7 +90,6 @@ vec4 sample(vec2 dr, //direction
 				drr = dr * dreso;
 			}
 			poso = pos;
-			eid = npx.w;
 			hp -= cost;
 		}
 		vec4 rcol = texture(colTex, pos * dreso);

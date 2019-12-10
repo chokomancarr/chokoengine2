@@ -21,7 +21,7 @@ void MeshUtils::Init() {
 		->AddUniforms({ "reso", "colTex", "infoTex" });
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
-			"reso", "colTex", "infoTex", "matTex", "dir0"
+			"reso", "colTex", "infoTex", "matTex", "angTex", "dir0"
 		});
 
 	initd = true;
@@ -171,23 +171,18 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 
 #undef _m
 
-#else
-	#define printm2(...)
-	#define printm32(...)
-	#define printm23(...)
-	#define printm3(...)
 #endif
 
 	for (auto i = 0; i < data.indCount; i++) {
 		const auto& v = edata[i*3];
-		printm2("mTri2Tex " + std::to_string(i), mTri2Tex[i] = glm::mat2x2(v.x, v.y, v.z, v.w));
-		printm2("mTex2Tri " + std::to_string(i), mTex2Tri[i] = glm::inverse(mTri2Tex[i]));
+		mTri2Tex[i] = glm::mat2x2(v.x, v.y, v.z, v.w);
+		mTex2Tri[i] = glm::inverse(mTri2Tex[i]);
 		const auto vm1 = (glm::vec3)edata[i*3 + 1];
 		const auto vm2 = (glm::vec3)edata[i*3 + 2];
 		const auto vm3 = glm::cross(vm1, vm2);
-		printm23("mTri2Mesh " + std::to_string(i), mTri2Mesh[i] = glm::mat2x3(vm1, vm2));
+		mTri2Mesh[i] = glm::mat2x3(vm1, vm2);
 		const auto m3 = glm::mat3x3(vm1, vm2, vm3);
-		printm32("mMesh2Tri " + std::to_string(i), mMesh2Tri[i] = (glm::mat3x2)glm::inverse(m3));
+		mMesh2Tri[i] = (glm::mat3x2)glm::inverse(m3);
 		
 		const glm::vec3 axes[3] = {
 			vm1, vm2 - vm1, -vm2
@@ -215,10 +210,8 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 			float a = std::acos(ca) * 180 / 3.14159f;
 			if (dot(tmp, td) < 0) a = 360 - a;
 			auto q = Quat::FromAxisAngle(*(Vec3*)&x, a);
-			printm3("rotation " + std::to_string(i) + ":" + std::to_string(e),
-				mAlignPlane[i * 3 + e] = glm::mat3_cast(*(glm::quat*)&q)
-			);
-			printm2("transform " + std::to_string(i) + ":" + std::to_string(e),
+			mAlignPlane[i * 3 + e] = glm::mat3_cast(*(glm::quat*)&q);
+			mTransform[j * 3 + f] = glm::inverse(
 				mTransform[i * 3 + e] = mTri2Tex[j] * mMesh2Tri[j] * mAlignPlane[i * 3 + e] * mTri2Mesh[i] * mTex2Tri[i]
 			);
 		}
@@ -227,6 +220,48 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	data.uvMats = TextureBuffer::New(
 		VertexBuffer_New(true, 4, data.indCount * 3, mTransform.data()),
 		GL_RGBA32F);
+
+	std::vector<Int4> angles(data.indCount);
+
+#define TOI(f) ((int)((f) * 100000))
+
+	for (auto i = 0; i < data.indCount; i++) {
+		Int4& res = angles[i];
+
+		Vec2 pts[3];
+		Vec2 cent(0);
+		for (int e = 0; e < 3; e++) {
+			cent += (pts[e] = m->texcoords()[m->triangles()[i][e]]);
+		}
+		cent *= 0.33333f;
+
+		res.x = TOI(cent.x);
+		res.y = TOI(cent.y);
+
+		float pta[3];
+
+		for (int e = 0; e < 3; e++) {
+			pts[e] -= cent;
+			pta[e] = std::acos(pts[e].normalized().x);
+			if (pts[e].y < 0) pta[e] = 2 * 3.14159f - pta[e];
+
+			if (e != 0) {
+				pta[e] -= pta[0];
+				if (pta[e] < 0) pta[e] += 2 * 3.14159f;
+			}
+		}
+
+		std::cout << "c: " << cent.x << " " << cent.y << std::endl;
+		std::cout << "a: " << pta[0] << " " << pta[1] << " " << pta[2] << std::endl;
+
+		int tmp = TOI(pta[2]);
+		res.z = (TOI(pta[0]) << 10) | (tmp >> 10);
+		res.w = (TOI(pta[1]) << 10) | (tmp & ((1 << 10) - 1));
+	}
+
+	data.angleData = TextureBuffer::New(
+		VertexBuffer_New(false, 4, data.indCount, angles.data()),
+		GL_RGBA32I);
 
 	return data;
 }
@@ -281,7 +316,10 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	glUniform1i(blurShad->Loc(3), 2);
 	glActiveTexture(GL_TEXTURE2);
 	data.uvMats->Bind();
-	glUniform2f(blurShad->Loc(4), 1, 0);
+	glUniform1i(blurShad->Loc(4), 3);
+	glActiveTexture(GL_TEXTURE3);
+	data.angleData->Bind();
+	glUniform2f(blurShad->Loc(5), 1, 0);
 
 	tmp->BindTarget();
 	tmp->Clear(Color(0, 0), 1);
@@ -291,7 +329,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	tar->Clear(Color(0, 0), 1);
 	glActiveTexture(GL_TEXTURE0);
 	tmp->Bind();
-	glUniform2f(blurShad->Loc(4), 0, 1);
+	glUniform2f(blurShad->Loc(5), 0, 1);
 	GLUtils::DrawArrays(GL_TRIANGLES, 6);
 
 	tar->UnbindTarget();
