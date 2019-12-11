@@ -21,7 +21,7 @@ std::string ChokoEditor::assetPath;
 Scene ChokoEditor::scene;
 
 void ChokoEditor::Init() {
-	
+	_DummyScriptLoader::Init();
 }
 
 void ChokoEditor::Main() {
@@ -39,6 +39,7 @@ void ChokoEditor::Main() {
 	EIcons::Init();
 	EWindowManager::Init();
 	EOverlayManager::Init();
+	EScripting::Init();
 
 	assetPath = IO::path() + "project/assets/";
 	EAssetList::Rescan();
@@ -47,7 +48,13 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
-	ESceneManager::Load("te.scene");
+	ESceneManager::Load("tes.scene");
+	/*
+	scene->objects()[1]->children()[1]->AddComponent<DummyScript>(
+		EAssetList::GetScr("turner.hpp")
+	);
+	*/
+	ESceneManager::Save("tess.scene");
 
 	//scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
 	/*

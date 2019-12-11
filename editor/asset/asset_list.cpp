@@ -42,7 +42,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 			const auto mt = IO::ModTime(ffd + f);
 			if (it->modtime < mt) {
 				Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-				it->info = Scripting::ParseInfo(ffd + f);
+				it->info = EScripting::ParseInfo(fd + f);
 				if (!IO::FileExists(ffd + f + ".meta")) {
 					EAssetLoader::GenDefaultScriptMeta(sig);
 				}

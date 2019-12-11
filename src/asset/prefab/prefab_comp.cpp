@@ -12,6 +12,7 @@ _PrefabComp::_PrefabComp(const Component& c)
 		CS(Light)
 		CS(MeshRenderer)
 		CS(Rig)
+		CS(Script)
 	default:
 		CE_NOT_IMPLEMENTED
 	}
@@ -35,6 +36,7 @@ SceneObject _PrefabComp::Instantiate(const SceneObject& o) const {
 		CS(Light)
 		CS(MeshRenderer)
 		CS(Rig)
+		CS(Script)
 	default:
 		CE_NOT_IMPLEMENTED
 	}

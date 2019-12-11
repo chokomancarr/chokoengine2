@@ -83,6 +83,7 @@ public:
 	void Delete() override;
 
 	friend class _Scene;
+	friend class _PrefabComp;
 };
 
 CE_END_NAMESPACE

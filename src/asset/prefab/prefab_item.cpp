@@ -109,8 +109,11 @@ PrefabItem::PrefabItem(const std::string& tp, const JsonObject& vl) : value({}) 
 			}
 			case Type::ItemGroup: {
 				for (auto& g2 : vl.group) {
-					auto lc = g2.key.string.find_last_of('.');
-					value.group.push_back(PrefabItem(g2.key.string.substr(lc+1), g2.value));
+					const auto ky = g2.key.string;
+					const auto lc = ky.find_last_of('.');
+					auto ress = PrefabItem(ky.substr(lc+1), g2.value);
+					ress.name = ky.substr(0, lc);
+					value.group.emplace_back(std::move(ress));
 				}
 				break;
 			}
@@ -180,7 +183,7 @@ JsonPair PrefabItem::ToJson(const std::string& nm) const {
 	case Type::ItemGroup: {
 		res = JsonObject(JsonObject::Type::Group);
 		for (auto& g : value.group) {
-			res.group.push_back(g.ToJson(""));
+			res.group.push_back(g.ToJson(g.name));
 		}
 		break;
 	}

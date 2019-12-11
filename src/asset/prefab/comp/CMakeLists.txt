@@ -4,4 +4,5 @@ target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/light.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/mesh_renderer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/rig.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/script.cpp
 )

@@ -12,10 +12,6 @@ for (size_t a = 0, n = scr->vals.size(); a < n; a++) {
 	auto& vr = scr->info()->vars[a];
 	auto& vl = scr->vals[a];
 	switch (vr.type) {
-	case ScriptVar::Type::Bool: {
-		CE_E_EDIT_TG(vl., vr.name, val_b);
-		break;
-	}
 	case ScriptVar::Type::Int: {
 		CE_E_EDIT_I(vl., vr.name, val_i);
 		break;
@@ -34,7 +30,7 @@ for (size_t a = 0, n = scr->vals.size(); a < n; a++) {
 	}
 	default:
 		CE_E_LBL(vr.name);
-		UI::Label(CE_E_VL_RECT, vr.typeName, Color(0.7f));
+		UI::Label(CE_E_VL_RECT, vr.name, Color(0.7f));
 		CE_E_INC_Y();
 		break;
 	}

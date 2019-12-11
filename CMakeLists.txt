@@ -134,29 +134,6 @@ set(LIBS
 	ChokoEngine
 )
 
-#------player------
-
-add_library(ChokoPlayer SHARED "")
-add_subdirectory(player)
-
-target_include_directories(ChokoPlayer PRIVATE player)
-
-target_link_libraries(ChokoPlayer ${LIBS})
-
-#------debug player------
-
-#add_executable(ChokoPlayerD "")
-#add_subdirectory(player_debug)
-
-#target_include_directories(ChokoPlayerD PRIVATE player_debug)
-
-#target_link_libraries(ChokoPlayerD ${LIBS})
-
-
-set(LIBS
-	${LIBS}
-	ChokoPlayer
-)
 
 #------editor-------
 

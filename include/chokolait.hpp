@@ -1,9 +1,9 @@
-#pragma once
-
-/* ChokoLait Interface for ChokoEngine (c) Chokomancarr
+/* Header-only interface for ChokoEngine
  *
  * See https://chokomancarr.github.io/ChokoLait/ for documentation and examples.
  */
+
+#pragma once
 
 #if !defined(PLATFORM_WIN) && !defined(PLATFORM_LNX) && !defined(PLATFORM_MAC)
 #error("platform macro must be defined!")

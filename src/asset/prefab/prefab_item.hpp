@@ -23,6 +23,8 @@ public:
 		ObjGroup
 	};
 
+	std::string name;
+
 	struct {
 		float f;
 		int i;

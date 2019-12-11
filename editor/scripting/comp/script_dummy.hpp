@@ -4,8 +4,10 @@
 CE_BEGIN_ED_NAMESPACE
 
 class _DummyScript : public _Script {
-	ScriptInfo _info;
+	pScriptInfo _info;
 public:
+	_DummyScript(const ScriptInfo& = nullptr);
+
 	CE_GET_SET_MEMBER_F(info);
 
 	std::vector<ScriptVal> vals;

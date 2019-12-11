@@ -4,69 +4,77 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-inline int bracketCnt(const std::string& s) {
-	int i = 0;
-	for (auto& c : s) {
-		if (c == '{') i++;
-		else if (c == '}') i--;
+namespace {
+	int bracketCnt(const std::string& s) {
+		int i = 0;
+		for (auto& c : s) {
+			if (c == '{') i++;
+			else if (c == '}') i--;
+		}
+		return i;
 	}
-	return i;
+
+	std::string wordInParen(const std::string& s, size_t st) {
+		auto b1 = s.find('(', st);
+		auto b2 = s.find(')', b1);
+		return s.substr(b1 + 1, b2 - b1 - 1);
+	}
+
+	#define SPL (c == ' ' || c == '\t' || c == '\r'\
+		|| c == '\n' || c == ',' || c == ';')
+	std::string nextWord(const std::string& s, size_t st, size_t* nxt = nullptr) {
+		auto nsp = std::find_if(s.begin() + st, s.end(), [](const char c) {
+			return !SPL;
+		});
+		if (nsp == s.end()) return "";
+		auto sp = std::find_if(nsp, s.end(), [](const char c) {
+			return SPL;
+		});
+		if (nxt) *nxt = sp - s.begin();
+		return s.substr(nsp - s.begin(), sp - nsp);
+	}
+
+	bool parseVar(const std::string& ln, size_t& st, ScriptVar& vr, const ScriptInfo& res) {
+		const auto& tp = vr.name = nextWord(ln, st, &st);
+		static const std::string typeSs[] = {
+			"int", "float"
+			, "Vec2", "Vec3", "Vec4"
+		};
+		for (int i = 0; i < (sizeof(typeSs) / sizeof(std::string)); i++) {
+			if (tp == typeSs[i]) {
+				vr.type = (ScriptVar::Type)i;
+				return true;
+			}
+		}
+		/*
+		for (int a = 0; a < (int)AssetType::_COUNT; a++) {
+			if (tp == EAssetTypeStrs[a]) {
+				vr.type = ScriptVar::Type::Asset;
+				vr.typeAsset = (AssetType)a;
+				return true;
+			}
+		}
+		for (int a = 0; a < (int)ComponentType::_COUNT; a++) {
+			if (tp == ComponentTypeStrs[a]) {
+				vr.type = ScriptVar::Type::Comp;
+				vr.typeComp = (ComponentType)a;
+				return true;
+			}
+		}
+		for (auto& t : res->types) {
+			if (t->name == tp) {
+				vr.type = ScriptVar::Type::ExtType;
+				vr.typeExt = t;
+				return true;
+			}
+		}
+		*/
+		return false;
+	}
 }
 
-inline std::string wordInParen(const std::string& s, size_t st) {
-	auto b1 = s.find('(', st);
-	auto b2 = s.find(')', b1);
-	return s.substr(b1 + 1, b2 - b1 - 1);
-}
-
-#define SPL (c == ' ' || c == '\t' || c == '\r'\
-	|| c == '\n' || c == ',' || c == ';')
-inline std::string nextWord(const std::string& s, size_t st, size_t* nxt = nullptr) {
-	auto nsp = std::find_if(s.begin() + st, s.end(), [](const char c) {
-		return !SPL;
-	});
-	if (nsp == s.end()) return "";
-	auto sp = std::find_if(nsp, s.end(), [](const char c) {
-		return SPL;
-	});
-	if (nxt) *nxt = sp - s.begin();
-	return s.substr(nsp - s.begin(), sp - nsp);
-}
-
-inline bool parseVar(const std::string& ln, size_t& st, ScriptVar& vr, const ScriptInfo& res) {
-	const auto& tp = vr.typeName = nextWord(ln, st, &st);
-	static const std::string typeSs[] = {
-		"bool", "int", "float", "double"
-		, "Vec2", "Vec3", "Vec4"
-	};
-	for (int i = 0; i < (sizeof(typeSs) / sizeof(std::string)); i++) {
-		if (tp == typeSs[i]) {
-			vr.type = (ScriptVar::Type)i;
-			return true;
-		}
-	}
-	for (int a = 0; a < (int)AssetType::_COUNT; a++) {
-		if (tp == EAssetTypeStrs[a]) {
-			vr.type = ScriptVar::Type::Asset;
-			vr.typeAsset = (AssetType)a;
-			return true;
-		}
-	}
-	for (int a = 0; a < (int)ComponentType::_COUNT; a++) {
-		if (tp == ComponentTypeStrs[a]) {
-			vr.type = ScriptVar::Type::Comp;
-			vr.typeComp = (ComponentType)a;
-			return true;
-		}
-	}
-	for (auto& t : res->types) {
-		if (t->name == tp) {
-			vr.type = ScriptVar::Type::ExtType;
-			vr.typeExt = t;
-			return true;
-		}
-	}
-	return false;
+void EScripting::Init() {
+	_DummyScriptLoader::Init();
 }
 
 #define LN (" at line " + std::to_string(line))
@@ -74,9 +82,10 @@ inline bool parseVar(const std::string& ln, size_t& st, ScriptVar& vr, const Scr
 #define ERRT(msg) Debug::Error("ScriptParser", msg);\
 	return nullptr
 
-ScriptInfo Scripting::ParseInfo(const std::string& sig) {
+ScriptInfo EScripting::ParseInfo(const std::string& sig) {
 	ScriptInfo res = ScriptInfo::New();
-	std::ifstream strm(sig);
+	res->sig = sig;
+	std::ifstream strm(ChokoEditor::assetPath + sig);
 	res->name(StrExt::RemoveExt(StrExt::RemoveFd(sig)));
 	std::string ln;
 	int br = 0;
@@ -113,7 +122,7 @@ ScriptInfo Scripting::ParseInfo(const std::string& sig) {
 
 				std::string nm = nextWord(ln, st, &st);
 				do {
-					Debug::Message("Script Var", "\"" + vr.typeName + "\" = \"" + nm + "\"" + LN);
+					Debug::Message("Script Var", "\"" + vr.name + "\" = \"" + nm + "\"" + LN);
 					vr.name = nm;
 					res->vars.push_back(vr);
 					nm = nextWord(ln, st, &st);

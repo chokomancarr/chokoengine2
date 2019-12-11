@@ -57,6 +57,7 @@ public:
 	virtual void OnPostRender() {}
 
 	friend class _SceneObject;
+	friend class _PrefabComp;
 };
 
 CE_END_NAMESPACE

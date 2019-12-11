@@ -8,7 +8,7 @@ typename std::enable_if<std::is_base_of<_Component, typename T::_TpBase>::value,
  _SceneObject::AddComponent(Args&&... args) {
 	auto nt = T::New(std::forward<Args>(args)...);
 	_components.push_back(nt);
-	nt->_object = std::static_pointer_cast<_SceneObject>(shared_from_this());
+	nt->_object = get_shared<_SceneObject>();
 	return nt;
 }
 
