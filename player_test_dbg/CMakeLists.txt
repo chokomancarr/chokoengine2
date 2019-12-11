@@ -9,7 +9,9 @@ project (chokoeditor_project)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-find_package(ChokoPlayer REQUIRED)
+find_package(ChokoEngine REQUIRED)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 if (MSVC)
 	SET(CMAKE_CXX_FLAGS "/EHsc /W3")
@@ -23,8 +25,8 @@ else()
 endif()
 endif()
 
-include_directories(${CE2_PL_INCLUDE_DIRS})
+include_directories(${CE2_INCLUDE_DIRS})
 add_executable(chokoeditor_project "")
 include(system/system_scripts.cmake)
 include(system/game_scripts.cmake)
-target_link_libraries(chokoeditor_project ${CE2_PL_LIBRARIES})
+target_link_libraries(chokoeditor_project ${CE2_LIBRARIES})

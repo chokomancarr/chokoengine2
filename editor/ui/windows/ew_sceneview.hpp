@@ -26,6 +26,8 @@ public:
 
 	void Render() override;
 
+	void LookAtObject(const SceneObject&);
+
 	class Ops;
 
 	class CaptureCallbacks;

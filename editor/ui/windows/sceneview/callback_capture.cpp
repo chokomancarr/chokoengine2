@@ -15,8 +15,6 @@ void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 		const auto& tr = ESceneInfo::selectedObject->transform();
 		const auto& pos = tr->worldPosition();
 
-		parent->_pivot->transform()->localPosition(pos);
-
 		for (auto& c : ESceneInfo::selectedObject->components()) {
 			const auto& f = EW_S_DrawCompList::activeFuncs[(int)c->componentType];
 			if (f) f(c, mat);

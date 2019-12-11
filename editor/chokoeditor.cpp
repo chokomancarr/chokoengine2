@@ -48,13 +48,13 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
-	ESceneManager::Load("tes.scene");
+	ESceneManager::Load("te.scene");
 	/*
 	scene->objects()[1]->children()[1]->AddComponent<DummyScript>(
 		EAssetList::GetScr("turner.hpp")
 	);
 	*/
-	ESceneManager::Save("tess.scene");
+	//ESceneManager::Save("tess.scene");
 
 	//scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
 	/*

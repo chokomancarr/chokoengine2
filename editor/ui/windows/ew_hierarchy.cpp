@@ -25,6 +25,7 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 				== InputMouseStatus::HoverUp) {
 			ESceneInfo::selectedObject = o;
 			isa = true;
+			
 		}
 		if (hc) {
 			UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[st->expanded ? "minus" : "plus"], Color(0.8f));

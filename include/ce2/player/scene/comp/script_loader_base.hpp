@@ -15,7 +15,7 @@ CE_BEGIN_PL_NAMESPACE
 
 class _ScriptLoaderBase {
 public:
-    static ScriptLoaderBase instance;
+    static CE_EXPORT ScriptLoaderBase instance;
 
     virtual ScriptLoaderBase GetLoaderOf(const std::string&) = 0;
 

@@ -15,6 +15,16 @@ SET(CE2_SEARCH_PATHS
 	${CE2_PATH}
 )
 
+if (MSVC)
+	add_definitions(-DPLATFORM_WIN -DWIN32)
+elseif (LINUX)
+	add_definitions(-DPLATFORM_LNX)
+elseif (APPLE)
+	add_definitions(-DPLATFORM_MAC -DGL_SILENCE_DEPRECATION -DCL_SILENCE_DEPRECATION)
+else()
+	message(FATAL_ERROR "CE2: Platform not supported!")
+endif()
+
 FIND_PATH(CE2_INCLUDE_DIRS chokoengine.hpp
 	HINTS
 	$ENV{CE2DIR}
