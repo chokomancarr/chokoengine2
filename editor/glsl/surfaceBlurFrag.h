@@ -8,6 +8,8 @@ uniform isampler2D infoTex;
 uniform samplerBuffer matTex;
 //center, angles
 uniform isamplerBuffer angTex;
+//scale factor
+uniform samplerBuffer sclTex;
 uniform vec2 dir0;
 
 out vec4 outColor;
@@ -120,9 +122,13 @@ void main() {
 		return;
 	}
 
+	vec2 scl = texelFetch(sclTex, info.z - 1).xy;
+
+	vec2 dir = dir0 * scl;
+
 	outColor = col * kernel[0] +
-		sample(dir0, info, uv, dreso) + 
-		sample(-dir0, info, uv, dreso);
+		sample(dir, info, uv, dreso) + 
+		sample(-dir, info, uv, dreso);
 }
 )";
 }
