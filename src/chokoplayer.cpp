@@ -2,18 +2,18 @@
 
 CE_BEGIN_PL_NAMESPACE
 
-std::string ChokoPlayer::dataPath;
+std::string ChokoPlayer::projectPath;
 
 inline void paint() {
 
 }
 
 void ChokoPlayer::Init() {
-	auto font = Font::New(IO::path() + "res/font.ttf");
+	projectPath = IO::path() + "data/";
+
+	auto font = Font::New(projectPath + "resources/font.ttf");
 	UI::defaultFont(font);
 	font->size(12);
-
-	dataPath = IO::path() + "data/";
 }
 
 void ChokoPlayer::Main() {

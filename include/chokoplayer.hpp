@@ -13,7 +13,7 @@ class ChokoPlayer {
 	static void Init();
 
 public:
-	static std::string dataPath;
+	static std::string projectPath;
 
 	static void Main();
 };

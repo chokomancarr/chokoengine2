@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.3)
 project (chokoeditor_project)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../share")
 
 find_package(ChokoEngine REQUIRED)
 
@@ -25,8 +25,8 @@ else()
 endif()
 endif()
 
-include_directories(${CE2_INCLUDE_DIRS})
 add_executable(chokoeditor_project "")
+target_include_directories(chokoeditor_project PUBLIC ${CE2_INCLUDE_DIRS})
 include(system/system_scripts.cmake)
 include(system/game_scripts.cmake)
 target_link_libraries(chokoeditor_project ${CE2_LIBRARIES})

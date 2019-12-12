@@ -25,7 +25,7 @@ else()
 	message(FATAL_ERROR "CE2: Platform not supported!")
 endif()
 
-FIND_PATH(CE2_INCLUDE_DIRS chokoengine.hpp
+FIND_PATH(CE2_INCLUDE_TEMP chokoengine.hpp
 	HINTS
 	$ENV{CE2DIR}
 	PATH_SUFFIXES include/CE2 include
@@ -41,8 +41,8 @@ FIND_LIBRARY(CE2_LIBRARY_TEMP
 )
 
 IF(CE2_LIBRARY_TEMP)
-	message(STATUS "Found ChokoEngine: " ${CE2_INCLUDE_DIRS} "; " ${CE2_LIBRARY_TEMP})
-	
+	message(STATUS "asdaffff: " ${CE2_LIBRARY_TEMP})
+
 	find_package(Threads REQUIRED)
 	find_package(OpenGL REQUIRED)
 	find_package(glfw3 REQUIRED)
@@ -64,7 +64,7 @@ IF(CE2_LIBRARY_TEMP)
 	endif()
 
 	SET(CE2_INCLUDE_DIRS
-		${CE2_INCLUDE_DIRS}
+		${CE2_INCLUDE_TEMP}
 		${GLFW3_INCLUDE_DIR}
 		${GLM_INCLUDE_DIR}
 		${JPEG_INCLUDE_DIR}
@@ -75,7 +75,7 @@ IF(CE2_LIBRARY_TEMP)
 		SET(CE2_LIBRARY_TEMP
 			${CE2_LIBRARY_TEMP}
 			${CMAKE_THREAD_LIBS_INIT}
-
+			${GLEW_INCLUDE_DIR}
 		)
 	ENDIF(NOT APPLE)
 
@@ -103,6 +103,7 @@ IF(CE2_LIBRARY_TEMP)
 	else()
 		set(CE2_LIBRARIES
 			${CE2_LIBRARIES}
+			${GLEW_LIBRARY}
 			dl
 			pthread
 			rt
@@ -111,7 +112,14 @@ IF(CE2_LIBRARY_TEMP)
 		)
 	endif()
 	
-	SET(CE2_LIBRARY_TEMP "${SDL2_LIBRARY_TEMP}" CACHE INTERNAL "")
+	message(STATUS "ChokoEngine headers: " ${CE2_INCLUDE_DIRS})
+	message(STATUS "ChokoEngine libs: " ${CE2_LIBRARIES})
+
+	SET(CE2_INCLUDE_TEMP "${CE2_INCLUDE_TEMP}" CACHE INTERNAL "")
+	set(CE2_INCLUDE_DIRS "${CE2_INCLUDE_DIRS}" CACHE STRING "")
+	SET(CE2_LIBRARY_TEMP "${CE2_LIBRARY_TEMP}" CACHE INTERNAL "")
+	set(CE2_LIBRARIES "${CE2_LIBRARIES}" CACHE STRING "")
+
 ENDIF()
 
 INCLUDE(FindPackageHandleStandardArgs)

@@ -1,6 +1,7 @@
 build/
 examples/cmake/
-player_test_dbg/assets
+player_test_dbg/
+!player_test_dbg/system
 
 # Prerequisites
 *.d
