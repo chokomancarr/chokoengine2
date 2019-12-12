@@ -17,7 +17,7 @@ void SceneManager::Init() {
 }
 
 void SceneManager::Load(int i) {
-	auto json = JsonParser::Parse(IO::ReadFile(ChokoPlayer::dataPath + _paths[i]));
+	auto json = JsonParser::Parse(IO::ReadFile(ChokoPlayer::projectPath + _paths[i]));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
 		return nullptr; //(Prefab)EAssetList::Get(AssetType::Prefab, s, true);
 	});

@@ -1,4 +1,17 @@
-#include "chokoplayer.hpp"
+#include "chokoplayer_inc.hpp"
+
+/* Directory structure
+ * project_root/
+ *   assets/
+ *     .ce/
+ *       startup.scene
+ *     %other assets
+ *   resources/
+ *     default_font.ttf
+ *   system/
+ *     build/bin/
+ *       debug_player.exe
+ */
 
 CE_BEGIN_PL_NAMESPACE
 
@@ -11,7 +24,7 @@ inline void paint() {
 void ChokoPlayer::Init() {
 	projectPath = IO::path() + "data/";
 
-	auto font = Font::New(projectPath + "resources/font.ttf");
+	auto font = Font::New(CE_PL_PATH_RES + "font.ttf");
 	UI::defaultFont(font);
 	font->size(12);
 }
