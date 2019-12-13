@@ -10,10 +10,8 @@
 CE_BEGIN_PL_NAMESPACE
 
 class ChokoPlayer {
-	static void Init();
-
 public:
-	static std::string projectPath;
+	static void Init();
 
 	static void Main();
 };

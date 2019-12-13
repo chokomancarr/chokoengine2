@@ -3,10 +3,10 @@
 CE_BEGIN_PL_NAMESPACE
 
 namespace {
-    std::vector<std::string> _paths = {};
-
     Scene _activeScene = nullptr;
 }
+
+std::vector<std::string> SceneManager::scenePaths = {};
 
 const Scene& SceneManager::activeScene() {
     return _activeScene;
@@ -17,13 +17,13 @@ void SceneManager::Init() {
 }
 
 void SceneManager::Load(int i) {
-	auto json = JsonParser::Parse(IO::ReadFile(ChokoPlayer::projectPath + _paths[i]));
+	auto json = JsonParser::Parse(IO::ReadFile(scenePaths[i]));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
-		return nullptr; //(Prefab)EAssetList::Get(AssetType::Prefab, s, true);
+		return (Prefab)_AssetLoaderBase::instance->Load(AssetType::Prefab, s);
 	});
 
     auto res = prb->Instantiate([](AssetType t, const std::string& s) -> Asset {
-        return nullptr; //EAssetList::Get(t, s, true);
+        return _AssetLoaderBase::instance->Load(t, s);
 	});
     for (auto& o : res->children()) {
         o->parent(nullptr);

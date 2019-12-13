@@ -4,6 +4,8 @@
 CE_BEGIN_PL_NAMESPACE
 
 namespace SceneManager {
+    std::vector<std::string> scenePaths;
+
     const Scene& activeScene();
 
     void Init();
