@@ -121,6 +121,10 @@ time_t IO::ModTime(const std::string& path) {
 
 std::string IO::ReadFile(const std::string& path) {
 	std::ifstream strm(path);
+	if (!strm) {
+		Debug::Warning("IO::ReadFile", "Cannot open file: \"" + path + "\"!");
+		return "";
+	}
 	std::stringstream ss;
 	ss << strm.rdbuf();
 	return ss.str();

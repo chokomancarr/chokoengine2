@@ -1,6 +1,7 @@
 #include "chokoeditor.hpp"
 #include "ce2/parsers/mesh.hpp"
 #include "ext/ui_ext.hpp"
+#include "modules/assets_editor/asset_loader.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -33,6 +34,9 @@ void ChokoEditor::Main() {
 	UI::defaultFont(font);
 	font->size(12);
 
+	assetPath = IO::path() + "project/assets/";
+	ModuleAE::AssetLoader::Init(assetPath);
+
 	EPaths::Init();
 	EAssetList::Init();
 	EImages::Init();
@@ -41,7 +45,6 @@ void ChokoEditor::Main() {
 	EOverlayManager::Init();
 	EScripting::Init();
 
-	assetPath = IO::path() + "project/assets/";
 	EAssetList::Rescan();
 
 	scene = Scene::New();

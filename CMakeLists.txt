@@ -40,6 +40,7 @@ endif()
 endif()
 
 set(INC_DIRS
+	${PROJECT_SOURCE_DIR}
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/src
 	${GLFW3_INCLUDE_DIR}

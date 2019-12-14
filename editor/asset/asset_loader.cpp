@@ -1,24 +1,9 @@
 #include "chokoeditor.hpp"
-#include "ce2/parsers/mesh.hpp"
+#include "modules/assets_editor/asset_loader.hpp"
 #include "exporters/blender.hpp"
 #include "templates/meta/meta_common.hpp"
 
 CE_BEGIN_ED_NAMESPACE
-
-JsonObject EAssetLoader::LoadMeta(const std::string& path) {
-	auto obj = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path + ".meta"));
-	if (obj.group[0].key.string != "signature") {
-		Debug::Error("Asset MetaData", "Signature entry missing!");
-	}
-	if (obj.group[0].value.string != CE_E_META_SIGNATURE) {
-		Debug::Error("Asset MetaData", "Signature is incorrect!");
-	}
-	if (obj.group[1].key.string != "version") {
-		Debug::Error("Asset MetaData", "Version entry missing!");
-	}
-	//check for version compat here
-	return obj;
-}
 
 std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
 	std::vector<Bone> res;
@@ -92,19 +77,7 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 	return res; }
 
 Asset EAssetLoader::Load(const std::string& path, const AssetType t, bool async) {
-	switch (t) {
-		CE_E_LD(AnimClip)
-		CE_E_LD(Armature)
-		CE_E_LD(Background)
-		CE_E_LD(Material)
-		CE_E_LD(Mesh)
-		CE_E_LD(Prefab)
-		CE_E_LD(Shader)
-		CE_E_LD(Texture)
-		default:
-			break;
-	}
-	return nullptr;
+	return ModuleAE::AssetLoader::Get<Asset>(t, path, async, false);
 }
 
 #undef CE_E_LD
@@ -128,6 +101,7 @@ bool EAssetLoader::Load(const std::string& path, const EExportType t) {
 
 #undef CE_E_EX
 
+/*
 CE_E_AL_IMPL(AnimClip) {
 	const auto meta = LoadMeta(path);
 	std::ifstream strm(ChokoEditor::assetPath + path, std::ios::binary);
@@ -174,97 +148,6 @@ CE_E_AL_IMPL(Armature) {
 	return arm;
 }
 
-CE_E_AL_IMPL(Background) {
-	const auto meta = LoadMeta(path);
-	return Background::New(ChokoEditor::assetPath + path, 5, async);
-}
-
-CE_E_AL_IMPL(Material) {
-	const auto meta = LoadMeta(path);
-	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	if (data.group[0].key.string != "shader") {
-		Debug::Error("AssetLoader::Material", "shader entry missing!");
-		return nullptr;
-	}
-	auto shad = static_cast<Shader>(EAssetList::Get(AssetType::Shader, data.group[0].value.string));
-	auto mat = Material::New();
-	mat->shader(shad);
-	for (auto& d : data.group) {
-		std::string vrnm = "";
-		JsonObject vrvl;
-		for (auto& d2 : d.value.group) {
-			if (d2.key.string == "name")
-				vrnm = d2.value.string;
-			else if (d2.key.string == "value")
-				vrvl = d2.value;
-		}
-		if (!vrnm.size()) continue;
-		#define CE_E_ME(tp) if (d.key.string == #tp) {\
-			mat->SetUniform(vrnm, vrvl.To ## tp());\
-		}
-		CE_E_ME(Float)
-		else CE_E_ME(Color)
-		else if (d.key.string == "Texture") {
-			mat->SetUniform(vrnm, static_cast<Texture>(EAssetList::Get(AssetType::Texture, vrvl.string, async)));
-		}
-	}
-	return mat;
-}
-
-CE_E_AL_IMPL(Mesh) {
-	const auto meta = LoadMeta(path);
-	const auto ext = StrExt::ExtensionOf(path);
-	if (ext == "obj") {
-		return MeshLoader::LoadObj(ChokoEditor::assetPath + path);
-	}
-	else if (ext == "mesh") {
-		return MeshLoader::LoadMesh(ChokoEditor::assetPath + path);
-	}
-	abort(); //we should never get here
-}
-
-CE_E_AL_IMPL(Shader) {
-	const auto meta = LoadMeta(path);
-	std::string nm, vs, fs;
-	bool tr = false;
-	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	JsonObject vrs;
-	for (auto& d : data.group) {
-		if (d.key.string == "name") {
-			nm = d.value.string;
-		}
-		if (d.key.string == "type") {
-			if (d.value.string == "Transparent") tr = true;
-			else if (d.value.string != "Opaque") {
-				Debug::Warning("Shader Asset Loader", "unknown \"type\" value: \"" + d.value.string + "\" (accepted values: \"Opaque\", \"Transparent\")!");
-			}
-		}
-		if (d.key.string == "variables") {
-			vrs = d.value;
-		}
-		else if (d.key.string == "vertex") {
-			vs = d.value.string;
-		}
-		else if (d.key.string == "fragment") {
-			fs = d.value.string;
-		}
-	}
-	auto shd = Shader::New(vs, fs);
-	shd->name(nm);
-	shd->queue(tr ? ShaderQueue::Transparent : ShaderQueue::Opaque);
-	shd->RegisterStandardUniforms();
-	for (auto v : vrs.group) {
-		#define CE_E_SHV(nm) if (v.value.string == #nm) {\
-			shd->AddUniform(v.key.string, ShaderVariableType::nm);\
-		}
-		CE_E_SHV(Float)
-		else CE_E_SHV(Color)
-		else CE_E_SHV(Texture)
-		else CE_E_SHV(CubeMap)
-	}
-	return shd;
-}
-
 CE_E_AL_IMPL(VShader) {
 	const auto meta = LoadMeta(path);
 	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
@@ -277,33 +160,10 @@ CE_E_AL_IMPL(VShader) {
 	}
 	return shad;
 }
-
-CE_E_AL_IMPL(Texture) {
-	const auto meta = LoadMeta(path);
-	auto opts = TextureOptions();
-	for (auto& g : meta.group) {
-		if (g.key.string == "xwrap")
-			opts.xwrap = g.value.ToEnum<TextureWrap>({ "Clamp", "Repeat", "Mirror" });
-		else if (g.key.string == "ywrap")
-			opts.ywrap = g.value.ToEnum<TextureWrap>({ "Clamp", "Repeat", "Mirror" });
-		else if (g.key.string == "mipmaps")
-			opts.mipmaps = std::stoi(g.value.string);
-		else if (g.key.string == "linear")
-			opts.linear = g.value.ToBool();
-	}
-	return Texture::New(ChokoEditor::assetPath + path, opts, async);
-}
-
-CE_E_AL_IMPL(Prefab) {
-	const auto meta = LoadMeta(path);
-	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	return Prefab::New(data, [](const std::string& s) -> Prefab {
-		return (Prefab)EAssetList::Get(AssetType::Prefab, s, true);
-	});
-}
+*/
 
 CE_E_AL_IMPL_EX(Model) {
-	const auto meta = LoadMeta(path);
+	const auto meta = ModuleAE::AssetLoader::LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "blend") {
 		return BlenderExporter::ExportBlend(ChokoEditor::assetPath + path, ChokoEditor::assetPath, ".exported/" + path + "/");
@@ -312,7 +172,7 @@ CE_E_AL_IMPL_EX(Model) {
 }
 
 CE_E_AL_IMPL_EX(Image) {
-	const auto meta = LoadMeta(path);
+	const auto meta = ModuleAE::AssetLoader::LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "psd") {
 		return BlenderExporter::ExportImage(ChokoEditor::assetPath + path, ChokoEditor::assetPath + ".exported/" + path + "/");

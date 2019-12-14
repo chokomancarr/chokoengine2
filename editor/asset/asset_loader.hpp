@@ -17,9 +17,8 @@ CE_BEGIN_ED_NAMESPACE
 #define CE_E_AL_IMPL_J(nm) nm EAssetLoader::Load ## nm(const JsonObject& data, SceneObject& obj, bool async)
 
 class EAssetLoader { CE_CLASS_COMMON
-    static JsonObject LoadMeta(const std::string& path);
-
     static std::vector<Bone> LoadBones(const JsonObject& data);
+
 public:
 
 	static void GenDefaultScriptMeta(const std::string& path);
@@ -29,16 +28,6 @@ public:
     static Asset Load(const std::string& path, const AssetType t, bool async = false);
 
     static bool Load(const std::string& path, const EExportType t);
-
-	CE_E_DEF(AnimClip);
-    CE_E_DEF(Armature);
-    CE_E_DEF(Background);
-    CE_E_DEF(Material);
-    CE_E_DEF(Mesh);
-    CE_E_DEF(Prefab);
-    CE_E_DEF(Shader);
-    CE_E_DEF(Texture);
-	CE_E_DEF(VShader);
     
     CE_E_DEF_EX(Model);
     CE_E_DEF_EX(Image);

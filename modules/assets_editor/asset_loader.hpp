@@ -14,13 +14,13 @@ class AssetLoader {
 	static CE_AE_EXPORT std::string _basePath;
 	static CE_AE_EXPORT std::array<std::unordered_map<std::string, Asset>, (int)AssetType::_COUNT> _cache;
 
-	static JsonObject LoadMeta(const std::string&);
-
 public:
 	static void Init(const std::string& basePath);
 
+	static JsonObject LoadMeta(const std::string&);
+
 	template <typename T>
-	static T Get(AssetType, const std::string&, bool forceReload = false);
+	static T Get(AssetType, const std::string&, bool, bool forceReload = false);
 
 	static Asset Load(AssetType, const std::string&, bool);
 

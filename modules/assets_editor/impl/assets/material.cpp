@@ -9,7 +9,7 @@ CE_MOD_AE_IMPL(Material) {
 		Debug::Error("AssetLoader::Material", "shader entry missing!");
 		return nullptr;
 	}
-	auto shad = Get<Shader>(AssetType::Shader, data.group[0].value.string);
+	auto shad = Get<Shader>(AssetType::Shader, data.group[0].value.string, async);
 	auto mat = Material::New();
 	mat->shader(shad);
 	for (auto& d : data.group) {
@@ -28,7 +28,7 @@ CE_MOD_AE_IMPL(Material) {
 		CE_E_ME(Float)
 else CE_E_ME(Color)
 		else if (d.key.string == "Texture") {
-			mat->SetUniform(vrnm, Get<Texture>(AssetType::Texture, vrvl.string));
+			mat->SetUniform(vrnm, Get<Texture>(AssetType::Texture, vrvl.string, async));
 		}
 	}
 	return mat;

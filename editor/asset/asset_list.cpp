@@ -1,5 +1,4 @@
 #include "chokoeditor.hpp"
-#include "asset_loader.hpp"
 #ifndef PLATFORM_WIN
 #include <utime.h>
 #endif

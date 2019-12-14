@@ -17,6 +17,10 @@ namespace {
 std::string AssetLoader::_basePath = "";
 std::array<std::unordered_map<std::string, Asset>, (int)AssetType::_COUNT> AssetLoader::_cache;
 
+void AssetLoader::Init(const std::string& basePath) {
+	_basePath = basePath;
+}
+
 JsonObject AssetLoader::LoadMeta(const std::string& path) {
 	auto obj = JsonParser::Parse(IO::ReadFile(_basePath + path + ".meta"));
 	if (obj.group[0].key.string != "signature") {
@@ -30,10 +34,6 @@ JsonObject AssetLoader::LoadMeta(const std::string& path) {
 	}
 	//check for version compat here
 	return obj;
-}
-
-void AssetLoader::Init(const std::string& basePath) {
-	_basePath = basePath;
 }
 
 #define CE_E_LD(nm) case AssetType::nm: {\
