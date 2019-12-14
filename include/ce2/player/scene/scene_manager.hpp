@@ -4,13 +4,14 @@
 CE_BEGIN_PL_NAMESPACE
 
 class SceneManager {
-    static std::vector<std::string> scenePaths;
+public:
+    static CE_EXPORT std::vector<std::string> scenePaths;
 
-    const Scene& activeScene();
+	static const Scene& activeScene();
 
-    void Init();
+	static void Init();
 
-    void Load(int);
+    static void Load(int);
 };
 
 CE_END_PL_NAMESPACE

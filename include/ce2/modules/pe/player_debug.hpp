@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoplayer.hpp"
+#include "detail/pe_defines.hpp"
 
 /* Directory structure
  * project_root/
@@ -14,9 +15,9 @@
  *       debug_player.exe
  */
 
-CE_BEGIN_PL_NAMESPACE
+CE_BEGIN_MOD_PE_NAMESPACE
 
-class ChokoPlayerD {
+class PlayerDebug {
 public:
     static std::string projectPath;
 
@@ -25,6 +26,6 @@ public:
     static void Main();
 };
 
-CE_END_PL_NAMESPACE
+CE_END_MOD_PE_NAMESPACE
 
-#include "player_dbg_includes.hpp"
+#include "detail/pe_includes.hpp"

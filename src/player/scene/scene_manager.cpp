@@ -17,6 +17,7 @@ void SceneManager::Init() {
 }
 
 void SceneManager::Load(int i) {
+	_activeScene = Scene::New();
 	auto json = JsonParser::Parse(IO::ReadFile(scenePaths[i]));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
 		return (Prefab)_AssetLoaderBase::instance->Load(AssetType::Prefab, s);

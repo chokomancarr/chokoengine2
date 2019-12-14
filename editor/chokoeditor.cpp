@@ -1,7 +1,7 @@
 #include "chokoeditor.hpp"
 #include "ce2/parsers/mesh.hpp"
 #include "ext/ui_ext.hpp"
-#include "modules/assets_editor/asset_loader.hpp"
+#include "ce2/modules/ae/asset_loader.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

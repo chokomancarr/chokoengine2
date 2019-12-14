@@ -1,5 +1,5 @@
 #include "chokoeditor.hpp"
-#include "modules/assets_editor/asset_loader.hpp"
+#include "ce2/modules/ae/asset_loader.hpp"
 #include "exporters/blender.hpp"
 #include "templates/meta/meta_common.hpp"
 

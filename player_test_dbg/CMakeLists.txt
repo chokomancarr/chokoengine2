@@ -25,8 +25,14 @@ else()
 endif()
 endif()
 
+set(LIBS
+	${CE2_LIBRARIES}
+	"${CMAKE_SOURCE_DIR}/../build/lib/Module_PlayerEditor.lib"
+	"${CMAKE_SOURCE_DIR}/../build/lib/Module_AssetEditor.lib"
+)
+
 add_executable(chokoeditor_project "")
 target_include_directories(chokoeditor_project PUBLIC ${CE2_INCLUDE_DIRS})
 include(system/system_scripts.cmake)
 include(system/game_scripts.cmake)
-target_link_libraries(chokoeditor_project ${CE2_LIBRARIES})
+target_link_libraries(chokoeditor_project ${LIBS})

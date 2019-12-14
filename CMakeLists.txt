@@ -40,7 +40,6 @@ endif()
 endif()
 
 set(INC_DIRS
-	${PROJECT_SOURCE_DIR}
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/src
 	${GLFW3_INCLUDE_DIR}
@@ -139,16 +138,22 @@ set(LIBS
 
 add_library(Module_AssetEditor STATIC "")
 target_compile_definitions(Module_AssetEditor PRIVATE BUILD_MODULE_AE=1)
-add_subdirectory(modules/assets_editor)
-target_include_directories(Module_AssetEditor PRIVATE modules/assets_editor)
+add_subdirectory(src/modules/assets_editor)
+target_include_directories(Module_AssetEditor PRIVATE include/ce2/modules/ae)
 target_link_libraries(Module_AssetEditor ${LIBS})
-
-#------editor-------
 
 set(LIBS
 	${LIBS}
 	Module_AssetEditor
 )
+
+add_library(Module_PlayerEditor STATIC "")
+target_compile_definitions(Module_PlayerEditor PRIVATE BUILD_MODULE_PE=1)
+add_subdirectory(src/modules/player_editor)
+target_include_directories(Module_PlayerEditor PRIVATE include/ce2/modules/pe)
+target_link_libraries(Module_PlayerEditor ${LIBS})
+
+#------editor-------
 
 add_executable(ChokoEditor "")
 add_subdirectory(editor)

@@ -4,6 +4,7 @@ CE_BEGIN_MOD_AE_NAMESPACE
 
 namespace {
 	class _AssetLoaderImpl : public CE_PL_NS _AssetLoaderBase {
+	public:
 		static void Init() {
 			instance = std::make_shared<_AssetLoaderImpl>();
 		}
@@ -19,6 +20,7 @@ std::array<std::unordered_map<std::string, Asset>, (int)AssetType::_COUNT> Asset
 
 void AssetLoader::Init(const std::string& basePath) {
 	_basePath = basePath;
+	_AssetLoaderImpl::Init();
 }
 
 JsonObject AssetLoader::LoadMeta(const std::string& path) {

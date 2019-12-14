@@ -1,6 +1,6 @@
 #pragma once
 #include "chokoplayer.hpp"
-#include "ae_defines.hpp"
+#include "detail/ae_defines.hpp"
 
 CE_BEGIN_MOD_AE_NAMESPACE
 
@@ -11,8 +11,8 @@ CE_BEGIN_MOD_AE_NAMESPACE
 #define CE_MOD_AE_IMPL(nm) nm AssetLoader::Load ## nm(const std::string& path, bool async)
 
 class AssetLoader {
-	static CE_AE_EXPORT std::string _basePath;
-	static CE_AE_EXPORT std::array<std::unordered_map<std::string, Asset>, (int)AssetType::_COUNT> _cache;
+	static std::string _basePath;
+	static std::array<std::unordered_map<std::string, Asset>, (int)AssetType::_COUNT> _cache;
 
 public:
 	static void Init(const std::string& basePath);
@@ -36,4 +36,4 @@ public:
 
 CE_END_MOD_AE_NAMESPACE
 
-#include "impl/asset_loader.inl"
+#include "detail/asset_loader.inl"

@@ -1,1 +1,0 @@
-Various static libraries for shared code
