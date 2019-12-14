@@ -3,8 +3,8 @@
 
 CE_BEGIN_PL_NAMESPACE
 
-namespace SceneManager {
-    std::vector<std::string> scenePaths;
+class SceneManager {
+    static std::vector<std::string> scenePaths;
 
     const Scene& activeScene();
 

@@ -134,8 +134,20 @@ set(LIBS
 	ChokoEngine
 )
 
+#------modules-------
+
+add_library(Module_AssetEditor STATIC "")
+target_compile_definitions(Module_AssetEditor PRIVATE BUILD_MODULE_AE=1)
+add_subdirectory(modules/assets_editor)
+target_include_directories(Module_AssetEditor PRIVATE modules/assets_editor)
+target_link_libraries(Module_AssetEditor ${LIBS})
 
 #------editor-------
+
+set(LIBS
+	${LIBS}
+	Module_AssetEditor
+)
 
 add_executable(ChokoEditor "")
 add_subdirectory(editor)
