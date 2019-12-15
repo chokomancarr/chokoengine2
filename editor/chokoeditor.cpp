@@ -12,6 +12,7 @@ Int2 sz;
 Texture tx, txp;
 RenderTarget tx2t;
 RenderTarget tx2;
+Material mat;
 
 inline void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
@@ -21,8 +22,8 @@ inline void paint() {
 
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
 
-	UI::Texture(Rect(10, Display::height() - 300, 300, 300), tx);
-	UI::Texture(Rect(320, Display::height() - 300, 300, 300), txp);
+	//UI::Texture(Rect(10, Display::height() - 300, 300, 300), tx);
+	//UI::Texture(Rect(320, Display::height() - 300, 300, 300), txp);
 
 	const Rect r3(Display::width() - 400, Display::height() - 420, 400, 400);
 
@@ -33,6 +34,7 @@ inline void paint() {
 
 	#define tr(_v) r3.x() + r3.w() * _v.x, r3.y2() - r3.h() * _v.y - 1
 
+/*
 	for (auto& t : mesh->triangles()) {
 		Vec2 ts[3] = { mesh->texcoords()[t.x], mesh->texcoords()[t.y], mesh->texcoords()[t.z] };
 
@@ -40,7 +42,7 @@ inline void paint() {
 		UI::Line(Vec2(tr(ts[1])), Vec2(tr(ts[2])), Color::white());
 		UI::Line(Vec2(tr(ts[2])), Vec2(tr(ts[0])), Color::white());
 	}
-
+*/
 	if (r3.Contains(Input::mousePosition())) {
 		float mul = sz.x / r3.w();
 		int px = (int)((Input::mousePosition().x - r3.x()) * mul);
@@ -92,6 +94,20 @@ inline void paint() {
 
 	scl = UI::I::Slider(Rect(20, 50, 100, 20), Vec2(0.8f, 1.2f), scl, Color(0.3f));
 
+	static float mscl = 1;
+
+	mscl = UI::I::Slider(Rect(20, 80, 100, 20), Vec2(0.5f, 3.f), mscl, Color(0.3f));
+
+	static bool show = true;
+
+	if (UI::I::Toggle(Rect(20, 110, 20, 20), show, Color(0.2f)) != show) {
+		show = !show;
+		mat->SetUniform("tex", show ? (Texture)tx2 : tx);
+	}
+
+	Scene::objects()[1]->transform()->localScale(mscl);
+
+	//MeshUtils::SurfaceBlur(dt, txp, tx2, tx2t, scl);
 	for (int a = 0; a < nb; a++) {
 		MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, scl);
 	}
@@ -103,7 +119,12 @@ void ChokoEditor::Init() {
 	
 }
 
-#if 1
+#define DRAGON
+
+#ifdef DRAGON
+#define tex "t2"
+#define model "dragon"
+#elif 0
 #define tex "grid2"
 #define model "untitled"
 #else 
@@ -140,8 +161,16 @@ void ChokoEditor::Main() {
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
+#ifdef DRAGON
+	auto obj = Scene::AddNewObject();
+	Scene::AddNewObject(obj) ->AddComponent<MeshRenderer>()->mesh(
+		(Mesh)EAssetList::Get(EAssetType::Mesh, "dragon2.obj")
+	);
+#else
 	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/" model ".blend/" model ".blend.prefab", true);
 	Scene::AddObject(obj);
+#endif
+	
 	auto mr = obj->children()[0]->GetComponent<MeshRenderer>();
 	mesh = mr->mesh();
 	dt = MeshUtils::GenSurfaceData(mesh);
@@ -151,7 +180,8 @@ void ChokoEditor::Main() {
 	mr->materials({
 		(Material)EAssetList::Get(EAssetType::Material, "unlit.material")
 	});
-	mr->materials()[0]->SetUniform("tex", (Texture)tx2);
+	mat = mr->materials()[0];
+	mat->SetUniform("tex", (Texture)tx2);
 
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();

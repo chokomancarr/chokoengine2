@@ -21,7 +21,7 @@ void MeshUtils::Init() {
 		->AddUniforms({ "reso", "colTex", "infoTex" });
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
-			"reso", "colTex", "infoTex", "matTex", "angTex", "sclTex", "dir0"
+			"reso", "colTex", "infoTex", "matTex", "vecTex", "sclTex", "dir0"
 		});
 
 	initd = true;
@@ -64,19 +64,19 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 
 	//unique vert indices
 	int uvcnt = 1;
-	std::vector<int> i2v(1, 0); //index -> unique index
+	std::vector<int> i2v(data.vertCount, 0); //index -> unique index
+	std::unordered_map<std::array<float, 3>, int> _map;
 
-	for (int a = 1; a < data.vertCount; a++) {
+	for (int a = 0; a < data.vertCount; a++) {
 		const auto& va = poss[a];
-		for (int b = 0; b < a; b++) {
-			if (approx3(poss[b], va)) {
-				i2v.push_back(i2v[b]);
-				goto brk;
-			}
+		std::array<float, 3> ar;
+		std::memcpy(ar.data(), &va.x, sizeof(float) * 3);
+		auto& res = _map[ar];
+		if (!res) {
+			res = a + 1;
+			uvcnt++;
 		}
-		i2v.push_back(a);
-		uvcnt++;
-	brk:;
+		i2v[a] = res - 1;
 	}
 	
 	//--------- edge vectors -----------
@@ -238,6 +238,7 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 		GL_RG32F);
 
 	std::vector<Int4> angles(data.indCount);
+	std::vector<Int4> vecdata(data.indCount);
 
 #define TOI(f) ((int)((f) * 100000))
 
@@ -257,8 +258,8 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 		float pta[3];
 
 		for (int e = 0; e < 3; e++) {
-			pts[e] -= cent;
-			pta[e] = std::acos(pts[e].normalized().x);
+			pts[e] = (pts[e] - cent).normalized();
+			pta[e] = std::acos(pts[e].x);
 			if (pts[e].y < 0) pta[e] = 2 * 3.14159f - pta[e];
 
 			if (e != 0) {
@@ -267,17 +268,29 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 			}
 		}
 
-		std::cout << "c: " << cent.x << " " << cent.y << std::endl;
-		std::cout << "a: " << pta[0] << " " << pta[1] << " " << pta[2] << std::endl;
-
 		int tmp = TOI(pta[2]);
 		res.z = (TOI(pta[0]) << 10) | (tmp >> 10);
 		res.w = (TOI(pta[1]) << 10) | (tmp & ((1 << 10) - 1));
+
+		
+#define encode16(v) int(v.x * 20000) << 16 | int(v.y * 20000)
+#define encode16n(v) int(v.x * 10000 + 10000) << 16 | int(v.y * 10000 + 10000)
+
+		auto& vec = vecdata[i];
+		vec.x = encode16(cent);
+		vec.y = encode16n(pts[0]);
+		vec.z = encode16n(pts[1]);
+		vec.w = encode16n(pts[2]);
 	}
 
 	data.angleData = TextureBuffer::New(
 		VertexBuffer_New(false, 4, data.indCount, angles.data()),
 		GL_RGBA32I);
+
+	data.vecData = TextureBuffer::New(
+		VertexBuffer_New(false, 4, data.indCount, vecdata.data()),
+		GL_RGBA32I
+	);
 
 	return data;
 }
@@ -334,7 +347,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	data.uvMats->Bind();
 	glUniform1i(blurShad->Loc(4), 3);
 	glActiveTexture(GL_TEXTURE3);
-	data.angleData->Bind();
+	data.vecData->Bind();
 	glUniform1i(blurShad->Loc(5), 4);
 	glActiveTexture(GL_TEXTURE4);
 	data.scaleData->Bind();

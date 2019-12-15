@@ -6,8 +6,8 @@ uniform sampler2D colTex;
 uniform isampler2D infoTex;
 //matrices
 uniform samplerBuffer matTex;
-//center, angles
-uniform isamplerBuffer angTex;
+//center, vert vectors
+uniform isamplerBuffer vecTex;
 //scale factor
 uniform samplerBuffer sclTex;
 uniform vec2 dir0;
@@ -23,7 +23,7 @@ const float kernel[11] = float[](
 	0.069041, 0.060049, 0.050187,
 	0.040306, 0.031105, 0.023066,
 	0.016436, 0.011254 );
-
+/*
 int get_eid(vec2 p, int tid) {
 	ivec4 angi = texelFetch(angTex, tid);
 
@@ -43,6 +43,46 @@ int get_eid(vec2 p, int tid) {
 	if (tp > t2) return 2;
 	else if (tp > t1) return 1;
 	else return 0;
+}
+*/
+
+vec2 split16(int i) {
+	return vec2(
+		i >> 16,
+		i & ((1 << 16) - 1)
+	) * 0.00005;
+}
+vec2 split16n(int i) {
+	return (vec2(
+		i >> 16,
+		i & ((1 << 16) - 1)
+	) - 10000) * 0.0001;
+}
+
+float cross2(vec2 v1, vec2 v2) {
+	return v1.x * v2.y - v1.y * v2.x;
+}
+
+int get_eid(vec2 p, int tid) {
+	ivec4 data = texelFetch(vecTex, tid);
+
+	vec2 c = split16(data.x);
+	vec2 p1 = split16n(data.y);
+	vec2 p2 = split16n(data.z);
+	vec2 p3 = split16n(data.w);
+	vec2 cp = p - c;
+
+	float cpxu1 = cross2(cp, p1);
+	float cpxu2 = cross2(cp, p2);
+	float cpxu3 = cross2(cp, p3);
+
+	if (cpxu1 * cpxu2 <= 0 && dot(cp, p1 + p2) > 0) {
+		return 0;
+	}
+	else if (cpxu2 * cpxu3 <= 0 && dot(cp, p2 + p3) > 0) {
+		return 1;
+	}
+	else return 2;
 }
 
 vec4 sample(vec2 dr, //direction
@@ -65,7 +105,7 @@ vec4 sample(vec2 dr, //direction
 	int a = 0;
 	
 	while (a < BLUR_CNT) {
-		while (hp >= hcost) {
+		for (int k = 0; k < 5 && hp >= hcost; k++) {
 			pos += dr;
 			int eid = get_eid(pos * dreso, tid);
 			npxo = npx;

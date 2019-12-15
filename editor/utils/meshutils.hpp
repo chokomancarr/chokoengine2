@@ -43,6 +43,7 @@ public:
 	TextureBuffer uvMats; //transform matrices
 	TextureBuffer angleData; //triangle centers (xy), 3 20-bit vert angles encoded in 64 bits (yz)
 	TextureBuffer scaleData; //uv vectors scale factor (xy)
+	TextureBuffer vecData; //centers (x), vertex vectors (yzw), all 16 bits each
 
 	struct infoTexSt {
 		FrameBuffer uvInfoTex;
