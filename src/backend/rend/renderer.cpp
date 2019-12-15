@@ -434,14 +434,21 @@ void Renderer::RenderCamera(const Camera& cam) {
 	glEnable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	btar->Blit(tar, nullptr);
+	//btar->Blit(tar, nullptr);
+	if (!tar) {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+	else {
+		tar->BindTarget();
+	}
+	
+	UI::Texture(Rect(0, 0, Display::width(), Display::height()), btar);
 
-	tar->BindTarget();
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();
 	}
 
-	tar->UnbindTarget();
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	glViewport(0, 0, Display::width(), Display::height());
 

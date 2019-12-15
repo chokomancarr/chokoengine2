@@ -11,7 +11,7 @@ public:
 
 	static void Init();
 
-    static void Load(int);
+    static Scene Load(int);
 };
 
 CE_END_PL_NAMESPACE

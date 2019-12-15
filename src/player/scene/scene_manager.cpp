@@ -16,7 +16,7 @@ void SceneManager::Init() {
 
 }
 
-void SceneManager::Load(int i) {
+Scene SceneManager::Load(int i) {
 	_activeScene = Scene::New();
 	auto json = JsonParser::Parse(IO::ReadFile(scenePaths[i]));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
@@ -32,6 +32,8 @@ void SceneManager::Load(int i) {
     }
 
 	//scene->sky((Background)EAssetManager::FromJson(json.Get("sky"), true));
+
+	return _activeScene;
 }
 
 CE_END_PL_NAMESPACE

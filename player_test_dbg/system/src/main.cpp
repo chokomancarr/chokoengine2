@@ -7,7 +7,7 @@ int main() {
 
 	CE_PL_NS SceneManager::scenePaths.push_back(CEPE::PlayerDebug::projectPath + "assets/.ce/startup.scene");
 
-	CE_PL_NS SceneManager::Load(0);
+	CE_NS ChokoLait::scene = CE_PL_NS SceneManager::Load(0);
 
 	CEPE::PlayerDebug::Main();
 }

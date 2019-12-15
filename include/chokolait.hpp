@@ -22,24 +22,26 @@ CE_BEGIN_NAMESPACE
 class ChokoLait {
     typedef void(*emptyCallbackFunc)(void);
 
-	static bool initd;
-
-	static CE_EXPORT Scene mainScene;
-	static CE_EXPORT Camera mainCamera;
+	static CE_EXPORT bool initd;
     
 public:
 	struct InitOptionsSt {
 		std::string title;
 		bool visible;
+		bool createScene;
 
         /* We need to explicit-construct these
          * or else clang bugs out
          */
         InitOptionsSt() :
             title("ChokoLait App"),
-            visible(true) 
+            visible(true),
+			createScene(true)
             {}
 	};
+
+	static CE_EXPORT Scene scene;
+	static CE_EXPORT Camera mainCamera;
 
     /* Initializes ChokoLait.
      * This function must be called before using any
