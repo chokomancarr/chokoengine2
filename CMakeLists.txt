@@ -142,7 +142,7 @@ add_subdirectory(src/modules/assets_editor)
 target_include_directories(Module_AssetEditor PRIVATE include/ce2/modules/ae)
 target_link_libraries(Module_AssetEditor ${LIBS})
 
-set(LIBS
+set(LIBS_E
 	${LIBS}
 	Module_AssetEditor
 )
@@ -151,7 +151,7 @@ add_library(Module_PlayerEditor STATIC "")
 target_compile_definitions(Module_PlayerEditor PRIVATE BUILD_MODULE_PE=1)
 add_subdirectory(src/modules/player_editor)
 target_include_directories(Module_PlayerEditor PRIVATE include/ce2/modules/pe)
-target_link_libraries(Module_PlayerEditor ${LIBS})
+target_link_libraries(Module_PlayerEditor ${LIBS_E})
 
 #------editor-------
 
@@ -159,5 +159,18 @@ add_executable(ChokoEditor "")
 add_subdirectory(editor)
 
 target_include_directories(ChokoEditor PRIVATE editor)
+target_link_libraries(ChokoEditor ${LIBS_E})
 
-target_link_libraries(ChokoEditor ${LIBS})
+#------tasks------
+
+set(taskrunner_list
+	builder_dbg
+)
+
+foreach(tasknm ${taskrunner_list})
+	add_executable(${tasknm} "")
+	add_subdirectory(editor/taskrunners/${tasknm})
+
+	target_include_directories(${tasknm} PRIVATE editor/taskrunners/${tasknm})
+	target_link_libraries(${tasknm} ${LIBS})
+endforeach()

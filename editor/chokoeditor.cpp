@@ -93,6 +93,8 @@ void ChokoEditor::Main() {
 	}
 	*/
 
+	EProjectBuilder::BuildDebug();
+
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
 

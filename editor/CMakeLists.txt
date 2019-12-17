@@ -5,6 +5,7 @@ target_sources(ChokoEditor PRIVATE
 )
 
 add_subdirectory(asset)
+add_subdirectory(builder)
 add_subdirectory(exporters)
 add_subdirectory(ext)
 add_subdirectory(hooks)

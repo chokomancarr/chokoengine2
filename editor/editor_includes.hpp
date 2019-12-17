@@ -13,6 +13,8 @@ CE_END_ED_NAMESPACE
 
 #include "asset/ext/visual_shader.hpp"
 
+#include "builder/builder.hpp"
+
 #include "preview/preview.hpp"
 
 #include "scripting/scripting.hpp"
@@ -39,3 +41,5 @@ CE_END_ED_NAMESPACE
 #include "utils/debug2.hpp"
 
 #include "serial/serializer.hpp"
+
+#include "taskrunners/tasklist.hpp"
