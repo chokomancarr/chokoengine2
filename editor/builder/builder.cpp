@@ -15,9 +15,10 @@ void EProjectBuilder::Init() {
 bool EProjectBuilder::BuildDebug() {
     Subprocess::Run(IO::path() + TaskList::builderDebug,
         {
-            ChokoEditor::assetPath
-        },
-        0
+            "--root", StrExt::ParentFd(ChokoEditor::assetPath),
+            "--configArgs", //none
+            "--clean", "0"
+        }, 0
     );
     return true;
 }

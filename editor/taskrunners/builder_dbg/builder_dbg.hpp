@@ -17,7 +17,11 @@
 
 class BuilderDebug {
 public:
-    static int Run(const std::string& projectRoot);
+    static std::string projectRoot;
+    static std::vector<std::string> cmakeConfigArgs;
+    static bool clean;
+
+    static int Run();
 };
 
 #include "bd_includes.hpp"

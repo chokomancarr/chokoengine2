@@ -6,9 +6,21 @@
 CE_BEGIN_NAMESPACE
 
 int Subprocess::Run(const std::string& program, const std::vector<std::string>& args, Subprocess::_CbFunc callback) {
-    if (!IO::FileExists(program)) {
+    ProcessInfo info;
+    info.program = program;
+    info.args = args;
+    info.callback = callback;
+    return Run(info);
+}
+
+int Subprocess::Run(const ProcessInfo& info) {
+    const auto& program = info.program;
+    const auto& wdir = info.workingDir;
+    const auto& args = info.args;
+    const auto& callback = info.callback;
+    if ((program.find('/') != std::string::npos) && !IO::FileExists(program)) {
         Debug::Warning("Subprocess", "program \"" + program + "\" does not exist!");
-        return -1;
+        return 101;
     }
     Debug::Message("Subprocess", "Executing " + program);
     for (int a = 0; a < args.size(); a++) {
@@ -44,10 +56,12 @@ int Subprocess::Run(const std::string& program, const std::vector<std::string>& 
 	return (int)dret;
 #else
     int pipe_fd[2];
-    if (callback && pipe(pipe_fd) == -1) return -2;
+    if (callback && pipe(pipe_fd) == -1) return 102;
     auto pid = fork();
-    if (pid < 0) return -3;
+    if (pid < 0) return 103;
     else if (!pid) {
+        if (!wdir.empty())
+            chdir(wdir.c_str());
         std::vector<const char*> cargs(1, program.c_str());
         for (auto& a : args) {
             cargs.push_back(a.c_str());
@@ -55,11 +69,16 @@ int Subprocess::Run(const std::string& program, const std::vector<std::string>& 
         cargs.push_back(nullptr);
         if (callback) {
             close(pipe_fd[0]);
-            dup2(pipe_fd[1], 1);
+            dup2(pipe_fd[1], fileno(stdout));
+            dup2(pipe_fd[1], fileno(stderr));
         }
         setvbuf(stdout, nullptr, _IOLBF, 0);
-        execv(program.c_str(), (char**)cargs.data());
-        exit(-5);
+        setvbuf(stderr, nullptr, _IOLBF, 0);
+        if (program.find('/') == std::string::npos)
+            execvp(program.c_str(), (char**)cargs.data());
+        else
+            execv(program.c_str(), (char**)cargs.data());
+        exit(110);
     }
     else {
         if (callback) {
@@ -71,7 +90,7 @@ int Subprocess::Run(const std::string& program, const std::vector<std::string>& 
             if (callback) {
                 size_t dsz;
                 if ((int)(dsz = read(pipe_fd[0], data, 100)) > 0){
-                    std::cout << "Child says " << std::string(data, dsz) << std::endl;
+                    callback(std::string(data, dsz));
                 }
             }
         }

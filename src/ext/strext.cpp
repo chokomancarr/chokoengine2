@@ -107,6 +107,19 @@ std::string StrExt::RemoveFd(const std::string& s) {
 	return s.substr(pd + 1);
 }
 
+std::string StrExt::ParentFd(const std::string& s) {
+	auto pos = s.find_last_of('/', s.size() - 2);
+	if (pos == std::string::npos) {
+		if (s[1] == ':')
+			return s.substr(0, 2);
+		else
+			return s;
+	}
+	else {
+		return s.substr(0, pos + 1);
+	}
+}
+
 int StrExt::ToInt(const std::string& s, int def) {
 	try {
 		return std::stoi(s);
