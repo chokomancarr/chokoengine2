@@ -28,5 +28,14 @@ int main(int argc, char** argv) {
     BuilderDebug::cmakeConfigArgs = vars["--configArgs"];
     BuilderDebug::clean = (vars["--clean"][0] == "1");
 
+    const auto& projcfg = CE_NS JsonParser::Parse(CE_NS IO::ReadFile(
+        BuilderDebug::projectRoot + "config/project.json"
+    ));
+
+    const auto& cargs = projcfg.Get("cmake_config_args").list;
+    for (auto& c : cargs) {
+        BuilderDebug::cmakeConfigArgs.push_back(c.string);
+    }
+
     return BuilderDebug::Run();
 }

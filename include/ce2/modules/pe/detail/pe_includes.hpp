@@ -1,5 +1,5 @@
 #pragma once
-#include "player_debug.hpp"
+#include "../player_debug.hpp"
 
 #define CE_MOD_PE_PATH_ASSET (PlayerDebug::projectPath + "assets/")
 #define CE_MOD_PE_PATH_CONFIG (PlayerDebug::projectPath + "config/")
