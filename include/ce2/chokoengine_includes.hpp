@@ -129,6 +129,7 @@ CE_END_NAMESPACE
 #include "utils/curve.hpp"
 #include "utils/procedural_mesh.hpp"
 #include "utils/random.hpp"
+#include "utils/shared_mem.hpp"
 #include "utils/subprocess.hpp"
 #include "utils/transform_feedback.hpp"
 #include "utils/unique_caller.hpp"

@@ -2,6 +2,10 @@
 #include "chokoplayer.hpp"
 #include "detail/pe_defines.hpp"
 
+/* Runtime library for apps generated
+ * by ChokoEditor
+ */
+
 /* Directory structure
  * project_root/
  *   assets/

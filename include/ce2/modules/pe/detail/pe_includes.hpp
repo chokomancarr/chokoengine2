@@ -12,4 +12,4 @@ CE_BEGIN_PL_NAMESPACE
 
 CE_END_PL_NAMESPACE
 
-
+#include "sync/syncer.hpp"
