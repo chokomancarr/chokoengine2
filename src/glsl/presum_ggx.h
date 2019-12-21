@@ -2,7 +2,7 @@
 #include "inc/random.h"
 
 namespace glsl {
-    const char presumGGX[] = R"(
+    const std::string presumGGX = R"(
 in vec2 uv;
 
 uniform sampler2D mainTex;
@@ -13,7 +13,7 @@ uniform int level;
 
 out vec4 fragCol;
 
-)" CE_GLSL_RAND R"(
+)" + inc::rand + R"(
 
 vec2 xyz2uv(vec3 dir) {
 	vec2 refla = normalize(vec2(dir.x, dir.z));

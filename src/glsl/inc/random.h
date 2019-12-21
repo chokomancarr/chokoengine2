@@ -1,6 +1,9 @@
 #pragma once
+#include <string>
 
-#define CE_GLSL_RAND R"(
+namespace glsl {
+	namespace inc {
+const std::string rand = R"(
 uint hash(uint x) {
 	x += (x << 10u);
 	x ^= (x >> 6u);
@@ -31,4 +34,6 @@ float floatConstruct(uint m) {
 float rand(float x) { return floatConstruct(hash(floatBitsToUint(x))); }
 float rand(vec2  v) { return floatConstruct(hash(floatBitsToUint(v))); }
 float rand(vec3  v) { return floatConstruct(hash(floatBitsToUint(v))); }
-)"
+)";
+	}
+}

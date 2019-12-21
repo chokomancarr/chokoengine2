@@ -2,7 +2,7 @@
 #include "inc/random.h"
 
 namespace glsl {
-	const char pointLightFrag_Soft[] = R"(
+	const std::string pointLightFrag_Soft = R"(
 uniform mat4 _IP;
 uniform vec2 screenSize;
 
@@ -25,7 +25,7 @@ uniform float transparent;
 
 out vec4 fragCol;
 
-)" CE_GLSL_RAND R"(
+)" + inc::rand + R"(
 
 float length2(vec3 v) {
 	return v.x*v.x + v.y*v.y + v.z*v.z;
