@@ -17,7 +17,7 @@ public:
 
     static void WaitForFlag(uint32_t, bool);
 
-    static PDSyncBaseSt GetBaseSt();
+    static volatile PDSyncBaseSt& GetBaseSt();
 };
 
 CE_END_MOD_PE_NAMESPACE

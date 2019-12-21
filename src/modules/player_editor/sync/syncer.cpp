@@ -9,7 +9,7 @@ namespace {
 }
 
 void PDSyncer::Init() {
-    baseMem = SharedMemory<PDSyncBaseSt>(MemNms::base);
+    baseMem.open(MemNms::base);
     //
     //pixelsMem = SharedMemory<char>("CE_APP_OUTPUT_PIXELS", pxls.size());
 }
@@ -25,7 +25,7 @@ void PDSyncer::WaitForFlag(uint32_t f, bool b) {
     }
 }
 
-PDSyncBaseSt GetBaseSt() {
+volatile PDSyncBaseSt& PDSyncer::GetBaseSt() {
     return baseMem[0];
 }
 

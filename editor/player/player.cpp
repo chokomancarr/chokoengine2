@@ -12,12 +12,14 @@ namespace {
 void EPlayer::Play() {
     //wait for compile to finish
 
-    baseSt = SharedMemory<PDSyncBaseSt>(MemNms::base);
+    baseSt.open(MemNms::base);
 
     baseSt->screen_width = 800;
     baseSt->screen_height = 600;
 
     baseSt->status_flags |= PDSyncFlags::WAIT_SYNC;
+
+    Debug::Message("Player", "Starting \"" + EProjectBuilder::dbgProgPath + "\" ...");
 
     Subprocess::ProcessInfo info;
     info.program = EProjectBuilder::dbgProgPath;

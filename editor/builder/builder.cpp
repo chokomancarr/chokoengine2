@@ -8,6 +8,9 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+std::string EProjectBuilder::dbgProgPath = "";
+std::string EProjectBuilder::relProgPath = "";
+
 void EProjectBuilder::Init() {
 
 }
@@ -20,6 +23,7 @@ bool EProjectBuilder::BuildDebug() {
             "--clean", "0"
         }, 0
     );
+    dbgProgPath = StrExt::ParentFd(ChokoEditor::assetPath) + "system/build/bin/chokoeditor_project" CE_PROG_EXT;
     return true;
 }
 

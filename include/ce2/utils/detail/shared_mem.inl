@@ -11,21 +11,11 @@
 CE_BEGIN_NAMESPACE
 
 template <typename T>
-SharedMemory<T>::SharedMemory() : _length(0) {}
+SharedMemory<T>::SharedMemory() : _length(0), _data(nullptr) {}
 
 template <typename T>
-SharedMemory<T>::SharedMemory(const std::string& name, int n) : _length(sizeof(T) * n), _data(nullptr) {
-#ifdef PLATFORM_WIN
-
-#else
-    shm_file = shm_open(name.c_str(), O_RDWR | O_CREAT,
-        S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IWOTH | S_IROTH);
-    if (shm_file < 0) return;
-
-    ftruncate(shm_file, _length);
-
-    _data = (T*)mmap(0, _length, PROT_READ | PROT_WRITE, MAP_SHARED, shm_file, 0);
-#endif
+SharedMemory<T>::SharedMemory(const std::string& name, int n) : SharedMemory() {
+    open(name, n);
 }
 
 template <typename T>
@@ -33,10 +23,7 @@ SharedMemory<T>::~SharedMemory() {
 #ifdef PLATFORM_WIN
 
 #else
-    if (_data) {
-        munmap((void*)_data, _length);
-        close(shm_file);
-    }
+    close();
 #endif
 }
 
@@ -59,13 +46,48 @@ volatile T* SharedMemory<T>::operator ->() const {
 }
 
 template <typename T>
-T& SharedMemory<T>::operator [](int i) const {
+volatile T& SharedMemory<T>::operator [](int i) const {
 #ifdef PLATFORM_WIN
 
 #else
     assert(i >= 0 && (i * sizeof(T)) < _length);
     return _data[i];
 #endif
+}
+
+template <typename T>
+void SharedMemory<T>::open(const std::string& name, int n) {
+    close();
+
+    _length = sizeof(T) * n;
+
+#ifdef PLATFORM_WIN
+
+#else
+    auto fd = shm_open(("/" + name).c_str(), O_RDWR | O_CREAT,
+        S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IWOTH | S_IROTH);
+    if (fd < 0) return;
+
+    ftruncate(fd, _length);
+
+    _data = (T*)mmap(0, _length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+    ::close(fd);
+#endif
+}
+
+template <typename T>
+void SharedMemory<T>::close() {
+#ifdef PLATFORM_WIN
+
+#else
+    if (_data) {
+        munmap((void*)_data, _length);
+    }
+#endif
+
+    _length = 0;
+    _data = nullptr;
 }
 
 template <typename T>
