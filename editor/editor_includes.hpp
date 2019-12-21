@@ -31,6 +31,8 @@ CE_END_ED_NAMESPACE
 #include "asset/asset_loader.hpp"
 #include "asset/asset_manager.hpp"
 
+#include "player/player.hpp"
+
 #include "scene/scenemanager.hpp"
 #include "scene/sceneinfo.hpp"
 

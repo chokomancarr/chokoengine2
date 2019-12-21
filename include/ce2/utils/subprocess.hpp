@@ -12,10 +12,11 @@ public:
         std::string program;
         std::string workingDir;
         std::vector<std::string> args;
+        bool wait;
         _CbFunc callback;
 
         ProcessInfo() : program(""), workingDir(""),
-            args({}), callback(nullptr) {}
+            args({}), wait(true), callback(nullptr) {}
     };
 
     static int Run(const std::string& program, const std::vector<std::string>& args, _CbFunc callback = 0);

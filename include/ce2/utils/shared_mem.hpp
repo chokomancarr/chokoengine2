@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 
 template <typename T>
 class SharedMemory { CE_CLASS_COMMON
-    const size_t _length;
+    size_t _length;
 
 #ifdef PLATFORM_WIN
 

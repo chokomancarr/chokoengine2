@@ -6,8 +6,12 @@ CE_BEGIN_MOD_PE_NAMESPACE
 std::string PlayerDebug::projectPath = "";
 
 void PlayerDebug::Init() {
+	PDSyncer::Init();
+
+	const auto& mem = PDSyncer::GetBaseSt();
+
 	ChokoLait::InitOptionsSt opts = {};
-	ChokoLait::Init(800, 600, opts);
+	ChokoLait::Init(mem.screen_width, mem.screen_height, opts);
 
 	projectPath = IO::path();
 	for (int a = 0; a < 4; a++) {

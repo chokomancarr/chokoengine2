@@ -1,6 +1,6 @@
 #include "ce2/modules/pe/player_debug.hpp"
 
-CE_BEGIN_PL_NAMESPACE
+CE_BEGIN_MOD_PE_NAMESPACE
 
 namespace {
     SharedMemory<PDSyncBaseSt> baseMem;
@@ -9,7 +9,7 @@ namespace {
 }
 
 void PDSyncer::Init() {
-    baseMem = SharedMemory<PDSyncBaseSt>("CE_APP_DEBUG_BASE");
+    baseMem = SharedMemory<PDSyncBaseSt>(MemNms::base);
     //
     //pixelsMem = SharedMemory<char>("CE_APP_OUTPUT_PIXELS", pxls.size());
 }
@@ -25,4 +25,8 @@ void PDSyncer::WaitForFlag(uint32_t f, bool b) {
     }
 }
 
-CE_END_PL_NAMESPACE
+PDSyncBaseSt GetBaseSt() {
+    return baseMem[0];
+}
+
+CE_END_MOD_PE_NAMESPACE

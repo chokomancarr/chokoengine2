@@ -1,7 +1,7 @@
 #pragma once
 #include "ce2/modules/pe/player_debug.hpp"
 
-CE_BEGIN_PL_NAMESPACE
+CE_BEGIN_MOD_PE_NAMESPACE
 
 /* Base structure for editor-app syncing
  */
@@ -18,4 +18,4 @@ namespace PDSyncFlags {
     const uint32_t PAUSE = 1 << 3;
 }
 
-CE_END_PL_NAMESPACE
+CE_END_MOD_PE_NAMESPACE

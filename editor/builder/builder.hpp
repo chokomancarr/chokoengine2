@@ -8,6 +8,9 @@ CE_BEGIN_ED_NAMESPACE
 class EProjectBuilder {
 
 public:
+    static std::string dbgProgPath;
+    static std::string relProgPath;
+
 	static void Init();
     
     /* Build the project to run in editor
