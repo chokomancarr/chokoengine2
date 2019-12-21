@@ -164,7 +164,7 @@ void main() {
 
 	vec2 scl = texelFetch(sclTex, info.z - 1).xy;
 
-	vec2 dir = dir0 * scl;
+	vec2 dir = dir0;// * scl;
 
 	outColor = col * kernel[0] +
 		sample(dir, info, uv, dreso) + 

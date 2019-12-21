@@ -25,7 +25,7 @@ inline void paint() {
 	//UI::Texture(Rect(10, Display::height() - 300, 300, 300), tx);
 	//UI::Texture(Rect(320, Display::height() - 300, 300, 300), txp);
 
-	const Rect r3(Display::width() - 400, Display::height() - 420, 400, 400);
+	const Rect r3(Display::width() - 800, Display::height() - 800, 800, 800);
 
 	glBlendFunc(GL_ONE, GL_ZERO);
 	//UI::Texture(r3, dt.GetInfoTex(sz).jmpInfoTex->tex(0));
@@ -34,15 +34,24 @@ inline void paint() {
 
 	#define tr(_v) r3.x() + r3.w() * _v.x, r3.y2() - r3.h() * _v.y - 1
 
-/*
+	static bool wob = false;
+
+	wob = UI::I::Toggle(Rect(r3.x(), r3.y() - 30, 100, 20), wob, Color(0.3f));
+
+	const Color lc = wob ? Color::black() : Color::white();
+
+	if (wob) UI::Rect(r3, Color::white());
+
 	for (auto& t : mesh->triangles()) {
 		Vec2 ts[3] = { mesh->texcoords()[t.x], mesh->texcoords()[t.y], mesh->texcoords()[t.z] };
 
-		UI::Line(Vec2(tr(ts[0])), Vec2(tr(ts[1])), Color::white());
-		UI::Line(Vec2(tr(ts[1])), Vec2(tr(ts[2])), Color::white());
-		UI::Line(Vec2(tr(ts[2])), Vec2(tr(ts[0])), Color::white());
+		UI::Line(Vec2(tr(ts[0])), Vec2(tr(ts[1])), lc);
+		UI::Line(Vec2(tr(ts[1])), Vec2(tr(ts[2])), lc);
+		UI::Line(Vec2(tr(ts[2])), Vec2(tr(ts[0])), lc);
 	}
-*/
+
+	if (wob) return;
+
 	if (r3.Contains(Input::mousePosition())) {
 		float mul = sz.x / r3.w();
 		int px = (int)((Input::mousePosition().x - r3.x()) * mul);
@@ -119,21 +128,26 @@ void ChokoEditor::Init() {
 	
 }
 
-#define DRAGON
+//#define DRAGON 1
+//#define kcschan 1
+//#define useobj 1
 
 #ifdef DRAGON
 #define tex "t2"
-#define model "dragon"
-#elif 0
+#define model "dragon full"
+#elif kcschan
+#define tex "skin"
+#define model "kcschan"
+#elif 1
 #define tex "grid2"
-#define model "untitled"
+#define model "ball4"
 #else 
 #define tex "t"
 #define model "a"
 #endif
 
 void ChokoEditor::Main() {
-	ChokoLait::Init("ChokoEditor", 1000, 600);
+	ChokoLait::Init("ChokoEditor", 1600, 1000);
 
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);
@@ -161,10 +175,10 @@ void ChokoEditor::Main() {
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	
-#ifdef DRAGON
+#ifdef useobj
 	auto obj = Scene::AddNewObject();
 	Scene::AddNewObject(obj) ->AddComponent<MeshRenderer>()->mesh(
-		(Mesh)EAssetList::Get(EAssetType::Mesh, "dragon2.obj")
+		(Mesh)EAssetList::Get(EAssetType::Mesh, model ".obj")
 	);
 #else
 	auto obj = (SceneObject)EAssetList::Get(EAssetType::SceneObject, ".exported/" model ".blend/" model ".blend.prefab", true);

@@ -219,14 +219,18 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 			);
 		}
 
-		glm::vec3 rx = mTri2Mesh[i] * mTex2Tri[i] * glm::vec2(1, 0);
-		glm::vec3 ry = mTri2Mesh[i] * mTex2Tri[i] * glm::vec2(1, 0);
-		sclsum += (mScales[i] = glm::vec2(1.0 / glm::length(rx), 1.0 / glm::length(ry)));
+		glm::vec3 rx = mTri2Mesh[i] * mTex2Tri[i] * glm::vec2(1.f, 0.f);
+		glm::vec3 ry = mTri2Mesh[i] * mTex2Tri[i] * glm::vec2(0.f, 1.f);
+		sclsum += (mScales[i] = glm::vec2(1.f / glm::length(rx), 1.f / glm::length(ry)));
+		if (mScales[i].x != mScales[i].x || mScales[i].y != mScales[i].y) {
+			//std::cout << i << "  ";
+			mScales[i] = glm::vec2(1);
+		}
 	}
 
 	sclsum /= data.indCount;
 	for (auto& s : mScales) {
-		s /= sclsum;
+		//s /= sclsum;
 	}
 
 	data.uvMats = TextureBuffer::New(
