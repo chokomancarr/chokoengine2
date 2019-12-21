@@ -5,13 +5,13 @@ CE_BEGIN_NAMESPACE
 
 template <typename T>
 class SharedMemory { CE_CLASS_COMMON
-    const size_t length;
+    const size_t _length;
 
 #ifdef PLATFORM_WIN
 
 #else
     int shm_file;
-    volatile T* data;
+    volatile T* _data;
 #endif
 
 public:
@@ -22,12 +22,12 @@ public:
 
     ~SharedMemory();
 
-    SharedMemory<T>& operator= (const SharedMemory<T>&) = delete;
     SharedMemory<T>& operator= (SharedMemory<T>&&) = default;
+    SharedMemory<T>& operator= (const SharedMemory<T>&) = delete;
 
     bool operator !() const;
 
-    T& operator ->() const;
+    volatile T* operator ->() const;
     
     T& operator [](int) const;
 
