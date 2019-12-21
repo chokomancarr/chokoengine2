@@ -12,6 +12,8 @@ protected:
 public:
 	EW_GameView();
 
+	Int2 resolution;
+
 	bool Init() override;
 
 	void Update() override;

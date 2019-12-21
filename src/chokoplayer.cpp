@@ -12,12 +12,6 @@ void ChokoPlayer::Init() {
 
 void ChokoPlayer::Main() {
 
-	while (ChokoLait::alive()) {
-		ChokoLait::Update([]() {
-			
-		});
-		ChokoLait::Paint(0, paint);
-	}
 }
 
 CE_END_PL_NAMESPACE

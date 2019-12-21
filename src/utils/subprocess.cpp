@@ -84,6 +84,7 @@ int Subprocess::Run(const ProcessInfo& info) {
         if (callback) {
             close(pipe_fd[1]);
         }
+        if (!info.wait) return 0;
         char data[100];
         int status;
         while (!waitpid(pid, &status, WNOHANG)) {

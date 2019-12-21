@@ -13,6 +13,8 @@ class PDSyncer {
 public:
     static void Init();
 
+    static void SyncFrame();
+
     static void WriteScreenOutput(const std::vector<char>&);
 
     static void WaitForFlag(uint32_t, bool);

@@ -13,7 +13,8 @@ struct PDSyncBaseSt {
 };
 
 namespace PDSyncFlags {
-    const uint32_t WAIT_SYNC = 1 << 0;
+    const uint32_t APP_SYNCED = 1 << 0;
+    const uint32_t EDITOR_SYNCED = 1 << 1;
     const uint32_t RESIZE = 1 << 2;
     const uint32_t PAUSE = 1 << 3;
 }

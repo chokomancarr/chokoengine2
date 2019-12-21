@@ -6,18 +6,27 @@ using namespace CE_NS CE_MOD_PE_NS;
 CE_BEGIN_ED_NAMESPACE
 
 namespace {
-    SharedMemory<PDSyncBaseSt> baseSt;
+    SharedMemory<PDSyncBaseSt> baseMem;
+
+    void WaitForFlag(uint32_t f, bool b) {
+        volatile auto val = baseMem.data();
+        while (!(val->status_flags & f) == b);
+    }
 }
+
+Int2 EPlayer::targetReso;
 
 void EPlayer::Play() {
     //wait for compile to finish
 
-    baseSt.open(MemNms::base);
+    baseMem.open(MemNms::base);
+    
+    std::memset((void*)baseMem.data(), 0, sizeof(PDSyncBaseSt));
 
-    baseSt->screen_width = 800;
-    baseSt->screen_height = 600;
+    baseMem->screen_width = targetReso.x;
+    baseMem->screen_height = targetReso.y;
 
-    baseSt->status_flags |= PDSyncFlags::WAIT_SYNC;
+    baseMem->status_flags |= PDSyncFlags::EDITOR_SYNCED;
 
     Debug::Message("Player", "Starting \"" + EProjectBuilder::dbgProgPath + "\" ...");
 
@@ -26,6 +35,17 @@ void EPlayer::Play() {
     info.workingDir = StrExt::ParentFd(info.program);
     info.wait = false;
     Subprocess::Run(info);
+}
+
+void EPlayer::Sync() {
+    WaitForFlag(PDSyncFlags::APP_SYNCED, true);
+
+
+
+    volatile auto flags = baseMem->status_flags;
+    baseMem->status_flags = (flags & ~PDSyncFlags::APP_SYNCED) | PDSyncFlags::EDITOR_SYNCED;
+
+    msync((void*)baseMem.data(), baseMem.length(), MS_SYNC);
 }
 
 CE_END_ED_NAMESPACE

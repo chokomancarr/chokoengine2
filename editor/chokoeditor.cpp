@@ -94,6 +94,7 @@ void ChokoEditor::Main() {
 	*/
 
 	EProjectBuilder::BuildDebug();
+	EPlayer::targetReso = Int2(500, 500);
 	EPlayer::Play();
 
 	Debug::Message("Editor", "Loading windows");

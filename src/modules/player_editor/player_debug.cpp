@@ -25,8 +25,19 @@ void PlayerDebug::Init() {
 	ModuleAE::AssetLoader::Init(CE_MOD_PE_PATH_ASSET);
 }
 
+inline void paint() {
+
+}
+
 void PlayerDebug::Main() {
-    Player::ChokoPlayer::Main();
+	while (ChokoLait::alive()) {
+		ChokoLait::Update([]() {
+
+		});
+		ChokoLait::Paint(0, paint);
+
+		PDSyncer::SyncFrame();
+	}
 }
 
 CE_END_MOD_PE_NAMESPACE
