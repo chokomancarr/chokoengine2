@@ -8,21 +8,39 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+std::mutex EProjectBuilder::_mtx;
+bool EProjectBuilder::_busy = false;
+
 std::string EProjectBuilder::dbgProgPath = "";
 std::string EProjectBuilder::relProgPath = "";
+
+bool EProjectBuilder::busy() {
+    std::lock_guard<std::mutex> lock(_mtx);
+    return _busy;
+}
 
 void EProjectBuilder::Init() {
 
 }
 
 bool EProjectBuilder::BuildDebug() {
-    Subprocess::Run(IO::path() + TaskList::builderDebug,
-        {
+    while (busy());
+    {
+        std::lock_guard<std::mutex> lock(_mtx);
+        _busy = true;
+    }
+    std::thread([](){
+        Subprocess::ProcessInfo info;
+        info.program = IO::path() + TaskList::builderDebug;
+        info.args = {
             "--root", StrExt::ParentFd(ChokoEditor::assetPath),
             "--configArgs", //none
             "--clean", "0"
-        }, 0
-    );
+        };
+        Subprocess::Run(info);
+        std::lock_guard<std::mutex> lock(_mtx);
+        _busy = false;
+    }).detach();
     dbgProgPath = StrExt::ParentFd(ChokoEditor::assetPath) + "system/build/bin/chokoeditor_project" CE_PROG_EXT;
     return true;
 }

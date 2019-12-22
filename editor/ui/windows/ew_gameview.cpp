@@ -5,8 +5,13 @@ CE_BEGIN_ED_NAMESPACE
 void EW_GameView::DrawMenu() {
 	const Rect& r = Rect(position.x(), position.y() + 20, position.w(), position.h() - 20);
 	glBlendFunc(GL_ONE, GL_ZERO);
-	UI::Texture(r, _target);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (EPlayer::playing) {
+        UI::Texture(position.sub(0, 20, 0, 0), EPlayer::outputImage);
+    }
+    else {
+        UI::Texture(r, _target);
+    }
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 EW_GameView::EW_GameView() : EWindow("Game") {
@@ -29,15 +34,18 @@ void EW_GameView::Update() {
 }
 
 void EW_GameView::Render() {
-    EPlayer::Sync();
-    UI::Texture(position.sub(0, 20, 0, 0), EPlayer::outputImage);
-
-    auto cm = ChokoEditor::scene->GetActiveCameras();
-    for (auto& c : cm) {
-        if (!c->target()) {
-            c->target(_target);
-            ChokoEditor::scene->RenderCameras({c});
-            c->target(nullptr);
+    if (EPlayer::playing) {
+        EPlayer::targetReso = resolution;
+        EPlayer::Sync();
+    }
+    else {
+        auto cm = ChokoEditor::scene->GetActiveCameras();
+        for (auto& c : cm) {
+            if (!c->target()) {
+                c->target(_target);
+                ChokoEditor::scene->RenderCameras({c});
+                c->target(nullptr);
+            }
         }
     }
 }

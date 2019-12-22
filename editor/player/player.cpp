@@ -24,12 +24,14 @@ namespace {
     }
 }
 
+bool EPlayer::playing = false;
+
 Int2 EPlayer::targetReso;
 
 Texture EPlayer::outputImage;
 
 void EPlayer::Play() {
-    //wait for compile to finish
+    while (EProjectBuilder::busy());
 
     baseMem.open(MemNms::base);
     
@@ -47,6 +49,8 @@ void EPlayer::Play() {
     info.workingDir = StrExt::ParentFd(info.program);
     info.wait = false;
     Subprocess::Run(info);
+
+    playing = true;
 }
 
 void EPlayer::Sync() {
@@ -77,6 +81,10 @@ void EPlayer::Sync() {
     baseMem->status_flags = (flags & ~PDSyncFlags::APP_SYNCED) | PDSyncFlags::EDITOR_SYNCED;
 
     msync((void*)baseMem.data(), baseMem.length(), MS_SYNC);
+}
+
+void EPlayer::Stop() {
+    playing = false;
 }
 
 CE_END_ED_NAMESPACE

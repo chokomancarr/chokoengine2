@@ -29,6 +29,8 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 		auto cstatus = status->components.Get<EW_IS_Component>(c->id());
 		EW_I_Component::Draw(c, lt, cstatus);
 	}
+
+	UI::I::Button(Rect(lt.x + 4, lt.y, lt.w - 8, 16), Color(0.3f), "Add Component");
 }
 
 CE_END_ED_NAMESPACE

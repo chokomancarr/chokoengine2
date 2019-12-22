@@ -5,6 +5,8 @@ CE_BEGIN_ED_NAMESPACE
 
 class EPlayer {
 public:
+    static bool playing;
+
     static Int2 targetReso;
 
     static Texture outputImage;

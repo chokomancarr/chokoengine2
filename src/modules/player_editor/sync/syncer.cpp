@@ -14,6 +14,8 @@ namespace {
         }
         else return false;
     }
+
+    constexpr uint64_t FLAG_TIMEOUT = 5000;
 }
 
 void PDSyncer::Init() {
@@ -25,7 +27,8 @@ void PDSyncer::Init() {
 void PDSyncer::SyncFrame() {
     WaitForFlag(PDSyncFlags::EDITOR_SYNCED, true);
 
-    if (check_clear_flag(PDSyncFlags::RESIZE)) {
+    if (Display::width() != baseMem->screen_width ||
+        Display::height() != baseMem->screen_height) {
         Display::Resize(baseMem->screen_width, baseMem->screen_height, false);
     }
 
@@ -53,8 +56,14 @@ void PDSyncer::WriteScreenOutput(const std::vector<char>& pxls) {
 }
 
 void PDSyncer::WaitForFlag(uint32_t f, bool b) {
+    static auto millis = Time::actualMillis();
     volatile auto val = baseMem.data();
-    while (!(val->status_flags & f) == b);
+    while (!(val->status_flags & f) == b) {
+        if (Time::actualMillis() - millis > FLAG_TIMEOUT) {
+            abort();
+        }
+    }
+    millis = Time::actualMillis();
 }
 
 volatile PDSyncBaseSt& PDSyncer::GetBaseSt() {
