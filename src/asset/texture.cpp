@@ -110,6 +110,13 @@ void _Texture::LoadAsync() {
 	_loading = false;
 }
 
+void _Texture::SetPixelsRaw(const std::vector<byte>& pixels) {
+	CE_OBJECT_CHECK_ASYNC;
+	glBindTexture(GL_TEXTURE_2D, _pointer);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void _Texture::Bind() {
 	CE_OBJECT_CHECK_ASYNC;
 	glBindTexture(GL_TEXTURE_2D, _pointer);

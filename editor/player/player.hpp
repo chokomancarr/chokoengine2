@@ -7,6 +7,8 @@ class EPlayer {
 public:
     static Int2 targetReso;
 
+    static Texture outputImage;
+
     static void Play();
 
     static void Sync();

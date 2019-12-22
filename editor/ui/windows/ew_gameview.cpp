@@ -30,7 +30,7 @@ void EW_GameView::Update() {
 
 void EW_GameView::Render() {
     EPlayer::Sync();
-    return;
+    UI::Texture(position.sub(0, 20, 0, 0), EPlayer::outputImage);
 
     auto cm = ChokoEditor::scene->GetActiveCameras();
     for (auto& c : cm) {

@@ -32,6 +32,16 @@ void PDSyncer::SyncFrame() {
     baseMem->screen_width = Display::width();
     baseMem->screen_height = Display::height();
 
+    const volatile auto pxlsz = baseMem->screen_width * baseMem->screen_height * 4;
+    if (pxlsz != pixelsMem.length()) {
+        pixelsMem.open(MemNms::pixels, pxlsz);
+        volatile auto flags = baseMem->status_flags;
+        baseMem->status_flags = flags | PDSyncFlags::RESIZE;
+    }
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glReadPixels(0, 0, Display::width(), Display::height(), GL_RGBA, GL_UNSIGNED_BYTE, (void*)pixelsMem.data());
+
     volatile auto flags = baseMem->status_flags;
     baseMem->status_flags = (flags & ~PDSyncFlags::EDITOR_SYNCED) | PDSyncFlags::APP_SYNCED;
 

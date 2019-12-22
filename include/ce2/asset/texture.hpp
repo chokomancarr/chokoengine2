@@ -38,6 +38,8 @@ public:
 	CE_GET_MEMBER(channels);
 	CE_GET_MEMBER(hdr);
 
+    void SetPixelsRaw(const std::vector<byte>&);
+
     virtual void Bind();
     virtual void Unbind() const;
 

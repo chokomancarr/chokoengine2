@@ -20,6 +20,8 @@ public:
 
     ~SharedMemory();
 
+    SharedMemory<T>& operator =(const SharedMemory<T>&) = delete;
+
     bool operator !() const;
 
     volatile T* operator ->() const;

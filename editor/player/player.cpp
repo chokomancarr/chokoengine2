@@ -8,13 +8,25 @@ CE_BEGIN_ED_NAMESPACE
 namespace {
     SharedMemory<PDSyncBaseSt> baseMem;
 
+    SharedMemory<char> pixelsMem;
+
     void WaitForFlag(uint32_t f, bool b) {
         volatile auto val = baseMem.data();
         while (!(val->status_flags & f) == b);
     }
+
+    bool check_clear_flag(uint32_t i) {
+        if (!!(baseMem->status_flags & i)) {
+            baseMem->status_flags &= ~i;
+            return true;
+        }
+        else return false;
+    }
 }
 
 Int2 EPlayer::targetReso;
+
+Texture EPlayer::outputImage;
 
 void EPlayer::Play() {
     //wait for compile to finish
@@ -40,7 +52,26 @@ void EPlayer::Play() {
 void EPlayer::Sync() {
     WaitForFlag(PDSyncFlags::APP_SYNCED, true);
 
+    const auto wh4 = baseMem->screen_width * baseMem->screen_height * 4;
+    if (!!wh4) {
+        if (!outputImage || baseMem->screen_width != outputImage->width() ||
+                baseMem->screen_height != outputImage->height()) {
+            outputImage = Texture::New(baseMem->screen_width, baseMem->screen_height, false, TextureOptions());
+        }
+        
+        if (check_clear_flag(PDSyncFlags::RESIZE)) {
+            pixelsMem.open(MemNms::pixels, wh4);
+        }
 
+        if (!!pixelsMem) {
+            std::vector<byte> pxls(wh4);
+            std::memcpy(pxls.data(), (void*)pixelsMem.data(), wh4);
+            outputImage->SetPixelsRaw(pxls);
+        }
+    }
+
+    baseMem->screen_width = targetReso.x;
+    baseMem->screen_height = targetReso.y;
 
     volatile auto flags = baseMem->status_flags;
     baseMem->status_flags = (flags & ~PDSyncFlags::APP_SYNCED) | PDSyncFlags::EDITOR_SYNCED;

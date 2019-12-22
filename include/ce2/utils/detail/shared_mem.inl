@@ -32,7 +32,7 @@ bool SharedMemory<T>::operator !() const {
 #ifdef PLATFORM_WIN
 
 #else
-    return _length > 0 && !!_data;
+    return !_length || !_data;
 #endif
 }
 
