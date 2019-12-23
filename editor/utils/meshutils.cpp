@@ -175,6 +175,7 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 #endif
 
 	glm::vec2 sclsum(0, 0);
+	int sclsumw = 0;
 
 	for (auto i = 0; i < data.indCount; i++) {
 		const auto& v = edata[i*3];
@@ -221,16 +222,15 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 
 		glm::vec3 rx = mTri2Mesh[i] * mTex2Tri[i] * glm::vec2(1.f, 0.f);
 		glm::vec3 ry = mTri2Mesh[i] * mTex2Tri[i] * glm::vec2(0.f, 1.f);
-		sclsum += (mScales[i] = glm::vec2(1.f / glm::length(rx), 1.f / glm::length(ry)));
-		if (mScales[i].x != mScales[i].x || mScales[i].y != mScales[i].y) {
-			//std::cout << i << "  ";
-			mScales[i] = glm::vec2(1);
+		if (mScales[i].x == mScales[i].x && mScales[i].y == mScales[i].y) {
+			sclsum += (mScales[i] = glm::vec2(1.f / glm::length(rx), 1.f / glm::length(ry)));
+			sclsumw ++;
 		}
 	}
 
-	sclsum /= data.indCount;
+	sclsum /= sclsumw;
 	for (auto& s : mScales) {
-		//s /= sclsum;
+		s /= sclsum;
 	}
 
 	data.uvMats = TextureBuffer::New(

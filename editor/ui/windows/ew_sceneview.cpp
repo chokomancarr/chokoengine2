@@ -21,7 +21,7 @@ void EW_SceneView::DrawMenu() {
 
 	if (r.Contains(Input::mouseDownPosition())) {
 		static float x = 0;
-		static float y = 0;
+		static float y = 180 - 22.5;
 		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Hold) {
 			x -= Input::mouseDelta().y;
 			y -= Input::mouseDelta().x;
@@ -44,7 +44,7 @@ bool EW_SceneView::Init() {
 
 	_pivot = Scene::AddNewObject(Scene::objects()[0]);
 	_pivot->name("SceneView Pivot");
-	//_pivot->transform()->localRotationEuler(Vec3(-14, -34, 0));
+	_pivot->transform()->localRotationEuler(Vec3(0, 180 - 22.5, 0));
 	auto o = Scene::AddNewObject(_pivot);
 	o->name("SceneView Camera");
 	o->transform()->localPosition(Vec3(0, 0, 3));

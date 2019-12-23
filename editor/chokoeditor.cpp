@@ -27,10 +27,12 @@ inline void paint() {
 
 	const Rect r3(Display::width() - 800, Display::height() - 800, 800, 800);
 
+	static bool show = true;
+
 	glBlendFunc(GL_ONE, GL_ZERO);
 	//UI::Texture(r3, dt.GetInfoTex(sz).jmpInfoTex->tex(0));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	UI::Texture(r3, (Texture)tx2);
+	UI::Texture(r3, show ? (Texture)tx2 : tx, Color(0.5f));
 
 	#define tr(_v) r3.x() + r3.w() * _v.x, r3.y2() - r3.h() * _v.y - 1
 
@@ -95,7 +97,7 @@ inline void paint() {
 		UI::Rect(Rect(r3.x() + r3.w() * vc[0], r3.y2() - r3.h() * vc[1] - 1, 4, 4), Color::red());
 	}
 
-	static int nb = 1;
+	static int nb = 3;
 
 	nb = StrExt::ToInt(UI::I::TextField(Rect(20, 20, 100, 20), std::to_string(nb), Color(0.2f)), 1);
 
@@ -103,11 +105,9 @@ inline void paint() {
 
 	scl = UI::I::Slider(Rect(20, 50, 100, 20), Vec2(0.8f, 1.2f), scl, Color(0.3f));
 
-	static float mscl = 1;
+	static float mscl = 1.3f;
 
 	mscl = UI::I::Slider(Rect(20, 80, 100, 20), Vec2(0.5f, 3.f), mscl, Color(0.3f));
-
-	static bool show = true;
 
 	if (UI::I::Toggle(Rect(20, 110, 20, 20), show, Color(0.2f)) != show) {
 		show = !show;
@@ -139,8 +139,8 @@ void ChokoEditor::Init() {
 #define tex "skin"
 #define model "kcschan"
 #elif 1
-#define tex "grid2"
-#define model "ball4"
+#define tex "ball1"
+#define model "ball1"
 #else 
 #define tex "t"
 #define model "a"
