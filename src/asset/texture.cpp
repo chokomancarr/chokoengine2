@@ -132,7 +132,7 @@ void _Texture::Blit(const RenderTarget& dst, const Material& mat) {
 	auto tex = get_shared<_Texture>();
 	glBlendFunc(GL_ONE, GL_ZERO);
 	if (!mat) {
-		UI::Texture(Rect(0, 0, Display::width(), Display::height()), tex);
+		UI::Texture(Display::fullscreenRect(), tex);
 	}
 	else {
 		mat->SetUniform("mainTex", tex);

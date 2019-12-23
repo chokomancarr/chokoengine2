@@ -442,7 +442,11 @@ void Renderer::RenderCamera(const Camera& cam) {
 		tar->BindTarget();
 	}
 	
-	UI::Texture(Rect(0, 0, Display::width(), Display::height()), btar);
+	//we need this or else invalid colors will not clear,
+	//or we need to clear the screen first
+	glDisable(GL_BLEND);
+	UI::Texture(Display::fullscreenRect(), btar);
+	glEnable(GL_BLEND);
 
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();
