@@ -14,6 +14,8 @@ RenderTarget tx2t;
 RenderTarget tx2;
 Material mat;
 
+//#define TRACE
+
 inline void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
 	EWindowManager::Draw();
@@ -34,6 +36,16 @@ inline void paint() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	UI::Texture(r3, show ? (Texture)tx2 : tx, Color(0.5f));
 
+	static bool st = false;
+	if (Input::KeyHold(InputKey::T))
+		st = !st;
+
+	if (st) {
+		Rect rr(- 4 * Input::mousePosition().x, - 4 * Input::mousePosition().y, Display::width() * 5, Display::height() * 5);
+		UI::Texture(rr, (Texture)tx2, Color(0.5f));
+		return;
+	}
+
 	#define tr(_v) r3.x() + r3.w() * _v.x, r3.y2() - r3.h() * _v.y - 1
 
 	static bool wob = false;
@@ -44,6 +56,7 @@ inline void paint() {
 
 	if (wob) UI::Rect(r3, Color::white());
 
+#ifdef TRACE
 	for (auto& t : mesh->triangles()) {
 		Vec2 ts[3] = { mesh->texcoords()[t.x], mesh->texcoords()[t.y], mesh->texcoords()[t.z] };
 
@@ -51,6 +64,7 @@ inline void paint() {
 		UI::Line(Vec2(tr(ts[1])), Vec2(tr(ts[2])), lc);
 		UI::Line(Vec2(tr(ts[2])), Vec2(tr(ts[0])), lc);
 	}
+#endif
 
 	if (wob) return;
 
@@ -97,7 +111,7 @@ inline void paint() {
 		UI::Rect(Rect(r3.x() + r3.w() * vc[0], r3.y2() - r3.h() * vc[1] - 1, 4, 4), Color::red());
 	}
 
-	static int nb = 3;
+	static int nb = 1;
 
 	nb = StrExt::ToInt(UI::I::TextField(Rect(20, 20, 100, 20), std::to_string(nb), Color(0.2f)), 1);
 
@@ -128,9 +142,9 @@ void ChokoEditor::Init() {
 	
 }
 
-//#define DRAGON 1
+#define DRAGON 1
 //#define kcschan 1
-//#define useobj 1
+#define useobj 1
 
 #ifdef DRAGON
 #define tex "t2"

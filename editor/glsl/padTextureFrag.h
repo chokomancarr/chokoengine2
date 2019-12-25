@@ -11,8 +11,8 @@ void main() {
 	vec2 uvr = uv / reso;
 
 	ivec4 info = texture(infoTex, uvr);
+	outColor = texture(colTex, uvr);
 	if (info.x == 0 && info.z > 0) { //in triangle
-		outColor = texture(colTex, uvr);
 		return;
 	}
 
@@ -37,7 +37,6 @@ void main() {
 			return;
 		}
 	}
-	outColor = vec4(1, 1, 0, 1);
 }
 )";
 }
