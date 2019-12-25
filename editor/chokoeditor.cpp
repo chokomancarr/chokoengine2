@@ -117,22 +117,29 @@ inline void paint() {
 
 	static float scl = 1;
 
-	scl = UI::I::Slider(Rect(20, 50, 100, 20), Vec2(0.8f, 1.2f), scl, Color(0.3f));
+	scl = UI::I::Slider(Rect(20, 50, 100, 20), Vec2(0.2f, 3.f), scl, Color(0.3f));
 
 	static float mscl = 1.3f;
 
 	mscl = UI::I::Slider(Rect(20, 80, 100, 20), Vec2(0.5f, 3.f), mscl, Color(0.3f));
 
-	if (UI::I::Toggle(Rect(20, 110, 20, 20), show, Color(0.2f)) != show) {
+	static Color sss = Color(1.f);
+
+	sss.r = UI::I::Slider(Rect(20, 110, 100, 20), Vec2(0.f, 1.f), sss.r, Color(0.4f, 0.2f, 0.2f));
+	sss.g = UI::I::Slider(Rect(20, 125, 100, 20), Vec2(0.f, 1.f), sss.g, Color(0.2f, 0.4f, 0.2f));
+	sss.b = UI::I::Slider(Rect(20, 150, 100, 20), Vec2(0.f, 1.f), sss.b, Color(0.2f, 0.2f, 0.4f));
+
+	if (UI::I::Toggle(Rect(20, 200, 20, 20), show, Color(0.2f)) != show) {
 		show = !show;
 		mat->SetUniform("tex", show ? (Texture)tx2 : tx);
 	}
 
 	Scene::objects()[1]->transform()->localScale(mscl);
 
-	//MeshUtils::SurfaceBlur(dt, txp, tx2, tx2t, scl);
-	for (int a = 0; a < nb; a++) {
-		MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, scl);
+	if (show) {
+		for (int a = 0; a < nb; a++) {
+			MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, scl, sss);
+		}
 	}
 }
 
@@ -147,7 +154,7 @@ void ChokoEditor::Init() {
 #define useobj 1
 
 #ifdef DRAGON
-#define tex "t2"
+#define tex "dragon_sss"
 #define model "dragon full"
 #elif kcschan
 #define tex "skin"

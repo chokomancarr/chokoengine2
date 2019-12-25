@@ -19,7 +19,7 @@ public:
 	static void PadTexture(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar);
 
 	static void SurfaceBlur(MeshSurfaceData& data, const Texture& src,
-			const RenderTarget& tar, const RenderTarget& tmp, float size);
+			const RenderTarget& tar, const RenderTarget& tmp, float size, Color sss);
 };
 
 class MeshSurfaceData {

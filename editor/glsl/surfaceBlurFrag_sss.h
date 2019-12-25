@@ -1,5 +1,5 @@
 namespace glsl {
-	const char surfBlurFrag[] = R"(
+	const char surfBlurFragSSS[] = R"(
 uniform vec2 reso;
 uniform sampler2D colTex;
 //px py t1 t2
@@ -11,7 +11,6 @@ uniform isamplerBuffer vecTex;
 //scale factor
 uniform samplerBuffer sclTex;
 uniform vec2 dir0;
-uniform vec3 sss;
 
 out vec4 outColor;
 
@@ -24,28 +23,6 @@ const float kernel[11] = float[](
 	0.069041, 0.060049, 0.050187,
 	0.040306, 0.031105, 0.023066,
 	0.016436, 0.011254 );
-/*
-int get_eid(vec2 p, int tid) {
-	ivec4 angi = texelFetch(angTex, tid);
-
-	vec2 c = angi.xy * 0.00001;
-	float t0 = (angi.z >> 10) * 0.00001;
-	float t1 = (angi.w >> 10) * 0.00001;
-	const int mask = (1 << 10) - 1;
-	float t2 = (((angi.z & mask) << 10) | (angi.w & mask)) * 0.00001;
-
-	vec2 dp = normalize(p - c);
-	float tp = acos(dp.x);
-	tp = (dp.y > 0) ? tp : pi2 - tp;
-
-	tp -= t0;
-	tp = (tp < 0) ? pi2 + tp : tp;
-
-	if (tp > t2) return 2;
-	else if (tp > t1) return 1;
-	else return 0;
-}
-*/
 
 vec2 split16(int i) {
 	return vec2(
@@ -100,7 +77,9 @@ vec4 sample(vec2 dr, //direction
 
 	vec4 col = vec4(0, 0, 0, 0);
 
-	float cost = 1;
+	float costr = 1;
+	float costg = 1;
+	float costb = 1;
 	float hcost = cost * 0.5;
 	float hp = 1;
 	int a = 0;
@@ -170,10 +149,6 @@ void main() {
 	outColor = col * kernel[0] +
 		sample(dir, info, uv, dreso) + 
 		sample(-dir, info, uv, dreso);
-
-	outColor.r = mix(col.r, outColor.r, sss.x);
-	outColor.g = mix(col.g, outColor.g, sss.y);
-	outColor.b = mix(col.b, outColor.b, sss.z);
 }
 )";
 }

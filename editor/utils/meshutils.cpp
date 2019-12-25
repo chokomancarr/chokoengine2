@@ -21,7 +21,7 @@ void MeshUtils::Init() {
 		->AddUniforms({ "reso", "colTex", "infoTex" });
 	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
 		->AddUniforms({
-			"reso", "colTex", "infoTex", "matTex", "vecTex", "sclTex", "dir0"
+			"reso", "colTex", "infoTex", "matTex", "vecTex", "sclTex", "dir0", "sss"
 		});
 
 	initd = true;
@@ -330,7 +330,7 @@ void MeshUtils::PadTexture(MeshSurfaceData& data, const Texture& src, const Rend
 }
 
 void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
-		const RenderTarget& tar, const RenderTarget& tmp, float size) {
+		const RenderTarget& tar, const RenderTarget& tmp, float size, Color sss) {
 	if (!initd) Init();
 
 	const auto w = src->width();
@@ -358,6 +358,7 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	glActiveTexture(GL_TEXTURE4);
 	data.scaleData->Bind();
 	glUniform2f(blurShad->Loc(6), size, 0);
+	glUniform3f(blurShad->Loc(7), sss.x, sss.y, sss.z);
 
 	tmp->BindTarget();
 	tmp->Clear(Color(0, 0), 1);
