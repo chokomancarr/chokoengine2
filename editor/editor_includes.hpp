@@ -36,6 +36,7 @@ CE_END_ED_NAMESPACE
 #include "scene/scenemanager.hpp"
 #include "scene/sceneinfo.hpp"
 
+#include "ui/dragdrop.hpp"
 #include "ui/dropdown_menu.hpp"
 #include "ui/windowmanager.hpp"
 #include "ui/overlaymanager.hpp"

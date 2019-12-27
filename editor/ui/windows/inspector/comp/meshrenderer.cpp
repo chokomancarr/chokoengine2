@@ -64,6 +64,7 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 								v.val_t(tx);
 							}));
 						}
+						else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), Texture, v.val_t(res))
 						UI::Texture(Rect(lt.x + lt.w - 35, lt.y, 16, 16), v.val_t());
 						CE_E_ASSET_SEEK_BTN();
 						CE_E_INC_Y();

@@ -51,7 +51,15 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
-	ESceneManager::Load("te.scene");
+	scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
+	auto rb = ((Prefab)EAssetList::Get(AssetType::Prefab,
+		".exported/monkey.blend/monkey.blend.prefab")
+		)->Instantiate([](AssetType t, const std::string& s) -> Asset {
+		return EAssetList::Get(t, s, true);
+	});
+	scene->AddObject(rb, scene->objects()[1]);
+
+	//ESceneManager::Load("te.scene");
 	/*
 	scene->objects()[1]->children()[1]->AddComponent<DummyScript>(
 		EAssetList::GetScr("turner.hpp")
@@ -122,6 +130,7 @@ void ChokoEditor::Main() {
 			EOverlayManager::Update();
 		});
 		ChokoLait::Paint(0, paint);
+		EDragDrop::PostLoop();
 	}
 }
 

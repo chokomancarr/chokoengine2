@@ -442,7 +442,7 @@ void Renderer::RenderCamera(const Camera& cam) {
 		tar->BindTarget();
 	}
 	
-	//we need this or else invalid colors will not clear,
+	//we need this or else invalid colors will stack,
 	//or we need to clear the screen first
 	glDisable(GL_BLEND);
 	UI::Texture(Display::fullscreenRect(), btar);

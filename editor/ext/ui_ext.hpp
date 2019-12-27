@@ -22,6 +22,8 @@ public:
 
 	static Vec4 TextFieldV4(const Rect& r, const Vec4& v);
 
+	static bool StartDrag(const Rect& r);
+
 	class Layout;
 };
 

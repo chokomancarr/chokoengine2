@@ -125,6 +125,9 @@ void EW_Browser::DrawFiles() {
 		if (UI::I::Button(Rect(x, off, pd, sz + 24), style) == InputMouseStatus::HoverUp) {
 
 		}
+		else if (UI_Ext::StartDrag(Rect(x, off, pd, sz + 24))) {
+			EDragDrop::Set(f.type, { f.sig });
+		}
 		f.GetIcon();
 		UI::Texture(Rect(x + (pd - sz) / 2, off + 2, sz, sz), f.icon);
 		UI::Label(Rect(x, off + sz + 4, pd, 16), f.name, Color::white());

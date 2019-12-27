@@ -4,6 +4,19 @@
 
 #define CE_E_ASSET_SIG(nm) !nm ? "[none]" : nm->assetSignature()
 
+#define CE_E_ASSET_DROP(r, tp, fn) {\
+	if (EDragDrop::IsSingle() && EDragDrop::type == EDragDrop::Type::Asset\
+			&& !EDragDrop::assetType.exported\
+			&& r.Contains(Input::mousePosition())) {\
+		UI::Rect(r, Color(1, 1, 0, 0.5f));\
+		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {\
+			auto res = (std::remove_const<std::remove_reference<tp>::type>::type)\
+				EAssetList::Get(EDragDrop::assetType.assetType, EDragDrop::target[0], true);\
+			if (!!res) { fn; }\
+		}\
+	}\
+}
+
 #define CE_E_ASSET_SELECT(nm) {\
 	const auto& _vl = nm();\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(_vl)) == InputMouseStatus::HoverUp) {\
@@ -11,6 +24,7 @@
 				nm(vl);\
 		}));\
 	}\
+	else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), decltype(_vl), nm(res))\
 }
 
 #define CE_E_ASSET_SELECT_FV(nm) {\
@@ -19,6 +33,7 @@
 				nm = vl;\
 		}));\
 	}\
+	else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), decltype(nm), nm = res)\
 }
 
 #define CE_E_ASSET_SEEK_BTN(nm) \
