@@ -15,6 +15,7 @@ RenderTarget tx2;
 Material mat;
 
 //#define TRACE
+#define TRACEB
 
 inline void paint() {
 	UI::Texture(Display::fullscreenRect(), EImages::background, UIScaling::Crop, Color(0.5f));
@@ -30,6 +31,10 @@ inline void paint() {
 	const Rect r3(Display::width() - 800, Display::height() - 800, 800, 800);
 
 	static bool show = true;
+	if (Input::KeyDown(InputKey::S)) {
+		show = !show;
+		mat->SetUniform("tex", show ? (Texture)tx2 : tx);
+	}
 
 	glBlendFunc(GL_ONE, GL_ZERO);
 	//UI::Texture(r3, dt.GetInfoTex(sz).jmpInfoTex->tex(0));
@@ -37,12 +42,22 @@ inline void paint() {
 	UI::Texture(r3, show ? (Texture)tx2 : tx, Color(0.5f));
 
 	static bool st = false;
-	if (Input::KeyHold(InputKey::T))
+	if (Input::KeyDown(InputKey::T))
 		st = !st;
 
 	if (st) {
 		Rect rr(- 4 * Input::mousePosition().x, - 4 * Input::mousePosition().y, Display::width() * 5, Display::height() * 5);
-		UI::Texture(rr, (Texture)tx2, Color(0.5f));
+		UI::Texture(rr, show ? (Texture)tx2 : tx, Color(0.5f));
+		#ifdef TRACEB
+		#define trb(_v) rr.x() + rr.w() * _v.x, rr.y2() - rr.h() * _v.y - 1
+			for (auto& t : mesh->triangles()) {
+				Vec2 ts[3] = { mesh->texcoords()[t.x], mesh->texcoords()[t.y], mesh->texcoords()[t.z] };
+
+				UI::Line(Vec2(trb(ts[0])), Vec2(trb(ts[1])), Color::white());
+				UI::Line(Vec2(trb(ts[1])), Vec2(trb(ts[2])), Color::white());
+				UI::Line(Vec2(trb(ts[2])), Vec2(trb(ts[0])), Color::white());
+			}
+		#endif
 		return;
 	}
 
@@ -119,9 +134,9 @@ inline void paint() {
 
 	scl = UI::I::Slider(Rect(20, 50, 100, 20), Vec2(0.2f, 3.f), scl, Color(0.3f));
 
-	static float mscl = 1.3f;
+	static float mscl = 0.2f;
 
-	mscl = UI::I::Slider(Rect(20, 80, 100, 20), Vec2(0.5f, 3.f), mscl, Color(0.3f));
+	mscl = UI::I::Slider(Rect(20, 80, 100, 20), Vec2(0.2f, 1.f), mscl, Color(0.3f));
 
 	static Color sss = Color(1.f);
 
@@ -138,8 +153,9 @@ inline void paint() {
 
 	if (show) {
 		for (int a = 0; a < nb; a++) {
-			MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, scl, sss);
+			//MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, scl, sss);
 		}
+		MeshUtils::EdgeDetect(dt, txp, tx2);
 	}
 }
 
@@ -149,9 +165,9 @@ void ChokoEditor::Init() {
 	
 }
 
-#define DRAGON 1
+//#define DRAGON 1
 //#define kcschan 1
-#define useobj 1
+//#define useobj 1
 
 #ifdef DRAGON
 #define tex "dragon_sss"
@@ -160,8 +176,8 @@ void ChokoEditor::Init() {
 #define tex "skin"
 #define model "kcschan"
 #elif 1
-#define tex "ball1"
-#define model "ball1"
+#define tex "ball4"
+#define model "ball4"
 #else 
 #define tex "t"
 #define model "a"
@@ -191,7 +207,7 @@ void ChokoEditor::Main() {
 	tx = (Texture)EAssetList::Get(EAssetType::Texture, tex ".png");
 	sz = Int2(tx->width(), tx->height());
 
-	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, false);
+	TextureOptions opts = TextureOptions(TextureWrap::Clamp, TextureWrap::Clamp, 0, true);
 	txp = (Texture)RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2t = RenderTarget::New(sz.x, sz.y, true, false, opts);
 	tx2 = RenderTarget::New(sz.x, sz.y, true, false, opts);

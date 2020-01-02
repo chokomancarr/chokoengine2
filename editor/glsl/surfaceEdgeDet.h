@@ -1,5 +1,5 @@
 namespace glsl {
-	const char surfBlurFrag[] = R"(
+	const char edgeDetFrag[] = R"(
 uniform vec2 reso;
 uniform sampler2D colTex;
 //px py t1 t2
@@ -10,20 +10,8 @@ uniform samplerBuffer matTex;
 uniform isamplerBuffer vecTex;
 //scale factor
 uniform samplerBuffer sclTex;
-uniform vec2 dir0;
-uniform vec3 sss;
 
 out vec4 outColor;
-
-const float pi2 = 3.14159 * 2;
-
-const int BLUR_CNT = 10;
-
-const float kernel[11] = float[](
-	0.082607, 0.080977, 0.076276,
-	0.069041, 0.060049, 0.050187,
-	0.040306, 0.031105, 0.023066,
-	0.016436, 0.011254 );
 
 vec2 split16(int i) {
 	return vec2(
@@ -68,6 +56,8 @@ vec4 sample(vec2 dr, //direction
 			ivec4 npx, //first data
 			vec2 uv, vec2 dreso) {
 
+	//return texture(colTex, (uv + dr) * dreso);
+
 	vec2 poso = uv;
 
 	vec2 drr = dr * dreso;
@@ -85,50 +75,45 @@ vec4 sample(vec2 dr, //direction
 	float hp = 1;
 	int a = 0;
 	
-	while (a < BLUR_CNT) {
-		vec4 rcol = vec4(0, 0, 0, 0);
-		int rcolw = 0;
-		for (; rcolw < 5 && hp >= hcost; rcolw++) {
-			pos += dr;
-			int eid = get_eid(pos * dreso, tid);
-			npxo = npx;
-			npx = texture(infoTex, pos * dreso);
-			if (npx.x > 0) { //jump here
-				pos = (npx.xy - 1) / 100000.0 * reso;
-			}
-			else if (npx.z == 0) { //not triangle, go back
-				pos = poso;
-				npx = npxo;
-			}
-			int tid2 = npx.z - 1;
-			if (tid != tid2) {
-				vec4 rmatv = texelFetch(matTex, tid * 3 + eid);
-				mat2 rmat = mat2(rmatv.xy, rmatv.zw);
-				dr = rmat * dr;
 
-				//new coords
-				tid = tid2;
-				
-				ldr = 1.0 / length(dr);
-				cost *= ldr;
-				dr *= ldr;
-				hcost = cost * 0.5;
-				drr = dr * dreso;
-			}
-			poso = pos;
-			hp -= cost;
-			rcol += texture(colTex, pos * dreso);
+	for (int a = 0; a < 5 && hp >= hcost; a++) {
+		pos += dr;
+		int eid = get_eid(pos * dreso, tid);
+		npxo = npx;
+		npx = texture(infoTex, pos * dreso);
+		if (npx.x > 0) { //jump here
+			pos = (npx.xy - 1) / 100000.0 * reso;
 		}
-		rcol += texture(colTex, pos * dreso);
-		rcol /= (rcolw + 1);
-		while (hp < hcost && a < BLUR_CNT) {
-			a += 1;
-			col += rcol * kernel[a];
-			hp += 1;
+		else if (npx.z == 0) { //not triangle, go back
+			pos = poso;
+			npx = npxo;
 		}
+		int tid2 = npx.z - 1;
+		if (tid != tid2) {
+			vec4 rmatv = texelFetch(matTex, tid * 3 + eid);
+			mat2 rmat = mat2(rmatv.xy, rmatv.zw);
+			dr = rmat * dr;
+
+			//new coords
+			tid = tid2;
+			
+			ldr = 1.0 / length(dr);
+			cost *= ldr;
+			dr *= ldr;
+			hcost = cost * 0.5;
+			drr = dr * dreso;
+		}
+		poso = pos;
+		hp -= cost;
 	}
-	return col;
+	
+	return texture(colTex, pos * dreso);
 }
+
+const float dirs[16] = float[](
+	-1,  1,   0,  1,   1,  1,
+	-1,  0,            1,  0,
+	-1, -1,   0, -1,   1, -1);
 
 void main() {
 	vec2 uv = gl_FragCoord.xy;
@@ -150,17 +135,12 @@ void main() {
 
 	vec2 scl = texelFetch(sclTex, info.z - 1).xy;
 
-	vec2 dir = dir0 * scl;
-
-	outColor = col * kernel[0] +
-		sample(dir, info, uv, dreso) + 
-		sample(-dir, info, uv, dreso);
-
-	outColor.r = mix(col.r, outColor.r, sss.x);
-	outColor.g = mix(col.g, outColor.g, sss.y);
-	outColor.b = mix(col.b, outColor.b, sss.z);
-
-	//outColor = col;
+	outColor = col * 8;
+	for (int a = 0; a < 8; a++) {
+		outColor -= sample(vec2(dirs[a*2], dirs[a*2+1]) * scl, info, uv, dreso);
+	}
+	outColor.a = 1;
+	outColor = max(outColor, 0.0);
 }
 )";
 }

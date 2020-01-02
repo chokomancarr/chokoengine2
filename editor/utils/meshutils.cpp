@@ -4,6 +4,7 @@
 #include "glsl/minVert.h"
 #include "glsl/padTextureFrag.h"
 #include "glsl/surfaceBlurFrag.h"
+#include "glsl/surfaceEdgeDet.h"
 #include "glsl/uvinfo.h"
 #include "glsl/uvinfo_exp.h"
 #include "glsl/uvjmpgen.h"
@@ -11,20 +12,27 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-bool MeshUtils::initd = false;
+namespace {
+	bool initd = false;
 
-Shader MeshUtils::padShad;
-Shader MeshUtils::blurShad;
+	Shader padShad;
+	Shader blurShad;
+	Shader edgeShad;
 
-void MeshUtils::Init() {
-	(padShad = Shader::New(glsl::minVert, glsl::padTextureFrag))
-		->AddUniforms({ "reso", "colTex", "infoTex" });
-	(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
-		->AddUniforms({
-			"reso", "colTex", "infoTex", "matTex", "vecTex", "sclTex", "dir0", "sss"
-		});
+	void Init() {
+		(padShad = Shader::New(glsl::minVert, glsl::padTextureFrag))
+			->AddUniforms({ "reso", "colTex", "infoTex" });
+		(blurShad = Shader::New(glsl::minVert, glsl::surfBlurFrag))
+			->AddUniforms({
+				"reso", "colTex", "infoTex", "matTex", "vecTex", "sclTex", "dir0", "sss"
+			});
+		(edgeShad = Shader::New(glsl::minVert, glsl::edgeDetFrag))
+			->AddUniforms({
+				"reso", "colTex", "infoTex", "matTex", "vecTex", "sclTex"
+			});
 
-	initd = true;
+		initd = true;
+	}
 }
 
 MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
@@ -376,6 +384,42 @@ void MeshUtils::SurfaceBlur(MeshSurfaceData& data, const Texture& src,
 	blurShad->Unbind();
 }
 
+void MeshUtils::EdgeDetect(MeshSurfaceData& data, const Texture& src, const RenderTarget& tar) {
+	if (!initd) Init();
+
+	const auto w = src->width();
+	const auto h = src->height();
+	const auto info = data.GetInfoTex(Int2(w, h));
+
+	glViewport(0, 0, w, h);
+
+	edgeShad->Bind();
+
+	glUniform2f(edgeShad->Loc(0), w, h);
+	glUniform1i(edgeShad->Loc(1), 0);
+	glActiveTexture(GL_TEXTURE0);
+	src->Bind();
+	glUniform1i(edgeShad->Loc(2), 1);
+	glActiveTexture(GL_TEXTURE1);
+	info.jmpInfoTex->tex(0)->Bind();
+	glUniform1i(edgeShad->Loc(3), 2);
+	glActiveTexture(GL_TEXTURE2);
+	data.uvMats->Bind();
+	glUniform1i(edgeShad->Loc(4), 3);
+	glActiveTexture(GL_TEXTURE3);
+	data.vecData->Bind();
+	glUniform1i(edgeShad->Loc(5), 4);
+	glActiveTexture(GL_TEXTURE4);
+	data.scaleData->Bind();
+
+	tar->BindTarget();
+	tar->Clear(Color(0, 0), 1);
+	GLUtils::DrawArrays(GL_TRIANGLES, 6);
+
+	tar->UnbindTarget();
+	edgeShad->Unbind();
+}
+
 
 bool MeshSurfaceData::initd = false;
 Shader MeshSurfaceData::uvInfoShad;
@@ -418,6 +462,9 @@ const MeshSurfaceData::infoTexSt& MeshSurfaceData::GenInfoTex(const Int2& res) {
 	glUniform1i(uvInfoShad->Loc(1), 1);
 	glActiveTexture(GL_TEXTURE1);
 	indices->Bind();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	GLUtils::DrawArrays(GL_TRIANGLES, indCount * 3);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	GLUtils::DrawArrays(GL_TRIANGLES, indCount * 3);
 
 /*

@@ -20,7 +20,7 @@ void EW_SceneView::DrawMenu() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if (r.Contains(Input::mouseDownPosition())) {
-		static float x = 0;
+		static float x = -45.f;
 		static float y = 180 - 22.5;
 		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Hold) {
 			x -= Input::mouseDelta().y;
@@ -44,13 +44,15 @@ bool EW_SceneView::Init() {
 
 	_pivot = Scene::AddNewObject(Scene::objects()[0]);
 	_pivot->name("SceneView Pivot");
-	_pivot->transform()->localRotationEuler(Vec3(0, 180 - 22.5, 0));
+	_pivot->transform()->localRotationEuler(Vec3(-45, 180 - 22.5, 0));
 	auto o = Scene::AddNewObject(_pivot);
 	o->name("SceneView Camera");
 	o->transform()->localPosition(Vec3(0, 0, 3));
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0, 0));
 	_camera->target(_target);
+	_camera->fov(10.f);
+	_camera->clearColor(Color(1.f));
 	auto cc = o->AddComponent<Ref<CaptureCallbacks>>();
 	cc->parent = this;
 

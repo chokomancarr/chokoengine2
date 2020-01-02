@@ -344,10 +344,13 @@ void Renderer::RenderCamera(Camera& cam) {
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
 	if (!Scene::_sky || !Scene::_sky->loaded()) {
-		gbuf->Bind(true);
-		glReadBuffer(GL_COLOR_ATTACHMENT3);
-		glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		gbuf->Unbind(true);
+		//gbuf->Bind(true);
+		//glReadBuffer(GL_COLOR_ATTACHMENT3);
+		//glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		//gbuf->Unbind(true);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		UI::Texture(Display::fullscreenRect(), gbuf->tex(0));
+		glBlendFunc(GL_ONE, GL_ONE);
 	}
 	else {
 		skyShad->Bind();

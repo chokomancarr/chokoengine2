@@ -37,6 +37,9 @@ void main() {
 			return;
 		}
 	}
+
+	//
+	outColor = vec4(1, 1, 0, 1);
 }
 )";
 }
