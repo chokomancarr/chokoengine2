@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoeditor.hpp"
+#include "callback_list.hpp"
 #include "callback_args.hpp"
 
 CE_BEGIN_ED_NAMESPACE

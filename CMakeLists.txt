@@ -126,8 +126,21 @@ endif()
 
 add_subdirectory(src)
 
-target_link_libraries(ChokoEngine ${LIBS})
+set(enum_gen_strs
+	${PROJECT_SOURCE_DIR}/include/ce2/core/enums/input_key
+)
 
+foreach (enumfl ${enum_gen_strs})
+	ADD_CUSTOM_COMMAND(OUTPUT "${enumfl}_str.hpp"
+		COMMAND python "${PROJECT_SOURCE_DIR}/preproc/enum2str.py" "${enumfl}.hpp"
+		DEPENDS "${enumfl}.hpp" "${PROJECT_SOURCE_DIR}/preproc/enum2str.py"
+	)
+	target_sources(ChokoEngine PRIVATE
+		"${enumfl}_str.hpp"
+	)
+endforeach()
+
+target_link_libraries(ChokoEngine ${LIBS})
 
 set(LIBS
 	${LIBS}
