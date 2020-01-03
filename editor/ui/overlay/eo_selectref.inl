@@ -28,7 +28,7 @@ void EO_SelectRef::RegAsset(T& slot) {
 	auto i = GetInstance<EO_SelectRef>();
 	i->_assetType = EAssetTypeOf<T>::value;
 	i->state = std::unique_ptr<StateR<T>>(new StateR<T>(slot));
-	i->state->comp = false;
+	i->state->type = _State::Type::Asset;
 	i->_assets = EAssetList::GetList(i->_assetType);
 	i->active = true;
 }
@@ -39,7 +39,7 @@ void EO_SelectRef::RegAsset(const T& slot, std::function<void(F)> setter) {
 	auto i = GetInstance<EO_SelectRef>();
 	i->_assetType = EAssetTypeOf<T>::value;
 	i->state = std::unique_ptr<State<T, F>>(new State<T, F>(slot, setter));
-	i->state->comp = false;
+	i->state->type = _State::Type::Asset;
 	i->_assets = EAssetList::GetList(i->_assetType);
 	i->active = true;
 }
@@ -49,7 +49,7 @@ void EO_SelectRef::RegComp(T& tar) {
 	static_assert(std::is_base_of<_Component, typename T::_TpBase>::value, "Target is not a component!");
 	auto i = GetInstance<EO_SelectRef>();
 	i->state = std::unique_ptr<StateR<T>>(new StateR<T>(tar));
-	i->state->comp = true;
+	i->state->type = _State::Type::Comp;
 	i->ScanComps<T>();
 	i->active = true;
 }
@@ -59,7 +59,7 @@ void EO_SelectRef::RegComp(const T& tar, std::function<void(F)> setter) {
 	static_assert(std::is_base_of<_Component, typename T::_TpBase>::value, "Target is not a component!");
 	auto i = GetInstance<EO_SelectRef>();
 	i->state = std::unique_ptr<State<T, F>>(new State<T, F>(tar, setter));
-	i->state->comp = true;
+	i->state->type = _State::Type::Comp;
 	i->ScanComps<T>();
 	i->active = true;
 }

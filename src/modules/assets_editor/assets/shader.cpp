@@ -33,11 +33,16 @@ CE_MOD_AE_IMPL(Shader) {
 	shd->queue(tr ? ShaderQueue::Transparent : ShaderQueue::Opaque);
 	shd->RegisterStandardUniforms();
 	for (auto v : vrs.group) {
-#define CE_E_SHV(nm) if (v.value.string == #nm) {\
+		std::string vtp = v.value.string;
+		if (v.value.type == JsonObject::Type::List) {
+			vtp = v.value.list[0].string;
+
+		}
+#define CE_E_SHV(nm) if (vtp == #nm) {\
 			shd->AddUniform(v.key.string, ShaderVariableType::nm);\
 		}
 		CE_E_SHV(Float)
-else CE_E_SHV(Color)
+		else CE_E_SHV(Color)
 		else CE_E_SHV(Texture)
 		else CE_E_SHV(CubeMap)
 	}

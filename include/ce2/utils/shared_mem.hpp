@@ -8,10 +8,9 @@ class SharedMemory { CE_CLASS_COMMON
     size_t _length;
 
 #ifdef PLATFORM_WIN
-
-#else
-    volatile T* _data;
+	HANDLE _handle;
 #endif
+    volatile T* _data;
 
 public:
     SharedMemory();

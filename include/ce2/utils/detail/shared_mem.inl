@@ -11,48 +11,36 @@
 CE_BEGIN_NAMESPACE
 
 template <typename T>
-SharedMemory<T>::SharedMemory() : _length(0), _data(nullptr) {}
+SharedMemory<T>::SharedMemory() : _length(0)
+#ifdef PLATFORM_WIN
+	, _handle(nullptr)
+#endif
+	, _data(nullptr) {}
 
 template <typename T>
 SharedMemory<T>::SharedMemory(const std::string& name, int n) : SharedMemory() {
-    open(name, n);
+	open(name, n);
 }
 
 template <typename T>
 SharedMemory<T>::~SharedMemory() {
-#ifdef PLATFORM_WIN
-
-#else
     close();
-#endif
 }
 
 template <typename T>
 bool SharedMemory<T>::operator !() const {
-#ifdef PLATFORM_WIN
-
-#else
     return !_length || !_data;
-#endif
 }
 
 template <typename T>
 volatile T* SharedMemory<T>::operator ->() const {
-#ifdef PLATFORM_WIN
-
-#else
     return _data;
-#endif
 }
 
 template <typename T>
 volatile T& SharedMemory<T>::operator [](int i) const {
-#ifdef PLATFORM_WIN
-
-#else
     assert(i >= 0 && (i * sizeof(T)) < _length);
     return _data[i];
-#endif
 }
 
 template <typename T>
@@ -62,7 +50,10 @@ void SharedMemory<T>::open(const std::string& name, int n) {
     _length = sizeof(T) * n;
 
 #ifdef PLATFORM_WIN
+	_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, _length, name.c_str());
+	if (!_handle) return;
 
+	_data = (T*)MapViewOfFile(_handle, FILE_MAP_ALL_ACCESS, 0, 0, _length);
 #else
     auto fd = shm_open(("/" + name).c_str(), O_RDWR | O_CREAT,
         S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IWOTH | S_IROTH);
@@ -78,25 +69,21 @@ void SharedMemory<T>::open(const std::string& name, int n) {
 
 template <typename T>
 void SharedMemory<T>::close() {
+	if (_data) {
 #ifdef PLATFORM_WIN
-
+		UnmapViewOfFile((LPCVOID)_data);
+		CloseHandle(_handle);
 #else
-    if (_data) {
         munmap((void*)_data, _length);
-    }
 #endif
-
+		_data = nullptr;
+	}
     _length = 0;
-    _data = nullptr;
 }
 
 template <typename T>
 volatile T* SharedMemory<T>::data() const {
-#ifdef PLATFORM_WIN
-
-#else
     return _data;
-#endif
 }
 
 template <typename T>
