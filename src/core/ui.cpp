@@ -111,6 +111,11 @@ void UI::TexQuad(const CE_NS Rect& q, GLuint tex, Color col,
 	texShad->Unbind();
 }
 
+Rect UI::stencilRect() {
+	if (_stencilRects.empty()) return Display::fullscreenRect();
+	else return _stencilRect;
+}
+
 void UI::Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const Color& color) {
     if (!tex || !tex->loaded()) return;
 	    TexQuad(rect, tex->_pointer, color);

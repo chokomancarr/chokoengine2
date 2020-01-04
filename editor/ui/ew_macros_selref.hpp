@@ -5,11 +5,12 @@
 #define CE_E_ASSET_SIG(nm) !nm ? "[none]" : nm->assetSignature()
 
 #define CE_E_ASSET_DROP(r, tp, fn) {\
+	InputMouseStatus mst;\
 	if (EDragDrop::IsSingle() && EDragDrop::type == EDragDrop::Type::Asset\
 			&& !EDragDrop::assetType.exported\
-			&& r.Contains(Input::mousePosition())) {\
+			&& (mst = UI::I::ButtonTr(r)) != InputMouseStatus::None) {\
 		UI::Rect(r, Color(1, 1, 0, 0.5f));\
-		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {\
+		if (mst == InputMouseStatus::Up) {\
 			auto res = (std::remove_const<std::remove_reference<tp>::type>::type)\
 				EAssetList::Get(EDragDrop::assetType.assetType, EDragDrop::target[0], true);\
 			if (!!res) { fn; }\

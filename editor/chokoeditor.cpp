@@ -14,6 +14,14 @@ inline void paint() {
 
 	EOverlayManager::Draw();
 
+	if (!EDragDrop::IsEmpty()) {
+		Vec2 pos = Input::mousePosition() + Vec2(10, 5);
+		for (auto& t : EDragDrop::target) {
+			UI::Label(Rect(pos.x, pos.y, 1000, 20), t, Color(1, 0.8f));
+			pos.y += 14;
+		}
+	}
+
 	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
 }
 

@@ -55,7 +55,7 @@ Vec4 UI_Ext::TextFieldV4(const Rect& r, const Vec4& v) {
 
 bool UI_Ext::StartDrag(const Rect& r) {
     if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Hold) {
-        if (r.Contains(Input::mouseDownPosition())) {
+        if (UI::stencilRect().Contains(Input::mouseDownPosition()) && r.Contains(Input::mouseDownPosition())) {
             if (glm::length2(Input::mousePosition() - Input::mouseDownPosition()) > 4) {
                 return true;
             }

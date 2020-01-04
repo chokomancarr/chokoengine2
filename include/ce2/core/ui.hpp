@@ -44,6 +44,11 @@ public:
 	CE_GET_SET_ST_MEMBER(alpha);
 	CE_GET_SET_ST_MEMBER(defaultFont);
 
+	/* The current active portion of the screen.
+	 * If no stencil is set, the fullscreen rect is returned.
+	 */
+	static Rect stencilRect();
+
 	/* Draws an image with the provided dimensions.
 	 */
 	static void Texture(const CE_NS Rect& rect, const CE_NS Texture& tex, const Color& color = Color::white());
