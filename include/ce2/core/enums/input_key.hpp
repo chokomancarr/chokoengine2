@@ -21,3 +21,5 @@ enum class InputKey {
 };
 
 CE_END_NAMESPACE
+
+#include "input_key_str.hpp"

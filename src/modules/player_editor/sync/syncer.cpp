@@ -48,7 +48,7 @@ void PDSyncer::SyncFrame() {
     volatile auto flags = baseMem->status_flags;
     baseMem->status_flags = (flags & ~PDSyncFlags::EDITOR_SYNCED) | PDSyncFlags::APP_SYNCED;
 
-    msync((void*)baseMem.data(), baseMem.length(), MS_SYNC);
+    //msync((void*)baseMem.data(), baseMem.length(), MS_SYNC);
 }
 
 void PDSyncer::WriteScreenOutput(const std::vector<char>& pxls) {

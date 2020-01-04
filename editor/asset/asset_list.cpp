@@ -185,6 +185,14 @@ std::vector<std::string> EAssetList::GetList(AssetType t) {
 	return res;
 }
 
+std::vector<std::string> EAssetList::GetScrList() {
+	std::vector<std::string> res;
+	for (auto& e : _scriptEntries) {
+		res.push_back(e.sig);
+	}
+	return res;
+}
+
 const ScriptInfo& EAssetList::GetScr(const std::string& sig) {
 	auto& ar = _scriptEntries;
 	auto i = std::find_if(ar.begin(), ar.end(), [&](const _ScriptEntry& e) {

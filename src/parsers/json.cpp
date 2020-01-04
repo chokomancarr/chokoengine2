@@ -165,6 +165,8 @@ JsonObject JsonObject::FromColor(const Color& c) {
 	});
 }
 
+#define EXPECT(e) RETERR("unexpected '" + std::string(1, c) + "'; expected " #e "!");
+
 JsonObject JsonObject::ParseNext(std::istringstream& ss) {
 	JsonObject obj = JsonObject();
 	char c;
@@ -186,7 +188,7 @@ JsonObject JsonObject::ParseNext(std::istringstream& ss) {
 			ss.read(&c, 1);
 			if (c == ']') break;
 			else if (c != ',')
-				RETERR("expected ','!");
+				EXPECT(',');
 		}
 		return obj;
 	}
@@ -200,7 +202,7 @@ JsonObject JsonObject::ParseNext(std::istringstream& ss) {
 			auto s1 = ParseString(ss);
 			ss.read(&c, 1);
 			if (c != ':')
-				RETERR("expected ':'!");
+				EXPECT(':');
 			if (ss.peek() == '"') {
 				obj.group.push_back(JsonPair(s1, ParseString(ss)));
 			}
@@ -211,12 +213,12 @@ JsonObject JsonObject::ParseNext(std::istringstream& ss) {
 			ss.read(&c, 1);
 			if (c == '}') break;
 			else if (c != ',')
-				RETERR("expected ','!");
+				EXPECT(',');
 		}
 		return obj;
 	}
 
-	RETERR("expected data block!");
+	EXPECT('\"', '[', or '{');
 }
 
 JsonObject JsonObject::ParseString(std::istringstream& ss) {
@@ -225,7 +227,7 @@ JsonObject JsonObject::ParseString(std::istringstream& ss) {
 	char c;
 	ss.read(&c, 1);
 	if (c != '"')
-		RETERR("expected '\"'!");
+		EXPECT('\"');
 
 	std::string s2;
 	do {

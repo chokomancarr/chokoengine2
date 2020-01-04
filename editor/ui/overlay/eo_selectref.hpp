@@ -8,7 +8,11 @@ class EO_SelectRef : public EOverlay {
 	public:
 		virtual ~_State() = default;
 
-		bool comp;
+		enum class Type {
+			Asset,
+			Comp,
+			Scr
+		} type;
 
 		virtual void set(const Object& o) = 0;
 	};
@@ -57,6 +61,11 @@ public:
 	static void RegComp(T& slot);
 	template <typename T, typename F>
 	static void RegComp(const T& slot, std::function<void(F)> setter);
+
+	/* this is used for selecting script source.
+	 * script component references should use RegComp
+	 */
+	static void RegScr(const ScriptInfo& info, std::function<void(ScriptInfo)> setter);
 };
 
 CE_END_ED_NAMESPACE

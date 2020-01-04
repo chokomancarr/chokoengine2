@@ -8,6 +8,20 @@ CE_E_BEGIN_DRAWCOMP(Script)
 
 DummyScript scr = (DummyScript)c;
 if (!scr) return;
+
+CE_E_LBL("Script");
+const auto& _pvl = scr->info();
+const auto& _vl = !_pvl ? nullptr : _pvl.lock();
+if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), !!_vl ? _vl->sig : "None")
+		== InputMouseStatus::HoverUp) {
+	EO_SelectRef::RegScr(_vl, [&](ScriptInfo vl) {
+		scr->info(vl);
+	});
+}
+//else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), decltype(_vl), nm(res))
+CE_E_ASSET_SEEK_BTN();
+CE_E_INC_Y();
+
 for (size_t a = 0, n = scr->vals.size(); a < n; a++) {
 	auto& vr = scr->info()->vars[a];
 	auto& vl = scr->vals[a];

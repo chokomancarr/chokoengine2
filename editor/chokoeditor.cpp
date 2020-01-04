@@ -66,6 +66,7 @@ void ChokoEditor::Main() {
 		return EAssetList::Get(t, s, true);
 	});
 	scene->AddObject(rb, scene->objects()[1]);
+	rb->AddComponent<DummyScript>();
 
 	//ESceneManager::Load("te.scene");
 	/*

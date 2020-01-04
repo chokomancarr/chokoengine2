@@ -80,7 +80,7 @@ void EPlayer::Sync() {
     volatile auto flags = baseMem->status_flags;
     baseMem->status_flags = (flags & ~PDSyncFlags::APP_SYNCED) | PDSyncFlags::EDITOR_SYNCED;
 
-    msync((void*)baseMem.data(), baseMem.length(), MS_SYNC);
+    //msync((void*)baseMem.data(), baseMem.length(), MS_SYNC);
 }
 
 void EPlayer::Stop() {

@@ -8,6 +8,8 @@ _DummyScript::_DummyScript(const ScriptInfo& i) {
 
 void _DummyScript::info(const pScriptInfo& i) {
 	_info = i;
+	vals.clear();
+
 	if (!i) {
 		name("Script (None)");
 		return;
@@ -15,7 +17,6 @@ void _DummyScript::info(const pScriptInfo& i) {
 	name(i->className + " (Script)");
 
 	//
-	vals.clear();
 	for (auto& v : i->vars) {
 		vals.push_back(v);
 	}
