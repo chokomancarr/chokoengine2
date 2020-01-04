@@ -171,6 +171,20 @@ target_link_libraries(Module_PlayerEditor ${LIBS_E})
 add_executable(ChokoEditor "")
 add_subdirectory(editor)
 
+set(enum_gen_strs
+	${PROJECT_SOURCE_DIR}/editor/hooks/callback_list
+)
+
+foreach (enumfl ${enum_gen_strs})
+	ADD_CUSTOM_COMMAND(OUTPUT "${enumfl}_str.hpp"
+		COMMAND python "${PROJECT_SOURCE_DIR}/preproc/enum2str.py" "${enumfl}.hpp"
+		DEPENDS "${enumfl}.hpp" "${PROJECT_SOURCE_DIR}/preproc/enum2str.py"
+	)
+	target_sources(ChokoEditor PRIVATE
+		"${enumfl}_str.hpp"
+	)
+endforeach()
+
 target_include_directories(ChokoEditor PRIVATE editor)
 target_link_libraries(ChokoEditor ${LIBS_E})
 

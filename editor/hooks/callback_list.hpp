@@ -12,6 +12,10 @@ enum class CallbackSig {
 	GLOBAL_SAVE_AS,
 	GLOBAL_UNDO,
 	GLOBAL_REDO,
+	GLOBAL_PLAY,
+	GLOBAL_PAUSE,
+	GLOBAL_STOP,
+	GLOBAL_BUILD,
 
 	// --------- inspector -----------
 
@@ -21,12 +25,6 @@ enum class CallbackSig {
 	_COUNT
 };
 
-const std::vector<std::string> CallbackSigStrs = {
-	"GLOBAL_OPEN",
-	"GLOBAL_SAVE",
-	"GLOBAL_SAVE_AS",
-	"GLOBAL_UNDO",
-	"GLOBAL_REDO"
-};
-
 CE_END_ED_NAMESPACE
+
+#include "callback_list_str.hpp"

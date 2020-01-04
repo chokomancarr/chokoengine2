@@ -41,6 +41,8 @@ strs = []
 
 while True:
     line = src_file.readline().strip()
+    if not len(line):
+        continue
     if line[0] == '}':
         break
     lsplit = line.split(",")
