@@ -16,6 +16,7 @@ enum class CallbackSig {
 	GLOBAL_PAUSE,
 	GLOBAL_STOP,
 	GLOBAL_BUILD,
+	GLOBAL_BUILD_DEBUG,
 
 	// --------- inspector -----------
 

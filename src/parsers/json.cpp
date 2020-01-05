@@ -9,6 +9,113 @@ CE_BEGIN_NAMESPACE
 	return obj;\
 }
 
+#define EXPECT(e) RETERR("unexpected '" + std::string(1, c) + "'; expected " #e "!");
+
+namespace {
+	struct strmSt {
+		const char* pos;
+		const char* end;
+
+		strmSt(const std::string& s) {
+			pos = s.data();
+			end = &(*s.end());
+		}
+
+		char next() {
+			return *pos++;
+		}
+		char peek() {
+			return *pos;
+		}
+		void inc() {
+			pos++;
+		}
+
+		bool operator !() const {
+			return pos >= end;
+		}
+	};
+
+	JsonObject ParseString(strmSt& ss) {
+		JsonObject obj = JsonObject();
+		obj.type = JsonObject::Type::String;
+		char c = ss.next();
+		if (c != '"')
+			EXPECT('\"');
+
+		auto& s2 = obj.string;
+		bool esc = false;
+		for (;;) {
+			c = ss.next();
+			if (esc) {
+				s2 += c;
+				esc = false;
+			}
+			else {
+				if (!(esc = (c == '\\'))) {
+					if (c == '\"')
+						break;
+					else s2 += c;
+				}
+			}
+		}
+		return obj;
+	}
+
+	JsonObject ParseNext(strmSt& ss) {
+		JsonObject obj = JsonObject();
+		char c = ss.next();
+		if (c == '[') { //array
+			obj.type = JsonObject::Type::List;
+			if (ss.peek() == ']') {
+				ss.inc();
+				return obj;
+			}
+			while (1) {
+				if (ss.peek() == '"') {
+					obj.list.push_back(ParseString(ss));
+				}
+				else {
+					obj.list.push_back(ParseNext(ss));
+				}
+
+				c = ss.next();
+				if (c == ']') break;
+				else if (c != ',')
+					EXPECT(',');
+			}
+			return obj;
+		}
+		else if (c == '{') { //object group
+			obj.type = JsonObject::Type::Group;
+			if (ss.peek() == '}') {
+				ss.inc();
+				return obj;
+			}
+			while (1) {
+				auto s1 = ParseString(ss);
+				c = ss.next();
+				if (c != ':')
+					EXPECT(':');
+				if (ss.peek() == '"') {
+					obj.group.push_back(JsonPair(s1, ParseString(ss)));
+				}
+				else {
+					obj.group.push_back(JsonPair(s1, ParseNext(ss)));
+				}
+
+				c = ss.next();
+				if (c == '}') break;
+				else if (c != ',')
+					EXPECT(',');
+			}
+			return obj;
+		}
+
+		EXPECT('"' '[' or '{');
+	}
+}
+
 JsonObject JsonParser::Parse(std::string text) {
 	if (text.size() > 3 && //check utf-8 bom
 		byte(text[0]) == 0xef &&
@@ -22,7 +129,10 @@ JsonObject JsonParser::Parse(std::string text) {
 	bool intext = false;
 	bool esc = false;
 	for (auto& c : text) {
-		if (c == '\\') esc = true;
+		if (c == '\\') {
+			esc = true;
+			text2.push_back(c);
+		}
 		else {
 			if (c == '\"' && !esc) intext = !intext;
 			if (intext || !::isspace(c)) {
@@ -32,9 +142,9 @@ JsonObject JsonParser::Parse(std::string text) {
 		}
 	}
 
-	std::istringstream ss(text2);
+	strmSt ss(text2);
 
-	return JsonObject::ParseNext(ss);
+	return ParseNext(ss);
 }
 
 std::string JsonParser::Export(const JsonObject& o, bool min) {
@@ -163,78 +273,6 @@ JsonObject JsonObject::FromColor(const Color& c) {
 		JsonObject(std::to_string(c.b)),
 		JsonObject(std::to_string(c.a))
 	});
-}
-
-#define EXPECT(e) RETERR("unexpected '" + std::string(1, c) + "'; expected " #e "!");
-
-JsonObject JsonObject::ParseNext(std::istringstream& ss) {
-	JsonObject obj = JsonObject();
-	char c;
-	ss.read(&c, 1);
-	if (c == '[') { //array
-		obj.type = JsonObject::Type::List;
-		if (ss.peek() == ']') {
-			ss.read(&c, 1);
-			return obj;
-		}
-		while (1) {
-			if (ss.peek() == '"') {
-				obj.list.push_back(ParseString(ss));
-			}
-			else {
-				obj.list.push_back(ParseNext(ss));
-			}
-
-			ss.read(&c, 1);
-			if (c == ']') break;
-			else if (c != ',')
-				EXPECT(',');
-		}
-		return obj;
-	}
-	else if (c == '{') { //object group
-		obj.type = JsonObject::Type::Group;
-		if (ss.peek() == '}') {
-			ss.read(&c, 1);
-			return obj;
-		}
-		while (1) {
-			auto s1 = ParseString(ss);
-			ss.read(&c, 1);
-			if (c != ':')
-				EXPECT(':');
-			if (ss.peek() == '"') {
-				obj.group.push_back(JsonPair(s1, ParseString(ss)));
-			}
-			else {
-				obj.group.push_back(JsonPair(s1, ParseNext(ss)));
-			}
-
-			ss.read(&c, 1);
-			if (c == '}') break;
-			else if (c != ',')
-				EXPECT(',');
-		}
-		return obj;
-	}
-
-	EXPECT('\"', '[', or '{');
-}
-
-JsonObject JsonObject::ParseString(std::istringstream& ss) {
-	JsonObject obj = JsonObject();
-	obj.type = JsonObject::Type::String;
-	char c;
-	ss.read(&c, 1);
-	if (c != '"')
-		EXPECT('\"');
-
-	std::string s2;
-	do {
-		std::getline(ss, s2, '"');
-		obj.string += s2;
-	} while (s2.back() == '\\');
-	return obj;
 }
 
 #pragma optimize( "", off )

@@ -120,7 +120,7 @@ time_t IO::ModTime(const std::string& path) {
 }
 
 std::string IO::ReadFile(const std::string& path) {
-	std::ifstream strm(path);
+	std::ifstream strm(path, std::ios::binary);
 	if (!strm) {
 		Debug::Warning("IO::ReadFile", "Cannot open file: \"" + path + "\"!");
 		return "";

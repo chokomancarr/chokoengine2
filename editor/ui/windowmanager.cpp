@@ -1,4 +1,4 @@
-#include "chokoeditor.hpp"
+﻿#include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -29,12 +29,29 @@ void EWindowManager::LoadWindows() {
 
 void EWindowManager::Update() {
 	for (auto& w : windows) {
-		w->position = w->_position * Vec2(Display::width(), Display::height()) + Rect(0, 0, -1, -1);
+		w->position = (w->_position * Vec2(Display::width(), Display::height() - 21)).sub(0, 21, 1, -20);
 		w->Update();
 	}
 }
 
 void EWindowManager::Draw() {
+	static const auto& logotex = EIcons::icons["logo"];
+	UI::Rect(Rect(0, 0, Display::width(), 20), Color(0, 0.7f));
+	UI::Texture(Rect(2, 2, 16, 16), logotex, Color(0.7f));
+
+	if (UI::I::Button(Rect(100, 2, 50, 16), Color(0.3f, 0.6f, 0.3f), "play") == InputMouseStatus::HoverUp) {
+		ECallbackManager::Invoke(CallbackSig::GLOBAL_PLAY);
+	}
+	if (UI::I::Button(Rect(160, 2, 50, 16), Color(0.6f, 0.3f, 0.3f), "stop") == InputMouseStatus::HoverUp) {
+		ECallbackManager::Invoke(CallbackSig::GLOBAL_STOP);
+	}
+	if (UI::I::Button(Rect(250, 2, 50, 16), Color(0.3f, 0.3f, 0.3f), "build_dbg") == InputMouseStatus::HoverUp) {
+		ECallbackManager::Invoke(CallbackSig::GLOBAL_BUILD_DEBUG);
+	}
+	if (UI::I::Button(Rect(310, 2, 50, 16), Color(0.3f, 0.3f, 0.3f), "build_rel") == InputMouseStatus::HoverUp) {
+		ECallbackManager::Invoke(CallbackSig::GLOBAL_BUILD);
+	}
+
 	for (auto& w : windows) {
 		w->Draw();
 	}

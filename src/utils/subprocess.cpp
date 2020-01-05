@@ -38,8 +38,12 @@ int Subprocess::Run(const ProcessInfo& info) {
 			cmd += " \"" + a + "\"";
 	}
 	cmd += "\"";
-	if (!CreateProcess("C:\\Windows\\System32\\cmd.exe", &cmd[0], NULL, NULL, FALSE, NULL, 0, 0, &si, &pi)) {
-		Debug::Warning("Subprocess::Run", "Could not create cmd process!");
+	auto wdir2 = wdir;
+	std::replace(wdir2.begin(), wdir2.end(), '/', '\\');
+	if (!CreateProcess("C:\\Windows\\System32\\cmd.exe", &cmd[0], NULL, NULL, FALSE, NULL, 0, 
+			 wdir.empty() ? 0 : wdir2.c_str(), &si, &pi)) {
+		auto err = GetLastError();
+		Debug::Warning("Subprocess::Run", "Could not create cmd process! (winapi error " + std::to_string(err) + ")");
 		return -1;
 	}
 	DWORD w;

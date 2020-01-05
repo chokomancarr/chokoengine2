@@ -51,9 +51,6 @@ public:
 	static JsonObject FromQuat(const Quat& q);
 	static JsonObject FromColor(const Color& c);
 
-	static JsonObject ParseNext(std::istringstream& ss);
-	static JsonObject ParseString(std::istringstream& ss);
-
 	std::string DoExport(int ind) const;
 };
 

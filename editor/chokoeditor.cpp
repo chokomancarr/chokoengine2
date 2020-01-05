@@ -59,6 +59,8 @@ void ChokoEditor::Main() {
 
 	ESceneManager::Init();
 
+	EProjectBuilder::Init();
+
 	scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
 	auto rb = ((Prefab)EAssetList::Get(AssetType::Prefab,
 		".exported/monkey.blend/monkey.blend.prefab")

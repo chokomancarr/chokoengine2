@@ -20,7 +20,8 @@ bool EProjectBuilder::busy() {
 }
 
 void EProjectBuilder::Init() {
-
+	ECallbackManager::Register(CallbackSig::GLOBAL_BUILD_DEBUG, BuildDebug);
+	//ECallbackManager::Register(CallbackSig::GLOBAL_BUILD, BuildRelease);
 }
 
 bool EProjectBuilder::BuildDebug() {
