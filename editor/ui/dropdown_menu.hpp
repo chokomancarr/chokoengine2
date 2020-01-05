@@ -11,7 +11,7 @@ public:
     std::vector<EDropdownMenu> items;
 	bool enabled;
 
-    ECallback callback;
+    ECallbackCaller callback;
 };
 
 CE_END_ED_NAMESPACE

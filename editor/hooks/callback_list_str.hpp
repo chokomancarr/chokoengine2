@@ -18,7 +18,8 @@ const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
 	{ CallbackSig::GLOBAL_STOP, "GLOBAL_STOP" },
 	{ CallbackSig::GLOBAL_BUILD, "GLOBAL_BUILD" },
 	{ CallbackSig::GLOBAL_BUILD_DEBUG, "GLOBAL_BUILD_DEBUG" },
-	{ CallbackSig::_COUNT, "_COUNT" }
+	{ CallbackSig::_COUNT, "_COUNT" },
+	{ CallbackSig::Undefined, "Undefined" }
 };
 
 CE_END_ED_NAMESPACE

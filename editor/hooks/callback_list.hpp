@@ -23,7 +23,8 @@ enum class CallbackSig {
 
 
 
-	_COUNT
+	_COUNT,
+	Undefined
 };
 
 CE_END_ED_NAMESPACE

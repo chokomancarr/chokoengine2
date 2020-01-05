@@ -15,6 +15,8 @@ class EWindowManager {
 public:
 	static std::vector<std::shared_ptr<EWindow>> windows;
 
+	static std::vector<EDropdownMenu> menus;
+
 	static void Init();
 	static void LoadWindows();
 	static void Update();

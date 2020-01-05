@@ -58,7 +58,6 @@ bool EW_SceneView::Init() {
 
 	menus.push_back(EDropdownMenu("View"));
 	auto op = EDropdownMenu("Switch ortho/persp");
-	op.callback = ECallback(&Ops::ProjectionMode);
 	menus.back().items.push_back(op);
 	menus.push_back(EDropdownMenu("Object"));
 	menus.back().enabled = false;
@@ -72,12 +71,6 @@ void EW_SceneView::Update() {
 	if (sw != _target->width() || sh != _target->height()) {
 		_target = RenderTarget::New(sw, sh, true, true);
 		_camera->target(_target);
-	}
-
-	if (Input::KeyDown(InputKey::F)) {
-		auto args = ECallbackArgs();
-		args.Add(ECallbackArg("isOrtho", (int)(!_camera->orthographic())));
-		menus.back().items[0].callback(this, args);
 	}
 }
 

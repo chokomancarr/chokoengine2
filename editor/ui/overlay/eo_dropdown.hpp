@@ -15,6 +15,8 @@ public:
 
     void Draw() override;
     static void Reg(const Vec2& pos, const EDropdownMenu& menu, bool title);
+
+	static void DrawMenus(const std::vector<EDropdownMenu>&, Vec2 pos, bool right = false);
 };
 
 CE_END_ED_NAMESPACE

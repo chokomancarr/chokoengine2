@@ -4,7 +4,25 @@ CE_BEGIN_ED_NAMESPACE
 
 std::vector<std::shared_ptr<EWindow>> EWindowManager::windows;
 
+std::vector<EDropdownMenu> EWindowManager::menus;
+
 void EWindowManager::Init() {
+	std::vector<EDropdownMenu>* items;
+#define addm(nm) menus.push_back(EDropdownMenu(#nm)); items = &menus.back().items
+#define addi(nm, ...) {auto op = EDropdownMenu(#nm);\
+		op.callback = ECallbackCaller(__VA_ARGS__);\
+		items->push_back(op);}
+
+	addm(File);
+	addi(Open Project);
+	addi(Close Project);
+	addi(New Scene);
+	addi(Save Scene, CallbackSig::GLOBAL_SAVE);
+	addi(Save Scene As, CallbackSig::GLOBAL_SAVE_AS);
+
+#undef addi
+#undef addm
+
 	EW_SceneView::_Init();
 }
 
@@ -38,6 +56,7 @@ void EWindowManager::Draw() {
 	static const auto& logotex = EIcons::icons["logo"];
 	UI::Rect(Rect(0, 0, Display::width(), 20), Color(0, 0.7f));
 	UI::Texture(Rect(2, 2, 16, 16), logotex, Color(0.7f));
+	EO_Dropdown::DrawMenus(menus, Vec2(20, 2));
 
 	if (UI::I::Button(Rect(100, 2, 50, 16), Color(0.3f, 0.6f, 0.3f), "play") == InputMouseStatus::HoverUp) {
 		ECallbackManager::Invoke(CallbackSig::GLOBAL_PLAY);
