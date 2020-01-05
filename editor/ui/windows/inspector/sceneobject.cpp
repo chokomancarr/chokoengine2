@@ -30,7 +30,10 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 		EW_I_Component::Draw(c, lt, cstatus);
 	}
 
-	UI::I::Button(Rect(lt.x + 4, lt.y, lt.w - 8, 16), Color(0.3f), "Add Component");
+	const auto ra = Rect(lt.x + 4, lt.y, lt.w - 8, 16);
+	if (UI::I::Button(ra, Color(0.3f), "Add Component") == InputMouseStatus::HoverUp) {
+		EO_AddComp::Reg(ra, o);
+	}
 }
 
 CE_END_ED_NAMESPACE

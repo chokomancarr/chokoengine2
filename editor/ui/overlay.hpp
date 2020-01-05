@@ -22,3 +22,4 @@ CE_END_ED_NAMESPACE
 #include "overlay/eo_dropdown.hpp"
 #include "overlay/eo_colorpicker.hpp"
 #include "overlay/eo_selectref.hpp"
+#include "overlay/eo_addcomp.hpp"
