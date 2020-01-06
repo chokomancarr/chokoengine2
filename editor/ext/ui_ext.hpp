@@ -24,9 +24,11 @@ public:
 
 	static bool StartDrag(const Rect& r);
 
+	class Debug;
 	class Layout;
 };
 
 CE_END_ED_NAMESPACE
 
+#include "ui_ext_debug.hpp"
 #include "ui_ext_layout.hpp"

@@ -4,6 +4,7 @@ using namespace ChokoEngine;
 
 std::string BuilderDebug::projectRoot = "";
 std::vector<std::string> BuilderDebug::cmakeConfigArgs = {};
+std::vector<std::string> BuilderDebug::cmakeBuildArgs = {};
 bool BuilderDebug::clean = false;
 
 int BuilderDebug::Run() {
@@ -39,11 +40,10 @@ int BuilderDebug::Run() {
         }
     }
 
-    info.args = {};
-    std::vector<std::string> args2 = {
+    info.args = {
         "--build", "."
     };
-    info.args.insert(info.args.end(), args2.begin(), args2.end());
+    info.args.insert(info.args.end(), cmakeBuildArgs.begin(), cmakeBuildArgs.end());
 
     if (Subprocess::Run(info) != 0) {
         return 2;

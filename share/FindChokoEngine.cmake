@@ -110,7 +110,7 @@ IF(CE2_LIBRARY_TEMP)
 		)
 	endif()
 
-	get_filename_component(CE2_LIB_PATH ${CE2_LIBRARY_TEMP} DIRECTORY)
+	get_filename_component(CE2_LIB_PATH "${CE2_LIBRARY_TEMP}" DIRECTORY)
 	
 	FIND_LIBRARY(CE2_MODULE_LIB_AE
 		NAMES Module_AssetEditor

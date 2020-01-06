@@ -37,5 +37,10 @@ int main(int argc, char** argv) {
         BuilderDebug::cmakeConfigArgs.push_back(c.string);
     }
 
+	const auto& bargs = projcfg.Get("cmake_build_args").list;
+	for (auto& b : bargs) {
+		BuilderDebug::cmakeBuildArgs.push_back(b.string);
+	}
+
     return BuilderDebug::Run();
 }

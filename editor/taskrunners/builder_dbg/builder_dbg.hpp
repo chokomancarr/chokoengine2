@@ -19,6 +19,7 @@ class BuilderDebug {
 public:
     static std::string projectRoot;
     static std::vector<std::string> cmakeConfigArgs;
+	static std::vector<std::string> cmakeBuildArgs;
     static bool clean;
 
     static int Run();
