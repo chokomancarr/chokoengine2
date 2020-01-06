@@ -3,7 +3,7 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& oo, int level) {
+float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& oo, int level, bool& seld) {
 	const auto dx = 5 * level + 2;
 	float ol = 0;
 	for (auto& o : oo) {
@@ -19,13 +19,14 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 			prs = !!((int)(hb) & 0x0f);
 			if (hb == InputMouseStatus::HoverUp) {
 				st->expanded = !st->expanded;
+				seld = true;
 			}
 		}
 		if (!prs && UI::I::Button(Rect(position.x() + 1, off, position.w() - 2, 16), style)
 				== InputMouseStatus::HoverUp) {
 			ESceneInfo::selectedObject = o;
 			isa = true;
-			
+			seld = true;
 		}
 		if (hc) {
 			UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[st->expanded ? "minus" : "plus"], Color(0.8f));
@@ -39,7 +40,7 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 
 		const auto off0 = off += 17;
 		if (hc && st->expanded) {
-			auto ol = DrawMenuObject(off, o->children(), level + 1);
+			auto ol = DrawMenuObject(off, o->children(), level + 1, seld);
 			UI::Rect(Rect(position.x() + dx, off0, 1, ol - off0), Color(0.7f, 0.3f));
 		}
 	}
@@ -60,8 +61,13 @@ void EW_Hierarchy::DrawMenu() {
 	//	ESceneInfo::selectedObject = nullptr;
 	//}
 	static EUILayout::ScrollState st = {};
-	float off = EUILayout::BeginScroll(Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21), st);
-    DrawMenuObject(off, ChokoEditor::scene->objects()[1]->children(), 0);
+	const auto rect = Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21);
+	float off = EUILayout::BeginScroll(rect, st);
+	bool seld = false;
+	DrawMenuObject(off, ChokoEditor::scene->objects()[1]->children(), 0, seld);
+	if (!seld && Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && rect.Contains(Input::mousePosition())) {
+		ESceneInfo::selectedObject = nullptr;
+	}
 	EUILayout::EndScroll(st, off);
 }
 

@@ -20,7 +20,7 @@ void Time::Reset() {
 
 void Time::Update() {
     _lastMillis = _millis;
-    _millis = GetTicks() - _millis0;
+    _millis = actualMillis();
     _time = _millis * 0.001f;
     _delta = (_millis - _lastMillis) * 0.001f;
 }

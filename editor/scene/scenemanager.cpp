@@ -2,6 +2,8 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+std::string ESceneManager::activeScenePath = "";
+
 void ESceneManager::Init() {
 	auto& scene = ChokoEditor::scene;
 	scene->AddNewObject()
@@ -22,6 +24,8 @@ void ESceneManager::Load(const std::string& path) {
 		return EAssetList::Get(t, s, true);
 	}));
 	scene->sky((Background)EAssetManager::FromJson(json.Get("sky"), true));
+
+	activeScenePath = path;
 }
 
 void ESceneManager::Unload() {
@@ -29,9 +33,19 @@ void ESceneManager::Unload() {
 	scene->RemoveObject(scene->objects()[1]);
 	scene->AddNewObject()
 		->name("__scene__");
+
+	activeScenePath = "";
 }
 
-void ESceneManager::Save(const std::string& path) {
+bool ESceneManager::Save() {
+	if (activeScenePath.empty()) return false;
+
+	SaveAs(activeScenePath);
+	return true;
+}
+
+void ESceneManager::SaveAs(const std::string& path) {
+	Debug::Message("SceneManager", "Saving " + path);
 	auto& scene = ChokoEditor::scene;
 	auto res = Prefab::New(scene->objects()[1], true)->ToJson();
 

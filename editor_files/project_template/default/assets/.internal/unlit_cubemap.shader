@@ -39,9 +39,9 @@ layout (location=3) out vec4 outEmi; //????
 layout (location=4) out ivec4 _out_attrs; //????
 
 void main() {
-    outColor = texture(map, outNormal.xyz);
+    outColor = vec4(0, 0, 0, 0);
     outNormal.xyz = normalize(v2f_normal);
-    outSpec = vec4(0, 1, 0, 0);
+    outSpec = vec4(0, 0, 0, 0);
     outEmi = textureLod(map, outNormal.xyz, 0);
     
     _out_attrs.r = _object_id;

@@ -199,7 +199,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	tar->BindTarget();
 
 	if (preBlit) preBlit();
-
+	
 	/*if (useProbes) {
 		for (auto& p : probes) {
 			ApplyLightProbe(p, _w, _h, gbuf, ip);

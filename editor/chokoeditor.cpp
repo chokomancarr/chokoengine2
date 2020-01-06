@@ -70,6 +70,8 @@ void ChokoEditor::Main() {
 	scene->AddObject(rb, scene->objects()[1]);
 	rb->AddComponent<DummyScript>();
 
+	ESceneManager::activeScenePath = "aaa.scene";
+
 	//ESceneManager::Load("te.scene");
 	/*
 	scene->objects()[1]->children()[1]->AddComponent<DummyScript>(

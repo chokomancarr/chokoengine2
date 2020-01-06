@@ -4,7 +4,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 class EW_Hierarchy : public EWindow {
-    float DrawMenuObject(float& off, const std::vector<SceneObject>& oo, int level);
+    float DrawMenuObject(float& off, const std::vector<SceneObject>& oo, int level, bool& seld);
     void DoExpandCollapse(bool, const std::vector<SceneObject>&);
 
 protected:

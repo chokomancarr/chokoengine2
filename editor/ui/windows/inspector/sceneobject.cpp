@@ -16,7 +16,7 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 
 	r.y(r.y() + 20);
 
-	static UI_Ext::Layout::InfoSt lt = {};
+	static auto lt = UI_Ext::Layout::InfoSt();
 	UI_Ext::Layout::BeginLayout(r.sub(2, 0, 2, 0), lt);
 
 	UI_Ext::Layout::Block("Transform", lt, [&]() {
@@ -34,6 +34,8 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 	if (UI::I::Button(ra, Color(0.3f), "Add Component") == InputMouseStatus::HoverUp) {
 		EO_AddComp::Reg(ra, o);
 	}
+
+	UI_Ext::Layout::EndLayout(lt);
 }
 
 CE_END_ED_NAMESPACE
