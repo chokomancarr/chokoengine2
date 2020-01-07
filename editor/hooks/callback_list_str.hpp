@@ -18,6 +18,9 @@ const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
 	{ CallbackSig::GLOBAL_STOP, "GLOBAL_STOP" },
 	{ CallbackSig::GLOBAL_BUILD, "GLOBAL_BUILD" },
 	{ CallbackSig::GLOBAL_BUILD_DEBUG, "GLOBAL_BUILD_DEBUG" },
+	{ CallbackSig::OBJECT_NEW, "OBJECT_NEW" },
+	{ CallbackSig::OBJECT_NEW_CHILD, "OBJECT_NEW_CHILD" },
+	{ CallbackSig::OBJECT_DELETE, "OBJECT_DELETE" },
 	{ CallbackSig::_COUNT, "_COUNT" },
 	{ CallbackSig::Undefined, "Undefined" }
 };

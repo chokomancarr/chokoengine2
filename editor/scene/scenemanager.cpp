@@ -12,6 +12,8 @@ void ESceneManager::Init() {
 		->name("__scene__");
 
 	ECallbackManager::Register(CallbackSig::GLOBAL_SAVE, CbFnFrom(Save));
+
+	Ops::Reg();
 }
 
 void ESceneManager::Load(const std::string& path) {

@@ -18,6 +18,10 @@ enum class CallbackSig {
 	GLOBAL_BUILD,
 	GLOBAL_BUILD_DEBUG,
 
+	OBJECT_NEW,
+	OBJECT_NEW_CHILD,
+	OBJECT_DELETE,
+
 	// --------- inspector -----------
 
 

@@ -17,6 +17,10 @@ public:
 	static bool Save();
 	
 	static void SaveAs(const std::string& path);
+
+	class Ops;
 };
 
 CE_END_ED_NAMESPACE
+
+#include "ops/scene_ops.hpp"

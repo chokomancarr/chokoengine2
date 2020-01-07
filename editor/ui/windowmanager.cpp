@@ -44,8 +44,10 @@ void EWindowManager::LoadWindows() {
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Hierarchy>());
 	SETPOS(Rect(600, 0, 150, 350));
+	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Inspector>());
 	SETPOS(Rect(750, 0, 250, 600));
+	windows.back()->Init();
 }
 
 void EWindowManager::Update() {

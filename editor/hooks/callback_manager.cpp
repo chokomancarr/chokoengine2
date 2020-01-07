@@ -24,9 +24,11 @@ void ECallbackManager::Register(CallbackSig sig, ECallbackFn fn) {
 void ECallbackManager::Invoke(CallbackSig sig, const ECallbackArgs& args) {
 	if (sig == CallbackSig::Undefined) return;
 	const auto& fns = _handlers[(int)sig];
-	if (!fns.size()) {
+	if (fns.empty()) {
 		Debug::Warning("CallbackManager", "No handlers registered for callback " + CallbackSigStr.at(sig));
 	}
+	Debug::Message("CallbackManager", "Invoke " + CallbackSigStr.at(sig)
+			+ " (" + std::to_string(fns.size()) + " handlers)");
 	for (auto& fn : fns) {
 		fn(args);
 	}

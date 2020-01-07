@@ -70,11 +70,10 @@ void _Scene::RemoveObject(const SceneObject& o) {
 	});
 
 	if (oo == vec.end()) {
-		Debug::Warning("Scene", "Cannot remove object: object is not a part of the scene!");
+		Debug::Warning("Scene", "Cannot remove object: object is not part of the scene!");
 	}
 	(*oo)->_scene = pScene();
-	std::swap(*oo, vec.back());
-	_objects.pop_back();
+	vec.erase(oo);
 }
 
 void _Scene::ClearObjects() {

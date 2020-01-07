@@ -3,7 +3,12 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& oo, int level, bool& seld) {
+namespace {
+	EDropdownMenu menu_obj;
+	EDropdownMenu menu_empty;
+}
+
+float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& oo, int level) {
 	const auto dx = 5 * level + 2;
 	float ol = 0;
 	for (auto& o : oo) {
@@ -19,14 +24,17 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 			prs = !!((int)(hb) & 0x0f);
 			if (hb == InputMouseStatus::HoverUp) {
 				st->expanded = !st->expanded;
-				seld = true;
 			}
 		}
-		if (!prs && UI::I::Button(Rect(position.x() + 1, off, position.w() - 2, 16), style)
-				== InputMouseStatus::HoverUp) {
+		const Rect orect(position.x() + 1, off, position.w() - 2, 16);
+		if (!prs && UI::I::Button(orect, style) == InputMouseStatus::HoverUp) {
 			ESceneInfo::selectedObject = o;
 			isa = true;
-			seld = true;
+		}
+		else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up
+				&& orect.Contains(Input::mousePosition())) {
+			ESceneInfo::selectedObject = o;
+			EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_obj, false);
 		}
 		if (hc) {
 			UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[st->expanded ? "minus" : "plus"], Color(0.8f));
@@ -40,7 +48,7 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 
 		const auto off0 = off += 17;
 		if (hc && st->expanded) {
-			auto ol = DrawMenuObject(off, o->children(), level + 1, seld);
+			auto ol = DrawMenuObject(off, o->children(), level + 1);
 			UI::Rect(Rect(position.x() + dx, off0, 1, ol - off0), Color(0.7f, 0.3f));
 		}
 	}
@@ -63,17 +71,46 @@ void EW_Hierarchy::DrawMenu() {
 	static EUILayout::ScrollState st = {};
 	const auto rect = Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21);
 	float off = EUILayout::BeginScroll(rect, st);
-	bool seld = false;
-	DrawMenuObject(off, ChokoEditor::scene->objects()[1]->children(), 0, seld);
-	if (!seld && Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && rect.Contains(Input::mousePosition())) {
-		ESceneInfo::selectedObject = nullptr;
+	DrawMenuObject(off, ChokoEditor::scene->objects()[1]->children(), 0);
+
+	if (off < rect.y2()) {
+		const auto rect2 = rect.sub(0, off - rect.y(), 0, 0);
+		if (rect2.Contains(Input::mouseDownPosition())) {
+			if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {
+				ESceneInfo::selectedObject = nullptr;
+			}
+			else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up) {
+				ESceneInfo::selectedObject = nullptr;
+				EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_empty, false);
+			}
+		}
 	}
+
+	off += 17;
+	
+	/*if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && rect.Contains(Input::mousePosition())) {
+		ESceneInfo::selectedObject = nullptr;
+	}*/
 	EUILayout::EndScroll(st, off);
 }
 
 EW_Hierarchy::EW_Hierarchy() : EWindow("Hierarchy") {}
 
 bool EW_Hierarchy::Init() {
+#define addi(nm, ...) {auto op = EDropdownMenu(#nm);\
+		op.callback = ECallbackCaller(__VA_ARGS__);\
+		menu->push_back(op);}
+
+	auto menu = &menu_obj.items;
+
+	addi(New child Object, CallbackSig::OBJECT_NEW_CHILD);
+	addi(Delete, CallbackSig::OBJECT_DELETE);
+
+	menu = &menu_empty.items;
+
+	addi(New Object, CallbackSig::OBJECT_NEW);
+	addi(Collapse);
+
 	return true;
 }
 
