@@ -1,5 +1,8 @@
-project_base/
+project_root/
+  +-- CMakeLists.txt
   +-- assets/
+    +-- .ce/
+	  +-- startup.scene
     +-- .internal/
     | +-- 
     +-- .exported/
@@ -7,7 +10,11 @@ project_base/
     +-- system.json
     +-- graphics.json
   +-- system/
-    +-- CMakeLists.txt
+    +-- system_scripts.cmake
     +-- game_scripts.cmake
+	+-- src/
+	  +-- main.cpp
+	+-- build/
+  +-- user/
+    +-- lastopenscene.txt
   +-- temp/
-    +-- 

@@ -11,12 +11,13 @@ public:
 	static void Init();
 
 	static void Load(const std::string& path);
+	static void LoadLastOpened();
 
 	static void Unload();
 
 	static bool Save();
 	
-	static void SaveAs(const std::string& path);
+	static void SaveAs(const std::string& path, bool regActive = true);
 
 	class Ops;
 };

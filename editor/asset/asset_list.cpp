@@ -21,7 +21,7 @@ std::vector<EAssetList::_ScriptEntry> EAssetList::_scriptEntries;
 
 bool EAssetList::Scan_Fd(const std::string& fd) {
     bool dirty = false;
-    const auto ffd = ChokoEditor::assetPath + fd;
+    const auto ffd = CE_DIR_ASSET + fd;
     auto fls = IO::ListFiles(ffd);
     for (auto& f : fls) {
         const auto ext = StrExt::ExtensionOf(f);

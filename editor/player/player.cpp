@@ -38,6 +38,8 @@ void EPlayer::Init() {
 void EPlayer::Play() {
     while (EProjectBuilder::busy());
 
+	ESceneManager::SaveAs(".ce/startup.scene", false);
+
     baseMem.open(MemNms::base);
     
     std::memset((void*)baseMem.data(), 0, sizeof(PDSyncBaseSt));

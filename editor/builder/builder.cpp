@@ -34,7 +34,7 @@ bool EProjectBuilder::BuildDebug() {
         Subprocess::ProcessInfo info;
         info.program = IO::path() + TaskList::builderDebug;
         info.args = {
-            "--root", StrExt::ParentFd(ChokoEditor::assetPath),
+            "--root", ChokoEditor::projectRoot,
             "--configArgs", //none
             "--clean", "0"
         };
@@ -42,7 +42,7 @@ bool EProjectBuilder::BuildDebug() {
         std::lock_guard<std::mutex> lock(_mtx);
         _busy = false;
     }).detach();
-    dbgProgPath = StrExt::ParentFd(ChokoEditor::assetPath) + "system/build/bin/chokoeditor_project" CE_PROG_EXT;
+    dbgProgPath = CE_DIR_SYSTEM + "build/bin/chokoeditor_project" CE_PROG_EXT;
     return true;
 }
 

@@ -31,7 +31,9 @@ Scene SceneManager::Load(int i) {
         _activeScene->AddObject(o);
     }
 
-	//scene->sky((Background)EAssetManager::FromJson(json.Get("sky"), true));
+	auto sjson = json.Get("sky");
+	_activeScene->sky((Background)_AssetLoaderBase::instance->Load(
+		AssetType::Background, sjson.Get("Background").string));
 
 	return _activeScene;
 }

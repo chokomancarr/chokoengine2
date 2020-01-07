@@ -85,7 +85,7 @@ void EScripting::Init() {
 ScriptInfo EScripting::ParseInfo(const std::string& sig) {
 	ScriptInfo res = ScriptInfo::New();
 	res->sig = sig;
-	std::ifstream strm(ChokoEditor::assetPath + sig);
+	std::ifstream strm(CE_DIR_ASSET + sig);
 	res->name(StrExt::RemoveExt(StrExt::RemoveFd(sig)));
 	std::string ln;
 	int br = 0;

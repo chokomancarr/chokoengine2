@@ -22,7 +22,7 @@ void EW_Browser::File::GetIcon() {
 
 
 void EW_Browser::ScanFolder(Folder& pfd) {
-	auto fls = IO::ListFiles(ChokoEditor::assetPath + pfd.path);
+	auto fls = IO::ListFiles(CE_DIR_ASSET + pfd.path);
 	for (auto& l : fls) {
 		if (l[0] == '.') continue;
 		const auto lsz = l.size();
@@ -32,7 +32,7 @@ void EW_Browser::ScanFolder(Folder& pfd) {
 		f.type = EAssetList::TypeOf(l);
 		pfd.files.push_back(f);
 		auto& fl = pfd.files.back();
-		const auto sfls = IO::ListFiles(ChokoEditor::assetPath + pfd.path + l);
+		const auto sfls = IO::ListFiles(CE_DIR_ASSET + pfd.path + l);
 		for (auto& s : sfls) {
 			if (s[0] == '.') continue;
 			const auto ssz = s.size();
@@ -50,7 +50,7 @@ void EW_Browser::ScanFolder(Folder& pfd) {
 		return a.name < b.name;
 	});
 
-	auto fds = IO::ListDirectories(ChokoEditor::assetPath + pfd.path);
+	auto fds = IO::ListDirectories(CE_DIR_ASSET + pfd.path);
 	for (auto& f : fds) {
 		if (f[0] == '.') continue;
 		pfd.children.push_back(Folder(f, pfd.path + f + "/"));

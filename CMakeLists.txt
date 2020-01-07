@@ -171,6 +171,8 @@ target_link_libraries(Module_PlayerEditor ${LIBS_E})
 add_executable(ChokoEditor "")
 add_subdirectory(editor)
 
+add_dependencies(ChokoEditor Module_AssetEditor Module_PlayerEditor)
+
 set(enum_gen_strs
 	${PROJECT_SOURCE_DIR}/editor/hooks/callback_list
 )

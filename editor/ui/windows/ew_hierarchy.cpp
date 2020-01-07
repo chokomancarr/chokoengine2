@@ -64,10 +64,6 @@ void EW_Hierarchy::DoExpandCollapse(bool e, const std::vector<SceneObject>& oo) 
 }
 
 void EW_Hierarchy::DrawMenu() {
-	//if (UI::I::ButtonTr(Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21))
-	//		== InputMouseStatus::HoverUp) {
-	//	ESceneInfo::selectedObject = nullptr;
-	//}
 	static EUILayout::ScrollState st = {};
 	const auto rect = Rect(position.x() + 1, position.y() + 20, position.w() - 2, position.h() - 21);
 	float off = EUILayout::BeginScroll(rect, st);
@@ -75,7 +71,7 @@ void EW_Hierarchy::DrawMenu() {
 
 	if (off < rect.y2()) {
 		const auto rect2 = rect.sub(0, off - rect.y(), 0, 0);
-		if (rect2.Contains(Input::mouseDownPosition())) {
+		if (rect2.Contains(Input::mousePosition())) {
 			if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {
 				ESceneInfo::selectedObject = nullptr;
 			}
@@ -88,9 +84,6 @@ void EW_Hierarchy::DrawMenu() {
 
 	off += 17;
 	
-	/*if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && rect.Contains(Input::mousePosition())) {
-		ESceneInfo::selectedObject = nullptr;
-	}*/
 	EUILayout::EndScroll(st, off);
 }
 

@@ -34,13 +34,13 @@ std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
 }
 
 #define CE_E_MKM(t, nm) case t::nm: {\
-	std::ofstream strm(ChokoEditor::assetPath + path + ".meta");\
+	std::ofstream strm(CE_DIR_ASSET + path + ".meta");\
 	strm << meta::nm;\
 	break;\
 }
 
 void EAssetLoader::GenDefaultScriptMeta(const std::string& path) {
-	std::ofstream strm(ChokoEditor::assetPath + path + ".meta");
+	std::ofstream strm(CE_DIR_ASSET + path + ".meta");
 	strm << meta::Script;
 }
 
@@ -166,7 +166,7 @@ CE_E_AL_IMPL_EX(Model) {
 	const auto meta = ModuleAE::AssetLoader::LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "blend") {
-		return BlenderExporter::ExportBlend(ChokoEditor::assetPath + path, ChokoEditor::assetPath, ".exported/" + path + "/");
+		return BlenderExporter::ExportBlend(CE_DIR_ASSET + path, CE_DIR_ASSET, ".exported/" + path + "/");
 	}
 	else abort(); //we should never get here
 }
@@ -175,7 +175,7 @@ CE_E_AL_IMPL_EX(Image) {
 	const auto meta = ModuleAE::AssetLoader::LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "psd") {
-		return BlenderExporter::ExportImage(ChokoEditor::assetPath + path, ChokoEditor::assetPath + ".exported/" + path + "/");
+		return BlenderExporter::ExportImage(CE_DIR_ASSET + path, CE_DIR_ASSET + ".exported/" + path + "/");
 	}
 	else abort(); //we should never get here
 }

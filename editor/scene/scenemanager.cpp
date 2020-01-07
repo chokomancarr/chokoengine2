@@ -2,6 +2,13 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+namespace {
+	void RegActive(const std::string& path) {
+		ESceneManager::activeScenePath = path;
+		std::ofstream(CE_DIR_USER + "lastopenscene.txt") << path;
+	}
+}
+
 std::string ESceneManager::activeScenePath = "";
 
 void ESceneManager::Init() {
@@ -18,7 +25,7 @@ void ESceneManager::Init() {
 
 void ESceneManager::Load(const std::string& path) {
 	auto& scene = ChokoEditor::scene;
-	auto json = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
+	auto json = JsonParser::Parse(IO::ReadFile(CE_DIR_ASSET + path));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
 		return (Prefab)EAssetList::Get(AssetType::Prefab, s, true);
 	});
@@ -29,7 +36,16 @@ void ESceneManager::Load(const std::string& path) {
 	}));
 	scene->sky((Background)EAssetManager::FromJson(json.Get("sky"), true));
 
-	activeScenePath = path;
+	RegActive(path);
+}
+
+void ESceneManager::LoadLastOpened() {
+	std::ifstream strm(CE_DIR_USER + "lastopenscene.txt");
+	if (strm) {
+		std::string path;
+		strm >> path;
+		Load(path);
+	}
 }
 
 void ESceneManager::Unload() {
@@ -48,14 +64,18 @@ bool ESceneManager::Save() {
 	return true;
 }
 
-void ESceneManager::SaveAs(const std::string& path) {
+void ESceneManager::SaveAs(const std::string& path, bool reg) {
 	Debug::Message("SceneManager", "Saving " + path);
 	auto& scene = ChokoEditor::scene;
 	auto res = Prefab::New(scene->objects()[1], true)->ToJson();
 
 	res.group.push_back(JsonPair(JsonObject("sky"), EAssetManager::ToJson(scene->sky(), AssetType::Background)));
-	std::ofstream strm(ChokoEditor::assetPath + path);
+	std::ofstream strm(CE_DIR_ASSET + path);
 	strm << JsonParser::Export(res);
+
+	if (reg) {
+		RegActive(path);
+	}
 }
 
 CE_END_ED_NAMESPACE
