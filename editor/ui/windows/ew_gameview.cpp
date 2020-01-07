@@ -31,6 +31,8 @@ void EW_GameView::Update() {
             resolution.y != _target->height()) {
 		_target = RenderTarget::New(resolution.x, resolution.y, true, true);
 	}
+
+	EPlayer::targetReso = resolution;
 }
 
 void EW_GameView::Render() {

@@ -11,6 +11,8 @@ public:
 
     static Texture outputImage;
 
+	static void Init();
+
     static void Play();
 
     static void Sync();

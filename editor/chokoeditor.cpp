@@ -52,6 +52,7 @@ void ChokoEditor::Main() {
 	EWindowManager::Init();
 	EOverlayManager::Init();
 	EScripting::Init();
+	EPlayer::Init();
 
 	EAssetList::Rescan();
 
@@ -69,6 +70,11 @@ void ChokoEditor::Main() {
 	});
 	scene->AddObject(rb, scene->objects()[1]);
 	rb->AddComponent<DummyScript>();
+
+	const auto& oc = scene->AddNewObject(scene->objects()[1]);
+	oc->transform()->localPosition(Vec3(0, 0, 2));
+	oc->transform()->localRotationEuler(Vec3(0, 180, 0));
+	oc->AddComponent<Camera>();
 
 	ESceneManager::activeScenePath = "aaa.scene";
 

@@ -20,6 +20,9 @@ void EWindowManager::Init() {
 	addi(Save Scene, CallbackSig::GLOBAL_SAVE);
 	addi(Save Scene As, CallbackSig::GLOBAL_SAVE_AS);
 
+	addm(Object);
+	//addi(New Object, CallbackSig::OBJECT_ADD_EMPTY);
+
 #undef addi
 #undef addm
 

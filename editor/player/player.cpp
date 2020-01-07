@@ -30,6 +30,11 @@ Int2 EPlayer::targetReso;
 
 Texture EPlayer::outputImage;
 
+void EPlayer::Init() {
+	ECallbackManager::Register(CallbackSig::GLOBAL_PLAY, CbFnFrom(Play));
+	ECallbackManager::Register(CallbackSig::GLOBAL_STOP, CbFnFrom(Stop));
+}
+
 void EPlayer::Play() {
     while (EProjectBuilder::busy());
 

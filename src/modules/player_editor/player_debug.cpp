@@ -7,8 +7,15 @@ std::string PlayerDebug::projectPath = "";
 
 void PlayerDebug::Init() {
 	PDSyncer::Init();
+	/*
+	auto hndl = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 10, "TEST_TEST");
+	std::cout << (int)hndl << std::endl;
 
+	std::cout << (char*)MapViewOfFile(hndl, FILE_MAP_ALL_ACCESS, 0, 0, 10) << std::endl;
+	*/
 	const auto& mem = PDSyncer::GetBaseSt();
+
+	Debug::Message("ChokoPlayerD", "Init with " + std::to_string(mem.screen_width) + " x " + std::to_string(mem.screen_height));
 
 	ChokoLait::InitOptionsSt opts = {};
 	ChokoLait::Init(mem.screen_width, mem.screen_height, opts);
