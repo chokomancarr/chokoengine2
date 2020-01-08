@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../share")
 
 find_package(ChokoEngine REQUIRED)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 if (MSVC)
 	SET(CMAKE_CXX_FLAGS "/EHsc /W3")
@@ -25,6 +25,11 @@ else()
 endif()
 endif()
 
+set(INCLUDE_DIRS
+	${CE2_INCLUDE_DIRS}
+	"${CMAKE_SOURCE_DIR}/assets"
+)
+
 set(LIBS
 	${CE2_LIBRARIES}
 	${CE2_MODULE_LIB_AE}
@@ -32,7 +37,7 @@ set(LIBS
 )
 
 add_executable(chokoeditor_project "")
-target_include_directories(chokoeditor_project PUBLIC ${CE2_INCLUDE_DIRS})
+target_include_directories(chokoeditor_project PUBLIC ${INCLUDE_DIRS})
 include(system/system_scripts.cmake)
 include(system/game_scripts.cmake)
 target_link_libraries(chokoeditor_project ${LIBS})

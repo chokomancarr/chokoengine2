@@ -18,6 +18,7 @@ public:
 		Vec4 val_v4;
 		float _data[4];
 	};
+	Asset val_asset;
 	std::vector<ScriptVal> val_vec;
 };
 

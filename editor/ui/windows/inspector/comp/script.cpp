@@ -42,6 +42,19 @@ for (size_t a = 0, n = scr->vals.size(); a < n; a++) {
 		CE_E_EDIT_V4(vl., vr.name, val_v4);
 		break;
 	}
+	case ScriptVar::Type::Asset: {
+		CE_E_LBL(vr.name);
+		if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 34, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(vl.val_asset)) == InputMouseStatus::HoverUp) {
+			
+			EO_SelectRef::RegAsset(vl.val_asset, std::function<void(const Asset&)>([scr, a](const Asset& vl) {
+				scr->vals[a].val_asset = vl;
+			}));
+		}
+		else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), Texture, v.val_t(res))
+		UI::Texture(Rect(lt.x + lt.w - 35, lt.y, 16, 16), v.val_t());
+		CE_E_ASSET_SEEK_BTN();
+		CE_E_INC_Y();
+	}
 	default:
 		CE_E_LBL(vr.name);
 		UI::Label(CE_E_VL_RECT, vr.name, Color(0.7f));
