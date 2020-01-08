@@ -18,17 +18,6 @@ enum class AssetType {
 	Unknown = 0xff
 };
 
-const std::array<std::string, (int)AssetType::_COUNT> AssetTypeStr = {
-	"AnimClip",
-	"AnimGraph",
-	"Armature",
-	"Background",
-	"Font",
-	"Material",
-	"Mesh",
-	"Prefab",
-	"Shader",
-	"Texture"
-};
-
 CE_END_NAMESPACE
+
+#include "asset_types_str.hpp"

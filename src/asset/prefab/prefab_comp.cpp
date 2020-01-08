@@ -4,7 +4,7 @@ CE_BEGIN_NAMESPACE
 
 _PrefabComp::_PrefabComp(const Component& c)
 		: type(c->componentType) {
-	name = ComponentTypeStr[(int)type];
+	name = ComponentTypeStr.at(type);
 #define CS(tp) case ComponentType::tp: Set ## tp((tp)c); break;
 	switch (type) {
 		CS(Camera)
@@ -20,8 +20,12 @@ _PrefabComp::_PrefabComp(const Component& c)
 }
 
 _PrefabComp::_PrefabComp(const JsonPair& json) : _PrefabObjBase(json.value) {
-	CE_GET_IT(it, ComponentTypeStr, json.key.string) {
-		type = (ComponentType)(it - ComponentTypeStr.begin());
+	auto it = std::find_if(ComponentTypeStr.begin(), ComponentTypeStr.end(), 
+		[&json](decltype(ComponentTypeStr)::const_reference i) {
+			return i.second == json.key.string;
+	});
+	if(it != ComponentTypeStr.end()) {
+		type = it->first;
 	}
 	else {
 		Debug::Warning("PrefabComponent", "Unknown type: \"" + json.key.string + "\"!");

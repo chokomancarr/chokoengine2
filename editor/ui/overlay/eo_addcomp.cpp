@@ -1,4 +1,3 @@
-#pragma once
 #include "chokoeditor.hpp"
 
 CE_BEGIN_ED_NAMESPACE
@@ -73,7 +72,7 @@ void EO_AddComp::Draw() {
 		UI::Label(Rect(x0, y0, 150, 16), a.first, Color(0.7f));
 		int y1 = y0 + 22;
 		for (auto& c : a.second) {
-			if (UI::I::Button(Rect(x0, y1, 146, 16), Color(0.2f), ComponentTypeStr[(int)c]) == InputMouseStatus::HoverUp) {
+			if (UI::I::Button(Rect(x0, y1, 146, 16), Color(0.2f), ComponentTypeStr.at(c)) == InputMouseStatus::HoverUp) {
 				arrg[(int)c](obj);
 				active = false;
 			}

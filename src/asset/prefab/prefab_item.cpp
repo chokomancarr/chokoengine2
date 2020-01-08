@@ -94,8 +94,12 @@ PrefabItem::PrefabItem(const std::string& tp, const JsonObject& vl) : value({}) 
 			case Type::Asset: {
 				CE_CHK(!vl.group.size(), "json asset entry is incomplete!");
 				auto& g = vl.group[0];
-				CE_GET_IT(it, AssetTypeStr, g.key.string) {
-					value.assetref.assetType = (AssetType)(it - AssetTypeStr.begin());
+				auto it = std::find_if(AssetTypeStr.begin(), AssetTypeStr.end(), 
+					[&g](decltype(AssetTypeStr)::const_reference i) {
+						return i.second == g.key.string;
+				});
+				if(it != AssetTypeStr.end()) {
+					value.assetref.assetType = it->first;
 					value.assetref.sig = g.value.string;
 				}
 				else {
@@ -173,7 +177,7 @@ JsonPair PrefabItem::ToJson(const std::string& nm) const {
 		break;
 	case Type::Asset:
 		res = JsonObject({JsonPair(
-			JsonObject(AssetTypeStr[(int)value.assetref.assetType]),
+			JsonObject(AssetTypeStr.at(value.assetref.assetType)),
 			JsonObject(value.assetref.sig)
 		)});
 		break;

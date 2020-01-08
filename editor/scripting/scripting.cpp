@@ -1,6 +1,4 @@
 #include "chokoeditor.hpp"
-#include "strs_asset.hpp"
-#include "strs_comp.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -37,8 +35,8 @@ namespace {
 	bool parseVar(const std::string& ln, size_t& st, ScriptVar& vr, const ScriptInfo& res) {
 		const auto& tp = vr.name = nextWord(ln, st, &st);
 		static const std::string typeSs[] = {
-			"int", "float"
-			, "Vec2", "Vec3", "Vec4"
+			"int", "float",
+			"Vec2", "Vec3", "Vec4"
 		};
 		for (int i = 0; i < (sizeof(typeSs) / sizeof(std::string)); i++) {
 			if (tp == typeSs[i]) {
@@ -46,15 +44,15 @@ namespace {
 				return true;
 			}
 		}
-		/*
-		for (int a = 0; a < (int)AssetType::_COUNT; a++) {
-			if (tp == EAssetTypeStrs[a]) {
+		
+		for (auto& a : AssetTypeStr) {
+			if (a.second == tp) {
 				vr.type = ScriptVar::Type::Asset;
-				vr.typeAsset = (AssetType)a;
+				vr.sub_class = tp;
 				return true;
 			}
 		}
-		for (int a = 0; a < (int)ComponentType::_COUNT; a++) {
+		/*for (int a = 0; a < (int)ComponentType::_COUNT; a++) {
 			if (tp == ComponentTypeStrs[a]) {
 				vr.type = ScriptVar::Type::Comp;
 				vr.typeComp = (ComponentType)a;

@@ -15,14 +15,6 @@ enum class ComponentType {
 	Unknown
 };
 
-const std::array<std::string, (int)ComponentType::_COUNT> ComponentTypeStr = {
-	"Animator",
-	"Camera",
-	"Light",
-	"LightProbe",
-	"MeshRenderer",
-	"Rig",
-	"Script"
-};
-
 CE_END_NAMESPACE
+
+#include "component_types_str.hpp"
