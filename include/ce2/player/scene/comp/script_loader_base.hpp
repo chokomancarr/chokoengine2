@@ -53,4 +53,8 @@ public:
     CE_PL_SCR_GETSET_DEF(Quat)\
     CE_PL_SCR_GETSET_DEF(Asset)
 
+#define CE_PL_SCR_GETSET_EMPTY(tp)\
+    void set_ ## tp(const std::string&, const tp&) override {}\
+    tp get_ ## tp(const std::string&) override { CE_NOT_IMPLEMENTED }
+
 CE_END_PL_NAMESPACE

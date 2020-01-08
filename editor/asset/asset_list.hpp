@@ -25,6 +25,7 @@ class EAssetList { CE_CLASS_COMMON
     static std::array<std::vector<_Entry>, (int)AssetType::_COUNT> _entries;
     static std::array<std::vector<std::string>, (int)AssetType::_COUNT> _exts;
 	static std::vector<_ScriptEntry> _scriptEntries;
+
 	/* These files are not assets directly, but will generate them
 	 */
 	static std::array<std::vector<std::string>, (int)EExportType::_COUNT> _export_exts;
@@ -48,6 +49,8 @@ public:
 	static std::vector<std::string> GetList(AssetType t);
 	static std::vector<std::string> GetScrList();
 	static const ScriptInfo& GetScr(const std::string& sig);
+
+	CE_GET_ST_MEMBER(scriptEntries);
 
 	static TypeOfSt TypeOf(const std::string& f);
 };

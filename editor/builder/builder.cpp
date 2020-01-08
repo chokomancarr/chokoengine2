@@ -30,6 +30,7 @@ bool EProjectBuilder::BuildDebug() {
         std::lock_guard<std::mutex> lock(_mtx);
         _busy = true;
     }
+    EScriptLoaderGen::Generate();
     std::thread([](){
         Subprocess::ProcessInfo info;
         info.program = IO::path() + TaskList::builderDebug;

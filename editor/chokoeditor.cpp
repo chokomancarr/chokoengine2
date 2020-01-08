@@ -64,19 +64,30 @@ void ChokoEditor::Main() {
 
 	ESceneManager::LoadLastOpened();
 
+	if (ESceneManager::activeScenePath.empty()) {
+		scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
+		auto rb = ((Prefab)EAssetList::Get(AssetType::Prefab,
+			".exported/monkey.blend/monkey.blend.prefab")
+			)->Instantiate([](AssetType t, const std::string& s) -> Asset {
+			return EAssetList::Get(t, s, true);
+		});
+		scene->AddObject(rb, scene->objects()[1]);
+		rb->AddComponent<DummyScript>();
+
+		const auto& oc = scene->AddNewObject(scene->objects()[1]);
+		oc->transform()->localPosition(Vec3(0, 0, 2));
+		oc->transform()->localRotationEuler(Vec3(0, 180, 0));
+		oc->AddComponent<Camera>();
+
+		ESceneManager::activeScenePath = "aaa.scene";
+	}
+
 	Debug::Message("Editor", "Loading windows");
 	EWindowManager::LoadWindows();
 
 	UIButtonStyle style(Color(0.1f, 1));
 	style.textNormal(Color::white());
 
-	EDropdownMenu menu("asdf");
-	menu.items = {
-		EDropdownMenu("aaaa"),
-		EDropdownMenu("bbbb"),
-		EDropdownMenu("cccc"),
-	};
-	//EO_Dropdown::Reg(Vec2(10, 10), menu, true);
 	Debug::Message("Editor", "Startup finished");
 
 	while (ChokoLait::alive()) {

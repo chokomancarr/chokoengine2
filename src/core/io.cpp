@@ -139,6 +139,40 @@ void IO::RemoveFile(const std::string& path) {
 	::remove(path.c_str());
 }
 
+bool IO::DirectoryExists(const std::string& path) {
+#ifdef PLATFORM_WIN
+	DWORD dwAttrib = GetFileAttributesW(StrExt::Widen(path).c_str());
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+#else
+	struct stat st;
+	return !stat(&path[0], &st);
+#endif
+}
+
+void IO::MakeDirectory(const std::string& path) {
+#ifdef PLATFORM_WIN
+	SECURITY_ATTRIBUTES sa = {};
+	sa.nLength = sizeof(sa);
+	CreateDirectoryW(StrExt::Widen(path).c_str(), &sa);
+#else
+	mkdir(&path[0], 0777);
+#endif
+}
+
+void IO::RemoveDirectory(const std::string& path) {
+#ifdef PLATFORM_WIN
+	std::replace(path.begin(), path.end(), '/', '\\');
+	RemoveDirectoryW(StrExt::Widen(path).c_str());
+#else
+	if (path == "/") {
+		Debug::Error("IO::RemoveDirectory",
+			"are you mental? (attempting to remove root)");
+	}
+	Subprocess::Run("rm", { "-rf", path });
+#endif
+}
+
+
 std::vector<std::string> IO::ListDirectories(const std::string& dir) {
 	std::vector<std::string> dirs = {};
 #ifdef PLATFORM_WIN

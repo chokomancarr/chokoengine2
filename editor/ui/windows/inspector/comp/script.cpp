@@ -14,7 +14,7 @@ const auto& _pvl = scr->info();
 const auto& _vl = !_pvl ? nullptr : _pvl.lock();
 if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), !!_vl ? _vl->sig : "None")
 		== InputMouseStatus::HoverUp) {
-	EO_SelectRef::RegScr(_vl, [&](ScriptInfo vl) {
+	EO_SelectRef::RegScr(_vl, [scr](ScriptInfo vl) {
 		scr->info(vl);
 	});
 }

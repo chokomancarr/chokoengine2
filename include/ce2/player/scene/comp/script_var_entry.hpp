@@ -25,6 +25,10 @@ struct ScriptVarEntry {
      * used for subsequent queries
      */
     std::string sub_class;
+
+    ScriptVarEntry() = default;
+    ScriptVarEntry(const std::string& nm, Type tp, const std::string& sc = "")
+        : name(nm), type(tp), sub_class(sc) {}
 };
 
 CE_END_PL_NAMESPACE

@@ -21,3 +21,4 @@ CE_END_ED_NAMESPACE
 #include "script_info.hpp"
 #include "script_val.hpp"
 #include "comp/script_dummy_loader.hpp"
+#include "loader_generator.hpp"

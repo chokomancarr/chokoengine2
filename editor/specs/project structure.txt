@@ -14,6 +14,9 @@ project_root/
     +-- game_scripts.cmake
 	+-- src/
 	  +-- main.cpp
+    +-- loader_base.hpp
+    +-- loaders/
+      +-- load_<script_name>.hpp
 	+-- build/
   +-- user/
     +-- lastopenscene.txt

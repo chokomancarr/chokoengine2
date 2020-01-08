@@ -4,6 +4,7 @@
  * that can be attached as components
  */
 #define CE_SCRIPT_DEF(nm)\
+	CE_OBJECT(nm)\
 	class _ ## nm : public CE_NS _Script
 
 /* Append this to public classes

@@ -45,6 +45,12 @@ public:
 	*/
 	static void RemoveFile(const std::string& path);
 
+	static bool DirectoryExists(const std::string& path);
+
+	static void MakeDirectory(const std::string& path);
+
+	static void RemoveDirectory(const std::string& path);
+
 	/* Returns all sub-directories in directory \p dir
 	 */
 	static std::vector<std::string> ListDirectories(const std::string& dir);
