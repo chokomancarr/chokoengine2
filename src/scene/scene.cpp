@@ -2,40 +2,42 @@
 
 CE_BEGIN_NAMESPACE
 
-void _Scene::DoTree(std::string& s, const std::vector<SceneObject>& objs, const std::vector<bool>& level) {
-	auto lvl2 = level;
-	lvl2.push_back(true);
-	auto sz = objs.size();
-	if (!sz) return;
-	for (size_t a = 0; a < sz; a++) {
-		std::string sl = "";
-		for (auto l : level) {
-			sl += l ? "|  " : "   ";
+namespace {
+	void DoTree(std::string& s, const std::vector<SceneObject>& objs, const std::vector<bool>& level) {
+		auto lvl2 = level;
+		lvl2.push_back(true);
+		auto sz = objs.size();
+		if (!sz) return;
+		for (size_t a = 0; a < sz; a++) {
+			std::string sl = "";
+			for (auto l : level) {
+				sl += l ? "|  " : "   ";
+			}
+			sl += (a == sz - 1) ? "`--" : "+--";
+			s += IO::ColorOutput(sl, TerminalColor::DarkGrey)
+				+ objs[a]->name();
+			sl = " [";
+			for (auto& c : objs[a]->components()) {
+				sl += " " + c->name() + ",";
+			}
+			if (sl.back() != '[') {
+				sl.back() = ' ';
+			}
+			s += IO::ColorOutput(sl + "]\n", TerminalColor::DarkGrey);
+			if (a == sz - 1)
+				lvl2.back() = false;
+			DoTree(s, objs[a]->children(), lvl2);
 		}
-		sl += (a == sz - 1) ? "`--" : "+--";
-		s += IO::ColorOutput(sl, TerminalColor::DarkGrey)
-			+ objs[a]->name();
-		sl = " [";
-		for (auto& c : objs[a]->components()) {
-			sl += " " + c->name() + ",";
-		}
-		if (sl.back() != '[') {
-			sl.back() = ' ';
-		}
-		s += IO::ColorOutput(sl + "]\n", TerminalColor::DarkGrey);
-		if (a == sz - 1)
-			lvl2.back() = false;
-		DoTree(s, objs[a]->children(), lvl2);
 	}
-}
 
-SceneObject _Scene::DoFindByName(const std::vector<SceneObject>& oo, const std::string& nm) {
-	for (auto& o : oo) {
-		if (o->_name == nm) return o;
-		const auto& oc = DoFindByName(o->_children, nm);
-		if (!!oc) return oc;
+	SceneObject DoFindByName(const std::vector<SceneObject>& oo, const std::string& nm) {
+		for (auto& o : oo) {
+			if (o->name() == nm) return o;
+			const auto& oc = DoFindByName(o->children(), nm);
+			if (!!oc) return oc;
+		}
+		return nullptr;
 	}
-	return nullptr;
 }
 
 _Scene::_Scene() : _objects(0), _sky(nullptr) {}
@@ -94,21 +96,31 @@ std::vector<SceneObject> _Scene::FindAllByPred(std::function<bool(const SceneObj
 static const std::function<void(const std::vector<SceneObject>&)> nm\
 		= [](const std::vector<SceneObject>& oo) {\
 	for (auto& o : oo) {\
-		for (auto& c : o->_components) {\
-			c->fn();\
-		}\
+		fn\
 		nm(o->_children);\
 	}\
 }
 
 void _Scene::Update() {
-	RECCALL(DoUpdate, OnUpdate);
+	RECCALL(DoUpdate,
+		if (!o->_wasActive) {
+			for (auto& c : o->_components) {
+				c->OnStart();
+			}
+			o->_wasActive = true;
+		}
+		for (auto& c : o->_components) {
+			c->OnUpdate();
+		});
 
 	DoUpdate(_objects);
 }
 
 void _Scene::Paint() {
-	RECCALL(DoPaint, OnPaint);
+	RECCALL(DoPaint,
+		for (auto& c : o->_components) {
+			c->OnPaint();
+		});
 
 	DoPaint(_objects);
 }

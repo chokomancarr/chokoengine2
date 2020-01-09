@@ -91,4 +91,16 @@ size_t SharedMemory<T>::length() const {
     return _length / sizeof(T);
 }
 
+template <typename T>
+void SharedMemory<T>::flush() const {
+	if (_data) {
+#ifdef PLATFORM_WIN
+		FlushViewOfFile((void*)_data, _length);
+		FlushFileBuffers(_handle);
+#else
+		msync((void*)_data, _length, MS_SYNC);
+#endif
+	}
+}
+
 CE_END_NAMESPACE

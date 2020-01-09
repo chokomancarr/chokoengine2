@@ -46,14 +46,15 @@ int Subprocess::Run(const ProcessInfo& info) {
 		Debug::Warning("Subprocess::Run", "Could not create cmd process! (winapi error " + std::to_string(err) + ")");
 		return -1;
 	}
-	DWORD w;
-	do {
-		w = WaitForSingleObject(pi.hProcess, 100);
-	} while (w == WAIT_TIMEOUT);
+	DWORD dret = 0;
+	if (info.wait) {
+		DWORD w;
+		do {
+			w = WaitForSingleObject(pi.hProcess, 100);
+		} while (w == WAIT_TIMEOUT);
 
-	DWORD dret;
-	GetExitCodeProcess(pi.hProcess, &dret);
-
+		GetExitCodeProcess(pi.hProcess, &dret);
+	}
 	CloseHandle(pi.hThread);
 	CloseHandle(pi.hProcess);
 

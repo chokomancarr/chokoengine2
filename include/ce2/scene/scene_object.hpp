@@ -17,6 +17,8 @@ class _SceneObject : public _Object { CE_OBJECT_COMMON
 
 	std::vector<pPrefab> _prefabs;
 
+	bool _wasActive;
+
 public:
 	_SceneObject(const std::string& nm = "", 
 			const Vec3& pos = Vec3(),

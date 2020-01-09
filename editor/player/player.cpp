@@ -12,7 +12,7 @@ namespace {
 
     void WaitForFlag(uint32_t f, bool b) {
         volatile auto val = baseMem.data();
-        while (!(val->status_flags & f) == b);
+		while (!(val->status_flags & f) == b);
     }
 
     bool check_clear_flag(uint32_t i) {
@@ -86,8 +86,6 @@ void EPlayer::Sync() {
 
     volatile auto flags = baseMem->status_flags;
     baseMem->status_flags = (flags & ~PDSyncFlags::APP_SYNCED) | PDSyncFlags::EDITOR_SYNCED;
-
-    //msync((void*)baseMem.data(), baseMem.length(), MS_SYNC);
 }
 
 void EPlayer::Stop() {

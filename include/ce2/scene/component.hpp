@@ -17,6 +17,12 @@ public:
 
 	SceneObject object();
 
+	/* Called during the first frame after this object
+	 * is spawned, before the Update loop.
+	 * Note: OnUpdate will also be called on the same frame.
+	 */
+	virtual void OnStart() {}
+
 	/* Called during the main logic loop
  	*/
 	virtual void OnUpdate() {}

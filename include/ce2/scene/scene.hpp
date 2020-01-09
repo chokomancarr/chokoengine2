@@ -11,10 +11,6 @@ class _Scene : public _Object { CE_OBJECT_COMMON
 	
 	Background _sky;
 
-	void DoTree(std::string& s, const std::vector<SceneObject>& o, const std::vector<bool>& level);
-
-	SceneObject DoFindByName(const std::vector<SceneObject>& o, const std::string& nm);
-
 public:
 	_Scene();
 
@@ -46,10 +42,9 @@ public:
 	 */
 	std::vector<SceneObject> FindAllByPred(std::function<bool(const SceneObject&)>);
 
-	/* Explicitly updates all scene components
+	/* Event callbacks
 	 */
 	void Update();
-
 	void Paint();
 
 	/* Explicitly renders all probes, cameras, and lights in the scene

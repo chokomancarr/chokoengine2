@@ -34,6 +34,8 @@ public:
     volatile T* data() const;
 
     size_t length() const;
+
+	void flush() const;
 };
 
 CE_END_NAMESPACE

@@ -2,9 +2,9 @@
 
 CE_BEGIN_NAMESPACE
 
-_SceneObject::_SceneObject(const std::string& nm, 
-        const Vec3& pos, const Quat& rot, const Vec3& scl) : _Object(nm),
-		_components(0), _children(0), _scene(nullptr), _parent(nullptr), _prefabs(0) {
+_SceneObject::_SceneObject(const std::string& nm, const Vec3& pos, const Quat& rot,
+		const Vec3& scl) : _Object(nm), _components({}), _children(0), _scene(nullptr),
+		_parent(nullptr), _prefabs({}), _wasActive(false) {
 	_transform._object = this;
 	_transform._localPosition = pos;
 	_transform._localScale = scl;
