@@ -38,15 +38,6 @@ SceneObject _Scene::DoFindByName(const std::vector<SceneObject>& oo, const std::
 	return nullptr;
 }
 
-void _Scene::DoUpdate(const std::vector<SceneObject>& oo) {
-	for (auto& o : oo) {
-		for (auto& c : o->_components) {
-			c->OnUpdate();
-		}
-		DoUpdate(o->_children);
-	}
-}
-
 _Scene::_Scene() : _objects(0), _sky(nullptr) {}
 
 SceneObject _Scene::AddNewObject(const SceneObject& parent) {
@@ -99,8 +90,27 @@ std::vector<SceneObject> _Scene::FindAllByPred(std::function<bool(const SceneObj
 	return res;
 }
 
+#define RECCALL(nm, fn)\
+static const std::function<void(const std::vector<SceneObject>&)> nm\
+		= [](const std::vector<SceneObject>& oo) {\
+	for (auto& o : oo) {\
+		for (auto& c : o->_components) {\
+			c->fn();\
+		}\
+		nm(o->_children);\
+	}\
+}
+
 void _Scene::Update() {
+	RECCALL(DoUpdate, OnUpdate);
+
 	DoUpdate(_objects);
+}
+
+void _Scene::Paint() {
+	RECCALL(DoPaint, OnPaint);
+
+	DoPaint(_objects);
 }
 
 void _Scene::Render() {

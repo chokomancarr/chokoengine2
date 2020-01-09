@@ -21,6 +21,9 @@ struct ScriptVarEntry {
         Class
     } type;
 
+	AssetType type_asset;
+	ComponentType type_comp;
+
     /* if type is class, the signature of the class
      * used for subsequent queries
      */

@@ -54,9 +54,9 @@ public:
 	void Draw() override;
 
 	template <typename T>
-	static void RegAsset(T& slot);
+	static void RegAsset(T& slot, AssetType t = EAssetTypeOf<T>::value);
 	template <typename T, typename F>
-	static void RegAsset(const T& slot, std::function<void(F)> setter);
+	static void RegAsset(const T& slot, std::function<void(F)> setter, AssetType t = EAssetTypeOf<T>::value);
 	template <typename T>
 	static void RegComp(T& slot);
 	template <typename T, typename F>

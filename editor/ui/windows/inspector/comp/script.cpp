@@ -44,16 +44,15 @@ for (size_t a = 0, n = scr->vals.size(); a < n; a++) {
 	}
 	case ScriptVar::Type::Asset: {
 		CE_E_LBL(vr.name);
-		if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 34, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(vl.val_asset)) == InputMouseStatus::HoverUp) {
-			
+		if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(vl.val_asset)) == InputMouseStatus::HoverUp) {
 			EO_SelectRef::RegAsset(vl.val_asset, std::function<void(const Asset&)>([scr, a](const Asset& vl) {
 				scr->vals[a].val_asset = vl;
-			}));
+			}), vl.var.type_asset);
 		}
-		else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), Texture, v.val_t(res))
-		UI::Texture(Rect(lt.x + lt.w - 35, lt.y, 16, 16), v.val_t());
+		else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), vl.var.type_asset, vl.val_asset = res)
 		CE_E_ASSET_SEEK_BTN();
 		CE_E_INC_Y();
+		break;
 	}
 	default:
 		CE_E_LBL(vr.name);

@@ -15,8 +15,6 @@ class _Scene : public _Object { CE_OBJECT_COMMON
 
 	SceneObject DoFindByName(const std::vector<SceneObject>& o, const std::string& nm);
 
-	void DoUpdate(const std::vector<SceneObject>& o);
-	
 public:
 	_Scene();
 
@@ -51,6 +49,8 @@ public:
 	/* Explicitly updates all scene components
 	 */
 	void Update();
+
+	void Paint();
 
 	/* Explicitly renders all probes, cameras, and lights in the scene
 	 */

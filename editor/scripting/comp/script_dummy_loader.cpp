@@ -67,17 +67,10 @@ IMPL_GET(Quat) { GETV
     return Quat::identity();
 }
 
-IMPL_GET(Asset) { GETV
-    return nullptr;
-}
-
-
 IMPL_SET(Quat) { GETV
     
 }
 
-IMPL_SET(Asset) { GETV
-    
-}
+IMPL_GETSET(Asset, asset)
 
 CE_END_PL_NAMESPACE

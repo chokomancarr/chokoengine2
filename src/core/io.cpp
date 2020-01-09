@@ -161,8 +161,9 @@ void IO::MakeDirectory(const std::string& path) {
 
 void IO::RemoveDirectory(const std::string& path) {
 #ifdef PLATFORM_WIN
-	std::replace(path.begin(), path.end(), '/', '\\');
-	RemoveDirectoryW(StrExt::Widen(path).c_str());
+	auto pathh = path;
+	std::replace(pathh.begin(), pathh.end(), '/', '\\');
+	RemoveDirectoryW(StrExt::Widen(pathh).c_str());
 #else
 	if (path == "/") {
 		Debug::Error("IO::RemoveDirectory",

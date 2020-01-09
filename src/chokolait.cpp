@@ -74,6 +74,8 @@ void ChokoLait::Paint(emptyCallbackFunc rendFunc, emptyCallbackFunc paintFunc) {
 		Backend::Renderer::Render(scene);
 	}
 
+	scene->Paint();
+
 	if (paintFunc)
 		paintFunc();
 

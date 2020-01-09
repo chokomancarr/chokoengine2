@@ -1,5 +1,6 @@
 #pragma once
 #include "ext/ui_ext.hpp"
+#include "ext/traits_ext.hpp"
 #include "ew_macros.hpp"
 
 #define CE_E_ASSET_SIG(nm) !nm ? "[none]" : nm->assetSignature()
@@ -11,30 +12,31 @@
 			&& (mst = UI::I::ButtonTr(r)) != InputMouseStatus::None) {\
 		UI::Rect(r, Color(1, 1, 0, 0.5f));\
 		if (mst == InputMouseStatus::Up) {\
-			auto res = (std::remove_const<std::remove_reference<tp>::type>::type)\
-				EAssetList::Get(EDragDrop::assetType.assetType, EDragDrop::target[0], true);\
-			if (!!res) { fn; }\
+			auto res = EAssetList::Get(EDragDrop::assetType.assetType, EDragDrop::target[0], true);\
+			if (res->assetType == tp) { fn; }\
 		}\
 	}\
 }
 
 #define CE_E_ASSET_SELECT(nm) {\
 	const auto& _vl = nm();\
+	using _Tp = std::remove_const_ref<decltype(_vl)>::type;\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(_vl)) == InputMouseStatus::HoverUp) {\
 			EO_SelectRef::RegAsset(_vl, std::function<void(decltype(_vl))>([&](decltype(_vl) vl) {\
 				nm(vl);\
 		}));\
 	}\
-	else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), decltype(_vl), nm(res))\
+	else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), EAssetTypeOf<_Tp>::value, nm((_Tp)res))\
 }
 
 #define CE_E_ASSET_SELECT_FV(nm) {\
+	using _Tp = std::remove_reference<decltype(nm)>::type;\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(nm)) == InputMouseStatus::HoverUp) {\
 			EO_SelectRef::RegAsset(nm, std::function<void(decltype(nm))>([&](decltype(nm) vl) {\
 				nm = vl;\
 		}));\
 	}\
-	else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), decltype(nm), nm = res)\
+	else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), EAssetTypeOf<_Tp>::value, nm = (_Tp)res)\
 }
 
 #define CE_E_ASSET_SEEK_BTN(nm) \

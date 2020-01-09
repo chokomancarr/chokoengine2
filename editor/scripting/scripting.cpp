@@ -48,6 +48,7 @@ namespace {
 		for (auto& a : AssetTypeStr) {
 			if (a.second == tp) {
 				vr.type = ScriptVar::Type::Asset;
+				vr.type_asset = a.first;
 				vr.sub_class = tp;
 				return true;
 			}

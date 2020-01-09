@@ -28,6 +28,7 @@ CE_PR_IMPL_COMP(Script) {
             ADDV(Vec3, Vec3)
             ADDV(Vec4, Vec4)
             ADDV(Quat, Quat)
+			ADDV(Asset, Asset)
         default:
             break;
         }

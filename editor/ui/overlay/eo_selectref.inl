@@ -23,10 +23,10 @@ void EO_SelectRef::ScanComps() {
 }
 
 template <typename T>
-void EO_SelectRef::RegAsset(T& slot) {
+void EO_SelectRef::RegAsset(T& slot, AssetType tp) {
 	static_assert(std::is_base_of<_Asset, typename T::_TpBase>::value, "Target is not an asset!");
 	auto i = GetInstance<EO_SelectRef>();
-	i->_assetType = EAssetTypeOf<T>::value;
+	i->_assetType = tp;
 	i->state = std::unique_ptr<StateR<T>>(new StateR<T>(slot));
 	i->state->type = _State::Type::Asset;
 	i->_assets = EAssetList::GetList(i->_assetType);
@@ -34,10 +34,10 @@ void EO_SelectRef::RegAsset(T& slot) {
 }
 
 template <typename T, typename F>
-void EO_SelectRef::RegAsset(const T& slot, std::function<void(F)> setter) {
+void EO_SelectRef::RegAsset(const T& slot, std::function<void(F)> setter, AssetType tp) {
 	static_assert(std::is_base_of<_Asset, typename T::_TpBase>::value, "Target is not an asset!");
 	auto i = GetInstance<EO_SelectRef>();
-	i->_assetType = EAssetTypeOf<T>::value;
+	i->_assetType = tp;
 	i->state = std::unique_ptr<State<T, F>>(new State<T, F>(slot, setter));
 	i->state->type = _State::Type::Asset;
 	i->_assets = EAssetList::GetList(i->_assetType);

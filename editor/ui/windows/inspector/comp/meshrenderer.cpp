@@ -35,7 +35,8 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 	UI_Ext::Layout::Block("Materials", lt, [&]() { //tmp
 		std::vector<Material*> mats(0);
 		for (auto& m : c->materials()) {
-			CE_E_ASSET_REF_FV("slot", ((Material&)m));
+			auto& _m = (Material&)m;
+			CE_E_ASSET_REF_FV("slot", _m);
 			if (!m) continue;
 			if (std::find_if(mats.begin(), mats.end(), [&](const Material* m2) {
 				return m2 == &m;
@@ -64,7 +65,7 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 								v.val_t(tx);
 							}));
 						}
-						else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), Texture, v.val_t(res))
+						else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), AssetType::Texture, v.val_t((Texture)res))
 						UI::Texture(Rect(lt.x + lt.w - 35, lt.y, 16, 16), v.val_t());
 						CE_E_ASSET_SEEK_BTN();
 						CE_E_INC_Y();

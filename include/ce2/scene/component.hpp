@@ -56,6 +56,12 @@ public:
 	 */
 	virtual void OnPostRender() {}
 
+	/* Called when the main window is redrawn
+	 * UI functions to draw onto the screen
+	 * should be called in this function
+	 */
+	virtual void OnPaint() {}
+
 	friend class _SceneObject;
 	friend class _PrefabComp;
 };
