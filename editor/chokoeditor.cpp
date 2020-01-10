@@ -64,6 +64,26 @@ void ChokoEditor::Main() {
 
 	ESceneManager::LoadLastOpened();
 
+	std::cout << EDebug::ObjTree(scene->objects()[1]->children(), [](const SceneObject& o) {
+		std::string res = o->name() + " " + std::to_string(o->id()) + ": ";
+		auto info = o->prefabInfo();
+		if (!info.prefab) {
+			res += "-";
+		}
+		else {
+			res += info.prefab->assetSignature() + " ";
+			if (!!info.head) {
+				res += "h" + std::to_string(info.head->id()) + " ";
+			}
+			res += "[";
+			for (auto& i : info.ids) {
+				res += std::to_string(i) + ", ";
+			}
+			res += "]";
+		}
+		return res;
+	}) << std::endl;
+
 	if (ESceneManager::activeScenePath.empty()) {
 		scene->sky((Background)EAssetList::Get(AssetType::Background, "sky2.hdr"));
 		auto rb = ((Prefab)EAssetList::Get(AssetType::Prefab,

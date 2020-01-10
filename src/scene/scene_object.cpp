@@ -66,6 +66,7 @@ void _SceneObject::parent(const SceneObject& _p) {
 	_parent = p;
 	p->_children.push_back(get_shared<_SceneObject>());
 
+	/*
 	const std::function<void(const SceneObject&)> addp = [&addp, &p](const SceneObject& o) {
 		o->_prefabs.insert(o->_prefabs.end(), p->_prefabs.begin(), p->_prefabs.end());
 		for (auto& c : o->children()) {
@@ -77,13 +78,8 @@ void _SceneObject::parent(const SceneObject& _p) {
 	for (auto& c : _children) {
 		addp(c);
 	}
-
+	*/
 	_transform.UpdateParentMatrix();
-}
-
-Prefab _SceneObject::prefab() {
-	if (!_prefabs.size() || !_prefabs[0]) return nullptr;
-	return _prefabs[0].lock();
 }
 
 void _SceneObject::RemoveComponent(const Component& c) {

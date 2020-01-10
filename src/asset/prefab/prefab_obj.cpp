@@ -68,7 +68,7 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 		res->parent(pr);
 	}
 
-	res->prefabs({PrefabState::prefabStack.back()});
+	//res->prefabs({PrefabState::prefabStack.back()});
 
 	const auto& comps = CE_PR_GETI(components);
 	CE_PR_IFVALID(comps) {

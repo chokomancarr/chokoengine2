@@ -66,24 +66,6 @@ SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
 	res->transform()->localRotation(CE_PR_GET(rotation, Quat::identity()));
 	res->transform()->localScale(CE_PR_GET(scale, Vec3(1)));
 
-	_SceneObject::PrefabInfo info;
-	info.prefab = prb;
-	info.head = res;
-	const std::function<void(const std::vector<SceneObject>&)> doadd
-			= [&](const std::vector<SceneObject>& oo) {
-		for (auto& o : oo) {
-			info.ids.push_back(o->id());
-			auto info2 = o->prefabInfo();
-			if (!info2.prefab) {
-				info2.prefab = prb;
-				info2.head = res;
-
-			}
-			doadd(o->children());
-		}
-	};
-	doadd(res->children());
-
 	const auto& par = CE_PR_GETI(parent);
 	CE_PR_IFVALID(par) {
 		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top()->children());

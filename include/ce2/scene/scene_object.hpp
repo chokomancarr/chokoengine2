@@ -72,7 +72,7 @@ public:
 
 	/* Prefab infomation this object is spawned from
 	 */
-	CE_GET_MEMBER(prefabInfo);
+	CE_GET_SET_MEMBER(prefabInfo);
 
 	/* Scene this object is attached to
 	 */
