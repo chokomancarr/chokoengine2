@@ -6,6 +6,30 @@ CE_BEGIN_NAMESPACE
 /* Objects in a scene
  */
 class _SceneObject : public _Object { CE_OBJECT_COMMON
+public:
+	/* Information on which prefab spawned this object
+	 */
+	class PrefabInfo {
+	public:
+		bool hasInfo;
+
+		pSceneObject head; //top object spawned, null for this object
+		/* the values below are only read from head
+		 */
+		pPrefab prefab; //closest prefab spawner
+		/* list of objects spawned, including those from sub-prefabs
+		 * this determines which objects to exclude during serialization
+		 */
+		std::vector<ChokoEngine::objectid> ids;
+
+		PrefabInfo() : hasInfo(false), head(nullptr), prefab(nullptr), ids({}) {}
+
+		bool operator !() const {
+			return !hasInfo;
+		}
+	};
+
+private:
 	Transform _transform;
 
 	std::vector<Component> _components;
@@ -15,9 +39,11 @@ class _SceneObject : public _Object { CE_OBJECT_COMMON
 	pScene _scene;
 	pSceneObject _parent;
 
-	std::vector<pPrefab> _prefabs;
+	PrefabInfo _prefabInfo;
 
 	bool _wasActive;
+
+	void UnlinkPrefabTree();
 
 public:
 	_SceneObject(const std::string& nm = "", 
@@ -44,15 +70,9 @@ public:
 	CE_GET_MEMBER(parent);
 	void parent(const SceneObject& p);
 
-	/* Prefab hierarchy this object is spawned from,
-	 * ordered from the nearest parent
+	/* Prefab infomation this object is spawned from
 	 */
-	CE_GET_SET_MEMBER(prefabs);
-
-	/* Closest prefab asset this object is spawned from
-	 * May be null
-	 */
-	Prefab prefab();
+	CE_GET_MEMBER(prefabInfo);
 
 	/* Scene this object is attached to
 	 */

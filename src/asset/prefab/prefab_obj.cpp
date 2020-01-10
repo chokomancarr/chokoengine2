@@ -15,7 +15,7 @@ _PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, boo
 		}
 	}
 
-	auto& cc = o->components();
+	const auto& cc = o->components();
 	if (cc.size() > 0) {
 		auto& comps = CE_PR_ADDGROUP(components);
 		for (auto& c : cc) {
@@ -23,13 +23,14 @@ _PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, boo
 		}
 	}
 
-	const auto pl = o->prefabs().size();
-	auto& cch = o->children();
+	const auto& prb = o->prefabInfo().prefab;
+	const auto& cch = o->children();
 	if (cch.size() > 0) {
 		auto& childs = CE_PR_ADDGROUP(children);
 		for (auto& c : cch) {
-			if (lnk) {
-				if (c->prefabs().size() > pl && !!c->prefab()) {
+			if (lnk) { //retain links
+				const auto& info = c->prefabInfo();
+				if (!!info.prefab && !info.head) { //this object (and its children) is spawned
 					childs.push_back(PrefabLink_New(c, o, flnk));
 					continue;
 				}
