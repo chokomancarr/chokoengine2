@@ -6,7 +6,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 CE_E_BEGIN_DRAWCOMP(MeshRenderer)
-	CE_E_ASSET_REF("mesh", c->mesh);
+	CE_E_ASSET_REF("mesh", c->mesh, c);
 
 	UI_Ext::Layout::Block("Modifiers", lt, [&]() {
 		for (auto& m : c->modifiers()) {
@@ -47,7 +47,7 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 		for (auto _m : mats) {
 			auto& m = *_m;
 			UI_Ext::Layout::Block(m->name() + " (Material)", lt, [&]() {
-				CE_E_ASSET_REF("shader", m->shader);
+				CE_E_ASSET_REF("shader", m->shader, m);
 				for (auto& v : m->variables()) {
 					switch (v.type()) {
 					case ShaderVariableType::Float: {

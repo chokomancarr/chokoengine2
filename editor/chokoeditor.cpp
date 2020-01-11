@@ -71,7 +71,7 @@ void ChokoEditor::Main() {
 			res += "-";
 		}
 		else {
-			res += info.prefab->assetSignature() + " ";
+			res += info.prefab->assetSignature() + " i" + std::to_string(info.id) + " ";
 			if (!!info.head) {
 				res += "h" + std::to_string(info.head->id()) + " ";
 			}

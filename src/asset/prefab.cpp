@@ -4,7 +4,7 @@ CE_BEGIN_NAMESPACE
 
 _Prefab::_Prefab(const SceneObject& o, bool link) : _Asset(AssetType::Prefab) {
 	//PrefabState::prefabStack.push_back(o->prefab());
-	_data = PrefabObj(new _PrefabObj(o, o->parent().lock(), link, true, true));
+	_data = PrefabObj_New(o, o->parent().lock(), link, true, true);
 	//PrefabState::prefabStack.pop_back();
 }
 
@@ -34,18 +34,22 @@ SceneObject _Prefab::Instantiate(_Sig2Ass fn) const {
 	_SceneObject::PrefabInfo info;
 
 	info.prefab = get_shared<_Prefab>();
-	info.head = pSceneObject(nullptr);
 	info.ids = { res->id() };
+	int i = 1;
 	const std::function<void(const std::vector<SceneObject>&)> doadd
 		= [&](const std::vector<SceneObject>& oo) {
 		for (auto& o : oo) {
 			info.ids.push_back(o->id());
 			auto info2 = o->prefabInfo();
-			if (!info2.prefab) { //tmp
+			if (!info2.prefab) { //this object is spawned by this prefab
 				info2.prefab = info.prefab;
 				info2.head = res;
-				o->prefabInfo(info2);
+				info2.id = i++;
 			}
+			else if (!info2.head && !info2.id) { //we register the head of a spawned object
+				info2.id = i++;
+			}
+			o->prefabInfo(info2);
 			doadd(o->children());
 		}
 	};

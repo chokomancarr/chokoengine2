@@ -18,11 +18,11 @@
 	}\
 }
 
-#define CE_E_ASSET_SELECT(nm) {\
+#define CE_E_ASSET_SELECT(nm, cp) {\
 	const auto& _vl = nm();\
 	using _Tp = std::remove_const_ref<decltype(_vl)>::type;\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(_vl)) == InputMouseStatus::HoverUp) {\
-			EO_SelectRef::RegAsset(_vl, std::function<void(decltype(_vl))>([&](decltype(_vl) vl) {\
+			EO_SelectRef::RegAsset(_vl, std::function<void(decltype(_vl))>([cp](decltype(_vl) vl) {\
 				nm(vl);\
 		}));\
 	}\
@@ -44,9 +44,9 @@ if (UI::I::Button(Rect(lt.x + lt.w - 18, lt.y, 16, 16), UIButtonStyle(Color(0.2f
 	\
 }
 
-#define CE_E_ASSET_REF(nm, vl)\
+#define CE_E_ASSET_REF(nm, vl, cp)\
 	CE_E_LBL(nm);\
-	CE_E_ASSET_SELECT(vl);\
+	CE_E_ASSET_SELECT(vl, cp);\
 	CE_E_ASSET_SEEK_BTN();\
 	CE_E_INC_Y()
 

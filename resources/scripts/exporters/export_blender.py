@@ -66,9 +66,6 @@ class CE_Exporter():
         self.write(prefab_file, '{\n  "object":{\n')
         indent2 = 4 * ' '
         self.write(prefab_file, indent2 + '"name.String":"' + self.fn + '",\n')
-        self.write(prefab_file, indent2 + '"position.Vec3":[ "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"rotation.Quat":[ "1", "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"scale.Vec3":[ "1", "1", "1" ],\n')
         self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
         
         self.export_entries(prefab_file, object_entries, 6 * ' ')

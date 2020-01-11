@@ -14,6 +14,7 @@ public:
 		bool hasInfo;
 
 		pSceneObject head; //top object spawned, null for this object
+		size_t id; //unique object index from prefab
 		/* the values below are only read from head
 		 */
 		pPrefab prefab; //closest prefab spawner
@@ -22,7 +23,7 @@ public:
 		 */
 		std::vector<ChokoEngine::objectid> ids;
 
-		PrefabInfo() : hasInfo(false), head(nullptr), prefab(nullptr), ids({}) {}
+		PrefabInfo() : hasInfo(false), head(nullptr), id(0), prefab(nullptr), ids({}) {}
 
 		bool operator !() const {
 			return !hasInfo;
