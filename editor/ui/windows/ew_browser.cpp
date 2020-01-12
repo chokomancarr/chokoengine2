@@ -2,6 +2,16 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+namespace {
+	std::array<EDropdownMenu, (int)AssetType::_COUNT> menus_asset;
+	std::array<EDropdownMenu, (int)EExportType::_COUNT> menus_export;
+
+	EDropdownMenu& GetMenu(EAssetList::TypeOfSt t) {
+		if (t.exported) return menus_export[(int)t.exportType];
+		else return menus_asset[(int)t.assetType];
+	}
+}
+
 void EW_Browser::File::GetIcon() {
 	if (type.exported) {
 
@@ -122,8 +132,18 @@ void EW_Browser::DrawFiles() {
 			x = x1;
 			i = 0;
 		}
-		if (UI::I::Button(Rect(x, off, pd, sz + 24), style) == InputMouseStatus::HoverUp) {
+		const auto r = Rect(x, off, pd, sz + 24);
+		if (UI::I::Button(r, style) == InputMouseStatus::HoverUp) {
 
+		}
+		else if (UI::I::ButtonTr(r, InputMouseButton::Right) == InputMouseStatus::Up) {
+			auto& menu = GetMenu(f.type);
+
+			menu.SetAll(ECallbackArg("sig", f.sig));
+			if (!f.type.exported)
+				menu.SetAll(ECallbackArg("asset", EAssetList::Get(f.type.assetType, f.sig, true)));
+
+			EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu, false);
 		}
 		else if (UI_Ext::StartDrag(Rect(x, off, pd, sz + 24))) {
 			EDragDrop::Set(f.type, { f.sig });
@@ -155,6 +175,28 @@ void EW_Browser::DrawMenu() {
 EW_Browser::EW_Browser() : EWindow("Assets") {}
 
 bool EW_Browser::Init() {
+#define addi(nm, ...) {auto op = EDropdownMenu(#nm);\
+		op.callback = ECallbackCaller(__VA_ARGS__);\
+		menu->push_back(op);}
+
+	EDropdownMenu menu_base;
+	auto menu = &menu_base.items;
+
+	addi(Reimport, CallbackSig::ASSET_REIMPORT, ECallbackArgs({ ECallbackArg("asset", pObject()) }));
+	addi(Delete, CallbackSig::ASSET_DELETE);
+
+	for (auto& m : menus_asset) {
+		m = menu_base;
+	}
+	for (auto& m : menus_export) {
+		m = menu_base;
+	}
+
+	menu = &(menus_asset[(int)AssetType::Prefab].items = *menu);
+
+	addi(Add to scene, CallbackSig::PREFAB_SPAWN, ECallbackArgs({ ECallbackArg("asset", pObject()) }));
+	addi(Collapse);
+
 	path = "";
 	Refresh();
 	return true;

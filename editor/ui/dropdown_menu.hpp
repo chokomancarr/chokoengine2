@@ -12,6 +12,9 @@ public:
 	bool enabled;
 
     ECallbackCaller callback;
+
+	void Set(const ECallbackArg&);
+	void SetAll(const ECallbackArg&, bool recurse = true);
 };
 
 CE_END_ED_NAMESPACE

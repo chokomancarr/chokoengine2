@@ -26,9 +26,36 @@ void ECallbackManager::Invoke(CallbackSig sig, const ECallbackArgs& args) {
 	const auto& fns = _handlers[(int)sig];
 	if (fns.empty()) {
 		Debug::Warning("CallbackManager", "No handlers registered for callback " + CallbackSigStr.at(sig));
+		return;
+	}
+	std::string argstr = " [";
+	auto& aa = args.args();
+	if (!aa.size()) {
+		argstr = " [no args]";
+	}
+	else {
+		for (auto& a : aa) {
+			const std::string ats[] = { "Int", "Float", "String", "Object" };
+			argstr += a.name + "(" + ats[(int)a.type] + ")=";
+			switch (a.type) {
+			case ECallbackArg::Type::Int:
+				argstr += std::to_string(a.i);
+				break;
+			case ECallbackArg::Type::Float:
+				argstr += std::to_string(a.f);
+				break;
+			case ECallbackArg::Type::String:
+				argstr += "\"" + a.s + "\"";
+				break;
+			case ECallbackArg::Type::Object:
+				argstr += (!a.o) ? "none" : ("\"" + a.o->name() + "\"");
+				break;
+			}
+			argstr += (&a == &aa.back()) ? "]" : ", ";
+		}
 	}
 	Debug::Message("CallbackManager", "Invoke " + CallbackSigStr.at(sig)
-			+ " (" + std::to_string(fns.size()) + " handlers)");
+			+ argstr + " (" + std::to_string(fns.size()) + " handlers)");
 	for (auto& fn : fns) {
 		fn(args);
 	}

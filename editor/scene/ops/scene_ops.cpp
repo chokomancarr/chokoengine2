@@ -9,14 +9,14 @@ void ESceneManager::Ops::Reg() {
 }
 
 CE_IMPL_CALLBACK(ESceneManager::Ops::AddNewObject) {
-	ChokoEditor::scene->AddNewObject(ChokoEditor::scene->objects()[1]);
+	ChokoEditor::scene->AddNewObject(ESceneManager::sceneBaseObj());
 }
 CE_IMPL_CALLBACK(ESceneManager::Ops::AddNewObjectAsChild) {
-	ChokoEditor::scene->AddNewObject(ESceneInfo::selectedObject);
+	ChokoEditor::scene->AddNewObject(args.Get<SceneObject>("object"));
 }
 
 CE_IMPL_CALLBACK(ESceneManager::Ops::DeleteObject) {
-	ChokoEditor::scene->RemoveObject(ESceneInfo::selectedObject);
+	ChokoEditor::scene->RemoveObject(args.Get<SceneObject>("object"));
 }
 
 CE_END_ED_NAMESPACE

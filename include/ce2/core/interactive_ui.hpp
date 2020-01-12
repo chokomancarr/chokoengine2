@@ -35,7 +35,7 @@ public:
 
     /* A clickable button with dimensions \p r
      */
-    static InputMouseStatus ButtonTr(const CE_NS Rect& r);
+    static InputMouseStatus ButtonTr(const CE_NS Rect& r, InputMouseButton b = InputMouseButton::Left);
 
     /* Draws a text box with editable contents
      */

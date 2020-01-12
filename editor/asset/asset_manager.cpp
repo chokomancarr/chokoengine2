@@ -2,6 +2,10 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+void EAssetManager::Init() {
+	Ops::Reg();
+}
+
 Asset EAssetManager::FromJson(const JsonObject& json, bool async) {
     const auto& g = json.group[0];
     const auto& vls = g.value.string;

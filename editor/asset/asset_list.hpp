@@ -2,6 +2,7 @@
 #include "chokoeditor.hpp"
 #include "enums/asset_type.hpp"
 #include "enums/export_type.hpp"
+#include "enums/other_type.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -13,6 +14,12 @@ class EAssetList { CE_CLASS_COMMON
         Asset obj;
         time_t modtime;
     };
+	struct _Entry2 {
+		_Entry2(const std::string& sig);
+
+		std::string sig;
+		time_t modtime;
+	};
 	struct _ScriptEntry {
 		_ScriptEntry(const std::string& sig);
 
@@ -23,22 +30,22 @@ class EAssetList { CE_CLASS_COMMON
     /* List of all asset data
      */
     static std::array<std::vector<_Entry>, (int)AssetType::_COUNT> _entries;
-    static std::array<std::vector<std::string>, (int)AssetType::_COUNT> _exts;
+	static std::array<std::vector<_Entry2>, (int)EExportType::_COUNT> _exportEntries;
+	static std::array<std::vector<_Entry2>, (int)EExtType::_COUNT> _otherEntries;
 	static std::vector<_ScriptEntry> _scriptEntries;
 
-	/* These files are not assets directly, but will generate them
-	 */
-	static std::array<std::vector<std::string>, (int)EExportType::_COUNT> _export_exts;
-
     static bool Scan_Fd(const std::string& fd);
-
-    static void UpdateModTime(const std::string& fl, bool now);
 
 public:
     struct TypeOfSt {
 		bool exported;
 		AssetType assetType;
 		EExportType exportType;
+		enum class ExtType {
+			Scene,
+			ScrHeader,
+			ScrSource
+		} otherType;
 	};
 
     static void Init();
@@ -49,6 +56,8 @@ public:
 	static std::vector<std::string> GetList(AssetType t);
 	static std::vector<std::string> GetScrList();
 	static const ScriptInfo& GetScr(const std::string& sig);
+
+	static Asset Get2(AssetType, const std::string&);
 
 	CE_GET_ST_MEMBER(scriptEntries);
 

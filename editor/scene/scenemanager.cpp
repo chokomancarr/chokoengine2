@@ -50,7 +50,7 @@ void ESceneManager::LoadLastOpened() {
 
 void ESceneManager::Unload() {
 	auto& scene = ChokoEditor::scene;
-	scene->RemoveObject(scene->objects()[1]);
+	scene->RemoveObject(sceneBaseObj());
 	scene->AddNewObject()
 		->name("__scene__");
 
@@ -67,15 +67,19 @@ bool ESceneManager::Save() {
 void ESceneManager::SaveAs(const std::string& path, bool reg) {
 	Debug::Message("SceneManager", "Saving " + path);
 	auto& scene = ChokoEditor::scene;
-	auto res = Prefab::New(scene->objects()[1], true)->ToJson();
+	auto res = Prefab::New(sceneBaseObj(), true)->ToJson();
 
 	res.group.push_back(JsonPair(JsonObject("sky"), EAssetManager::ToJson(scene->sky(), AssetType::Background)));
-	std::ofstream strm(CE_DIR_ASSET + path);
-	strm << JsonParser::Export(res);
+	
+	std::ofstream(CE_DIR_ASSET + path) << JsonParser::Export(res);
 
 	if (reg) {
 		RegActive(path);
 	}
+}
+
+const SceneObject& ESceneManager::sceneBaseObj() {
+	return ChokoEditor::scene->objects()[1];
 }
 
 CE_END_ED_NAMESPACE

@@ -22,6 +22,13 @@ enum class CallbackSig {
 	OBJECT_NEW_CHILD,
 	OBJECT_DELETE,
 
+	ASSET_REFRESH,
+	ASSET_REIMPORT,
+	ASSET_DELETE,
+
+	PREFAB_SPAWN,
+	PREFAB_APPLY,
+
 	// --------- inspector -----------
 
 

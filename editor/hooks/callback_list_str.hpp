@@ -21,6 +21,11 @@ const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
 	{ CallbackSig::OBJECT_NEW, "OBJECT_NEW" },
 	{ CallbackSig::OBJECT_NEW_CHILD, "OBJECT_NEW_CHILD" },
 	{ CallbackSig::OBJECT_DELETE, "OBJECT_DELETE" },
+	{ CallbackSig::ASSET_REFRESH, "ASSET_REFRESH" },
+	{ CallbackSig::ASSET_REIMPORT, "ASSET_REIMPORT" },
+	{ CallbackSig::ASSET_DELETE, "ASSET_DELETE" },
+	{ CallbackSig::PREFAB_SPAWN, "PREFAB_SPAWN" },
+	{ CallbackSig::PREFAB_APPLY, "PREFAB_APPLY" },
 	{ CallbackSig::_COUNT, "_COUNT" },
 	{ CallbackSig::Undefined, "Undefined" }
 };

@@ -36,11 +36,11 @@ InputMouseStatus UI::I::Button(const CE_NS Rect& r, const UIButtonStyle& s, cons
 	return ret;
 }
 
-InputMouseStatus UI::I::ButtonTr(const CE_NS Rect& r) {
+InputMouseStatus UI::I::ButtonTr(const CE_NS Rect& r, InputMouseButton b) {
 	uint ret = 0;
 	if (UI::stencilRect().Contains(Input::mousePosition()) && r.Contains(Input::mousePosition())) {
-		ret = (uint)Input::mouseStatus(InputMouseButton::Left);
-		if (!ret || Input::mousePosition() == Input::mouseDownPosition()) {
+		ret = (uint)Input::mouseStatus(b);
+		if (!ret || (b == InputMouseButton::Left && Input::mousePosition() == Input::mouseDownPosition())) {
 			ret |= 0x10;
 		}
 	}

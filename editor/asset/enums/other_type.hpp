@@ -3,9 +3,9 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-enum class EExportType {
-	Model,
-	Image,
+enum class EExtType {
+	Scene,
+	ScrSource,
 	_COUNT,
 	Unknown
 };

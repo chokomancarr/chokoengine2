@@ -7,6 +7,11 @@ CE_BEGIN_ED_NAMESPACE
  */
 class ECallbackArg {
 public:
+	enum class Type {
+		Int, Float, String, Object
+	};
+	Type type;
+
     ECallbackArg(const std::string&, int);
     ECallbackArg(const std::string&, float);
     ECallbackArg(const std::string&, const std::string&);
@@ -35,6 +40,14 @@ public:
     CE_GET_MEMBER(args);
 
     const ECallbackArg& operator [](int) const;
+	const ECallbackArg& operator [](const std::string&) const;
+
+	template <typename T>
+	T Get(const std::string& s) const {
+		return (T)(*this)[s].o.lock();
+	}
+
+	friend class EDropdownMenu;
 };
 
 CE_END_ED_NAMESPACE

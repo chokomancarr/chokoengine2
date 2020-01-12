@@ -43,6 +43,8 @@ protected:
 	void DrawMenu() override;
 
 public:
+	Asset selectedAsset;
+
 	EW_Browser();
 
 	bool Init() override;

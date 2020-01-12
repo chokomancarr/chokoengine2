@@ -19,6 +19,8 @@ public:
 	
 	static void SaveAs(const std::string& path, bool regActive = true);
 
+	static const SceneObject& sceneBaseObj();
+
 	class Ops;
 };
 

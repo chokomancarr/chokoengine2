@@ -34,6 +34,7 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 		else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up
 				&& orect.Contains(Input::mousePosition())) {
 			ESceneInfo::selectedObject = o;
+			menu_obj.SetAll(ECallbackArg("object", o));
 			EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_obj, false);
 		}
 		if (hc) {
@@ -96,8 +97,8 @@ bool EW_Hierarchy::Init() {
 
 	auto menu = &menu_obj.items;
 
-	addi(New child Object, CallbackSig::OBJECT_NEW_CHILD);
-	addi(Delete, CallbackSig::OBJECT_DELETE);
+	addi(New child Object, CallbackSig::OBJECT_NEW_CHILD, ECallbackArgs({ ECallbackArg("object", pObject()) }));
+	addi(Delete, CallbackSig::OBJECT_DELETE, ECallbackArgs({ ECallbackArg("object", pObject()) }));
 
 	menu = &menu_empty.items;
 
