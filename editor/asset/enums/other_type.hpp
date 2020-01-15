@@ -7,7 +7,8 @@ enum class EExtType {
 	Scene,
 	ScrSource,
 	_COUNT,
-	Unknown
+	Unknown,
+	ScrHeader
 };
 
 CE_END_ED_NAMESPACE

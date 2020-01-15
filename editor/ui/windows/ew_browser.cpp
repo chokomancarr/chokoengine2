@@ -2,21 +2,28 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+typedef EAssetList::TypeOfSt::Type TStype;
+
 namespace {
 	std::array<EDropdownMenu, (int)AssetType::_COUNT> menus_asset;
 	std::array<EDropdownMenu, (int)EExportType::_COUNT> menus_export;
+	std::array<EDropdownMenu, (int)EExtType::_COUNT> menus_other;
 
 	EDropdownMenu& GetMenu(EAssetList::TypeOfSt t) {
-		if (t.exported) return menus_export[(int)t.exportType];
-		else return menus_asset[(int)t.assetType];
+		switch (t.subtype) {
+		case TStype::Asset:
+			return menus_asset[(int)t.assetType];
+		case TStype::Export:
+			return menus_export[(int)t.exportType];
+		case TStype::Other:
+			return menus_other[(int)t.otherType];
+		}
 	}
 }
 
 void EW_Browser::File::GetIcon() {
-	if (type.exported) {
-
-	}
-	else {
+	switch (type.subtype) {
+	case TStype::Asset: {
 		switch (type.assetType) {
 		case AssetType::Texture:
 			icon = (Texture)EAssetList::Get(type.assetType, sig, true);
@@ -27,6 +34,12 @@ void EW_Browser::File::GetIcon() {
 		default:
 			break;
 		}
+		break;
+	}
+	case TStype::Export:
+		break;
+	case TStype::Other:
+		break;
 	}
 }
 
@@ -140,8 +153,16 @@ void EW_Browser::DrawFiles() {
 			auto& menu = GetMenu(f.type);
 
 			menu.SetAll(ECallbackArg("sig", f.sig));
-			if (!f.type.exported)
+			switch (f.type.subtype) {
+			case TStype::Asset: {
 				menu.SetAll(ECallbackArg("asset", EAssetList::Get(f.type.assetType, f.sig, true)));
+				break;
+			}
+			case TStype::Export:
+				break;
+			case TStype::Other:
+				break;
+			}
 
 			EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu, false);
 		}

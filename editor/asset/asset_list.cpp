@@ -41,6 +41,33 @@ namespace {
 		}
 #endif
 	}
+
+	template <typename E, typename T>
+	void scanone(std::vector<T>& ent, const std::string& sig, const std::string& path, E e,
+			const std::function<void(T&)> fn) {
+		auto it = std::find_if(ent.begin(), ent.end(), [&](const T& e) {
+			return e.sig == sig;
+		});
+		if (it == ent.end()) {
+			Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
+			ent.push_back(T(sig));
+			it = ent.end() - 1;
+			it->sig = sig;
+			it->modtime = 0;
+		}
+		const auto mt = IO::ModTime(path);
+		if (it->modtime < mt) {
+			Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
+			if (!IO::FileExists(path + ".meta")) {
+				EAssetLoader::GenDefaultMeta(sig, e);
+				UpdateModTime(path + ".meta", false);
+			}
+			//this function is called for first pass / when object is updated while in background
+			fn(*it);
+			it->modtime = mt;
+			UpdateModTime(path + ".meta", true);
+		}
+	}
 	
 	template <typename E, typename T, size_t N>
 	bool doscan(const std::string& sig, const std::string& path, const std::string& ext, std::array<std::vector<T>, N>& ets,
@@ -48,6 +75,7 @@ namespace {
 		for (int a = 0; a < N; a++) {
 			for (auto& e : exts[a]) {
 				if (e == ext) {
+					/*
 					auto& ent = ets[a];
 					auto it = std::find_if(ent.begin(), ent.end(), [&](const T& _e) {
 						return _e.sig == sig;
@@ -70,6 +98,10 @@ namespace {
 						it->modtime = mt;
 						UpdateModTime(path + ".meta", true);
 					}
+					*/
+					scanone<E, T>(ets[a], sig, path, (E)a, [&](T& v) {
+						fn((E)a, v);
+					});
 					return true;
 				}
 			}
@@ -90,104 +122,24 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
     for (auto& f : fls) {
         const auto ext = StrExt::ExtensionOf(f);
         const auto sig = fd + f;
+		const auto path = ffd + f;
 		if (ext == "hpp") {
-			auto& ent = _scriptEntries;
-			auto it = std::find_if(ent.begin(), ent.end(), [&](const _ScriptEntry& _e) {
-				return _e.sig == sig;
+			scanone<EExtType, _ScriptEntry>(_scriptEntries, sig, path, EExtType::ScrHeader, [&](_ScriptEntry& v) {
+				v.info = EScripting::ParseInfo(sig);
 			});
-			if (it == ent.end()) {
-				Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
-				ent.push_back(_ScriptEntry(sig));
-				it = ent.end() - 1;
-				it->sig = sig;
-				it->modtime = 0;
-			}
-			const auto mt = IO::ModTime(ffd + f);
-			if (it->modtime < mt) {
-				Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-				it->info = EScripting::ParseInfo(fd + f);
-				if (!IO::FileExists(ffd + f + ".meta")) {
-					EAssetLoader::GenDefaultScriptMeta(sig);
-				}
-				it->modtime = mt;
-				//dirty = true;
-			}
-			goto next;
+			continue;
 		}
-		/*
-        for (int a = 0; a < (int)AssetType::_COUNT; a++) {
-            for (auto& e : _exts[a]) {
-                if (e == ext) {
-                    auto& ent = _entries[a];
-                    auto it = std::find_if(ent.begin(), ent.end(), [&](const _Entry& _e) {
-                        return _e.sig == sig;
-                    });
-                    if (it == ent.end()) {
-                        Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
-                        ent.push_back(_Entry(sig));
-                        it = ent.end() - 1;
-                        it->modtime = 0;
-                    }
-                    const auto mt = IO::ModTime(ffd + f);
-                    if (it->modtime < mt) {
-                        Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-                        if (!!it->obj) {
-                            it->obj = EAssetLoader::Load(sig, (AssetType)a);
-                            //it->obj->dirty(true);
-                        }
-                        if (!IO::FileExists(ffd + f + ".meta")) {
-                            EAssetLoader::GenDefaultMeta(sig, (AssetType)a);
-                        }
-                        it->modtime = mt;
-                        //dirty = true;
-                    }
-                    goto next;
-                }
-            }
-        }
-		*/
-		if (doscan<AssetType, _Entry>(sig, ffd + f, ext, _entries, _exts, [sig](AssetType t, _Entry& e) {
+		if (doscan<AssetType, _Entry>(sig, path, ext, _entries, _exts, [sig](AssetType t, _Entry& e) {
 			if (!!e.obj) {
 				e.obj = EAssetLoader::Load(sig, t);
 			}
-		})) goto next;
-		/*
-        for (int a = 0; a < (int)EExportType::_COUNT; a++) {
-            for (auto& e : _export_exts[a]) {
-                if (e == ext) {
-					auto& ent = _exportEntries[a];
-					auto it = std::find_if(ent.begin(), ent.end(), [&](const _Entry2& _e) {
-						return _e.sig == sig;
-					});
-					if (it == ent.end()) {
-						Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
-						ent.push_back(_Entry2(sig));
-						it = ent.end() - 1;
-						it->modtime = 0;
-					}
-					const auto mt = IO::ModTime(ffd + f);
-					if (it->modtime < mt) {
-						Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-						if (!IO::FileExists(ffd + f + ".meta")) {
-							EAssetLoader::GenDefaultMeta(sig, (EExportType)a);
-							UpdateModTime(ffd + f + ".meta", false);
-						}
-						if (EAssetLoader::Load(sig, (EExportType)a)) {
-							UpdateModTime(ffd + f + ".meta", true);
-							dirty = true;
-						}
-						it->modtime = mt;
-					}
-                    goto next;
-                }
-            }
-        }
-		*/
-		if (doscan<EExportType, _Entry2>(sig, ffd + f, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry2& e) {
+		})) continue;
+		
+		if (doscan<EExportType, _Entry2>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry2& e) {
 			if (EAssetLoader::Load(sig, t)) {
 				dirty = true;
 			}
-		})) goto next;
+		})) continue;
 		/*
 		for (int a = 0; a < (int)EExtType::_COUNT; a++) {
 			for (auto& e : _other_exts[a]) {
@@ -202,15 +154,15 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 						it = ent.end() - 1;
 						it->modtime = 0;
 					}
-					const auto mt = IO::ModTime(ffd + f);
+					const auto mt = IO::ModTime(path);
 					if (it->modtime < mt) {
 						Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-						if (!IO::FileExists(ffd + f + ".meta")) {
+						if (!IO::FileExists(path + ".meta")) {
 							EAssetLoader::GenDefaultMeta(sig, (EExportType)a);
-							UpdateModTime(ffd + f + ".meta", false);
+							UpdateModTime(path + ".meta", false);
 						}
 						if (EAssetLoader::Load(sig, (EExportType)a)) {
-							UpdateModTime(ffd + f + ".meta", true);
+							UpdateModTime(path + ".meta", true);
 							dirty = true;
 						}
 						it->modtime = mt;
@@ -220,12 +172,9 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 			}
 		}
 		*/
-		/*
-		if (doscan<EExportType, _Entry2>(sig, fd + f, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry2& e) {
-			//
-		})) goto next;
-        */
-	next:;
+		if (doscan<EExtType, _Entry2>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry2& e) {
+			
+		})) continue;
     }
 
     auto drs = IO::ListDirectories(ffd);
@@ -320,18 +269,25 @@ EAssetList::TypeOfSt EAssetList::TypeOf(const std::string& f) {
 	for (int a = 0; a < (int)AssetType::_COUNT; a++) {
 		for (auto& e : _exts[a]) {
 			if (e == ext) {
-				return TypeOfSt{ false, (AssetType)a, EExportType::Unknown };
+				return TypeOfSt{ TypeOfSt::Type::Asset, (AssetType)a, EExportType::Unknown, EExtType::Unknown };
 			}
 		}
 	}
 	for (int a = 0; a < (int)EExportType::_COUNT; a++) {
-		for (auto& e : _exts[a]) {
+		for (auto& e : _export_exts[a]) {
 			if (e == ext) {
-				return TypeOfSt{ true, AssetType::Unknown, (EExportType)a };
+				return TypeOfSt{ TypeOfSt::Type::Export, AssetType::Unknown, (EExportType)a, EExtType::Unknown };
 			}
 		}
 	}
-	return TypeOfSt{ true, AssetType::Unknown, EExportType::Unknown };
+	for (int a = 0; a < (int)EExtType::_COUNT; a++) {
+		for (auto& e : _other_exts[a]) {
+			if (e == ext) {
+				return TypeOfSt{ TypeOfSt::Type::Other, AssetType::Unknown, EExportType::Unknown, (EExtType)a };
+			}
+		}
+	}
+	return TypeOfSt{ TypeOfSt::Type::Unknown, AssetType::Unknown, EExportType::Unknown, EExtType::Unknown };
 }
 
 CE_END_ED_NAMESPACE

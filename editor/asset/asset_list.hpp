@@ -38,14 +38,15 @@ class EAssetList { CE_CLASS_COMMON
 
 public:
     struct TypeOfSt {
-		bool exported;
+		enum class Type {
+			Asset,
+			Export,
+			Other,
+			Unknown
+		} subtype;
 		AssetType assetType;
 		EExportType exportType;
-		enum class ExtType {
-			Scene,
-			ScrHeader,
-			ScrSource
-		} otherType;
+		EExtType otherType;
 	};
 
     static void Init();

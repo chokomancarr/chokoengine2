@@ -8,7 +8,7 @@
 #define CE_E_ASSET_DROP(r, tp, fn) {\
 	InputMouseStatus mst;\
 	if (EDragDrop::IsSingle() && EDragDrop::type == EDragDrop::Type::Asset\
-			&& !EDragDrop::assetType.exported\
+			&& EDragDrop::assetType.subtype == EAssetList::TypeOfSt::Type::Asset\
 			&& (mst = UI::I::ButtonTr(r)) != InputMouseStatus::None) {\
 		UI::Rect(r, Color(1, 1, 0, 0.5f));\
 		if (mst == InputMouseStatus::Up) {\

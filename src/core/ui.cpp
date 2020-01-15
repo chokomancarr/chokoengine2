@@ -111,7 +111,7 @@ void UI::TexQuad(const CE_NS Rect& q, GLuint tex, Color col,
 	texShad->Unbind();
 }
 
-Rect UI::stencilRect() {
+CE_NS Rect UI::stencilRect() {
 	if (_stencilRects.empty()) return Display::fullscreenRect();
 	else return _stencilRect;
 }

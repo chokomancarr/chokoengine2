@@ -47,7 +47,7 @@ public:
 	/* The current active portion of the screen.
 	 * If no stencil is set, the fullscreen rect is returned.
 	 */
-	static Rect stencilRect();
+	static CE_NS Rect stencilRect();
 
 	/* Draws an image with the provided dimensions.
 	 */

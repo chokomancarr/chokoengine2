@@ -68,6 +68,13 @@ void EAssetLoader::GenDefaultMeta(const std::string& path, const EExportType t) 
 	}
 }
 
+void EAssetLoader::GenDefaultMeta(const std::string& path, const EExtType t) {
+	switch (t) {
+	default:
+		break;
+	}
+}
+
 #define CE_E_LD(nm) case AssetType::nm: {\
 	auto res = Load ## nm(path, async);\
 	if (!res)\
