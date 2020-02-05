@@ -5,6 +5,52 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+Shader gshad;
+std::vector<Vec2> gposs(100);
+uint gi = 0;
+VertexArray gvao;
+
+void ig() {
+	for (int a = 0; a < 100; a++) {
+		gposs[a] = Vec2(-0.95f + 0.005f * a, -0.95f);
+	}
+
+	gshad = Shader::New(R"(
+layout(location=0) in vec2 pos;
+void main() {
+    gl_Position = vec4(pos, 0, 1);
+})", R"(
+out vec4 fragCol;
+void main() {
+    fragCol = vec4(1, 0, 0, 1);
+})"
+	);
+	gvao = VertexArray_New();
+	gvao->AddBuffer(VertexBuffer_New(true, 2, 100, gposs.data()));
+}
+
+void pg(float f) {
+	if (gi == 100) {
+		for (int a = 1; a < 100; a++) {
+			gposs[a-1].y = gposs[a].y;
+		}
+	}
+	else gi++;
+	gposs[gi-1].y = -0.95f + 0.01f * f;
+
+	gvao->buffer(0)->Set(gposs.data(), 100);
+
+	gshad->Bind();
+	gvao->Bind();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDrawArrays(GL_LINE_STRIP, 0, 100);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	gvao->Unbind();
+	gshad->Unbind();
+}
+
 inline void paint() {
 	ChokoEditor::scene->PrepareSceneForRendering();
 	EWindowManager::Render();
@@ -22,7 +68,13 @@ inline void paint() {
 		}
 	}
 
-	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(Time::delta() * 1000) + " ms", Color::white());
+	static auto t0 = Time::actualMillis();
+	auto tn = Time::actualMillis();
+	auto dt = (tn - t0);
+	t0 = tn;
+	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(dt) + " ms", Color::white());
+
+	pg(dt);
 }
 
 std::string ChokoEditor::projectRoot;
@@ -109,6 +161,8 @@ void ChokoEditor::Main() {
 	style.textNormal(Color::white());
 
 	Debug::Message("Editor", "Startup finished");
+
+	ig();
 
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {

@@ -3,6 +3,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
+	return;
 	for (auto& o : objs) {
 		if (o == ESceneInfo::selectedObject) continue;
 		for (auto& c : o->components()) {
