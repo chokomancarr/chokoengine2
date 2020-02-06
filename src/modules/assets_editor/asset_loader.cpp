@@ -47,6 +47,7 @@ JsonObject AssetLoader::LoadMeta(const std::string& path) {
 	return res; }
 
 Asset AssetLoader::Load(AssetType t, const std::string& path, bool async) {
+	if (path == "none") return nullptr;
 	switch (t) {
 		CE_E_LD(AnimClip)
 		CE_E_LD(Armature)

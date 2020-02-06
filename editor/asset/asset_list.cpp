@@ -44,7 +44,7 @@ namespace {
 
 	template <typename E, typename T>
 	void scanone(std::vector<T>& ent, const std::string& sig, const std::string& path, E e,
-			const std::function<void(T&)> fn) {
+			const std::function<void(T&, bool)> fn) {
 		auto it = std::find_if(ent.begin(), ent.end(), [&](const T& e) {
 			return e.sig == sig;
 		});
@@ -58,49 +58,30 @@ namespace {
 		const auto mt = IO::ModTime(path);
 		if (it->modtime < mt) {
 			Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-			if (!IO::FileExists(path + ".meta")) {
+			bool metaold;
+			const auto mpath = path + ".meta";
+			if (!IO::FileExists(mpath)) {
 				EAssetLoader::GenDefaultMeta(sig, e);
-				UpdateModTime(path + ".meta", false);
+				UpdateModTime(mpath, false);
+				metaold = true;
 			}
+			else metaold = (IO::ModTime(mpath) < mt);
 			//this function is called for first pass / when object is updated while in background
-			fn(*it);
+			fn(*it, metaold);
 			it->modtime = mt;
-			UpdateModTime(path + ".meta", true);
+			if (metaold)
+				UpdateModTime(path + ".meta", true);
 		}
 	}
 	
 	template <typename E, typename T, size_t N>
 	bool doscan(const std::string& sig, const std::string& path, const std::string& ext, std::array<std::vector<T>, N>& ets,
-			const std::array<std::vector<std::string>, N>& exts, const std::function<void(E, T&)> fn) {
+			const std::array<std::vector<std::string>, N>& exts, const std::function<void(E, T&, bool)> fn) {
 		for (int a = 0; a < N; a++) {
 			for (auto& e : exts[a]) {
 				if (e == ext) {
-					/*
-					auto& ent = ets[a];
-					auto it = std::find_if(ent.begin(), ent.end(), [&](const T& _e) {
-						return _e.sig == sig;
-					});
-					if (it == ent.end()) {
-						Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
-						ent.push_back(T(sig));
-						it = ent.end() - 1;
-						it->modtime = IO::ModTime(path + ".meta");
-					}
-					const auto mt = IO::ModTime(path);
-					if (it->modtime < mt) {
-						Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-						if (!IO::FileExists(path + ".meta")) {
-							EAssetLoader::GenDefaultMeta(sig, (E)a);
-							UpdateModTime(path + ".meta", false);
-						}
-						//this function is called for first pass / when object is updated while in background
-						fn((E)a, *it);
-						it->modtime = mt;
-						UpdateModTime(path + ".meta", true);
-					}
-					*/
-					scanone<E, T>(ets[a], sig, path, (E)a, [&](T& v) {
-						fn((E)a, v);
+					scanone<E, T>(ets[a], sig, path, (E)a, [&](T& v, bool b) {
+						fn((E)a, v, b);
 					});
 					return true;
 				}
@@ -124,19 +105,19 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
         const auto sig = fd + f;
 		const auto path = ffd + f;
 		if (ext == "hpp") {
-			scanone<EExtType, _ScriptEntry>(_scriptEntries, sig, path, EExtType::ScrHeader, [&](_ScriptEntry& v) {
+			scanone<EExtType, _ScriptEntry>(_scriptEntries, sig, path, EExtType::ScrHeader, [&](_ScriptEntry& v, bool) {
 				v.info = EScripting::ParseInfo(sig);
 			});
 			continue;
 		}
-		if (doscan<AssetType, _Entry>(sig, path, ext, _entries, _exts, [sig](AssetType t, _Entry& e) {
-			if (!!e.obj) {
+		if (doscan<AssetType, _Entry>(sig, path, ext, _entries, _exts, [sig](AssetType t, _Entry& e, bool b) {
+			if (b && !!e.obj) {
 				e.obj = EAssetLoader::Load(sig, t);
 			}
 		})) continue;
 		
-		if (doscan<EExportType, _Entry2>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry2& e) {
-			if (EAssetLoader::Load(sig, t)) {
+		if (doscan<EExportType, _Entry2>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry2& e, bool b) {
+			if (b && EAssetLoader::Load(sig, t)) {
 				dirty = true;
 			}
 		})) continue;
@@ -172,7 +153,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 			}
 		}
 		*/
-		if (doscan<EExtType, _Entry2>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry2& e) {
+		if (doscan<EExtType, _Entry2>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry2& e, bool) {
 			
 		})) continue;
     }

@@ -28,8 +28,14 @@ PR_CTOR(const Color&, Vec4, v4);
 
 PrefabItem::PrefabItem(const Asset& a) : value({}), type(Type::Asset) {
 	auto& av = value.assetref;
-	av.sig = a->assetSignature();
-	av.assetType = a->assetType;
+	if (!a) {
+		av.sig = "none";
+		av.assetType = AssetType::Unknown;
+	}
+	else {
+		av.sig = a->assetSignature();
+		av.assetType = a->assetType;
+	}
 }
 PrefabItem::PrefabItem(const Prefab_ObjRef& s) : value({}), type(Type::SceneObject) {
 	value.scobjref = s;

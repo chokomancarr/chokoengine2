@@ -6,52 +6,73 @@
 CE_BEGIN_ED_NAMESPACE
 
 Shader gshad;
-std::vector<Vec2> gposs(100);
+std::vector<Vec2> gposs[3];
 uint gi = 0;
-VertexArray gvao;
+VertexArray gvao[3];
+Vec4 gcl[3] = {
+	Vec4(1, 0, 0, 1),
+	Vec4(0, 1, 0, 1),
+	Vec4(1, 1, 0, 1),
+};
 
 void ig() {
+	for (int i = 0; i < 3; i++)
+		gposs[i].resize(100);
 	for (int a = 0; a < 100; a++) {
-		gposs[a] = Vec2(-0.95f + 0.005f * a, -0.95f);
+		for (int i = 0; i < 3; i++)
+			gposs[i][a] = Vec2(-0.95f + 0.005f * a, -0.95f);
 	}
 
-	gshad = Shader::New(R"(
+	(gshad = Shader::New(R"(
 layout(location=0) in vec2 pos;
 void main() {
     gl_Position = vec4(pos, 0, 1);
 })", R"(
+uniform vec4 col;
 out vec4 fragCol;
 void main() {
-    fragCol = vec4(1, 0, 0, 1);
+    fragCol = col;
 })"
-	);
-	gvao = VertexArray_New();
-	gvao->AddBuffer(VertexBuffer_New(true, 2, 100, gposs.data()));
+	))->AddUniforms({"col"});
+	
+	for (int i = 0; i < 3; i++) {
+		(gvao[i] = VertexArray_New())
+			->AddBuffer(VertexBuffer_New(true, 2, 100, gposs[i].data()));
+	}
 }
 
-void pg(float f) {
+void pg(uint64_t* f) {
 	if (gi == 100) {
 		for (int a = 1; a < 100; a++) {
-			gposs[a-1].y = gposs[a].y;
+			for (int i = 0; i < 3; i++)
+			gposs[i][a-1].y = gposs[i][a].y;
 		}
 	}
 	else gi++;
-	gposs[gi-1].y = -0.95f + 0.01f * f;
 
-	gvao->buffer(0)->Set(gposs.data(), 100);
+	for (int i = 0; i < 3; i++) {
+		gposs[i][gi-1].y = -0.95f + 0.01f * f[i];
+		gvao[i]->buffer(0)->Set(gposs[i].data(), 100);
+	}
 
 	gshad->Bind();
-	gvao->Bind();
-
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawArrays(GL_LINE_STRIP, 0, 100);
+	for (int i = 2; i >= 0; i--) {
+		glUniform4f(gshad->Loc(0), gcl[i].r, gcl[i].g, gcl[i].b, 1);
+		gvao[i]->Bind();
+		glDrawArrays(GL_LINE_STRIP, 0, gi);
+		gvao[i]->Unbind();
+	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	gvao->Unbind();
 	gshad->Unbind();
 }
 
+uint64_t gt0, gt[3], dt[3];
+
 inline void paint() {
+	gt[1] = Time::actualMillis();
+	dt[1] = gt[1] - gt0;
+
 	ChokoEditor::scene->PrepareSceneForRendering();
 	EWindowManager::Render();
 
@@ -68,11 +89,10 @@ inline void paint() {
 		}
 	}
 
-	static auto t0 = Time::actualMillis();
-	auto tn = Time::actualMillis();
-	auto dt = (tn - t0);
-	t0 = tn;
-	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(dt) + " ms", Color::white());
+	gt[2] = Time::actualMillis();
+	dt[2] = (gt[2] - gt0);
+	gt0 = gt[2];
+	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(dt[2]) + " ms", Color::white());
 
 	pg(dt);
 }
@@ -165,6 +185,7 @@ void ChokoEditor::Main() {
 	ig();
 
 	while (ChokoLait::alive()) {
+		dt[0] = (gt[0] = Time::actualMillis()) - gt0;
 		ChokoLait::Update([]() {
 			UI_Ext::PreLoop();
 			EWindowManager::Update();

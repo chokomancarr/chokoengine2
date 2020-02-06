@@ -22,6 +22,8 @@ bool EProjectBuilder::busy() {
 void EProjectBuilder::Init() {
 	ECallbackManager::Register(CallbackSig::GLOBAL_BUILD_DEBUG, CbFnFrom(BuildDebug));
 	//ECallbackManager::Register(CallbackSig::GLOBAL_BUILD, BuildRelease);
+
+    dbgProgPath = CE_DIR_SYSTEM + "build/bin/chokoeditor_project" CE_PROG_EXT;
 }
 
 bool EProjectBuilder::BuildDebug() {
@@ -43,7 +45,6 @@ bool EProjectBuilder::BuildDebug() {
         std::lock_guard<std::mutex> lock(_mtx);
         _busy = false;
     }).detach();
-    dbgProgPath = CE_DIR_SYSTEM + "build/bin/chokoeditor_project" CE_PROG_EXT;
     return true;
 }
 
