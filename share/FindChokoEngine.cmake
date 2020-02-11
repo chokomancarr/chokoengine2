@@ -112,20 +112,20 @@ IF(CE2_LIBRARY_TEMP)
 
 	get_filename_component(CE2_LIB_PATH "${CE2_LIBRARY_TEMP}" DIRECTORY)
 	
-	FIND_LIBRARY(CE2_MODULE_LIB_AE
-		NAMES Module_AssetEditor
-		HINTS
-		$ENV{CE2DIR}
-		PATH_SUFFIXES lib64 lib
-		PATHS ${CE2_SEARCH_PATHS}
-	)
-	FIND_LIBRARY(CE2_MODULE_LIB_PE
-		NAMES Module_PlayerEditor
-		HINTS
-		$ENV{CE2DIR}
-		PATH_SUFFIXES lib64 lib
-		PATHS ${CE2_SEARCH_PATHS}
-	)
+	macro(define_module fullname alias)
+		FIND_LIBRARY(CE2_MODULE_LIB_${alias}
+			NAMES Module_${fullname}
+			HINTS
+			$ENV{CE2DIR}
+			PATH_SUFFIXES lib64 lib
+			PATHS ${CE2_SEARCH_PATHS}
+		)
+	endmacro()
+
+	define_module(AssetArchive AA)
+	define_module(AssetCommon AC)
+	define_module(AssetEditor AE)
+	define_module(PlayerEditor PE)
 
 	message(STATUS "ChokoEngine headers: " ${CE2_INCLUDE_DIRS})
 	message(STATUS "ChokoEngine libs: " ${CE2_LIBRARIES})
