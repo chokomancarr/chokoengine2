@@ -28,12 +28,12 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 		}
 		const Rect orect(position.x() + 1, off, position.w() - 2, 16);
 		if (!prs && UI::I::Button(orect, style) == InputMouseStatus::HoverUp) {
-			ESceneInfo::selectedObject = o;
+			ESceneInfo::Select(o);
 			isa = true;
 		}
 		else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up
 				&& orect.Contains(Input::mousePosition())) {
-			ESceneInfo::selectedObject = o;
+			ESceneInfo::Select(o);
 			menu_obj.SetAll(ECallbackArg("object", o));
 			EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_obj, false);
 		}
@@ -74,10 +74,10 @@ void EW_Hierarchy::DrawMenu() {
 		const auto rect2 = rect.sub(0, off - rect.y(), 0, 0);
 		if (rect2.Contains(Input::mousePosition())) {
 			if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {
-				ESceneInfo::selectedObject = nullptr;
+				ESceneInfo::Clear();
 			}
 			else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up) {
-				ESceneInfo::selectedObject = nullptr;
+				ESceneInfo::Clear();
 				EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_empty, false);
 			}
 		}

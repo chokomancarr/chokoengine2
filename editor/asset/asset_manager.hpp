@@ -17,3 +17,4 @@ public:
 CE_END_ED_NAMESPACE
 
 #include "ops/asset_ops.hpp"
+#include "archiver/asset_archiver.hpp"

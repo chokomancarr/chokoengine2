@@ -2,39 +2,21 @@
 
 CE_BEGIN_NAMESPACE
 
-JsonObject _PrefabMod::ToJson() const {
-	static const std::string TypeStr[] {
-		"Modify",
-		"Object"
-	};
+_PrefabMod::_PrefabMod(const PrefabObj& obj, const SceneObject& tar, const SceneObject& root) {
+	target = Prefab_ObjRef(tar, root);
 
-	JsonObject res(JsonObject::Type::Group);
-//	res.group.push_back(JsonPair(JsonObject("type"), TypeStr[(int)type]));
-//	res.group.push_back(JsonPair(JsonObject("target"), target.ToJson()));
-//	res.group.push_back(JsonPair(JsonObject("object"), object->ToJson()));
-	return res;
+	using itp = std::pair<std::string, PrefabItem>;
+	auto cgsp = std::find_if(obj->items.begin(), obj->items.end(), [](const itp& i) {
+		return i.first == "components";
+	});
+	//auto cgs = (cgsp == obj->items.end()) ? PrefabObjGroup() : cgsp->second.value.objgroup;
+	for (auto& c : tar->components()) {
+		
+	}
 }
 
-void _PrefabMod::Instantiate(const SceneObject& par) const {
-	const auto fnd = [&](const std::vector<SceneObject>& cc, const std::pair<std::string, int>& nm) -> SceneObject {
-		int n = 0;
-		for (auto& c : cc) {
-			if (c->name() == nm.first) {
-				if (n++ == nm.second) {
-					return c;
-				}
-			}
-		}
-		return nullptr;
-	};
-
-	SceneObject p = par;
-	for (auto& t : target.path) {
-		p = fnd(p->children(), t);
-		if (!p) return;
-	}
-
-	object->Instantiate(p);
+JsonObject _PrefabMod::ToJson() const {
+	
 }
 
 CE_END_NAMESPACE

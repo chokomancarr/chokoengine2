@@ -15,6 +15,7 @@ Asset EAssetManager::FromJson(const JsonObject& json, bool async) {
             return EAssetList::Get(a.first, vls, async);
         }
     }
+    return nullptr;
 }
 
 JsonObject EAssetManager::ToJson(const Asset& a, AssetType t) {

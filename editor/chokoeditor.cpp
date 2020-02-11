@@ -182,6 +182,8 @@ void ChokoEditor::Main() {
 
 	Debug::Message("Editor", "Startup finished");
 
+	EAssetArchiver::Exec(projectRoot + "build/assets");
+
 	ig();
 
 	while (ChokoLait::alive()) {

@@ -4,5 +4,6 @@ target_sources(ChokoEditor PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/asset_manager.cpp
 )
 
+add_subdirectory(archiver)
 add_subdirectory(ext)
 add_subdirectory(ops)

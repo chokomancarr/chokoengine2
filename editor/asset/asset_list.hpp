@@ -8,30 +8,26 @@ CE_BEGIN_ED_NAMESPACE
 
 class EAssetList { CE_CLASS_COMMON
     struct _Entry {
-        _Entry(const std::string& sig);
+        _Entry(const std::string& sig, const std::string& gsig = "");
 
         std::string sig;
+		std::string genSig;
         Asset obj;
         time_t modtime;
     };
-	struct _Entry2 {
-		_Entry2(const std::string& sig);
-
-		std::string sig;
-		time_t modtime;
-	};
 	struct _ScriptEntry {
 		_ScriptEntry(const std::string& sig);
 
 		std::string sig;
 		ScriptInfo info;
 		time_t modtime;
+		bool changed; //need to regen loader
 	};
     /* List of all asset data
      */
     static std::array<std::vector<_Entry>, (int)AssetType::_COUNT> _entries;
-	static std::array<std::vector<_Entry2>, (int)EExportType::_COUNT> _exportEntries;
-	static std::array<std::vector<_Entry2>, (int)EExtType::_COUNT> _otherEntries;
+	static std::array<std::vector<_Entry>, (int)EExportType::_COUNT> _exportEntries;
+	static std::array<std::vector<_Entry>, (int)EExtType::_COUNT> _otherEntries;
 	static std::vector<_ScriptEntry> _scriptEntries;
 
     static bool Scan_Fd(const std::string& fd);
@@ -60,6 +56,7 @@ public:
 
 	static Asset Get2(AssetType, const std::string&);
 
+	CE_GET_ST_MEMBER(entries);
 	CE_GET_ST_MEMBER(scriptEntries);
 
 	static TypeOfSt TypeOf(const std::string& f);

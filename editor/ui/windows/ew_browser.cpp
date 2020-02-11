@@ -147,7 +147,7 @@ void EW_Browser::DrawFiles() {
 		}
 		const auto r = Rect(x, off, pd, sz + 24);
 		if (UI::I::Button(r, style) == InputMouseStatus::HoverUp) {
-
+			ESceneInfo::Select(EAssetLoader::Load(f.sig, f.type.assetType));
 		}
 		else if (UI::I::ButtonTr(r, InputMouseButton::Right) == InputMouseStatus::Up) {
 			auto& menu = GetMenu(f.type);

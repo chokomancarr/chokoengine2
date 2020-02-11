@@ -5,11 +5,8 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-EAssetList::_Entry::_Entry(const std::string& sig)
-    : sig(sig), obj(nullptr), modtime(0) {}
-
-EAssetList::_Entry2::_Entry2(const std::string& sig)
-	: sig(sig), modtime(0) {}
+EAssetList::_Entry::_Entry(const std::string& sig, const std::string& gsig)
+    : sig(sig), genSig(gsig), obj(nullptr), modtime(0) {}
 
 EAssetList::_ScriptEntry::_ScriptEntry(const std::string& scr)
 	: sig(scr), info({}), modtime(0) {}
@@ -42,6 +39,32 @@ namespace {
 #endif
 	}
 
+	template <typename T>
+	class regsig {
+	public:
+		template <typename E>
+		static void invoke(const std::string&, typename std::vector<T>::iterator) {}
+		template <>
+		static void invoke<EExportType>(const std::string& sig, typename std::vector<T>::iterator it) {
+			const auto dr = ".exported/" + sig + "/";
+			const auto lf = IO::ListFiles(CE_DIR_ASSET + dr);
+			if (lf.size() > 0) {
+				if (lf.size() == 1) {
+					it->genSig = dr + lf[0];
+				}
+				else {
+					const auto df = CE_DIR_ASSET + dr + "default";
+					if (IO::FileExists(df)) {
+						it->genSig = dr + IO::ReadFile(df);
+					}
+					else return;
+				}
+			}
+			else return;
+			Debug::Message("AssetList", "             -> " + it->genSig, TerminalColor::BrightGreen);
+		}
+	};
+
 	template <typename E, typename T>
 	void scanone(std::vector<T>& ent, const std::string& sig, const std::string& path, E e,
 			const std::function<void(T&, bool)> fn) {
@@ -52,8 +75,7 @@ namespace {
 			Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
 			ent.push_back(T(sig));
 			it = ent.end() - 1;
-			it->sig = sig;
-			it->modtime = 0;
+			regsig<T>::template invoke<E>(sig, it);
 		}
 		const auto mt = IO::ModTime(path);
 		if (it->modtime < mt) {
@@ -92,8 +114,8 @@ namespace {
 }
 
 std::array<std::vector<EAssetList::_Entry>, (int)AssetType::_COUNT> EAssetList::_entries = {};
-std::array<std::vector<EAssetList::_Entry2>, (int)EExportType::_COUNT> EAssetList::_exportEntries = {};
-std::array<std::vector<EAssetList::_Entry2>, (int)EExtType::_COUNT> EAssetList::_otherEntries = {};
+std::array<std::vector<EAssetList::_Entry>, (int)EExportType::_COUNT> EAssetList::_exportEntries = {};
+std::array<std::vector<EAssetList::_Entry>, (int)EExtType::_COUNT> EAssetList::_otherEntries = {};
 std::vector<EAssetList::_ScriptEntry> EAssetList::_scriptEntries;
 
 bool EAssetList::Scan_Fd(const std::string& fd) {
@@ -116,7 +138,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 			}
 		})) continue;
 		
-		if (doscan<EExportType, _Entry2>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry2& e, bool b) {
+		if (doscan<EExportType, _Entry>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry& e, bool b) {
 			if (b && EAssetLoader::Load(sig, t)) {
 				dirty = true;
 			}
@@ -153,7 +175,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 			}
 		}
 		*/
-		if (doscan<EExtType, _Entry2>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry2& e, bool) {
+		if (doscan<EExtType, _Entry>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry& e, bool) {
 			
 		})) continue;
     }

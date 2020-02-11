@@ -1,0 +1,9 @@
+#include "asset_loader.hpp"
+
+CE_BEGIN_MOD_AA_NAMESPACE
+
+CE_MOD_AA_IMPL(Armature) {
+	CE_NOT_IMPLEMENTED
+}
+
+CE_END_MOD_AA_NAMESPACE

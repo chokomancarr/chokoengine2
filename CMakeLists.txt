@@ -15,6 +15,7 @@ if (NOT APPLE)
 endif()
 find_package(JPEG REQUIRED)
 find_package(Freetype REQUIRED)
+find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
 
 if (MSVC)
@@ -46,6 +47,7 @@ set(INC_DIRS
 	${GLM_INCLUDE_DIR}
 	${JPEG_INCLUDE_DIR}
 	${FREETYPE_INCLUDE_DIRS}
+	${ZLIB_INCLUDE_DIRS}
 	${PROJECT_SOURCE_DIR}/chokoballs/include
 )
 if (NOT APPLE)
@@ -77,6 +79,7 @@ set(LIBS
 	${GLM_LIBRARY}
 	${JPEG_LIBRARY}
 	${FREETYPE_LIBRARIES}
+	${ZLIB_LIBRARIES}
 	#ChokoBalls
 )
 if (NOT APPLE)
@@ -151,11 +154,26 @@ set(LIBS
 
 #------modules-------
 
+add_library(Module_AssetCommon STATIC "")
+add_subdirectory(src/modules/assets_common)
+target_link_libraries(Module_AssetCommon ${LIBS})
+
+set(LIBS_MA
+	${LIBS}
+	Module_AssetCommon
+)
+
+add_library(Module_AssetArchive STATIC "")
+target_compile_definitions(Module_AssetArchive PRIVATE BUILD_MODULE_AA=1)
+add_subdirectory(src/modules/assets_archive)
+target_include_directories(Module_AssetArchive PRIVATE include/ce2/modules/aa)
+target_link_libraries(Module_AssetArchive ${LIBS_MA})
+
 add_library(Module_AssetEditor STATIC "")
 target_compile_definitions(Module_AssetEditor PRIVATE BUILD_MODULE_AE=1)
 add_subdirectory(src/modules/assets_editor)
 target_include_directories(Module_AssetEditor PRIVATE include/ce2/modules/ae)
-target_link_libraries(Module_AssetEditor ${LIBS})
+target_link_libraries(Module_AssetEditor ${LIBS_MA})
 
 set(LIBS_E
 	${LIBS}

@@ -5,18 +5,14 @@ CE_BEGIN_NAMESPACE
 
 class _PrefabMod {
 public:
-	enum class Type {
-		Modify,
-		Object
-	} type;
+	//commands to modify object saved as obj to become tar
+	_PrefabMod(const PrefabObj& obj, const SceneObject& tar, const SceneObject& root);
 
 	Prefab_ObjRef target;
 
-	PrefabObj object;
+	std::vector<std::pair<int, PrefabComp>> add_comps;
 
 	JsonObject ToJson() const;
-
-	void Instantiate(const SceneObject&) const;
 };
 
 CE_END_NAMESPACE
