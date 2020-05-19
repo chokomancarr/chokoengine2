@@ -16,7 +16,7 @@ _PrefabMod::_PrefabMod(const PrefabObj& obj, const SceneObject& tar, const Scene
 }
 
 JsonObject _PrefabMod::ToJson() const {
-	
+	return JsonObject();
 }
 
 CE_END_NAMESPACE

@@ -4,6 +4,16 @@ CE_BEGIN_ED_NAMESPACE
 
 namespace {
 	std::array<std::vector<ECallbackFn>, (int)CallbackSig::_COUNT> _handlers;
+
+	template<typename T>
+	std::string getAddress(std::function<void(T &)> f) {
+		typedef void (fnType)(T &);
+		fnType ** fnPointer = f.template target<fnType*>();
+		if (!fnPointer) return "(no address)";
+		std::ostringstream ss;
+		ss << std::hex << (size_t)*fnPointer;
+		return ss.str();
+	}
 }
 
 void ECallbackManager::Init() {
@@ -19,6 +29,7 @@ void ECallbackManager::Update() {
 
 void ECallbackManager::Register(CallbackSig sig, ECallbackFn fn) {
 	_handlers[(int)sig].push_back(fn);
+	EDebug::Log("Callbacks", "Registered " + CallbackSigStr.at(sig) + " => " + getAddress(fn), 0);
 }
 
 void ECallbackManager::Invoke(CallbackSig sig, const ECallbackArgs& args) {

@@ -23,10 +23,24 @@ namespace {
     }
 }
 
+int EDebug::printLevel = EDEBUG_LVL_VERBOSE;
+
 std::string EDebug::ObjTree(const std::vector<SceneObject>& objs, obj2strFn fn) {
     std::string res;
     DoTree(res, objs, {}, fn);
     return res;
+}
+
+void EDebug::Log(const std::string& caller, const std::string& msg, const int level) {
+	constexpr TerminalColor colors[] = {
+		TerminalColor::LightGrey,
+		TerminalColor::White,
+		TerminalColor::Yellow,
+		TerminalColor::BrightRed
+	};
+	if (level >= printLevel) {
+		Debug::Message("Editor::" + caller, msg, colors[level]);
+	}
 }
 
 CE_END_ED_NAMESPACE

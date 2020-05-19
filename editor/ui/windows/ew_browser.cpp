@@ -123,6 +123,7 @@ float EW_Browser::DrawFolder(float& off, Folder& fd, int level) {
 	return ol;
 }
 
+#pragma optimize("", off)
 void EW_Browser::DrawFiles() {
 	if (!currentFd || !currentFd->files.size()) return;
 	static UIButtonStyle style(Color(0, 0), Color(0.3f, 0.5f), Color(0.1f, 0.5f));
@@ -147,12 +148,22 @@ void EW_Browser::DrawFiles() {
 		}
 		const auto r = Rect(x, off, pd, sz + 24);
 		if (UI::I::Button(r, style) == InputMouseStatus::HoverUp) {
-			ESceneInfo::Select(EAssetLoader::Load(f.sig, f.type.assetType));
+			switch (f.type.subtype) {
+			case TStype::Asset: {
+				ESceneInfo::Select(EAssetList::Get(f.type.assetType, f.sig, false));
+				break;
+			}
+			case TStype::Export:
+				break;
+			case TStype::Other:
+				break;
+			}
 		}
 		else if (UI::I::ButtonTr(r, InputMouseButton::Right) == InputMouseStatus::Up) {
 			auto& menu = GetMenu(f.type);
 
 			menu.SetAll(ECallbackArg("sig", f.sig));
+			/*
 			switch (f.type.subtype) {
 			case TStype::Asset: {
 				menu.SetAll(ECallbackArg("asset", EAssetList::Get(f.type.assetType, f.sig, true)));
@@ -163,6 +174,7 @@ void EW_Browser::DrawFiles() {
 			case TStype::Other:
 				break;
 			}
+			*/
 
 			EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu, false);
 		}
@@ -196,14 +208,14 @@ void EW_Browser::DrawMenu() {
 EW_Browser::EW_Browser() : EWindow("Assets") {}
 
 bool EW_Browser::Init() {
-#define addi(nm, ...) {auto op = EDropdownMenu(#nm);\
-		op.callback = ECallbackCaller(__VA_ARGS__);\
+#define addi(nm, sig) {auto op = EDropdownMenu(#nm);\
+		op.callback = ECallbackCaller(sig, CallbackSigArgs.at(sig));\
 		menu->push_back(op);}
 
 	EDropdownMenu menu_base;
 	auto menu = &menu_base.items;
 
-	addi(Reimport, CallbackSig::ASSET_REIMPORT, ECallbackArgs({ ECallbackArg("asset", pObject()) }));
+	addi(Reimport, CallbackSig::ASSET_REIMPORT);
 	addi(Delete, CallbackSig::ASSET_DELETE);
 
 	for (auto& m : menus_asset) {
@@ -215,8 +227,8 @@ bool EW_Browser::Init() {
 
 	menu = &(menus_asset[(int)AssetType::Prefab].items = *menu);
 
-	addi(Add to scene, CallbackSig::PREFAB_SPAWN, ECallbackArgs({ ECallbackArg("asset", pObject()) }));
-	addi(Collapse);
+	addi(Add to scene, CallbackSig::PREFAB_SPAWN);
+	//addi(Collapse);
 
 	path = "";
 	Refresh();

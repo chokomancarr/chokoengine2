@@ -27,6 +27,12 @@ namespace {
 			GetSystemTime(&st);              // Gets the current system time
 			SystemTimeToFileTime(&st, &ft);  // Converts the current system time to file time format
 		}
+		else {
+			ULARGE_INTEGER i;
+			i.QuadPart = 1;
+			ft.dwLowDateTime = i.LowPart;
+			ft.dwHighDateTime = i.HighPart;
+		}
 		SetFileTime(hndl, nullptr, nullptr, &ft);
 
 		CloseHandle(hndl);
@@ -71,29 +77,33 @@ namespace {
 		auto it = std::find_if(ent.begin(), ent.end(), [&](const T& e) {
 			return e.sig == sig;
 		});
-		if (it == ent.end()) {
+		if (it == ent.end()) { //new asset in list
 			Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
 			ent.push_back(T(sig));
 			it = ent.end() - 1;
 			regsig<T>::template invoke<E>(sig, it);
 		}
+		const auto mpath = path + ".meta";
 		const auto mt = IO::ModTime(path);
-		if (it->modtime < mt) {
+		bool metaold;
+		if (!IO::FileExists(mpath)) { //no metadata
 			Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-			bool metaold;
-			const auto mpath = path + ".meta";
-			if (!IO::FileExists(mpath)) {
-				EAssetLoader::GenDefaultMeta(sig, e);
-				UpdateModTime(mpath, false);
-				metaold = true;
-			}
-			else metaold = (IO::ModTime(mpath) < mt);
-			//this function is called for first pass / when object is updated while in background
-			fn(*it, metaold);
+			EAssetLoader::GenDefaultMeta(sig, e);
+			UpdateModTime(mpath, false);
+			metaold = true;
+			fn(*it, true);
 			it->modtime = mt;
-			if (metaold)
-				UpdateModTime(path + ".meta", true);
 		}
+		else {
+			metaold = (IO::ModTime(mpath) < mt); //file is newer than metadata
+			if (it->modtime < mt || metaold) { //or file is newer than list
+				Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
+				fn(*it, metaold);
+				it->modtime = mt;
+			}
+		}
+		if (metaold)
+			UpdateModTime(mpath, true);
 	}
 	
 	template <typename E, typename T, size_t N>
@@ -119,7 +129,7 @@ std::array<std::vector<EAssetList::_Entry>, (int)EExtType::_COUNT> EAssetList::_
 std::vector<EAssetList::_ScriptEntry> EAssetList::_scriptEntries;
 
 bool EAssetList::Scan_Fd(const std::string& fd) {
-    bool dirty = false;
+    bool dirty = false; //do we need another iteration?
     const auto ffd = CE_DIR_ASSET + fd;
     auto fls = IO::ListFiles(ffd);
     for (auto& f : fls) {
@@ -130,54 +140,20 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 			scanone<EExtType, _ScriptEntry>(_scriptEntries, sig, path, EExtType::ScrHeader, [&](_ScriptEntry& v, bool) {
 				v.info = EScripting::ParseInfo(sig);
 			});
-			continue;
 		}
-		if (doscan<AssetType, _Entry>(sig, path, ext, _entries, _exts, [sig](AssetType t, _Entry& e, bool b) {
+		else if (doscan<AssetType, _Entry>(sig, path, ext, _entries, _exts, [&](AssetType t, _Entry& e, bool b) {
 			if (b && !!e.obj) {
 				e.obj = EAssetLoader::Load(sig, t);
 			}
-		})) continue;
-		
-		if (doscan<EExportType, _Entry>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry& e, bool b) {
-			if (b && EAssetLoader::Load(sig, t)) {
+		})) {}
+		else if (doscan<EExportType, _Entry>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry& e, bool b) {
+			if (b && EAssetLoader::Load(sig, t)) { //only reexport if file changed
 				dirty = true;
 			}
-		})) continue;
-		/*
-		for (int a = 0; a < (int)EExtType::_COUNT; a++) {
-			for (auto& e : _other_exts[a]) {
-				if (e == ext) {
-					auto& ent = _otherEntries[a];
-					auto it = std::find_if(ent.begin(), ent.end(), [&](const _Entry2& _e) {
-						return _e.sig == sig;
-					});
-					if (it == ent.end()) {
-						Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
-						ent.push_back(_Entry2(sig));
-						it = ent.end() - 1;
-						it->modtime = 0;
-					}
-					const auto mt = IO::ModTime(path);
-					if (it->modtime < mt) {
-						Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
-						if (!IO::FileExists(path + ".meta")) {
-							EAssetLoader::GenDefaultMeta(sig, (EExportType)a);
-							UpdateModTime(path + ".meta", false);
-						}
-						if (EAssetLoader::Load(sig, (EExportType)a)) {
-							UpdateModTime(path + ".meta", true);
-							dirty = true;
-						}
-						it->modtime = mt;
-					}
-					goto next;
-				}
-			}
-		}
-		*/
-		if (doscan<EExtType, _Entry>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry& e, bool) {
+		})) {}
+		else if (doscan<EExtType, _Entry>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry& e, bool) {
 			
-		})) continue;
+		})) {}
     }
 
     auto drs = IO::ListDirectories(ffd);
@@ -207,11 +183,19 @@ void EAssetList::Rescan() {
     bool dirty;
     int pass = 1;
     do {
-        Debug::Message("AssetList", "Scanning directories: pass " + std::to_string(pass++));
-        dirty = Scan_Fd("");
+		EDebug::Log("AssetList", "Scanning directories: pass " + std::to_string(pass));
+		dirty = Scan_Fd("");
     }
-    while(dirty);
-    Debug::Message("AssetList", "Scanning complete.");
+    while(dirty && ++pass < 5);
+
+	if (pass == 5) {
+		EDebug::Log("AssetList", "too many import iterations! aborting", 2);
+	}
+}
+
+void EAssetList::Reimport(const std::string& sig) {
+	UpdateModTime(CE_DIR_ASSET + sig + ".meta", false);
+	Rescan();
 }
 
 const Asset& EAssetList::Get(AssetType t, const std::string& sig, bool async) {
@@ -269,6 +253,9 @@ const ScriptInfo& EAssetList::GetScr(const std::string& sig) {
 
 EAssetList::TypeOfSt EAssetList::TypeOf(const std::string& f) {
 	const auto ext = StrExt::ExtensionOf(f);
+	if (ext == ".hpp") {
+		return TypeOfSt{ TypeOfSt::Type::Asset, AssetType::Unknown, EExportType::Unknown, EExtType::ScrHeader };
+	}
 	for (int a = 0; a < (int)AssetType::_COUNT; a++) {
 		for (auto& e : _exts[a]) {
 			if (e == ext) {

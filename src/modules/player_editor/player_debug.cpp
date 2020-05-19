@@ -38,8 +38,11 @@ void PlayerDebug::Main() {
 		});
 		ChokoLait::Paint(0, paint);
 
-		PDSyncer::SyncFrame();
+		if (!PDSyncer::SyncFrame())
+			break;
 	}
+
+	PDSyncer::Cleanup();
 }
 
 CE_END_MOD_PE_NAMESPACE

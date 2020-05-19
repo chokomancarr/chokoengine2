@@ -17,6 +17,7 @@ namespace PDSyncFlags {
     const uint32_t EDITOR_SYNCED = 1 << 1;
     const uint32_t RESIZE = 1 << 2;
     const uint32_t PAUSE = 1 << 3;
+	const uint32_t KILL = 1 << 31;
 }
 
 CE_END_MOD_PE_NAMESPACE

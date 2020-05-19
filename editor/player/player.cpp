@@ -90,6 +90,8 @@ void EPlayer::Sync() {
 
 void EPlayer::Stop() {
     playing = false;
+	baseMem->status_flags |= PDSyncFlags::KILL;
+	baseMem.close();
 }
 
 CE_END_ED_NAMESPACE

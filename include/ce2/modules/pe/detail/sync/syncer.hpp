@@ -13,7 +13,9 @@ class PDSyncer {
 public:
     static void Init();
 
-    static void SyncFrame();
+	static void Cleanup();
+
+    static bool SyncFrame();
 
     static void WriteScreenOutput(const std::vector<char>&);
 

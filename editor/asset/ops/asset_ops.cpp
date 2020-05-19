@@ -19,7 +19,9 @@ CE_IMPL_CALLBACK(EAssetManager::Ops::RefreshAll) {
 }
 
 CE_IMPL_CALLBACK(EAssetManager::Ops::Reimport) {
-
+	const auto& sig = args["sig"].s;
+	EDebug::Log("AssetManager", "Reimporting " + sig);
+	EAssetList::Reimport(sig);
 }
 CE_IMPL_CALLBACK(EAssetManager::Ops::ReimportAll) {
 

@@ -22,8 +22,17 @@ void PDSyncer::Init() {
     baseMem.open(MemNms::base);
 }
 
-void PDSyncer::SyncFrame() {
+void PDSyncer::Cleanup() {
+	baseMem.close();
+}
+
+bool PDSyncer::SyncFrame() {
     WaitForFlag(PDSyncFlags::EDITOR_SYNCED, true);
+
+	if (!!(baseMem->status_flags & PDSyncFlags::KILL)) {
+		Debug::Message("Syncer", "Received kill signal! Exiting ...");
+		return false;
+	}
 
     if (Display::width() != baseMem->screen_width ||
         Display::height() != baseMem->screen_height) {
@@ -45,6 +54,8 @@ void PDSyncer::SyncFrame() {
 
     volatile auto flags = baseMem->status_flags;
     baseMem->status_flags = (flags & ~PDSyncFlags::EDITOR_SYNCED) | PDSyncFlags::APP_SYNCED;
+
+	return true;
 }
 
 void PDSyncer::WriteScreenOutput(const std::vector<char>& pxls) {

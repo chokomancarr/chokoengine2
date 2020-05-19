@@ -130,6 +130,7 @@ void ChokoEditor::Main() {
 
 	scene = Scene::New();
 
+	EAssetManager::Init();
 	ESceneManager::Init();
 
 	EProjectBuilder::Init();

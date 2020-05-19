@@ -2,6 +2,7 @@
 #include "chokoeditor.hpp"
 #include "callback_list.hpp"
 #include "callback_args.hpp"
+#include "callback_sig_args.hpp"
 #include "callback_caller.hpp"
 
 CE_BEGIN_ED_NAMESPACE

@@ -43,6 +43,7 @@ class CE_Exporter():
             return False
         print ("!writing to: " + self.fd + self.fn + ".prefab")
         
+        bpy.ops.object.mode_set(mode='OBJECT')
         #shared meshes break the exporter for now
         bpy.ops.object.make_single_user(type='ALL', object=True, obdata=True)
         
@@ -66,6 +67,9 @@ class CE_Exporter():
         self.write(prefab_file, '{\n  "object":{\n')
         indent2 = 4 * ' '
         self.write(prefab_file, indent2 + '"name.String":"' + self.fn + '",\n')
+        self.write(prefab_file, indent2 + '"position.Vec3":[ "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"rotation.Quat":[ "1", "0", "0", "0" ],\n')
+        self.write(prefab_file, indent2 + '"scale.Vec3":[ "1", "1", "1" ],\n')
         self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
         
         self.export_entries(prefab_file, object_entries, 6 * ' ')
@@ -121,7 +125,7 @@ class CE_Exporter():
                 self.write(prefab_file, indent4 + '"armature.Asset":{"Armature":"' + self.relfd + e.obj.name + '.armature' + '"}\n')
                 self.write(prefab_file, indent3 + '}\n')
                 self.export_armature(self.fd + e.obj.name + '.armature', e.obj)
-                self.export_anim(self.fd + self.fn + '.blend/', e.obj)
+                self.export_anim(self.fd, e.obj)
 
             if len(e.children) > 0:
                 self.write(prefab_file, indent2 + '},\n')
@@ -395,7 +399,7 @@ class CE_Exporter():
 
     def bonelocalmat (self, bone):
         if bone.parent:
-            return bone.parent.matrix.inverted() * bone.matrix
+            return bone.parent.matrix.inverted() @ bone.matrix
         else:
             return bone.matrix
 

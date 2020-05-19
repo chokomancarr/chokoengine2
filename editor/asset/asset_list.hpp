@@ -49,6 +49,9 @@ public:
     
     static void Rescan();
 
+	static void Reimport(const std::string& sig);
+	static void ReimportAll();
+
     static const Asset& Get(AssetType t, const std::string& sig, bool async = false);
 	static std::vector<std::string> GetList(AssetType t);
 	static std::vector<std::string> GetScrList();

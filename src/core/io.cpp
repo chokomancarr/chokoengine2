@@ -136,7 +136,12 @@ std::vector<unsigned char> IO::ReadFileBinary(const std::string& path) {
 }
 
 void IO::RemoveFile(const std::string& path) {
-	::remove(path.c_str());
+	if (!FileExists(path)) {
+		Debug::Warning("IO::RemoveFile", "File \"" + path + "\" does not exist!");
+	}
+	else {
+		::remove(path.c_str());
+	}
 }
 
 bool IO::DirectoryExists(const std::string& path) {
