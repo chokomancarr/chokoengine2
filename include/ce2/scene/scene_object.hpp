@@ -79,6 +79,11 @@ public:
 	 */
 	CE_GET_MEMBER(scene);
 
+	/* Behaves similarly to scene->AddNewChild(parent),
+	 * except this works even when not attached to a scene
+	 */
+	SceneObject AddNewChild();
+
 	/* Adds a new component to the object
 	 */
 	template<class T, class... Args>

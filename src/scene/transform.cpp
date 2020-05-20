@@ -2,6 +2,18 @@
 
 CE_BEGIN_NAMESPACE
 
+namespace {
+	Mat4x4 getParentMat(_SceneObject* o) {
+		const auto& pr = o->parent();
+		return !pr ? Mat4x4::Identity() : pr->transform()->worldMatrix();
+	}
+
+	template <typename T>
+	inline Vec3 _xyz(const T& v) {
+		return *(Vec3*)&v;
+	}
+}
+
 Transform::Transform() :
     _localPosition(Vec3()), _worldPosition(Vec3()),
     _localRotation(Quat::identity()), _worldRotation(Quat::identity()),
@@ -37,7 +49,9 @@ void Transform::localPosition(const Vec3& v) {
 }
 
 void Transform::worldPosition(const Vec3& v) {
-    CE_NOT_IMPLEMENTED;
+	_worldPosition = v;
+	_localPosition = _xyz(getParentMat(_object).inverse() * Vec4(_worldPosition, 1));
+	UpdateLocalMatrix();
 }
 
 void Transform::localRotation(const Quat& q) {

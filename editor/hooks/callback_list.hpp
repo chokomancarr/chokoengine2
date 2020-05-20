@@ -33,6 +33,10 @@ enum class CallbackSig {
 
 
 
+	// ---------  3d view  -----------
+
+	VIEW_FOCUS_OBJECT,
+	VIEW_FOCUS_OBJECT_TREE,
 
 	_COUNT,
 	Undefined

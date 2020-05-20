@@ -293,8 +293,10 @@ class CE_Exporter():
             self.do_arrange_objs(c, oo)
         
     def export_armature(self, path, arm):
+        bpy.context.view_layer.objects.active = arm
+        bpy.ops.object.mode_set(mode='EDIT')
         bones = []
-        for b in arm.data.bones:
+        for b in arm.data.edit_bones:
             if not b.parent:
                 bones.append(b)
 
@@ -307,6 +309,7 @@ class CE_Exporter():
         for i, b in enumerate(bones, 1):
             self.export_bone(file, b, indent2, i == nb)
         self.write(file, indent + '}\n}')
+        bpy.ops.object.mode_set(mode='OBJECT')
 
     def export_bone(self, file, bone, indent, last):
         indent2 = indent + 2 * " "

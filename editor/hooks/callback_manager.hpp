@@ -7,12 +7,12 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-typedef std::function<void(const ECallbackArgs&)> ECallbackFn;
+typedef std::function<void(const ECallbackArgs&, EWindow*)> ECallbackFn;
 
-#define CbFnFrom(fn) [](const ECallbackArgs&) { fn(); }
+#define CbFnFrom(fn) [](const ECallbackArgs&, EWindow*) { fn(); }
 
-#define CE_DEF_CALLBACK(nm) static void nm(const ECallbackArgs&)
-#define CE_IMPL_CALLBACK(nm) void nm(const ECallbackArgs& args)
+#define CE_DEF_CALLBACK(nm) static void nm(const ECallbackArgs&, EWindow*)
+#define CE_IMPL_CALLBACK(nm) void nm(const ECallbackArgs& args, EWindow* window)
 
 class ECallbackManager {
 public:
@@ -21,7 +21,7 @@ public:
 	static void Update();
 
     static void Register(CallbackSig, ECallbackFn);
-	static void Invoke(CallbackSig, const ECallbackArgs& args = ECallbackArgs());
+	static void Invoke(CallbackSig, const ECallbackArgs& args = ECallbackArgs(), EWindow* = nullptr);
 };
 
 CE_END_ED_NAMESPACE

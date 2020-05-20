@@ -44,9 +44,14 @@ _Scene::_Scene() : _objects(0), _sky(nullptr) {}
 
 SceneObject _Scene::AddNewObject(const SceneObject& parent) {
 	auto o = SceneObject::New("New Object");
-	o->_scene = get_shared<_Scene>();
-	if (!parent) _objects.push_back(o);
-	else o->parent(parent);
+	if (!parent) {
+		_objects.push_back(o);
+		o->_scene = get_shared<_Scene>();
+	}
+	else {
+		o->parent(parent);
+		o->_scene = parent->_scene;
+	}
 	return o;
 }
 

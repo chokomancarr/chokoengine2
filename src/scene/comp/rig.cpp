@@ -10,17 +10,19 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
         if (std::isnan(rot.x) || std::isnan(rot.y) || std::isnan(rot.z) || std::isnan(rot.w)) {
             rot = Quat::identity();
         }
-        auto obj = parent->scene()->AddNewObject(parent);
+		auto obj = parent->AddNewChild();
 
         obj->name(b.name);
         auto tr = obj->transform();
+		/*
         if (pbone) {
             tr->localPosition(b.base + Vec3(0, 0, 1) * pbone->length);
         }
         else {
             tr->localPosition(b.base);
-        }
-        tr->localRotation(rot);
+        }*/
+		tr->worldPosition(b.base);
+        //tr->localRotation(rot);
 
         const auto _bn = _Bone(b, (pi == -1) ? "/" : (_boneObjs[pi].bone.sig + "/"), pi, ib * tr->worldMatrix());
         _boneObjs.push_back(boneObjSt(pSceneObject(obj), _bn));

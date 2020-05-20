@@ -35,6 +35,8 @@ bool EW_SceneView::_Init() {
 	EW_S_Light::Init();
 	EW_S_Rig::Init();
 
+	Ops::Reg();
+
 	return true;
 }
 
@@ -71,6 +73,12 @@ void EW_SceneView::Update() {
 	if (sw != _target->width() || sh != _target->height()) {
 		_target = RenderTarget::New(sw, sh, true, true);
 		_camera->target(_target);
+	}
+
+	if (Input::KeyUp(InputKey::F)) {
+		ECallbackManager::Invoke(CallbackSig::VIEW_FOCUS_OBJECT, ECallbackArgs({
+			ECallbackArg("obj", ESceneInfo::selectedObject)
+		}), this);
 	}
 }
 

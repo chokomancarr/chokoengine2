@@ -17,6 +17,12 @@ namespace {
 	std::array<std::vector<std::string>, (int)EExportType::_COUNT> _export_exts;
 	std::array<std::vector<std::string>, (int)EExtType::_COUNT> _other_exts;
 
+	typedef std::pair<AssetType, std::string> _ast;
+	const std::unordered_map<std::string, _ast> _expRedirExts = {
+		{"blend", _ast(AssetType::Prefab, ".prefab")},
+		{"psd", _ast(AssetType::Texture, ".png")},
+	};
+
 	void UpdateModTime(const std::string& fl, bool now) {
 #ifdef PLATFORM_WIN
 		auto hndl = CreateFile(fl.c_str(), FILE_WRITE_ATTRIBUTES, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -52,6 +58,7 @@ namespace {
 		static void invoke(const std::string&, typename std::vector<T>::iterator) {}
 		template <>
 		static void invoke<EExportType>(const std::string& sig, typename std::vector<T>::iterator it) {
+			/*
 			const auto dr = ".exported/" + sig + "/";
 			const auto lf = IO::ListFiles(CE_DIR_ASSET + dr);
 			if (lf.size() > 0) {
@@ -67,7 +74,13 @@ namespace {
 				}
 			}
 			else return;
-			Debug::Message("AssetList", "             -> " + it->genSig, TerminalColor::BrightGreen);
+			*/
+			const auto& rd = _expRedirExts.at(StrExt::ExtensionOf(sig));
+			it->genType = rd.first;
+			it->genSig = ".exported/" + sig + "/" + StrExt::RemoveFd(sig) + rd.second;
+			bool hasGen = IO::FileExists(CE_DIR_ASSET + it->genSig);
+			Debug::Message("AssetList", "             -> " + it->genSig, 
+				hasGen ? TerminalColor::BrightGreen : TerminalColor::BrightRed);
 		}
 	};
 
@@ -236,6 +249,23 @@ std::vector<std::string> EAssetList::GetScrList() {
 
 Asset EAssetList::Get2(AssetType t, const std::string& s) {
 	return Get(t, s, true);
+}
+
+Asset EAssetList::GetRedirected(const TypeOfSt& st, const std::string& sig, bool async) {
+	switch (st.subtype) {
+	case TypeOfSt::Type::Asset:
+		return Get(st.assetType, sig, async);
+	case TypeOfSt::Type::Export: {
+		const auto& ee = _exportEntries[(int)st.exportType];
+		auto it = std::find_if(ee.begin(), ee.end(), [sig](const _Entry& e) {
+			return e.sig == sig;
+		});
+		if (it == ee.end()) return nullptr;
+		return Get(it->genType, it->genSig, async);
+	}
+	default:
+		return nullptr;
+	}
 }
 
 const ScriptInfo& EAssetList::GetScr(const std::string& sig) {

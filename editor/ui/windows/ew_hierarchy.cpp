@@ -75,6 +75,15 @@ void EW_Hierarchy::DrawMenu() {
 		if (rect2.Contains(Input::mousePosition())) {
 			if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {
 				ESceneInfo::Clear();
+
+				if (EDragDrop::IsSingle() && EDragDrop::type == EDragDrop::Type::Asset
+						&& (EDragDrop::assetType.exportType == EExportType::Model
+							|| EDragDrop::assetType.assetType == AssetType::Prefab)) {
+					auto res = (Prefab)EAssetList::GetRedirected(EDragDrop::assetType, EDragDrop::target[0], true);
+					ECallbackManager::Invoke(CallbackSig::PREFAB_SPAWN, ECallbackArgs({
+						ECallbackArg("obj", res)
+					}));
+				}
 			}
 			else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up) {
 				ESceneInfo::Clear();

@@ -82,6 +82,15 @@ void _SceneObject::parent(const SceneObject& _p) {
 	_transform.UpdateParentMatrix();
 }
 
+SceneObject _SceneObject::AddNewChild() {
+	auto o = SceneObject::New();
+	o->_parent = get_shared<_SceneObject>();
+	_children.push_back(o);
+	o->_transform.UpdateParentMatrix();
+	o->_scene = _scene;
+	return o;
+}
+
 void _SceneObject::RemoveComponent(const Component& c) {
 	auto cc = std::find_if(_components.begin(), _components.end(), [&](const Component& p) {
 		return p == c;

@@ -29,10 +29,10 @@ void ECallbackManager::Update() {
 
 void ECallbackManager::Register(CallbackSig sig, ECallbackFn fn) {
 	_handlers[(int)sig].push_back(fn);
-	EDebug::Log("Callbacks", "Registered " + CallbackSigStr.at(sig) + " => " + getAddress(fn), 0);
+	//EDebug::Log("Callbacks", "Registered " + CallbackSigStr.at(sig) + " => " + getAddress(fn), 0);
 }
 
-void ECallbackManager::Invoke(CallbackSig sig, const ECallbackArgs& args) {
+void ECallbackManager::Invoke(CallbackSig sig, const ECallbackArgs& args, EWindow* wnd) {
 	if (sig == CallbackSig::Undefined) return;
 	const auto& fns = _handlers[(int)sig];
 	if (fns.empty()) {
@@ -68,7 +68,7 @@ void ECallbackManager::Invoke(CallbackSig sig, const ECallbackArgs& args) {
 	Debug::Message("CallbackManager", "Invoke " + CallbackSigStr.at(sig)
 			+ argstr + " (" + std::to_string(fns.size()) + " handlers)");
 	for (auto& fn : fns) {
-		fn(args);
+		fn(args, wnd);
 	}
 }
 

@@ -35,10 +35,12 @@ void EDebug::Log(const std::string& caller, const std::string& msg, const int le
 	constexpr TerminalColor colors[] = {
 		TerminalColor::LightGrey,
 		TerminalColor::White,
-		TerminalColor::Yellow,
-		TerminalColor::BrightRed
+		TerminalColor::Yellow
 	};
-	if (level >= printLevel) {
+	if (level == EDEBUG_LVL_ERROR) {
+		Debug::Error("Editor::" + caller, msg);
+	}
+	else if (level >= printLevel) {
 		Debug::Message("Editor::" + caller, msg, colors[level]);
 	}
 }

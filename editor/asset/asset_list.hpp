@@ -12,6 +12,7 @@ class EAssetList { CE_CLASS_COMMON
 
         std::string sig;
 		std::string genSig;
+		AssetType genType;
         Asset obj;
         time_t modtime;
     };
@@ -59,6 +60,8 @@ public:
 
 	static Asset Get2(AssetType, const std::string&);
 
+	static Asset GetRedirected(const TypeOfSt&, const std::string&, bool async = false);
+	
 	CE_GET_ST_MEMBER(entries);
 	CE_GET_ST_MEMBER(scriptEntries);
 

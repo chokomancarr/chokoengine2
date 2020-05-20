@@ -37,6 +37,7 @@ void EW_Browser::File::GetIcon() {
 		break;
 	}
 	case TStype::Export:
+		EAssetList::GetRedirected(type, sig, true);
 		break;
 	case TStype::Other:
 		break;
@@ -148,16 +149,7 @@ void EW_Browser::DrawFiles() {
 		}
 		const auto r = Rect(x, off, pd, sz + 24);
 		if (UI::I::Button(r, style) == InputMouseStatus::HoverUp) {
-			switch (f.type.subtype) {
-			case TStype::Asset: {
-				ESceneInfo::Select(EAssetList::Get(f.type.assetType, f.sig, false));
-				break;
-			}
-			case TStype::Export:
-				break;
-			case TStype::Other:
-				break;
-			}
+			ESceneInfo::Select(EAssetList::GetRedirected(f.type, f.sig, false));
 		}
 		else if (UI::I::ButtonTr(r, InputMouseButton::Right) == InputMouseStatus::Up) {
 			auto& menu = GetMenu(f.type);

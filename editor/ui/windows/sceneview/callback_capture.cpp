@@ -2,11 +2,11 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+#pragma optimize("", off)
 void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 	const auto& mat = parent->_camera->lastViewProjectionMatrix();
 	UI::W::matrix(mat);
 
-	glViewport(parent->position.x(), parent->position.y(), parent->position.w(), parent->position.h());
 	glDisable(GL_CULL_FACE);
 
     parent->DoDrawScene(ChokoEditor::scene->objects()[1]->children());
@@ -25,7 +25,6 @@ void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 		UI::W::Line(pos, pos + tr->forward() * 0.3f, Color::blue());
 	}
 
-	glViewport(0, 0, Display::width(), Display::height());
 	glEnable(GL_CULL_FACE);
 }
 

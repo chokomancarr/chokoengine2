@@ -26,7 +26,7 @@ const std::unordered_map<CallbackSig, ECallbackArgs> CallbackSigArgs = {
 
 
 	CALLBACKSIGARG(PREFAB_SPAWN,
-		ECallbackArg("sig", "")
+		ECallbackArg("obj", pObject())
 	),
 
 };
