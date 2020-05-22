@@ -2,6 +2,12 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+namespace {
+	int mouseoverId = -1;
+	int switchingId = -1;
+	int maximizeId = -1;
+}
+
 std::vector<std::shared_ptr<EWindow>> EWindowManager::windows;
 
 std::vector<EDropdownMenu> EWindowManager::menus;
@@ -51,9 +57,46 @@ void EWindowManager::LoadWindows() {
 }
 
 void EWindowManager::Update() {
-	for (auto& w : windows) {
-		w->position = (w->_position * Vec2(Display::width(), Display::height() - 21)).sub(0, 21, 1, -20);
-		w->Update();
+	{
+		mouseoverId = -1;
+		int i = 0;
+		for (auto& w : windows) {
+			if (w->position.Contains(Input::mousePosition())) {
+				mouseoverId = i;
+				break;
+			}
+			i++;
+		}
+	}
+	if (maximizeId > -1) {
+		windows[maximizeId]->position = Display::fullscreenRect().sub(0, 20, 0, 0);
+		mouseoverId = maximizeId;
+	}
+	else {
+		for (auto& w : windows) {
+			w->position = (w->_position * Vec2(Display::width(), Display::height() - 21)).sub(0, 21, 1, -20);
+		}
+	}
+
+	if (mouseoverId > -1) {
+		if (Input::KeyHold(InputKey::LeftShift) && Input::KeyDown(InputKey::Space)) {
+			maximizeId = (maximizeId > -1) ? -1 : mouseoverId;
+		}
+		if (Input::KeyDown(InputKey::Tab)) {
+			switchingId = mouseoverId;
+		}
+	}
+	if (Input::KeyDown(InputKey::Escape)) {
+		if (maximizeId > -1) maximizeId = -1;
+	}
+
+	if (maximizeId > -1) {
+		windows[maximizeId]->Update();
+	}
+	else {
+		for (auto& w : windows) {
+			w->Update();
+		}
 	}
 }
 
@@ -76,8 +119,38 @@ void EWindowManager::Draw() {
 		ECallbackManager::Invoke(CallbackSig::GLOBAL_BUILD);
 	}
 
-	for (auto& w : windows) {
-		w->Draw();
+	if (maximizeId > -1) {
+		windows[maximizeId]->Draw();
+	}
+	else {
+		for (auto& w : windows) {
+			w->Draw();
+		}
+	}
+
+	if (switchingId > -1) {
+		UI_Ext::IncLayer();
+		UI::Rect(Display::fullscreenRect(), Color(0, 0.5f));
+		float py = 50;
+#define SELWND(nm, comp) \
+			if (UI::I::Button(Rect(50, py, 150, 16), Color(0.2, 0.8f), nm) == InputMouseStatus::HoverUp) {\
+				const auto pos = windows[switchingId]->_position;\
+				auto& wnd = (windows[switchingId] = std::make_shared<comp>());\
+				wnd->Init();\
+				wnd->_position = pos;\
+				switchingId = -1;\
+			}\
+			py += 20;
+		SELWND("3D View", EW_SceneView);
+		SELWND("Asset Browser", EW_Browser);
+		SELWND("Game Output", EW_GameView);
+		SELWND("Hierarchy", EW_Hierarchy);
+		SELWND("Inspector", EW_Inspector);
+		//SELWND("Animation", EW_AnimEditor);
+
+		if (Input::KeyDown(InputKey::Escape)) {
+			if (switchingId > -1) switchingId = -1;
+		}
 	}
 }
 

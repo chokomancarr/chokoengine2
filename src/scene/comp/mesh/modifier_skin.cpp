@@ -13,16 +13,12 @@ void _MeshSkinModifier::InitResult(size_t n) {
 }
 
 void _MeshSkinModifier::InitRig() {
-	auto p = parent->object()->parent();
-	for (auto& o : p->children()) {
-		if (!!(_rig = o->GetComponent<Rig>())) {
-			InitWeights();
-			_matBuf = TextureBuffer::New(VertexBuffer_New(true, 16, _rig->boneObjs().size(), nullptr), GL_RGBA32F);
-			return;
-		}
+	if (_rig == _attachedRig) return;
+	if (parent->object()->parent() != _rig->object()->parent()) {
+		Debug::Error("MeshSkinModifier", "rig must be at the same child hierarchy!");
 	}
-	
-	Debug::Error("MeshSkinModifier", "Cannot find parent rig to attach to!");
+	InitWeights();
+	_matBuf = TextureBuffer::New(VertexBuffer_New(true, 16, _rig->boneObjs().size(), nullptr), GL_RGBA32F);
 }
 
 void _MeshSkinModifier::InitWeights() {
@@ -78,8 +74,9 @@ void _MeshSkinModifier::InitWeights() {
 	);
 }
 
-void _MeshSkinModifier::Apply(const VertexArray& vao_in) {
-	if (!_rig) InitRig();
+bool _MeshSkinModifier::Apply(const VertexArray& vao_in) {
+	if (!_rig) return false;
+	InitRig();
 
 	const auto num = vao_in->buffer(0)->num();
 	if (!result || result->buffer(0)->num() != num) {
@@ -104,6 +101,8 @@ void _MeshSkinModifier::Apply(const VertexArray& vao_in) {
 	_matBuf->Bind();
 	_tfProg->Exec();
 	_tfProg->Unbind();
+
+	return true;
 }
 
 void _MeshSkinModifier::OnSetMesh(const Mesh& m) {}

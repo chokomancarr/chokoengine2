@@ -133,6 +133,10 @@ set(enum_gen_strs
 	${PROJECT_SOURCE_DIR}/include/ce2/asset/enums/asset_types
 	${PROJECT_SOURCE_DIR}/include/ce2/core/enums/input_key
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/enums/component_types
+	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/camera/enums/camera_clear_type
+	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light/enums/light_type
+	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light/enums/light_falloff
+	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light_probe/enums/light_probe_updatefreq
 )
 
 foreach (enumfl ${enum_gen_strs})
@@ -190,6 +194,10 @@ target_link_libraries(Module_PlayerEditor ${LIBS_E})
 
 add_executable(ChokoEditor "")
 add_subdirectory(editor)
+
+if(MSVC)
+    target_sources(ChokoEditor PRIVATE cpp.hint)
+endif()
 
 add_dependencies(ChokoEditor Module_AssetEditor Module_PlayerEditor)
 

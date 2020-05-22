@@ -96,7 +96,9 @@ void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 	if (!mesh) return;
 	const auto& MV = rend->object()->transform()->worldMatrix();
 
-	const auto& vao = (rend->_modifiers.size() > 0) ? rend->_modifiers.back()->result : mesh->_vao;
+	const auto& vao = rend->_vao_final;
+
+	if (!vao) return;
 
 	vao->Bind();
 	for (size_t a = 0; a < rend->_mesh->materialCount(); a++) {
@@ -377,9 +379,18 @@ void Renderer::RenderCamera(const Camera& cam) {
 	const auto _w = (!tar) ? Display::width() : tar->_width;
 	const auto _h = (!tar) ? Display::height() : tar->_height;
 
-	const auto& p = cam->_lastViewProjectionMatrix = 
-		glm::perspectiveFov<float>(cam->fov() * Math::deg2rad,
-			_w, _h, cam->nearClip(), cam->farClip())
+	glm::mat4x4 projMat;
+	if (cam->_orthographic) {
+		const float hw = (float)_w / _h;
+		const float sz = cam->_orthoSize / 2;
+		projMat = glm::ortho<float>(-sz * hw, sz * hw, -sz, sz, cam->_nearClip, cam->_farClip);
+	}
+	else {
+		projMat = glm::perspectiveFov<float>(cam->fov() * Math::deg2rad,
+			_w, _h, cam->nearClip(), cam->farClip());
+	}
+
+	const auto& p = cam->_lastViewProjectionMatrix = projMat
 		* Quat::FromAxisAngle(Vec3(0, 1, 0), 180).matrix()
 		* cam->object()->transform()->worldMatrix().inverse();
 

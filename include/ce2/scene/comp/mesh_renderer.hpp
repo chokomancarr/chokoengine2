@@ -9,6 +9,8 @@ class _MeshRenderer : public _Component { CE_COMPONENT_COMMON
     std::vector<MeshModifier> _modifiers;
     std::vector<Material> _materials;
 
+	VertexArray _vao_final;
+
 public:
 	_MeshRenderer();
 
@@ -32,7 +34,7 @@ public:
 	template <typename T>
 	T AddModifier(int index = -1);
 
-	void OnUpdate() override;
+	void OnPostLogic() override;
 };
 
 CE_END_NAMESPACE

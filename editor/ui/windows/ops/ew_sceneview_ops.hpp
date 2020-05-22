@@ -8,7 +8,7 @@ class EW_SceneView::Ops {
 public:
 	static void Reg();
 
-    CE_DEF_CALLBACK(ProjectionMode);
+    CE_DEF_CALLBACK(ToggleProjectionMode);
 
     CE_DEF_CALLBACK(ViewOrientation);
 

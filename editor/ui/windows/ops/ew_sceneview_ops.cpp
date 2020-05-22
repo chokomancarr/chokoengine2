@@ -3,11 +3,13 @@
 CE_BEGIN_ED_NAMESPACE
 
 void EW_SceneView::Ops::Reg() {
+	ECallbackManager::Register(CallbackSig::VIEW_TOGGLE_PERSPECTIVE, ToggleProjectionMode);
 	ECallbackManager::Register(CallbackSig::VIEW_FOCUS_OBJECT, ViewFocusObject);
 }
 
-CE_IMPL_CALLBACK(EW_SceneView::Ops::ProjectionMode) {
-	
+CE_IMPL_CALLBACK(EW_SceneView::Ops::ToggleProjectionMode) {
+	const auto& c = ((EW_SceneView*)window)->_camera;
+	c->orthographic(!c->orthographic());
 }
 
 CE_IMPL_CALLBACK(EW_SceneView::Ops::ViewFocusObject) {

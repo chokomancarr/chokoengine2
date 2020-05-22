@@ -24,6 +24,8 @@ void ESceneManager::Init() {
 }
 
 void ESceneManager::Load(const std::string& path) {
+	if (!IO::FileExists(CE_DIR_ASSET + path))
+		return;
 	auto& scene = ChokoEditor::scene;
 	auto json = JsonParser::Parse(IO::ReadFile(CE_DIR_ASSET + path));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
@@ -40,12 +42,7 @@ void ESceneManager::Load(const std::string& path) {
 }
 
 void ESceneManager::LoadLastOpened() {
-	std::ifstream strm(CE_DIR_USER + "lastopenscene.txt");
-	if (strm) {
-		std::string path;
-		strm >> path;
-		Load(path);
-	}
+	Load(IO::ReadFile(CE_DIR_USER + "lastopenscene.txt"));
 }
 
 void ESceneManager::Unload() {

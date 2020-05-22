@@ -40,10 +40,9 @@ void EW_S_Rig::DrawActive(const Component& c, const Mat4x4& p) {
 	_vao->Bind();
 	_elo->Bind();
 	_boneProg->Bind();
-	const auto& P = MVP::projection();
 	for (auto& b : rig->boneObjs()) {
 		const auto& MV = b.obj->transform()->worldMatrix();
-		glUniformMatrix4fv(_boneProg->Loc(0), 1, false, glm::value_ptr(P * MV));
+		glUniformMatrix4fv(_boneProg->Loc(0), 1, false, glm::value_ptr(p * MV));
 		glUniform1f(_boneProg->Loc(1), b.bone.length);
 		if (b.obj.lock() == ESceneInfo::selectedObject) {
 			glUniform4f(_boneProg->Loc(2), 1, 1, 0, 1);

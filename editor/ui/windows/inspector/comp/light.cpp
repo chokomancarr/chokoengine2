@@ -6,23 +6,18 @@
 CE_BEGIN_ED_NAMESPACE
 
 CE_E_BEGIN_DRAWCOMP(Light)
-CE_E_LBL("Color");
-UI::Rect(CE_E_VL_RECT, c->color());
-if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(c->color())) == InputMouseStatus::HoverUp) {
-    EO_ColorPicker::Reg(CE_E_VL_RECT, c->color(), std::function<void(const Color&)>([c](const Color& vl) {
-        c->color(vl);
-    }));
-}
-CE_E_EDIT_CL_FV(c->, "Color", color);
-CE_E_EDIT_F_FV(c->, "Strength", strength);
-CE_E_EDIT_F_FV(c->, "Distance", distance);
-CE_E_EDIT_F_FV(c->, "Radius", radius);
-CE_E_EDIT_F_FV(c->, "Angle", angle);
-CE_E_EDIT_TG_FV(c->, "Shadows", shadow);
-CE_E_EDIT_I_FV(c->, " Resolution", shadowResolution);
-CE_E_EDIT_F_FV(c->, " Strength", shadowStrength);
-CE_E_EDIT_F_FV(c->, " Bias", shadowBias);
-CE_E_EDIT_I_FV(c->, " Samples", shadowSamples);
+	CE_E_EDIT_ENUM("Type", c->type, LightTypeStr, c);
+	CE_E_EDIT_CL_FV(c->, "Color", color);
+	CE_E_EDIT_F_FV(c->, "Strength", strength);
+	CE_E_EDIT_F_FV(c->, "Distance", distance);
+	CE_E_EDIT_ENUM("Falloff", c->falloff, LightFalloffStr, c);
+	CE_E_EDIT_F_FV(c->, "Radius", radius);
+	CE_E_EDIT_F_FV(c->, "Angle", angle);
+	CE_E_EDIT_TG_FV(c->, "Shadows", shadow);
+	CE_E_EDIT_I_FV(c->, " Resolution", shadowResolution);
+	CE_E_EDIT_F_FV(c->, " Strength", shadowStrength);
+	CE_E_EDIT_F_FV(c->, " Bias", shadowBias);
+	CE_E_EDIT_I_FV(c->, " Samples", shadowSamples);
 CE_E_END_DRAWCOMP
 
 CE_END_ED_NAMESPACE

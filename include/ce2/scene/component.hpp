@@ -35,6 +35,10 @@ public:
 	*/
 	virtual void OnPhysicsUpdate() {}
 
+	/* Called after the main logic loop, and other loops (last pass)
+	 */
+	virtual void OnPostLogic() {}
+
 	/* Called right before rendering objects into G-buffers
 	 * This function will only be called if the component
 	 * is attached to the camera

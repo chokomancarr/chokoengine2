@@ -75,10 +75,16 @@ void EW_SceneView::Update() {
 		_camera->target(_target);
 	}
 
-	if (Input::KeyUp(InputKey::F)) {
-		ECallbackManager::Invoke(CallbackSig::VIEW_FOCUS_OBJECT, ECallbackArgs({
-			ECallbackArg("obj", ESceneInfo::selectedObject)
-		}), this);
+	//move this to a generic hotkey handler
+	if (position.Contains(Input::mousePosition())) {
+		if (Input::KeyUp(InputKey::F)) {
+			ECallbackManager::Invoke(CallbackSig::VIEW_FOCUS_OBJECT, ECallbackArgs({
+				ECallbackArg("obj", ESceneInfo::selectedObject)
+				}), this);
+		}
+		if (Input::KeyUp(InputKey::P)) {
+			ECallbackManager::Invoke(CallbackSig::VIEW_TOGGLE_PERSPECTIVE, ECallbackArgs(), this);
+		}
 	}
 }
 

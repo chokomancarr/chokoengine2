@@ -17,7 +17,8 @@ public:
 
 	Mat4x4 matrix() const;
 
-	Quat normalized();
+	Quat normalized() const;
+	Quat inverse() const;
 
     static Quat identity();
 	static Quat FromEuler(const Vec3& e);

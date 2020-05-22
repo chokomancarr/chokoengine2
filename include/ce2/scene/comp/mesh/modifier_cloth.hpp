@@ -18,7 +18,7 @@ class _MeshClothModifier : public _MeshModifier { CE_OBJECT_COMMON
 	void InitResult(size_t);
 	void InitWeights();
 
-	void Apply(const VertexArray& vao_in) override;
+	bool Apply(const VertexArray& vao_in) override;
 
 	void OnSetMesh(const Mesh& m) override;
 
@@ -26,6 +26,8 @@ public:
 	_MeshClothModifier();
 
     CE_GET_MEMBER(pinWeights);
+
+	friend class _MeshRenderer;
 };
 
 CE_END_NAMESPACE

@@ -3,7 +3,6 @@
 CE_BEGIN_NAMESPACE
 
 bool ChokoEngine::Init() {
-	Debug::Message("ChokoEngine", "engine says hello!");
 
 #define TRYINIT(nm)\
 	if (!nm::Init()) return false;
@@ -18,11 +17,15 @@ bool ChokoEngine::Init() {
 
 	TRYINIT(_Camera);
 
+	Debug::Message("Engine", "ChokoEngine 2 build "
+#include "../githash.h"
+	);
+
 	return true;
 }
 
 void ChokoEngine::Cleanup() {
-	Debug::Message("ChokoEngine", "engine says byebye!");
+	Debug::Message("Engine", "engine says byebye!");
 }
 
 CE_END_NAMESPACE

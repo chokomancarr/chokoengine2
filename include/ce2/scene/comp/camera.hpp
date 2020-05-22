@@ -1,5 +1,5 @@
 #include "chokoengine.hpp"
-#include "enums/camera_clear_type.hpp"
+#include "camera/enums/camera_clear_type.hpp"
 
 CE_BEGIN_NAMESPACE
 

@@ -1,5 +1,6 @@
 target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/prefab_comp.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/prefab_compref.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/prefab_inc.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/prefab_item.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/prefab_link.cpp

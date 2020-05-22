@@ -9,6 +9,7 @@ CE_BEGIN_NAMESPACE
  */
 class _MeshSkinModifier : public _MeshModifier { CE_OBJECT_COMMON
 	pRig _rig;
+	pRig _attachedRig;
 	
 	TextureBuffer _matBuf;
 	TextureBuffer _whtIdBuf;
@@ -25,7 +26,7 @@ class _MeshSkinModifier : public _MeshModifier { CE_OBJECT_COMMON
 	void InitRig();
 	void InitWeights();
 
-	void Apply(const VertexArray& vao_in) override;
+	bool Apply(const VertexArray& vao_in) override;
 
 	void OnSetMesh(const Mesh& m) override;
 
@@ -33,6 +34,8 @@ public:
 	_MeshSkinModifier();
 
 	CE_GET_SET_MEMBER(rig);
+
+	friend class _MeshRenderer;
 };
 
 CE_END_NAMESPACE

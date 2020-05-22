@@ -64,6 +64,11 @@ void ChokoLait::Update(emptyCallbackFunc func) {
 
 	if (!!scene) {
 		scene->Update();
+		if (0) {
+			scene->PhysicsUpdate();
+		}
+		scene->LateUpdate();
+		scene->PostLogic();
 	}
 }
 

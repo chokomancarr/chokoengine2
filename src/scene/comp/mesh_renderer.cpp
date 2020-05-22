@@ -25,11 +25,14 @@ void _MeshRenderer::materials(const std::vector<Material>& m) {
 	_materials.resize(_mesh->materialCount(), nullptr);
 }
 
-void _MeshRenderer::OnUpdate() {
-	auto vao = &_mesh->_vao;
+void _MeshRenderer::OnPostLogic() {
+	_vao_final = _mesh->_vao;
 	for (auto& m : _modifiers) {
-		m->Apply(*vao);
-		vao = &m->result;
+		if (m->enabled) {
+			if (m->Apply(_vao_final)) {
+				_vao_final = m->result;
+			}
+		}
 	}
 }
 

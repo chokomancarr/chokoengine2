@@ -21,7 +21,7 @@ class _MeshShapeModifier : public _MeshModifier { CE_OBJECT_COMMON
 	void InitResult(size_t);
 	void InitWeights();
 
-	void Apply(const VertexArray& vao_in) override;
+	bool Apply(const VertexArray& vao_in) override;
 
 	void OnSetMesh(const Mesh& m) override;
 
@@ -31,6 +31,8 @@ public:
     CE_GET_MEMBER(weights);
     void SetWeight(const std::string& nm, float v);
     void SetWeight(int i, float v);
+
+	friend class _MeshRenderer;
 };
 
 CE_END_NAMESPACE

@@ -30,8 +30,12 @@ Mat4x4 Quat::matrix() const {
 	return glm::mat4_cast(*this);
 }
 
-Quat Quat::normalized() {
+Quat Quat::normalized() const {
 	return static_cast<Quat>(glm::normalize((glm::quat)*this));
+}
+
+Quat Quat::inverse() const {
+	return static_cast<Quat>(glm::inverse((glm::quat)*this));
 }
 
 Quat Quat::identity() {

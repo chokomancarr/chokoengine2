@@ -42,10 +42,7 @@ public:
 			}
 		} assetref;
 		Prefab_ObjRef scobjref;
-		struct _comprefst {
-			Prefab_ObjRef obj;
-			ComponentType type;
-		} compref;
+		Prefab_CompRef compref;
 		PrefabItemGroup group;
 		PrefabObjGroup objgroup;
 	} value;

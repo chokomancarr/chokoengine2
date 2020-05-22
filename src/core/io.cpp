@@ -35,6 +35,8 @@ bool IO::Init() {
 	WCHAR wpath[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, wpath))) {
 		_userPath = StrExt::Unwiden(wpath);
+		std::replace(_userPath.begin(), _userPath.end(), '\\', '/');
+		_userPath += "/";
 	}
 	else return false;
 #else

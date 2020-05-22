@@ -5,6 +5,8 @@ CE_BEGIN_ED_NAMESPACE
 EWindow::EWindow(const std::string& title) : title(title) {}
 
 void EWindow::Draw() {
+	const bool mouseOver = position.Contains(Input::mousePosition());
+
 	UI::Rect(Rect(position.x(), position.y(), position.w(), 20), Color(0, 0.7f));
 	UI::Label(Rect(position.x() + 2, position.y() + 2, 200, 16), title, Color(0.7f));
 

@@ -12,9 +12,9 @@ protected:
 
 	pMeshRenderer parent;
 
-	_MeshModifier(const std::string& nm, MeshModifierType t) : _Object(nm), type(t) {}
+	_MeshModifier(const std::string& nm, MeshModifierType t) : _Object(nm), type(t), enabled(true) {}
 
-	virtual void Apply(const VertexArray& vao_in) = 0;
+	virtual bool Apply(const VertexArray& vao_in) = 0;
 
 	virtual void OnSetMesh(const Mesh& m) = 0;
 
@@ -22,6 +22,8 @@ public:
     virtual ~_MeshModifier() = default;
 
 	const MeshModifierType type;
+
+	bool enabled;
 
 	friend class _MeshRenderer;
 };

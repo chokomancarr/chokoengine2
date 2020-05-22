@@ -1,6 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
-#include "light_probe/light_probe_updatefreq.hpp"
+#include "light_probe/enums/light_probe_updatefreq.hpp"
 
 CE_BEGIN_NAMESPACE
 

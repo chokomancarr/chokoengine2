@@ -5,11 +5,12 @@ CE_BEGIN_NAMESPACE
 
 template <typename T>
 T _MeshRenderer::AddModifier(int index) {
-	const auto& mod = T::New();
-	mod->parent = std::static_pointer_cast<_MeshRenderer>(shared_from_this());
-	_modifiers.push_back(static_cast<MeshModifier>(mod));
+	static_assert(std::is_base_of<_MeshModifier, T::_TpBase>::value, "T must be a mesh modifier type!");
+	auto mod = T::New();
+	mod->parent = get_shared<_MeshRenderer>();
+	_modifiers.push_back(mod);
 	if (!!_mesh) {
-		static_cast<MeshModifier>(mod)->OnSetMesh(_mesh);
+		mod->OnSetMesh(_mesh);
 	}
 	return mod;
 }

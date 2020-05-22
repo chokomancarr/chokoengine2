@@ -10,3 +10,5 @@ enum class LightFalloff {
 };
 
 CE_END_NAMESPACE
+
+#include "light_falloff_str.hpp"

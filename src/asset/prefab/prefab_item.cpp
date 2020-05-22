@@ -44,6 +44,7 @@ PrefabItem::PrefabItem(const Component& c) : value({}), type(Type::Component) {
 	//auto& cv = value.compref;
 	//cv.obj = Prefab_ObjRef(c->object(), ChokoEditor::scene->objects()[1]);
 	//cv.type = c->componentType;
+
 }
 PrefabItem::PrefabItem(PrefabItemGroup g) : value({}), type(Type::ItemGroup) {
 	value.group = std::move(g);
@@ -115,6 +116,10 @@ PrefabItem::PrefabItem(const std::string& tp, const JsonObject& vl) : value({}) 
 			}
 			case Type::SceneObject: {
 				value.scobjref = Prefab_ObjRef(vl);
+				break;
+			}
+			case Type::Component: {
+				value.compref = Prefab_CompRef(vl);
 				break;
 			}
 			case Type::ItemGroup: {
@@ -189,6 +194,9 @@ JsonPair PrefabItem::ToJson(const std::string& nm) const {
 		break;
 	case Type::SceneObject:
 		res = value.scobjref.ToJson();
+		break;
+	case Type::Component:
+		res = value.compref.ToJson();
 		break;
 	case Type::ItemGroup: {
 		res = JsonObject(JsonObject::Type::Group);

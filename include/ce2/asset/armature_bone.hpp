@@ -24,6 +24,12 @@ public:
     bool connected;
 
     std::vector<Bone> children;
+
+	struct TR {
+		Vec3 pos;
+		Quat rot;
+		TR world2loc(const Transform& pr);
+	} getTR() const;
 };
 
 class _Bone { CE_CLASS_COMMON
@@ -35,6 +41,8 @@ public:
     float length;
 
     int parentId;
+
+	Bone::TR restTR;
 
 	Mat4x4 restMat, restMatI;
 

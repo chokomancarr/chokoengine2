@@ -26,6 +26,7 @@ const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
 	{ CallbackSig::ASSET_DELETE, "ASSET_DELETE" },
 	{ CallbackSig::PREFAB_SPAWN, "PREFAB_SPAWN" },
 	{ CallbackSig::PREFAB_APPLY, "PREFAB_APPLY" },
+	{ CallbackSig::VIEW_TOGGLE_PERSPECTIVE, "VIEW_TOGGLE_PERSPECTIVE" },
 	{ CallbackSig::VIEW_FOCUS_OBJECT, "VIEW_FOCUS_OBJECT" },
 	{ CallbackSig::VIEW_FOCUS_OBJECT_TREE, "VIEW_FOCUS_OBJECT_TREE" },
 	{ CallbackSig::_COUNT, "_COUNT" },

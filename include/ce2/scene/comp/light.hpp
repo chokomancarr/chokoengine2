@@ -1,7 +1,7 @@
 #pragma once
 #include "chokoengine.hpp"
-#include "light/light_type.hpp"
-#include "light/light_falloff.hpp"
+#include "light/enums/light_type.hpp"
+#include "light/enums/light_falloff.hpp"
 
 CE_BEGIN_NAMESPACE
 

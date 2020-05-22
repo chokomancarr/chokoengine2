@@ -11,3 +11,5 @@ enum class CameraClearType {
 };
 
 CE_END_NAMESPACE
+
+#include "camera_clear_type_str.hpp"

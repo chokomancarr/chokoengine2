@@ -22,6 +22,18 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 					}
 					break;
 				}
+				case MeshModifierType::Skin: {
+					auto md = static_cast<MeshSkinModifier>(m);
+					CE_E_LBL("rig");
+					if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)),
+							!md->rig() ? "none" :
+							md->rig()->object()->name() + " (" + ComponentTypeStr.at(md->rig()->componentType) + ")"
+							) == InputMouseStatus::HoverUp) {
+						
+					}
+					CE_E_INC_Y();
+					break;
+				}
 				default:
 					break;
 				}

@@ -46,12 +46,18 @@ while True:
         continue
     if line[0:2] == "//":
         continue
+    if line[0:2] == "/*" and line[-2:] == "*/":
+        continue
     if line[0] == '}':
         break
     lsplit = line.split(",")
     for l in lsplit:
         l = l.strip()
         if not len(l):
+            continue
+        if l[0:2] == "//":
+            continue
+        if l[0:2] == "/*" and l[-2:] == "*/":
             continue
         l = l.split('=')[0].strip()
         strs.append("{ " + enum_name + "::" + l + ", \"" + l + "\" }")

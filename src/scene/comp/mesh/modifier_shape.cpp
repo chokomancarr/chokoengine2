@@ -37,7 +37,7 @@ void _MeshShapeModifier::InitWeights() {
 	);
 }
 
-void _MeshShapeModifier::Apply(const VertexArray& vao_in) {
+bool _MeshShapeModifier::Apply(const VertexArray& vao_in) {
 	const auto num = vao_in->buffer(0)->num();
 	if (!result || result->buffer(0)->num() != num) {
 		InitResult(num);
@@ -58,6 +58,7 @@ void _MeshShapeModifier::Apply(const VertexArray& vao_in) {
 	_whtBuf->Bind();
 	_tfProg->Exec();
 	_tfProg->Unbind();
+	return true;
 }
 
 void _MeshShapeModifier::OnSetMesh(const Mesh& m) {

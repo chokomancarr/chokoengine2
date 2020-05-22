@@ -45,6 +45,9 @@ public:
 	/* Event callbacks
 	 */
 	void Update();
+	void LateUpdate();
+	void PhysicsUpdate();
+	void PostLogic();
 	void Paint();
 
 	/* Explicitly renders all probes, cameras, and lights in the scene

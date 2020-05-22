@@ -8,11 +8,24 @@ namespace {
 		return !pr ? Mat4x4::Identity() : pr->transform()->worldMatrix();
 	}
 
+	Quat getParentRot(_SceneObject* o) {
+		const auto& pr = o->parent();
+		return !pr ? Quat::identity() : pr->transform()->worldRotation();
+	}
+
 	template <typename T>
 	inline Vec3 _xyz(const T& v) {
 		return *(Vec3*)&v;
 	}
 }
+
+#define L2WROT() \
+	_worldRotation = getParentRot(_object) * _localRotation;\
+	_worldRotationEuler = Quat::ToEuler(_worldRotation) * Math::rad2deg
+
+#define W2LROT() \
+	_localRotation = getParentRot(_object).inverse() * _worldRotation;\
+	_localRotationEuler = Quat::ToEuler(_localRotation) * Math::rad2deg
 
 Transform::Transform() :
     _localPosition(Vec3()), _worldPosition(Vec3()),
@@ -57,26 +70,34 @@ void Transform::worldPosition(const Vec3& v) {
 void Transform::localRotation(const Quat& q) {
     _localRotation = q;
     _localRotationEuler = Quat::ToEuler(q) * Math::rad2deg;
+	L2WROT();
     UpdateLocalMatrix();
 }
 
 void Transform::worldRotation(const Quat& q) {
-    CE_NOT_IMPLEMENTED;
+    _worldRotation = q;
+	_worldRotationEuler = Quat::ToEuler(q) * Math::rad2deg;
+	W2LROT();
+	UpdateLocalMatrix();
 }
 
 void Transform::localRotationEuler(const Vec3& v) {
     _localRotationEuler = v;
     _localRotation = Quat::FromEuler(v);
+	L2WROT();
     UpdateLocalMatrix();
 }
 
-void Transform::worldRotationEuler(const Vec3& q) {
-    CE_NOT_IMPLEMENTED;
+void Transform::worldRotationEuler(const Vec3& v) {
+	_worldRotationEuler = v;
+	_worldRotation = Quat::FromEuler(v);
+	W2LROT();
 }
 
 void Transform::Rotate(const Vec3& v, TransformSpace sp) {
 	_localRotation = _localRotation * Quat::FromEuler(v * Math::deg2rad);
 	_localRotationEuler = Quat::ToEuler(_localRotation) * Math::rad2deg;
+	L2WROT();
 	UpdateLocalMatrix();
 }
 

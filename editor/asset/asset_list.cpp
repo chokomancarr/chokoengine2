@@ -79,8 +79,7 @@ namespace {
 			it->genType = rd.first;
 			it->genSig = ".exported/" + sig + "/" + StrExt::RemoveFd(sig) + rd.second;
 			bool hasGen = IO::FileExists(CE_DIR_ASSET + it->genSig);
-			Debug::Message("AssetList", "             -> " + it->genSig, 
-				hasGen ? TerminalColor::BrightGreen : TerminalColor::BrightRed);
+			EDebug::Log("AssetList", "             -> " + it->genSig, 0);
 		}
 	};
 
@@ -91,7 +90,7 @@ namespace {
 			return e.sig == sig;
 		});
 		if (it == ent.end()) { //new asset in list
-			Debug::Message("AssetList", "Registered " + sig, TerminalColor::BrightGreen);
+			EDebug::Log("AssetList", "Registered " + sig, 0);
 			ent.push_back(T(sig));
 			it = ent.end() - 1;
 			regsig<T>::template invoke<E>(sig, it);
@@ -100,7 +99,7 @@ namespace {
 		const auto mt = IO::ModTime(path);
 		bool metaold;
 		if (!IO::FileExists(mpath)) { //no metadata
-			Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
+			EDebug::Log("AssetList", "Updating " + sig, 0);
 			EAssetLoader::GenDefaultMeta(sig, e);
 			UpdateModTime(mpath, false);
 			metaold = true;
@@ -110,7 +109,7 @@ namespace {
 		else {
 			metaold = (IO::ModTime(mpath) < mt); //file is newer than metadata
 			if (it->modtime < mt || metaold) { //or file is newer than list
-				Debug::Message("AssetList", "Updating " + sig, TerminalColor::BrightCyan);
+				EDebug::Log("AssetList", "Updating " + sig, 0);
 				fn(*it, metaold);
 				it->modtime = mt;
 			}
@@ -212,19 +211,19 @@ void EAssetList::Reimport(const std::string& sig) {
 }
 
 const Asset& EAssetList::Get(AssetType t, const std::string& sig, bool async) {
-    auto& ar = _entries[(int)t];
-    auto i = std::find_if(ar.begin(), ar.end(), [&](const _Entry& e) {
-        return e.sig == sig;
-    });
-    if (i == ar.end()) {
-        Debug::Error("AssetList", "Cannot find asset \"" + sig + "\" of type " + std::to_string((int)t) + "!");
-        static Asset a(nullptr);
-        return a;
-    }
-    if (!i->obj) {
-        Debug::Message("AssetList", "Loading " + i->sig, TerminalColor::BrightYellow);
-        i->obj = EAssetLoader::Load(i->sig, t, async);
-    }
+	auto& ar = _entries[(int)t];
+	auto i = std::find_if(ar.begin(), ar.end(), [&](const _Entry& e) {
+		return e.sig == sig;
+	});
+	if (i == ar.end()) {
+		EDebug::Log("AssetList", "Cannot find asset \"" + sig + "\" of type " + std::to_string((int)t) + "!", EDEBUG_LVL_ERROR);
+		static Asset a(nullptr);
+		return a;
+	}
+	if (!i->obj) {
+		EDebug::Log("AssetList", "Loading " + i->sig, 0);
+		i->obj = EAssetLoader::Load(i->sig, t, async);
+	}
 	else if (!async) {
 		i->obj->Wait();
 	}
@@ -274,7 +273,7 @@ const ScriptInfo& EAssetList::GetScr(const std::string& sig) {
 		return e.sig == sig;
 	});
 	if (i == ar.end()) {
-		Debug::Error("AssetList", "Cannot find script \"" + sig + "\"!");
+		EDebug::Log("AssetList", "Cannot find script \"" + sig + "\"!", EDEBUG_LVL_ERROR);
 		static ScriptInfo null = nullptr;
 		return null;
 	}

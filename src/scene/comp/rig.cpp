@@ -22,7 +22,7 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
             tr->localPosition(b.base);
         }*/
 		tr->worldPosition(b.base);
-        //tr->localRotation(rot);
+		tr->worldRotation(rot);
 
         const auto _bn = _Bone(b, (pi == -1) ? "/" : (_boneObjs[pi].bone.sig + "/"), pi, ib * tr->worldMatrix());
         _boneObjs.push_back(boneObjSt(pSceneObject(obj), _bn));

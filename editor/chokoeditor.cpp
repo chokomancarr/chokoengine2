@@ -45,13 +45,13 @@ void pg(uint64_t* f) {
 	if (gi == 100) {
 		for (int a = 1; a < 100; a++) {
 			for (int i = 0; i < 3; i++)
-			gposs[i][a-1].y = gposs[i][a].y;
+				gposs[i][a - 1].y = gposs[i][a].y;
 		}
 	}
 	else gi++;
 
 	for (int i = 0; i < 3; i++) {
-		gposs[i][gi-1].y = -0.95f + 0.01f * f[i];
+		gposs[i][gi - 1].y = -0.95f + 0.01f * f[i];
 		gvao[i]->buffer(0)->Set(gposs[i].data(), 100);
 	}
 
@@ -65,6 +65,16 @@ void pg(uint64_t* f) {
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	gshad->Unbind();
+
+	const std::string nms[] = {
+		"sync",
+		"update",
+		"paint"
+	};
+	for (int a = 0; a < 3; a++) {
+		UI::Rect(Rect(10 + 70 * a, Display::height() - 40, 16, 16), gcl[a]);
+		UI::Label(Rect(30 + 70 * a, Display::height() - 40, 16, 16), nms[a], Color::white());
+	}
 }
 
 uint64_t gt0, gt[3], dt[3];
@@ -114,7 +124,7 @@ void ChokoEditor::Main() {
 	UI::defaultFont(font);
 	font->size(12);
 
-	projectRoot = IO::path() + "project/";
+	projectRoot = IO::ReadFile(IO::userPath() + ".ce/lastopenproject.txt");
 	ModuleAE::AssetLoader::Init(CE_DIR_ASSET);
 
 	EPaths::Init();
@@ -193,6 +203,10 @@ void ChokoEditor::Main() {
 			UI_Ext::PreLoop();
 			EWindowManager::Update();
 			EOverlayManager::Update();
+
+			scene->Update();
+			scene->LateUpdate();
+			scene->PostLogic();
 		});
 		ChokoLait::Paint(0, paint);
 		EDragDrop::PostLoop();

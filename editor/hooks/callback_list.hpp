@@ -35,6 +35,8 @@ enum class CallbackSig {
 
 	// ---------  3d view  -----------
 
+	VIEW_TOGGLE_PERSPECTIVE,
+
 	VIEW_FOCUS_OBJECT,
 	VIEW_FOCUS_OBJECT_TREE,
 

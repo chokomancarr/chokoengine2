@@ -121,14 +121,19 @@ void _Scene::Update() {
 	DoUpdate(_objects);
 }
 
-void _Scene::Paint() {
-	RECCALL(DoPaint,
-		for (auto& c : o->_components) {
-			c->OnPaint();
-		});
-
-	DoPaint(_objects);
+#define IMPLCB(nm)\
+void _Scene::nm() {\
+	RECCALL(Do,\
+		for (auto& c : o->_components) {\
+			c->On ## nm();\
+		});\
+	Do(_objects);\
 }
+
+IMPLCB(LateUpdate)
+IMPLCB(PhysicsUpdate)
+IMPLCB(PostLogic)
+IMPLCB(Paint)
 
 void _Scene::Render() {
 	Backend::Renderer::Render(get_shared<_Scene>());

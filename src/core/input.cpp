@@ -108,15 +108,15 @@ InputMouseStatus Input::mouseStatus(InputMouseButton b) {
 }
 
 bool Input::KeyDown(InputKey c) {
-    return _state.keyStates[(uint)c] && !_state.keyStatesOld[(int)c];
+    return _state.keyStates[(uint)c] && !_state.keyStatesOld[(uint)c];
 }
 
 bool Input::KeyHold(InputKey c) {
-    return _state.keyStates[(uint)c] && _state.keyStatesOld[(int)c];
+    return _state.keyStates[(uint)c] && _state.keyStatesOld[(uint)c];
 }
 
 bool Input::KeyUp(InputKey c) {
-    return !_state.keyStates[(uint)c] && _state.keyStatesOld[(int)c];
+    return !_state.keyStates[(uint)c] && _state.keyStatesOld[(uint)c];
 }
 
 CE_END_NAMESPACE
