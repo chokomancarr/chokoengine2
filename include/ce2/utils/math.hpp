@@ -16,6 +16,9 @@ namespace Math {
 
 	template <typename T>
 	T Clamp(const T& t, const T& a, const T& b);
+
+	template <typename T>
+	T Repeat(const T& a, const T& b, const T& t);
 }
 
 CE_END_NAMESPACE

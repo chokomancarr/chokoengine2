@@ -334,11 +334,11 @@ class CE_Exporter():
 
     def export_anim(self, path, arm):
         arm.data.pose_position = "POSE"
-        _bones = arm.pose.bones
+        bones = arm.pose.bones
 
-        _fullnames = []
-        for b in _bones:
-            _fullnames.append(self.bonefullname(b))
+        fullnames = []
+        for b in bones:
+            fullnames.append(self.bonefullname(b))
 
         for action in bpy.data.actions:
             if len(action.fcurves) == 0:
@@ -346,51 +346,64 @@ class CE_Exporter():
             if action.id_root != "OBJECT":
                 continue
 
-            bones = []
-            fullnames = []
-            for b, f in zip(_bones, _fullnames):
-                for c in action.fcurves:
-                    if c.data_path.startswith('pose.bones["' + b.name + '"]'):
-                        bones.append(b)
-                        fullnames.append(f)
-                        break
-            if len(bones) == 0:
-                continue
+            #bones = []
+            #fullnames = []
+            #for b, f in zip(_bones, _fullnames):
+            #    for c in action.fcurves:
+            #        if c.data_path.startswith('pose.bones["' + b.name + '"]'):
+            #            bones.append(b)
+            #            fullnames.append(f)
+            #            break
+            #if len(bones) == 0:
+            #    continue
             
             arm.animation_data.action = action
             
             frange = action.frame_range
-            fr0 = max(int(frange[0]), 0)
-            fr1 = max(int(frange[1]), 0)
+            fr0 = int(frange[0])
+            fr1 = int(frange[1])
             
-            mats = [] #foreach frame { foreach bone { [T] [R] [S] } }
+            mats = []
             for f in range(fr0, fr1 + 1):
                 self.scene.frame_set(f)
-                mats.append([])
+                m = []
                 
                 for bn in bones:
                     mat = self.bonelocalmat(bn)
-                    mats[f-fr0].append([mat.to_translation(), mat.to_quaternion(), mat.to_scale()])
-            
-            # ANIM bonelen2 framestart2 frameend2
-            # foreach bone [ name \0 (foreach frame [ Txyz12 Rwxyz16 Sxyz12 ]) ]
+                    m.append([mat.to_translation(), mat.to_quaternion(), mat.to_scale()])
+                mats.append(m)
 
             _path = path + arm.name + "_" + action.name + ".animclip"
             print ("!writing to: " + _path)
             file = open(_path, "wb")
             self.write(file, "ANIM")
-            file.write(struct.pack("<H", len(bones)))
-            file.write(struct.pack("<HH", fr0, fr1))
+            file.write(struct.pack("<H", len(bones)*3))
+            file.write(struct.pack("<ii", fr0, fr1))
             
+            # name(str) \0 -1(uint) nc(byte) isquat(byte)
+            #   [value(floatxnc)]x(frameend-framestart+1)
             for i, bfn in enumerate(fullnames):
-                self.write(file, bfn + "\x00")
+                self.write(file, bfn + "@T")
+                file.write(b"\x00\xff\xff\xff\xff\x03\x00")
                 for m in mats:
                     res = m[i][0]
-                    file.write(struct.pack("<fff", res[0], res[2], -res[1]))
+                    if (bones[i].parent):
+                        file.write(struct.pack("<fff", res[0], -res[2], res[1]))
+                    else:
+                        file.write(struct.pack("<fff", res[0], res[2], -res[1]))
+                self.write(file, bfn + "@R")
+                file.write(b"\x00\xff\xff\xff\xff\x04\x01")
+                for m in mats:
                     res = m[i][1]
-                    file.write(struct.pack("<ffff", res[0], res[1], res[3], -res[2]))
+                    if (bones[i].parent):
+                        file.write(struct.pack("<ffff", res[1], -res[3], res[2], res[0]))
+                    else:
+                        file.write(struct.pack("<ffff", -res[1], -res[3], -res[2], res[0]))
+                self.write(file, bfn + "@S")
+                file.write(b"\x00\xff\xff\xff\xff\x03\x00")
+                for m in mats:
                     res = m[i][2]
-                    file.write(struct.pack("<fff", res[0], res[2], -res[1]))
+                    file.write(struct.pack("<fff", res[0], res[2], res[1]))
             
             file.close()
 

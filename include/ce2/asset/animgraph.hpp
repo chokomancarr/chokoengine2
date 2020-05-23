@@ -31,7 +31,7 @@ public:
 
 	void Update(State&) const;
 
-	_AnimClip::Value Get(const std::string& sig) const;
+	_AnimClip::VQ Get(const std::string& sig) const;
 };
 
 CE_END_NAMESPACE

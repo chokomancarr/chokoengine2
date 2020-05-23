@@ -4,9 +4,9 @@ CE_BEGIN_NAMESPACE
 
 _Rig::_Rig() : CE_COMPDEF(Rig), _armature(nullptr), _boneObjs({}) {}
 
-void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, int pi, const Mat4x4& ib) {
+void _Rig::AddBones(const SceneObject& parent, const std::vector<ArmatureBone>& bones, const ArmatureBoneG* pbone, int pi, const Mat4x4& ib) {
     for (auto& b : bones) {
-        auto rot = Quat::LookAt(b.length, b.front);
+        auto rot = Quat::LookAt(b.length, -b.front);
         if (std::isnan(rot.x) || std::isnan(rot.y) || std::isnan(rot.z) || std::isnan(rot.w)) {
             rot = Quat::identity();
         }
@@ -14,17 +14,10 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<Bone>& bones, c
 
         obj->name(b.name);
         auto tr = obj->transform();
-		/*
-        if (pbone) {
-            tr->localPosition(b.base + Vec3(0, 0, 1) * pbone->length);
-        }
-        else {
-            tr->localPosition(b.base);
-        }*/
 		tr->worldPosition(b.base);
 		tr->worldRotation(rot);
 
-        const auto _bn = _Bone(b, (pi == -1) ? "/" : (_boneObjs[pi].bone.sig + "/"), pi, ib * tr->worldMatrix());
+        const auto _bn = ArmatureBoneG(b, (pi == -1) ? "" : (_boneObjs[pi].bone.sig + "/"), pi, ib * tr->worldMatrix());
         _boneObjs.push_back(boneObjSt(pSceneObject(obj), _bn));
         AddBones(obj, b.children, &_bn, (int)(_boneObjs.size()-1), ib);
     }
@@ -58,12 +51,25 @@ int _Rig::BoneIndex(const std::string& nm) {
 	return (int)(it - _boneObjs.begin());
 }
 
-void _Rig::OnUpdate() {
+void _Rig::OnLateUpdate() {
+	auto anim = _object->parent()->GetComponent<Animator>();
+
 	const auto& sz = _boneObjs.size();
 	for (size_t a = 0; a < sz; a++) {
-        auto& bo = _boneObjs[a];
-        if (bo.bone.parentId == -1) bo.bone.currMat = bo.obj->transform()->localMatrix();
-        else bo.bone.currMat = _boneObjs[bo.bone.parentId].bone.currMat * bo.obj->transform()->localMatrix();
+		auto& bo = _boneObjs[a];
+
+		if (!!anim) {
+			auto tr = bo.obj->transform();
+			auto vq = anim->Get(bo.bone.sig + "@T");
+			if (vq.valid) tr->localPosition(*(Vec3*)&vq.v);
+			vq = anim->Get(bo.bone.sig + "@R");
+			if (vq.valid) tr->localRotation(vq.q);
+			vq = anim->Get(bo.bone.sig + "@S");
+			if (vq.valid) tr->localScale(*(Vec3*)&vq.v);
+		}
+
+		if (bo.bone.parentId == -1) bo.bone.currMat = bo.obj->transform()->localMatrix();
+		else bo.bone.currMat = _boneObjs[bo.bone.parentId].bone.currMat * bo.obj->transform()->localMatrix();
 		_matrices[a] = bo.bone.currMat * bo.bone.restMatI;
 	}
 }

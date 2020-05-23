@@ -4,32 +4,37 @@
 CE_BEGIN_NAMESPACE
 
 template <typename T>
-Curve<T>::Curve() : keys({}) {}
+Curve<T>::Curve() : _keys({}) {}
 
 template <typename T>
 Curve<T>::Curve(const std::vector<T>& k, float start, float end) {
     const auto sz = k.size();
-    keys.resize(sz);
+	_keys.resize(sz);
     for (size_t a = 0; a < sz; a++) {
-        keys.push_back(std::make_pair(Math::Lerp(start, end, a / (sz - 1.f)), k[a]));
+		_keys[a] = std::make_pair(Math::Lerp(start, end, a / (sz - 1.f)), k[a]);
     }
 }
 
 template <typename T>
 void Curve<T>::AddKey(float t, const T& k) {
-    const auto& it = std::find_if(keys.begin(), keys.end(), [&](const T& v) {
+    const auto it = std::find_if(_keys.begin(), _keys.end(), [&](const std::pair<float, T>& v) {
         return v.first > t;
     });
-    keys.insert(it, k);
+	_keys.insert(it, std::make_pair(t, k));
 }
 
 template <typename T>
-T Curve<T>::Eval(float t) const{
-    const auto& it = std::lower_bound(keys.begin(), keys.end(), _KeyTp(t, T()), [&](const _KeyTp& a, const _KeyTp& b) {
-        return a.first < b.first;
-    });
-    if (it == keys.begin()) return it->second;
-    return Math::Lerp((it-1)->second, it->second, Math::ILerp((it-1)->first, it->first, t));
+T Curve<T>::Eval(float t) const {
+	if (_keys[0].first >= t) {
+		return _keys[0].second;
+	}
+	for (auto& k : _keys) {
+		if (k.first > t) {
+			const auto& kb = (&k)[-1];
+			return Math::Lerp(kb.second, k.second, Math::ILerp(kb.first, k.first, t));
+		}
+	}
+	return _keys.back().second;
 }
 
 CE_END_NAMESPACE

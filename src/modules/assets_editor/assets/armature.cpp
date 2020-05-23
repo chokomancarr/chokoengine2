@@ -3,9 +3,9 @@
 CE_BEGIN_MOD_AE_NAMESPACE
 
 namespace {
-	void LoadBones(const JsonObject& data, std::vector<Bone>& bones) {
+	void LoadBones(const JsonObject& data, std::vector<ArmatureBone>& bones) {
 		for (const auto& d : data.group) {
-			Bone bn(d.key.string);
+			ArmatureBone bn(d.key.string);
 			for (const auto& c : d.value.group) {
 				if (c.key.string == "head") {
 					bn.base = c.value.ToVec3();
@@ -36,7 +36,7 @@ CE_MOD_AE_IMPL(Armature) {
 		Debug::Error("LoadArmature", "Cannot create from json, no armature entry!");
 		return nullptr;
 	}
-	std::vector<Bone> bones = {};
+	std::vector<ArmatureBone> bones = {};
 	LoadBones(data.group[0].value, bones);
 
 	Armature arm = Armature::New();

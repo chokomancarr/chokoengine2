@@ -8,15 +8,15 @@ class _Rig : public _Component { CE_COMPONENT_COMMON
 
 	struct boneObjSt {
 		pSceneObject obj;
-		_Bone bone;
+		ArmatureBoneG bone;
 
-		boneObjSt(const pSceneObject& o, const _Bone& b)
+		boneObjSt(const pSceneObject& o, const ArmatureBoneG& b)
 			: obj(o), bone(b) {}
 	};
     std::vector<boneObjSt> _boneObjs;
 	std::vector<Mat4x4> _matrices;
 
-    void AddBones(const SceneObject& parent, const std::vector<Bone>& bones, const _Bone* pbone, int pi, const Mat4x4& ib);
+    void AddBones(const SceneObject& parent, const std::vector<ArmatureBone>& bones, const ArmatureBoneG* pbone, int pi, const Mat4x4& ib);
 public:
 	_Rig();
 
@@ -34,7 +34,7 @@ public:
 
 	int BoneIndex(const std::string& sig);
 
-	void OnUpdate() override;
+	void OnLateUpdate() override;
 };
 
 CE_END_NAMESPACE

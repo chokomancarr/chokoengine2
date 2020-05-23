@@ -3,9 +3,12 @@
 
 CE_BEGIN_NAMESPACE
 
-class Bone { CE_CLASS_COMMON
+/* A bone in an armature
+ * All coordinates are in armature-space
+ */
+class ArmatureBone { CE_CLASS_COMMON
 public:
-    Bone(const std::string& name);
+	ArmatureBone(const std::string& name);
 
     std::string name;
 
@@ -23,30 +26,37 @@ public:
      */
     bool connected;
 
-    std::vector<Bone> children;
+    std::vector<ArmatureBone> children;
 
-	struct TR {
+	struct TRS {
 		Vec3 pos;
 		Quat rot;
-		TR world2loc(const Transform& pr);
-	} getTR() const;
+		Vec3 scl;
+
+		Mat4x4 toMat() const;
+	} getTRS() const;
 };
 
-class _Bone { CE_CLASS_COMMON
+/* A bone in an armature (generated)
+ * Used as glue with the animation system
+ * All matrices are in armature-space
+ */
+class ArmatureBoneG {
+	CE_CLASS_COMMON
 public:
-    _Bone(const Bone&, const std::string&, int, const Mat4x4&);
+	ArmatureBoneG(const ArmatureBone&, const std::string&, int, const Mat4x4&);
 
-    const std::string sig;
+	const std::string sig;
 
-    float length;
+	float length;
 
-    int parentId;
+	int parentId;
 
-	Bone::TR restTR;
+	ArmatureBone::TRS restTRS;
 
 	Mat4x4 restMat, restMatI;
 
-    Mat4x4 currMat;
+	Mat4x4 currMat;
 };
 
 CE_END_NAMESPACE

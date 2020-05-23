@@ -12,6 +12,8 @@ public:
 	Vec3(float x, float y, float z);
 	Vec3(Vec2 v, float z);
 
+	Vec3 operator -() const;
+
 	Vec3 operator +(const Vec3& rhs) const;
 	Vec3 operator -(const Vec3& rhs) const;
 	Vec3 operator *(const Vec3& rhs) const;

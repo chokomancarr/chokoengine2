@@ -17,7 +17,7 @@ CE_BEGIN_ED_NAMESPACE
 #define CE_E_AL_IMPL_J(nm) nm EAssetLoader::Load ## nm(const JsonObject& data, SceneObject& obj, bool async)
 
 class EAssetLoader { CE_CLASS_COMMON
-    static std::vector<Bone> LoadBones(const JsonObject& data);
+    static std::vector<ArmatureBone> LoadBones(const JsonObject& data);
 
 public:
 

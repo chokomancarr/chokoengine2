@@ -5,11 +5,11 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-std::vector<Bone> EAssetLoader::LoadBones(const JsonObject& data) {
-	std::vector<Bone> res;
+std::vector<ArmatureBone> EAssetLoader::LoadBones(const JsonObject& data) {
+	std::vector<ArmatureBone> res;
 	res.reserve(data.group.size());
 	for (auto& g : data.group) {
-		Bone b(g.key.string);
+		ArmatureBone b(g.key.string);
 		for (auto& p : g.value.group) {
 			if (p.key.string == "head") {
 				b.base = p.value.ToVec3();

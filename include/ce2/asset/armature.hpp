@@ -8,7 +8,7 @@ class _Armature : public _Asset { CE_OBJECT_COMMON
 public:
 
 private:
-    std::vector<Bone> _bones;
+    std::vector<ArmatureBone> _bones;
 
 public:
     _Armature();

@@ -24,15 +24,15 @@ void _AnimGraph::Update(State& st) const {
     
 }
 
-_AnimClip::Value _AnimGraph::Get(const std::string& sig) const {
+_AnimClip::VQ _AnimGraph::Get(const std::string& sig) const {
     auto& ee = _nodes[0]->clip()->entries();
     auto it = std::find_if(ee.begin(), ee.end(), [&](const _AnimClip::Entry& e) {
         return e.signature == sig;
     });
     if (it == ee.end()) {
-        return _AnimClip::Value();
+        return _AnimClip::VQ();
     }
-    return it->values.Eval(Time::time());
+	return it->Get(0);
 }
 
 CE_END_NAMESPACE

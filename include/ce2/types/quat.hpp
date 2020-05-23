@@ -26,6 +26,8 @@ public:
 	static Quat FromAxisAngle(Vec3 axis, float angle);
 	static Quat LookAt(const Vec3& tar);
 	static Quat LookAt(const Vec3& tar, const Vec3& up);
+
+	static Quat Slerp(const Quat& a, const Quat& b, const float t);
 };
 
 CE_END_NAMESPACE

@@ -104,4 +104,8 @@ Quat Quat::LookAt(const Vec3& tarr, const Vec3& up) {
 	return q2 * q1;
 }
 
+Quat Quat::Slerp(const Quat& a, const Quat& b, const float t) {
+	return glm::slerp(a, b, t);
+}
+
 CE_END_NAMESPACE
