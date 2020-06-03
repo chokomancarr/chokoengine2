@@ -6,6 +6,7 @@ namespace {
 	int mouseoverId = -1;
 	int switchingId = -1;
 	int maximizeId = -1;
+	int focusId = -1;
 }
 
 std::vector<std::shared_ptr<EWindow>> EWindowManager::windows;
@@ -92,10 +93,14 @@ void EWindowManager::Update() {
 
 	if (maximizeId > -1) {
 		windows[maximizeId]->Update();
+		windows[maximizeId]->ActiveUpdate();
 	}
 	else {
 		for (auto& w : windows) {
 			w->Update();
+		}
+		if (mouseoverId > -1) {
+			windows[mouseoverId]->ActiveUpdate();
 		}
 	}
 }
@@ -123,6 +128,12 @@ void EWindowManager::Draw() {
 		windows[maximizeId]->Draw();
 	}
 	else {
+		if (focusId > -1) {
+			const auto r = windows[focusId]->position;
+			UI::BeginStencil(r, true);
+			UI::Rect(Display::fullscreenRect(), Color(0, 0.5f));
+			UI::EndStencil();
+		}
 		for (auto& w : windows) {
 			w->Draw();
 		}
@@ -130,10 +141,13 @@ void EWindowManager::Draw() {
 
 	if (switchingId > -1) {
 		UI_Ext::IncLayer();
-		UI::Rect(Display::fullscreenRect(), Color(0, 0.5f));
-		float py = 50;
+		const auto r = windows[switchingId]->position;
+		UI::Rect(r, Color(0, 0.5f));
+		const float px = r.x() + 10;
+		float py = r.y() + 10;
+		const float pw = std::min(150.f, r.w() - 20);
 #define SELWND(nm, comp) \
-			if (UI::I::Button(Rect(50, py, 150, 16), Color(0.2, 0.8f), nm) == InputMouseStatus::HoverUp) {\
+			if (UI::I::Button(Rect(px, py, pw, 16), Color(0.2, 0.8f), nm) == InputMouseStatus::HoverUp) {\
 				const auto pos = windows[switchingId]->_position;\
 				auto& wnd = (windows[switchingId] = std::make_shared<comp>());\
 				wnd->Init();\
@@ -158,6 +172,20 @@ void EWindowManager::Render() {
 	for (auto& w : windows) {
 		w->Render();
 	}
+}
+
+void EWindowManager::Focus(EWindow* const w, bool f) {
+	if (f) {
+		focusId = std::find_if(windows.begin(), windows.end(), [w](const std::shared_ptr<EWindow> w2) {
+			return &(*w2) == w;
+		}) - windows.begin();
+	}
+	else focusId = -1;
+}
+
+bool EWindowManager::inFocus(EWindow* const w) {
+	if (focusId == -1) return false;
+	else return &(*windows[focusId]) == w;
 }
 
 CE_END_ED_NAMESPACE

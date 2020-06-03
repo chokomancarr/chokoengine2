@@ -1,13 +1,18 @@
 #include "chokoengine.hpp"
 #include "enums/component_types.hpp"
+#include "enums/callback_flags.hpp"
 
 CE_BEGIN_NAMESPACE
 
 class _Component : public _Object { CE_OBJECT_COMMON
+public:
+
 protected:
 	_Component(ComponentType t, const std::string& nm);
 
 	pSceneObject _object;
+
+	CompCallbackFlag::Tp _callbackMask;
 
 	virtual Component Clone() const = 0;
 public:
@@ -72,6 +77,7 @@ public:
 	 */
 	virtual void OnPaint() {}
 
+	friend class _Scene;
 	friend class _SceneObject;
 	friend class _PrefabComp;
 };

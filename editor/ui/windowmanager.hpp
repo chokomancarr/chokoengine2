@@ -22,6 +22,9 @@ public:
 	static void Update();
 	static void Draw();
 	static void Render();
+
+	static void Focus(EWindow* const, bool);
+	static bool inFocus(EWindow* const);
 };
 
 CE_END_ED_NAMESPACE

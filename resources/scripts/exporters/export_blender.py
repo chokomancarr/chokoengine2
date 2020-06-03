@@ -5,7 +5,16 @@ import os
 import sys
 import struct
 import shutil
-from shutil import copyfile
+from mathutils import Quaternion
+
+indent0 = ""
+def indent(n):
+    return indent0 + "  " * n
+    
+logfile = None
+def printlog(msg):
+    print(msg)
+    logfile.write(msg + "\n")
 
 class CE_Exporter():
     SIGNATURE = "ChokoEngine Mesh 20"
@@ -35,13 +44,17 @@ class CE_Exporter():
             self.rig = None
     
     def execute(self):
-        print("---------export start----------")
+        global logfile, indent0
         self.cleandir(self.fd)
 
         if os.access(self.fd, os.W_OK) is False:
             print("!permission denied : " + self.fd)
             return False
-        print ("!writing to: " + self.fd + self.fn + ".prefab")
+            
+        logfile = open(self.fd + self.fn + ".log.txt", "w")
+        
+        printlog("---------export start----------")
+        printlog("!writing to: " + self.fd + self.fn + ".prefab")
         
         bpy.ops.object.mode_set(mode='OBJECT')
         #shared meshes break the exporter for now
@@ -51,6 +64,8 @@ class CE_Exporter():
         arranged_objs = self.arrange_objs(self.scene.objects)
         
         object_entries = []
+        
+        has_arm = False;
         
         for obj in arranged_objs:
             if obj.type == 'MESH' or obj.type == 'ARMATURE':
@@ -62,21 +77,27 @@ class CE_Exporter():
                         object_entries[-1].rig = obj.parent
                 else:
                     object_entries.append(self.object_entry(obj))
+            has_arm |= (obj.type == 'ARMATURE')
 
         prefab_file = open(self.fd + self.fn + ".prefab", "wb")
         self.write(prefab_file, '{\n  "object":{\n')
-        indent2 = 4 * ' '
-        self.write(prefab_file, indent2 + '"name.String":"' + self.fn + '",\n')
-        self.write(prefab_file, indent2 + '"position.Vec3":[ "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"rotation.Quat":[ "1", "0", "0", "0" ],\n')
-        self.write(prefab_file, indent2 + '"scale.Vec3":[ "1", "1", "1" ],\n')
-        self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
+        self.write(prefab_file, indent(2) + '"name.String":"' + self.fn + '",\n')
+        self.write(prefab_file, indent(2) + '"position.Vec3":[ "0", "0", "0" ],\n')
+        self.write(prefab_file, indent(2) + '"rotation.Quat":[ "1", "0", "0", "0" ],\n')
+        self.write(prefab_file, indent(2) + '"scale.Vec3":[ "1", "1", "1" ],\n')
+        if has_arm:
+            self.write(prefab_file, indent(2) + '"components.ObjGroup":{\n')
+            self.write(prefab_file, indent(3) + '"Animator":{}\n')
+            self.write(prefab_file, indent(2) + '},\n')
+        self.write(prefab_file, indent(2) + '"children.ObjGroup":{\n')
         
-        self.export_entries(prefab_file, object_entries, 6 * ' ')
-
-        self.write(prefab_file, indent2 + "}\n  }\n}")
+        self.export_entries(prefab_file, object_entries, indent(2))
+        indent0 = "";
         
-        print ("-------export end--------")
+        self.write(prefab_file, indent(2) + "}\n")
+        self.write(prefab_file, indent(1) + "}\n}")
+        
+        printlog("-------export end--------")
 
     def add_child_entry(self, object_entries, obj, pnm):
         for e in object_entries:
@@ -87,57 +108,67 @@ class CE_Exporter():
                 return True
         return False
     
-    def export_entries(self, prefab_file, entries, indent):
-        indent2 = indent + 2 * " "
-        indent3 = indent2 + 2 * " "
-        indent4 = indent3 + 2 * " "
-        indent5 = indent4 + 2 * " "
+    def export_entries(self, prefab_file, entries, indent0_):
+        global indent0
+        indent0 = indent0_
         n = len(entries)
         for i, e in enumerate(entries, 1):
-            print ("object " + str(i) + "/" + str(n) + ": " + e.obj.name)
-            self.write(prefab_file, indent + '"object":{\n')
-            self.write(prefab_file, indent2 + '"name.String":"' + e.obj.name + '",\n')
+            printlog("object " + str(i) + "/" + str(n) + ": " + e.obj.name)
+            mesh_is_skinned = False;
+            self.write(prefab_file, indent(1) + '"object":{\n')
+            self.write(prefab_file, indent(2) + '"name.String":"' + e.obj.name + '",\n')
             if e.obj.parent_type == "BONE":
-                self.write(prefab_file, indent2 + '"parent_bone.String":"' + e.obj.parent_bone + '",\n')
+                self.write(prefab_file, indent(2) + '"parent_bone.String":"' + e.obj.parent_bone + '",\n')
             elif e.rig:
-                self.write(prefab_file, indent2 + '"rig.String":"' + e.rig.name + '",\n')
+                self.write(prefab_file, indent(2) + '"rig.String":"' + e.rig.name + '",\n')
+                mesh_is_skinned = True
             poss = e.obj.location
-            self.write(prefab_file, indent2 + '"position.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
+            self.write(prefab_file, indent(2) + '"position.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
             rott = e.obj.rotation_euler.to_quaternion()
-            self.write(prefab_file, indent2 + '"rotation.Quat":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
+            self.write(prefab_file, indent(2) + '"rotation.Quat":[ "{:f}", "{:f}", "{:f}", "{:f}" ],\n'.format(rott[0], rott[1], rott[3], -rott[2]))
             scll = e.obj.scale
-            self.write(prefab_file, indent2 + '"scale.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
+            self.write(prefab_file, indent(2) + '"scale.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
 
             if e.obj.type == 'MESH':
-                self.write(prefab_file, indent2 + '"components.ObjGroup":{\n' + indent3 + '"MeshRenderer":{\n')
-                self.write(prefab_file, indent4 + '"mesh.Asset":{"Mesh":"' + self.relfd + e.obj.name + '.mesh' + '"},\n')
-                self.write(prefab_file, indent4 + '"modifiers.ItemGroup":{},\n')
-                self.write(prefab_file, indent4 + '"materials.ItemGroup":{\n')
+                self.write(prefab_file, indent(2) + '"components.ObjGroup":{\n' + indent(3) + '"MeshRenderer":{\n')
+                self.write(prefab_file, indent(4) + '"mesh.Asset":{"Mesh":"' + self.relfd + e.obj.name + '.mesh' + '"},\n')
+                if mesh_is_skinned:
+                    self.write(prefab_file, indent(4) + '"modifiers.ItemGroup":{\n')
+                    self.write(prefab_file, indent(5) + '"skin.ItemGroup":{\n')
+                    self.write(prefab_file, indent(6) + '"rig.Component":{\n')
+                    self.write(prefab_file, indent(7) + '"object":{"' + e.rig.name + '":"0"}, "component":"Rig"\n')
+                    self.write(prefab_file, indent(6) + '}\n')
+                    self.write(prefab_file, indent(5) + '}\n')
+                    self.write(prefab_file, indent(4) + '},\n')
+                else:
+                    self.write(prefab_file, indent(4) + '"modifiers.ItemGroup":{},\n')
+                self.write(prefab_file, indent(4) + '"materials.ItemGroup":{\n')
                 ml = len(e.obj.data.materials)
                 for j in range(max(ml-1, 0)):
-                    self.write(prefab_file, indent5 + '"' + str(j) + '.Asset":{"Material":"def.material"},\n')
-                self.write(prefab_file, indent5 + '"' + str(ml) + '.Asset":{"Material":"def.material"}\n')
-                self.write(prefab_file, indent4 + '}\n')
-                self.write(prefab_file, indent3 + '}\n')
+                    self.write(prefab_file, indent(5) + '"' + str(j) + '.Asset":{"Material":"def.material"},\n')
+                self.write(prefab_file, indent(5) + '"' + str(ml) + '.Asset":{"Material":"def.material"}\n')
+                self.write(prefab_file, indent(4) + '}\n')
+                self.write(prefab_file, indent(3) + '}\n')
                 self.export_mesh(self.fd + e.obj.name + '.mesh', e.obj)
             elif e.obj.type == 'ARMATURE':
-                self.write(prefab_file, indent2 + '"components.ObjGroup":{\n' + indent3 + '"Rig":{\n')
-                self.write(prefab_file, indent4 + '"armature.Asset":{"Armature":"' + self.relfd + e.obj.name + '.armature' + '"}\n')
-                self.write(prefab_file, indent3 + '}\n')
+                self.write(prefab_file, indent(2) + '"components.ObjGroup":{\n' + indent(3) + '"Rig":{\n')
+                self.write(prefab_file, indent(4) + '"armature.Asset":{"Armature":"' + self.relfd + e.obj.name + '.armature' + '"}\n')
+                self.write(prefab_file, indent(3) + '}\n')
                 self.export_armature(self.fd + e.obj.name + '.armature', e.obj)
                 self.export_anim(self.fd, e.obj)
 
             if len(e.children) > 0:
-                self.write(prefab_file, indent2 + '},\n')
-                self.write(prefab_file, indent2 + '"children.ObjGroup":{\n')
-                self.export_entries(prefab_file, e.children, indent3)
-                self.write(prefab_file, indent2 + '}\n')
+                self.write(prefab_file, indent(2) + '},\n')
+                self.write(prefab_file, indent(2) + '"children.ObjGroup":{\n')
+                self.export_entries(prefab_file, e.children, indent(2))
+                indent0 = indent0_
+                self.write(prefab_file, indent(2) + '}\n')
             else:
-                self.write(prefab_file, indent2 + '}\n')
+                self.write(prefab_file, indent(2) + '}\n')
             if i < n:
-                self.write(prefab_file, indent + '},\n')
+                self.write(prefab_file, indent(1) + '},\n')
             else:
-                self.write(prefab_file, indent + '}\n')
+                self.write(prefab_file, indent(1) + '}\n')
 
     def export_mesh(self, path, obj):
         arma = None
@@ -182,7 +213,7 @@ class CE_Exporter():
             if len(m.uv_layers) > 1:
                 for uv2 in m.uv_layers[1].data:
                     _vrts2.append(uv2.uv)
-                print (" exporting secondary UV maps")
+                printlog (" exporting secondary UV maps")
             uid = 0
             vrtc = 0
             for i, uvl in enumerate(m.uv_layers[0].data):
@@ -206,7 +237,7 @@ class CE_Exporter():
         vrtsz = len(vrts)
 
         #write data
-        print ("!writing to: " + path)
+        printlog ("!writing to: " + path)
         file = open(path, "wb")
         self.write(file, self.SIGNATURE + "\x00V")
 
@@ -293,6 +324,8 @@ class CE_Exporter():
             self.do_arrange_objs(c, oo)
         
     def export_armature(self, path, arm):
+        global indent0
+        indent0_ = indent0
         bpy.context.view_layer.objects.active = arm
         bpy.ops.object.mode_set(mode='EDIT')
         bones = []
@@ -300,37 +333,37 @@ class CE_Exporter():
             if not b.parent:
                 bones.append(b)
 
-        print ("!writing to: " + path)
+        printlog ("!writing to: " + path)
         file = open(path, "wb")
-        indent = 2 * ' '
-        indent2 = indent + 2 * ' '
-        self.write(file, '{\n' + indent + '"armature":{\n')
+        self.write(file, '{\n' + indent(1) + '"armature":{\n')
         nb = len(bones)
         for i, b in enumerate(bones, 1):
-            self.export_bone(file, b, indent2, i == nb)
-        self.write(file, indent + '}\n}')
+            self.export_bone(file, b, indent(2), i == nb)
+        indent0 = indent0_
+        self.write(file, indent(1) + '}\n}')
         bpy.ops.object.mode_set(mode='OBJECT')
 
-    def export_bone(self, file, bone, indent, last):
-        indent2 = indent + 2 * " "
-        indent3 = indent2 + 2 * " "
-        self.write(file, indent + '"' + bone.name + '":{\n')
+    def export_bone(self, file, bone, indent0_, last):
+        global indent0
+        indent0 = indent0_
+        self.write(file, indent(1) + '"' + bone.name + '":{\n')
         vec = bone.head
-        self.write(file, indent2 + '"head":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
+        self.write(file, indent(2) + '"head":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
         vec = bone.tail
-        self.write(file, indent2 + '"tail":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
+        self.write(file, indent(2) + '"tail":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
         vec = bone.z_axis
-        self.write(file, indent2 + '"front":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
-        self.write(file, indent2 + '"connected":' + ('"1"' if bone.use_connect else '"0"'))
+        self.write(file, indent(2) + '"front":[ "{:f}", "{:f}", "{:f}" ],\n'.format(vec[0], vec[2], -vec[1]))
+        self.write(file, indent(2) + '"connected":' + ('"1"' if bone.use_connect else '"0"'))
         nc = len(bone.children)
         if nc > 0:
-            self.write(file, ',\n' + indent2 + '"children":{\n')
+            self.write(file, ',\n' + indent(2) + '"children":{\n')
             for i, b in enumerate(bone.children, 1):
-                self.export_bone(file, b, indent3, i == nc)
-            self.write(file, indent2 + '}\n')
+                self.export_bone(file, b, indent(3), i == nc)
+            indent0 = indent0_
+            self.write(file, indent(2) + '}\n')
         else:
             self.write(file, '\n')
-        self.write(file, indent + ('}\n' if last else '},\n'))
+        self.write(file, indent(1) + ('}\n' if last else '},\n'))
 
     def export_anim(self, path, arm):
         arm.data.pose_position = "POSE"
@@ -370,11 +403,15 @@ class CE_Exporter():
                 
                 for bn in bones:
                     mat = self.bonelocalmat(bn)
-                    m.append([mat.to_translation(), mat.to_quaternion(), mat.to_scale()])
+                    rot = mat.to_quaternion()
+                    if not bn.parent:
+                        drot = Quaternion([1, 0, 0], 3.14159)
+                        rot = drot @ rot
+                    m.append([mat.to_translation(), rot, mat.to_scale()])
                 mats.append(m)
 
             _path = path + arm.name + "_" + action.name + ".animclip"
-            print ("!writing to: " + _path)
+            printlog ("!writing to: " + _path)
             file = open(_path, "wb")
             self.write(file, "ANIM")
             file.write(struct.pack("<H", len(bones)*3))
@@ -398,7 +435,7 @@ class CE_Exporter():
                     if (bones[i].parent):
                         file.write(struct.pack("<ffff", res[1], -res[3], res[2], res[0]))
                     else:
-                        file.write(struct.pack("<ffff", -res[1], -res[3], -res[2], res[0]))
+                        file.write(struct.pack("<ffff", res[1], res[3], -res[2], res[0]))
                 self.write(file, bfn + "@S")
                 file.write(b"\x00\xff\xff\xff\xff\x03\x00")
                 for m in mats:

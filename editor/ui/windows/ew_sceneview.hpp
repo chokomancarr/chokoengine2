@@ -8,6 +8,13 @@ class EW_SceneView : public EWindow {
 	SceneObject _pivot;
 	Camera _camera;
 
+	enum class ControlMode {
+		None,
+		Rotate,
+		Pan,
+		Scale,
+	} controlMode = ControlMode::None;
+
 	void DoDrawScene(const std::vector<SceneObject>& objs);
 
 protected:
@@ -24,9 +31,9 @@ public:
 
 	void Update() override;
 
-	void Render() override;
+	void ActiveUpdate() override;
 
-	void LookAtObject(const SceneObject&);
+	void Render() override;
 
 	class Ops;
 

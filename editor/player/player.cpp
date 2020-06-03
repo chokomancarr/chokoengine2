@@ -30,6 +30,8 @@ Int2 EPlayer::targetReso;
 
 Texture EPlayer::outputImage;
 
+bool EPlayer::sendInput = false;
+
 void EPlayer::Init() {
 	ECallbackManager::Register(CallbackSig::GLOBAL_PLAY, CbFnFrom(Play));
 	ECallbackManager::Register(CallbackSig::GLOBAL_STOP, CbFnFrom(Stop));
@@ -86,6 +88,9 @@ void EPlayer::Sync() {
 
     volatile auto flags = baseMem->status_flags;
     baseMem->status_flags = (flags & ~PDSyncFlags::APP_SYNCED) | PDSyncFlags::EDITOR_SYNCED;
+
+	const Input::State st = sendInput ? Input::state() : Input::State();
+	std::memcpy((Input::State*)&baseMem->input_state, &st, sizeof(st));
 }
 
 void EPlayer::Stop() {

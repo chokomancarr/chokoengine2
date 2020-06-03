@@ -10,6 +10,13 @@ CE_BEGIN_ED_NAMESPACE
 
 class EDebug {
 public:
+	struct MessageObj {
+		const std::string& caller;
+		const std::string& msg;
+		const time_t time;
+		const int level;
+	};
+
     typedef std::function<std::string(const SceneObject&)> obj2strFn;
 
 	static int printLevel;

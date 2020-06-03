@@ -42,6 +42,8 @@ bool PDSyncer::SyncFrame() {
     baseMem->screen_width = Display::width();
     baseMem->screen_height = Display::height();
 
+	Input::state((const Input::State&)baseMem->input_state);
+
     const volatile auto pxlsz = baseMem->screen_width * baseMem->screen_height * 4;
     if (pxlsz != pixelsMem.length()) {
         pixelsMem.open(MemNms::pixels, pxlsz);

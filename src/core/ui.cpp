@@ -313,7 +313,7 @@ void UI::Label(const CE_NS Rect& rect, const std::u32string& ucs, const Color& c
 	_Font::_prog->Unbind();
 }
 
-void UI::BeginStencil(const CE_NS Rect& rect) {
+void UI::BeginStencil(const CE_NS Rect& rect, bool invert) {
 	glDepthFunc(GL_LEQUAL);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -326,7 +326,7 @@ void UI::BeginStencil(const CE_NS Rect& rect) {
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDepthMask(GL_TRUE);
 	glStencilMask(0x0);
-	glStencilFunc(GL_EQUAL, 1, 0xFF);
+	glStencilFunc(GL_EQUAL, !invert, 0xFF);
 
 	_stencilRect = rect;
 	if (!_stencilRects.size()) {

@@ -18,6 +18,8 @@ public:
 
 	void Update() override;
 
+	void ActiveUpdate() override;
+
 	void Render() override;
 };
 

@@ -23,6 +23,7 @@ public:
 	public:
 		State();
 
+		Vec2 mousePositionLocked;
 		Vec2 mousePositionOld;
 		Vec2 mousePosition;
 		Vec2 mouseDownPosition;
@@ -49,28 +50,28 @@ public:
 
 	/* Screen coordinates of the pointer
 	 */
-	static const Vec2& mousePosition();
+	static const Vec2 mousePosition();
 	
 	/* Screen coordinates where the mouse is last pressed
 	 */
-	static const Vec2& mouseDownPosition();
+	static const Vec2 mouseDownPosition();
 
 	/* Distance the pointer moved in screen coordinates
 	 */
-	static Vec2 mouseDelta();
+	static const Vec2 mouseDelta();
 
 	/* Distance the pointer scrolled
 	 */
-	static const Vec2& mouseScroll();
+	static const Vec2 mouseScroll();
 
 	/* Text input from the keyboard
 	 * Use Key* functions for individual key inputs
 	 */
-	static const std::string& inputString();
+	static const std::string inputString();
 
 	/* Text input from the keyboard as unicode codepoints
 	 */
-	static const std::u32string& inputUnicodeString();
+	static const std::u32string inputUnicodeString();
 
 	/* Returns the status of mouse button \p b
 	 */

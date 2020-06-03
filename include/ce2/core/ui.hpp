@@ -86,7 +86,7 @@ public:
 
 	/* Defines the area to limit subsequent drawings
 	 */
-	static void BeginStencil(const CE_NS Rect& rect);
+	static void BeginStencil(const CE_NS Rect& rect, bool invert = false);
 
 	/* Defines the area to limit subsequent drawings
 	 * If \p useAlpha is true, the alpha channel controls visibility,

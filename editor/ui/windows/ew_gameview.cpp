@@ -33,6 +33,19 @@ void EW_GameView::Update() {
 	}
 
 	EPlayer::targetReso = resolution;
+
+	EPlayer::sendInput = EPlayer::playing && EWindowManager::inFocus(this);
+}
+
+void EW_GameView::ActiveUpdate() {
+	if (EPlayer::playing) {
+		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Down) {
+			EWindowManager::Focus(this, true);
+		}
+		else if (Input::KeyDown(InputKey::Escape)) {
+			EWindowManager::Focus(this, false);
+		}
+	}
 }
 
 void EW_GameView::Render() {

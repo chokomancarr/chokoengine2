@@ -97,9 +97,13 @@ std::vector<SceneObject> _Scene::FindAllByPred(std::function<bool(const SceneObj
 	return res;
 }
 
+#define TRYCALL(fn)\
+	if ((c->_callbackMask & _callbackFlags) == _callbackFlags)\
+		c->fn()
+
 #define RECCALL(nm, fn)\
 static const std::function<void(const std::vector<SceneObject>&)> nm\
-		= [](const std::vector<SceneObject>& oo) {\
+		= [this](const std::vector<SceneObject>& oo) {\
 	for (auto& o : oo) {\
 		fn\
 		nm(o->_children);\
@@ -110,12 +114,12 @@ void _Scene::Update() {
 	RECCALL(DoUpdate,
 		if (!o->_wasActive) {
 			for (auto& c : o->_components) {
-				c->OnStart();
+				TRYCALL(OnStart);
 			}
 			o->_wasActive = true;
 		}
 		for (auto& c : o->_components) {
-			c->OnUpdate();
+			TRYCALL(OnUpdate);
 		});
 
 	DoUpdate(_objects);
@@ -125,7 +129,7 @@ void _Scene::Update() {
 void _Scene::nm() {\
 	RECCALL(Do,\
 		for (auto& c : o->_components) {\
-			c->On ## nm();\
+			TRYCALL(On ## nm);\
 		});\
 	Do(_objects);\
 }

@@ -20,6 +20,7 @@ public:
 	virtual bool Init() = 0;
 	virtual void Refresh() {}
 	virtual void Update() {}
+	virtual void ActiveUpdate() {}
 	void Draw();
 	virtual void Render() {}
 };

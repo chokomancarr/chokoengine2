@@ -27,15 +27,30 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 			}
 		}
 		const Rect orect(position.x() + 1, off, position.w() - 2, 16);
-		if (!prs && UI::I::Button(orect, style) == InputMouseStatus::HoverUp) {
-			ESceneInfo::Select(o);
-			isa = true;
-		}
-		else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up
-				&& orect.Contains(Input::mousePosition())) {
-			ESceneInfo::Select(o);
-			menu_obj.SetAll(ECallbackArg("object", o));
-			EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_obj, false);
+		const auto button = UI::I::Button(orect, style);
+		if (!prs) {
+			if (button == InputMouseStatus::HoverHold) {
+				EDragDrop::Set({ o });
+			}
+			else if (button == InputMouseStatus::HoverUp) {
+				ESceneInfo::Select(o);
+				isa = true;
+			}
+			else if (Input::mouseStatus(InputMouseButton::Right) == InputMouseStatus::Up
+				&& button == InputMouseStatus::Hover) {
+				ESceneInfo::Select(o);
+				menu_obj.SetAll(ECallbackArg("object", o));
+				EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_obj, false);
+			}
+			else if (orect.Contains(Input::mousePosition())) {
+				if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {
+					if (EDragDrop::type == EDragDrop::Type::SceneObject) {
+						for (auto& o2 : EDragDrop::targetObj) {
+							((SceneObject)o2)->parent(o);
+						}
+					}
+				}
+			}
 		}
 		if (hc) {
 			UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[st->expanded ? "minus" : "plus"], Color(0.8f));
@@ -115,6 +130,17 @@ bool EW_Hierarchy::Init() {
 	addi(Collapse);
 
 	return true;
+}
+
+void EW_Hierarchy::ActiveUpdate() {
+	if (!!ESceneInfo::selectedObject) {
+		if (Input::KeyDown(InputKey::Delete)) {
+			ECallbackManager::Invoke(CallbackSig::OBJECT_DELETE, ECallbackArgs({
+					ECallbackArg("object", ESceneInfo::selectedObject)
+			}));
+			ESceneInfo::Clear();
+		}
+	}
 }
 
 void EW_Hierarchy::ExpandAll() {

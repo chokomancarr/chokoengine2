@@ -65,6 +65,8 @@ typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
 class _VertexArray;
 typedef std::shared_ptr<_VertexArray> VertexArray;
 
+class Cursor;
+
 class PrefabManager;
 
 CE_OBJECT(Object)
@@ -125,6 +127,7 @@ CE_END_NAMESPACE
 #include "types/rect.hpp"
 #include "types/mat4x4.hpp"
 
+#include "utils/cursor.hpp"
 #include "utils/math.hpp"
 #include "utils/curve.hpp"
 #include "utils/procedural_mesh.hpp"

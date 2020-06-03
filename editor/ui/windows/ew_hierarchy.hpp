@@ -15,6 +15,8 @@ public:
 
 	bool Init() override;
 
+	void ActiveUpdate() override;
+
     void ExpandAll();
     void CollapseAll();
 };

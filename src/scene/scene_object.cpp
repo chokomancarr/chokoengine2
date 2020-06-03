@@ -47,14 +47,14 @@ void _SceneObject::parent(const SceneObject& _p) {
 	/* Removes the old parent if it exists
 	 */
 	if (!!_parent) {
-		auto cc = std::find_if(p->_children.begin(), p->_children.end(), [&](const SceneObject& pp) {
+		auto cc = std::find_if(_parent->_children.begin(), _parent->_children.end(), [&](const SceneObject& pp) {
 			return pp.operator->() == this;
 		});
-		if (cc == _children.end()) {
+		if (cc == _parent->_children.end()) {
 			Debug::Warning("SceneObject", "Cannot remove component: component is not attached!");
 		}
-		std::swap(*cc, _children.back());
-		_children.pop_back();
+		std::swap(*cc, _parent->_children.back());
+		_parent->_children.pop_back();
 
 		/* TODO: clear prefabs if this object was a child object defined in a prefab,
 		 * where the whole instance should become unrelated

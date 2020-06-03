@@ -18,16 +18,6 @@ void EW_SceneView::DrawMenu() {
 	glBlendFunc(GL_ONE, GL_ZERO);
 	UI::Texture(r, _target);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	if (r.Contains(Input::mouseDownPosition())) {
-		static float x = 0;
-		static float y = 0;
-		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Hold) {
-			x -= Input::mouseDelta().y;
-			y -= Input::mouseDelta().x;
-			_pivot->transform()->localRotationEuler(Vec3(x, y, 0));
-		}
-	}
 }
 
 bool EW_SceneView::_Init() {
@@ -86,6 +76,55 @@ void EW_SceneView::Update() {
 			ECallbackManager::Invoke(CallbackSig::VIEW_TOGGLE_PERSPECTIVE, ECallbackArgs(), this);
 		}
 	}
+}
+
+void EW_SceneView::ActiveUpdate() {
+	switch (Input::mouseStatus(InputMouseButton::Left)) {
+	case InputMouseStatus::Down: {
+		if (Input::KeyHold(InputKey::LeftShift)) {
+			controlMode = ControlMode::Pan;
+		}
+		else if (Input::KeyHold(InputKey::LeftControl)) {
+			controlMode = ControlMode::Scale;
+		}
+		else {
+			controlMode = ControlMode::Rotate;
+		}
+		break;
+	}
+	case InputMouseStatus::Up: {
+		controlMode = ControlMode::None;
+		break;
+	}
+	default:
+		break;
+	}
+
+	static float s = 0;
+
+	switch (controlMode) {
+	case ControlMode::Rotate: {
+		static float x = 0;
+		static float y = 0;
+		x -= Input::mouseDelta().y;
+		y -= Input::mouseDelta().x;
+		_pivot->transform()->localRotationEuler(Vec3(x, y, 0));
+		break;
+	}
+	case ControlMode::Scale: {
+		s -= 0.1f * Input::mouseDelta().y;
+		break;
+	}
+	case ControlMode::Pan: {
+
+		break;
+	}
+	default:
+		break;
+	}
+
+	s -= 0.2f * Input::mouseScroll().y;
+	_pivot->transform()->localScale(Vec3(std::pow(2, s)));
 }
 
 void EW_SceneView::Render() {

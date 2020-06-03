@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "enums/callback_flags.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -10,6 +11,8 @@ class _Scene : public _Object { CE_OBJECT_COMMON
 	std::vector<SceneObject> _objects;
 	
 	Background _sky;
+
+	CompCallbackFlag::Tp _callbackFlags;
 
 public:
 	_Scene();
@@ -41,6 +44,8 @@ public:
 	/* Returns all objects satisfying the condition
 	 */
 	std::vector<SceneObject> FindAllByPred(std::function<bool(const SceneObject&)>);
+
+	CE_GET_SET_MEMBER(callbackFlags)
 
 	/* Event callbacks
 	 */

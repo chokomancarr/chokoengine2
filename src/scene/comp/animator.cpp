@@ -3,7 +3,9 @@
 CE_BEGIN_NAMESPACE
 
 _Animator::_Animator() : CE_COMPDEF(Animator), _state({}), _single(false),
-	_clip(nullptr), _clipTime(0), _graph(nullptr) {}
+		_clip(nullptr), _clipTime(0), _graph(nullptr) {
+	//_callbackMask &= ~CompCallbackFlag::EXEC_IN_EDIT_MODE;
+}
 
 void _Animator::graph(const AnimGraph& g) {
     _graph = g;

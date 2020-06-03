@@ -6,7 +6,6 @@ Input::State::State() : mousePositionOld(0), mousePosition(0), mouseDownPosition
         mouseScroll(0), mouseButtonStatesOld(), mouseButtonStates(), keyStatesOld(),
         keyStates(), inputString(), inputUnicodeString() {}
 
-
 Input::State Input::_state = Input::State();
 
 bool Input::Init() {
@@ -20,8 +19,18 @@ bool Input::Init() {
 }
 
 void Input::PreLoop() {
+	if (Cursor::locked()) {
+		if (_state.mousePositionLocked.x < -100) {
+			_state.mousePositionLocked = _state.mousePositionOld;
+		}
+	}
+	else {
+		if (_state.mousePositionLocked.x > -100) {
+			_state.mousePositionLocked = Vec2(-1000);
+		}
+	}
     if (mouseStatus(InputMouseButton::Left) == InputMouseStatus::Down) {
-        _state.mouseDownPosition = _state.mousePosition;
+        _state.mouseDownPosition = Cursor::locked() ? _state.mousePositionLocked : _state.mousePosition;
     }
 }
 
@@ -34,8 +43,8 @@ void Input::PostLoop() {
     _state.inputUnicodeString.clear();
 }
 
-void Input::_OnCursorMove(GLFWwindow*, double x, double y) {
-    _state.mousePosition = Vec2((float)x, (float)y);
+void Input::_OnCursorMove(GLFWwindow* wnd, double x, double y) {
+	_state.mousePosition = Vec2((float)x, (float)y);
 }
 
 void Input::_OnMouseClick(GLFWwindow*, int btn, int vl, int mod) {
@@ -48,7 +57,7 @@ void Input::_OnMouseScroll(GLFWwindow*, double x, double y) {
 }
 
 void Input::_OnKeyPress(GLFWwindow*, int key, int, int act, int) {
-    if (key < 350) _state.keyStates[key] = (act == GLFW_PRESS);
+    if (key < 350) _state.keyStates[key] = (act != GLFW_RELEASE);
 }
 
 void Input::_OnCharInput(GLFWwindow*, uint codepoint) {
@@ -77,16 +86,18 @@ void Input::Clear() {
     _state = State();
 }
 
-#define CE_I_GETF(t, nm) const t& Input::nm() {\
+#define CE_I_GETF(t, nm) const t Input::nm() {\
     return _state.nm;\
 }
 
-CE_I_GETF(Vec2, mousePosition);
+const Vec2 Input::mousePosition() {
+	return Cursor::locked() ? _state.mousePositionLocked : _state.mousePosition;
+}
 
 CE_I_GETF(Vec2, mouseDownPosition);
 
-Vec2 Input::mouseDelta() {
-    return _state.mousePosition - _state.mousePositionOld;
+const Vec2 Input::mouseDelta() {
+	return _state.mousePosition - _state.mousePositionOld;
 }
 
 CE_I_GETF(Vec2, mouseScroll);

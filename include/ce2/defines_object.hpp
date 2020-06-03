@@ -51,6 +51,10 @@
 #define CE_GET_SET_ST_MEMBER(nm)\
     CE_GET_ST_MEMBER(nm)\
     CE_SET_ST_MEMBER(nm)
+#define CE_SET_ST_MEMBER_F(nm) static void nm(const decltype(_ ## nm)& v);
+#define CE_GET_SET_ST_MEMBER_F(nm)\
+    CE_GET_ST_MEMBER(nm)\
+    CE_SET_ST_MEMBER_F(nm)
 
 /* Objects that can be loaded in the background
  * LoadAsync setting _loading = false must be implemented

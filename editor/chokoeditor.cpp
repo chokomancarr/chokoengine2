@@ -97,6 +97,10 @@ inline void paint() {
 			UI::Label(Rect(pos.x, pos.y, 1000, 20), t, Color(1, 0.8f));
 			pos.y += 14;
 		}
+		for (auto& t : EDragDrop::targetObj) {
+			UI::Label(Rect(pos.x, pos.y, 1000, 20), t->name(), Color(1, 0.8f));
+			pos.y += 14;
+		}
 	}
 
 	gt[2] = Time::actualMillis();
@@ -139,6 +143,7 @@ void ChokoEditor::Main() {
 	EAssetList::Rescan();
 
 	scene = Scene::New();
+	scene->callbackFlags(CompCallbackFlag::EXEC_IN_EDIT_MODE);
 
 	EAssetManager::Init();
 	ESceneManager::Init();
