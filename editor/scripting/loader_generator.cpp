@@ -114,6 +114,7 @@ public:
     _IMPL_GETSET(Vec4)
     _IMPL_GETSET(Quat)
     _IMPL_GETSET(Asset)
+    _IMPL_GETSET(SceneObject)
 #undef _IMPL_GETSET
 };
 
@@ -174,18 +175,17 @@ CE_BEGIN_PL_NAMESPACE
 )";
 
 	static const std::string tpss[] = {
-		"int",
-        "float",
-        "Vec2",
-        "Vec3",
-        "Vec4",
-        "Quat"
+		"00int",
+        "01float",
+        "02Vec2",
+        "03Vec3",
+        "04Vec4",
+        "05Quat",
+		"07SceneObject"
 	};
-	static const auto tpsn = sizeof(tpss) / sizeof(tpss[0]);
 	static const std::string tpss2[] = {
-		"Asset"
+		"06Asset"
 	};
-	static const auto tpsn2 = sizeof(tpss2) / sizeof(tpss2[0]);
 
 	for (auto& v : vars) {
 		impl << "\
@@ -202,8 +202,9 @@ Component )" + classcc + R"(Instantiate() {
 	
 )";
 
-	for (int a = 0; a < tpsn; a++) {
-		const auto& tps = tpss[a];
+	for (const auto& _tps : tpss) {
+		const int a = std::stoi(_tps.substr(0, 2));
+		const auto tps = _tps.substr(2);
 		impl << tps + " " + classcc + "get_" + tps + "(const std::string& s) {\n\
 	auto scr = " + nm + "(tar);\n\
 	if (0) {}\n";
@@ -229,13 +230,14 @@ void " + classcc + "set_" + tps + "(const std::string& s, const " + tps + "& v) 
 ";
 	}
 
-	for (int a = 0; a < tpsn2; a++) {
-		const auto& tps = tpss2[a];
+	for (const auto& _tps : tpss2) {
+		const int a = std::stoi(_tps.substr(0, 2));
+		const auto tps = _tps.substr(2);
 		impl << tps + " " + classcc + "get_" + tps + "(const std::string& s) {\n\
 	auto scr = " + nm + "(tar);\n\
 	if (0) {}\n";
 		for (auto& v : vars) {
-			if ((int)v.type == tpsn + a) {
+			if ((int)v.type == a) {
 				impl << "	else if (s == \"" + v.name + "\") { return scr->"
 					+ v.name + "; }\n";
 			}
@@ -245,7 +247,7 @@ void " + classcc + "set_" + tps + "(const std::string& s, const " + tps + "& v) 
 	auto scr = " + nm + "(tar);\n\
 	if (0) {}\n";
 		for (auto& v : vars) {
-			if ((int)v.type == tpsn + a) {
+			if ((int)v.type == a) {
 				impl << "	else if (s == \"" + v.name + "\") { scr->"
 					+ v.name + " = (decltype(scr->" + v.name + "))v; }\n";
 			}
