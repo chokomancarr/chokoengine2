@@ -72,5 +72,6 @@ IMPL_SET(Quat) { GETV
 }
 
 IMPL_GETSET(Asset, asset)
+IMPL_GETSET(SceneObject, obj)
 
 CE_END_PL_NAMESPACE

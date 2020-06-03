@@ -44,13 +44,29 @@ for (size_t a = 0, n = scr->vals.size(); a < n; a++) {
 	}
 	case ScriptVar::Type::Asset: {
 		CE_E_LBL(vr.name);
-		if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(vl.val_asset)) == InputMouseStatus::HoverUp) {
-			EO_SelectRef::RegAsset(vl.val_asset, std::function<void(const Asset&)>([scr, a](const Asset& vl) {
-				scr->vals[a].val_asset = vl;
+		if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(vl.val_asset)) == InputMouseStatus::HoverUp) {
+			EO_SelectRef::RegAsset(vl.val_asset, std::function<void(const Asset&)>([&vl, a](const Asset& vv) {
+				vl.val_asset = vv;
 			}), vl.var.type_asset);
 		}
 		else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), vl.var.type_asset, vl.val_asset = res)
 		CE_E_ASSET_SEEK_BTN();
+		CE_E_INC_Y();
+		break;
+	}
+	case ScriptVar::Type::SceneObject: {
+		CE_E_LBL(vr.name);
+		InputMouseStatus mst;
+		if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), 
+				!vl.val_obj ? "[none]" : (vl.val_obj->name() + " (SceneObject)")) == InputMouseStatus::HoverUp) {
+		}
+		if (EDragDrop::IsSingle() && EDragDrop::type == EDragDrop::Type::SceneObject
+			&& (mst = UI::I::ButtonTr(CE_E_VL_RECT.sub(0, 0, 17, 0))) != InputMouseStatus::None) {
+				UI::Rect(CE_E_VL_RECT.sub(0, 0, 17, 0), Color(1, 1, 0, 0.5f));
+				if (mst == InputMouseStatus::Up) {
+					vl.val_obj = (SceneObject)EDragDrop::targetObj[0];
+				}
+		}
 		CE_E_INC_Y();
 		break;
 	}

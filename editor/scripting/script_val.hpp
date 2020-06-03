@@ -19,6 +19,8 @@ public:
 		float _data[4];
 	};
 	Asset val_asset;
+	SceneObject val_obj;
+	Component val_comp;
 	std::vector<ScriptVal> val_vec;
 };
 

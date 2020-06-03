@@ -53,6 +53,10 @@ namespace {
 				return true;
 			}
 		}
+		if (tp == "SceneObject") {
+			vr.type = ScriptVar::Type::SceneObject;
+			return true;
+		}
 		/*for (int a = 0; a < (int)ComponentType::_COUNT; a++) {
 			if (tp == ComponentTypeStrs[a]) {
 				vr.type = ScriptVar::Type::Comp;

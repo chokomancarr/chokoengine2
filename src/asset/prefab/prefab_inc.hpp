@@ -13,6 +13,8 @@ namespace PrefabState {
 	extern std::vector<pPrefab> prefabStack;
 
 	extern std::stack<SceneObject> activeBaseObjs;
+
+	extern std::stack<std::vector<std::function<void()>>> refresolvers;
 }
 
 typedef _Prefab::_ObjBase _PrefabObjBase;

@@ -45,10 +45,10 @@ CE_ES_SPEC_F(const PrefabItemGroup&) {
 CE_ES_SPEC_F(const PrefabObjGroup&) {
 	return value.objgroup;
 }
-CE_ES_SPEC_F(const Prefab_ObjRef&) {
+CE_ES_SPEC_F(Prefab_ObjRef) {
 	return value.scobjref;
 }
-CE_ES_SPEC_F(const Prefab_CompRef&) {
+CE_ES_SPEC_F(Prefab_CompRef) {
 	return value.compref;
 }
 

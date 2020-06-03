@@ -9,6 +9,8 @@ namespace PrefabState {
 	std::vector<pPrefab> prefabStack = {};
 
 	std::stack<SceneObject> activeBaseObjs = {};
+
+	std::stack<std::vector<std::function<void()>>> refresolvers = {};
 }
 
 CE_END_NAMESPACE

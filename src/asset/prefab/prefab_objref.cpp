@@ -3,9 +3,10 @@
 CE_BEGIN_NAMESPACE
 
 Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path(0) {
-	if (tar == base) {
+	if (tar == base || !tar || !base) {
 		return;
 	}
+	const auto _tnm0 = tar->name();
 
 	const auto indexof = [](const std::vector<SceneObject>& oo, const SceneObject& o) {
 		const auto& nm = o->name();
@@ -20,8 +21,12 @@ Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path(0)
 	};
 
 	do {
-		tar = tar->parent().lock();
-		path.push_back(std::make_pair(tar->name(), indexof(tar->parent()->children(), tar)));
+		const auto tpr = tar->parent().lock();
+		if (!tpr) {
+			Debug::Error("Prefab::ObjectRef", "target object is not in base tree! (" + _tnm0 + " -> " + base->name() + ")");
+		}
+		path.push_back(std::make_pair(tar->name(), indexof(tpr->children(), tar)));
+		tar = tpr;
 	} while (tar != base);
 	std::reverse(path.begin(), path.end());
 }

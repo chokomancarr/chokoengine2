@@ -29,6 +29,12 @@ CE_PR_IMPL_COMP(Script) {
             ADDV(Vec4, Vec4)
             ADDV(Quat, Quat)
 			ADDV(Asset, Asset)
+		case Var::Type::SceneObject: {
+			auto r = PrefabItem(Prefab_ObjRef(Loader::instance->get_SceneObject(v.name), PrefabState::activeBaseObjs.top()));
+			r.name = v.name;
+			grp.push_back(std::move(r));
+			break;
+		}
         default:
             break;
         }
@@ -56,6 +62,15 @@ CE_PR_IMPL_COMP_INST(Script) {
             GETV(Vec4, Vec4)
             GETV(Quat, Quat)
             GETV(Asset, Asset)
+		case PrefabItem::Type::SceneObject: {
+			const auto nm = v.name;
+			const auto oref = v.Get<Prefab_ObjRef>();
+			PrefabState::refresolvers.top().push_back([loader, c, nm, oref]() {
+				loader->activeTarget(c);
+				loader->set_SceneObject(nm, oref.Seek(PrefabState::activeBaseObjs.top()->children()));
+			});
+			break;
+		}
         default:
             CE_NOT_IMPLEMENTED
         }

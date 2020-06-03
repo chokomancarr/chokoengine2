@@ -6,8 +6,11 @@ namespace PrefabMR {
 	void instMeshModifier(MeshSkinModifier& mod, const PrefabItemGroup& data) {
 		for (auto& d : data) {
 			if (d.name == "rig") {
-				mod->rig((Rig)d.Get<const Prefab_CompRef&>().Seek(
-					{ PrefabState::activeBaseObjs.top()->children() }));
+				const auto cref = d.Get<Prefab_CompRef>();
+				PrefabState::refresolvers.top().push_back([mod, cref]() {
+					mod->rig((Rig)cref.Seek(
+						{ PrefabState::activeBaseObjs.top()->children() }));
+				});
 			}
 		}
 	}

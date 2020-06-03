@@ -18,6 +18,8 @@ struct ScriptVarEntry {
         Vec4,
         Quat,
         Asset,
+		SceneObject,
+		Component,
         Class
     } type;
 
