@@ -33,7 +33,7 @@ inline void paint() {
 	static bool show = true;
 	if (Input::KeyDown(InputKey::S)) {
 		show = !show;
-		mat->SetUniform("tex", show ? (Texture)tx2 : tx);
+		mat->SetUniform("tex", show ? (Texture)tx2 : txp);
 	}
 
 	glBlendFunc(GL_ONE, GL_ZERO);
@@ -155,7 +155,7 @@ inline void paint() {
 		for (int a = 0; a < nb; a++) {
 			//MeshUtils::SurfaceBlur(dt, !a ? txp : (Texture)tx2, tx2, tx2t, scl, sss);
 		}
-		MeshUtils::EdgeDetect(dt, txp, tx2);
+		MeshUtils::EdgeDetect(dt, tx, tx2);
 	}
 }
 
@@ -176,7 +176,7 @@ void ChokoEditor::Init() {
 #define tex "skin"
 #define model "kcschan"
 #elif 1
-#define tex "ball4"
+#define tex "ball4b"
 #define model "ball4"
 #else 
 #define tex "t"

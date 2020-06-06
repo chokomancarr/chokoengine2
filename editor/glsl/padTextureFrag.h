@@ -11,7 +11,10 @@ void main() {
 	vec2 uvr = uv / reso;
 
 	ivec4 info = texture(infoTex, uvr);
-	outColor = texture(colTex, uvr);
+	outColor = 
+		//vec4(vec3(1, 1, 1) * (info.z % 5) * 0.2, 1);
+		texture(colTex, uvr);
+		//return;
 	if (info.x == 0 && info.z > 0) { //in triangle
 		return;
 	}
