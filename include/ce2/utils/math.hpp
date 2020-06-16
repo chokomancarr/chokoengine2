@@ -8,15 +8,30 @@ namespace Math {
 	const float deg2rad = 0.0174532925f;
 	const float rad2deg = 57.295779513f;
 
+	/* Linear interpolate from A to B at T
+	 */
     template <typename T, typename F>
     T Lerp(const T& a, const T& b, const F& t);
 
+	/* Similar to Lerp, but wrap values around
+	 * 0~360
+	 */
+	template <typename T, typename F>
+	T LerpAngle(const T&a, const T& b, const F& t);
+
+	/* Get the linear interpolated T from A to B
+	 * given the value C
+	 */
     template <typename T>
     T ILerp(const T& a, const T& b, const T& c);
 
+	/* Bound t between a and b via minmax
+	 */
 	template <typename T>
 	T Clamp(const T& t, const T& a, const T& b);
 
+	/* Bound t between a and b via repeating
+	 */
 	template <typename T>
 	T Repeat(const T& a, const T& b, const T& t);
 }
