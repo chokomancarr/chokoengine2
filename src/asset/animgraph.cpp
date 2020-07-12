@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-_AnimGraph::_AnimGraph() : _Asset(AssetType::AnimGraph), _nodes({}), _vars({}) {}
+_AnimGraph::_AnimGraph() : _Asset(AssetType::AnimGraph), _nodes({}), _vars({}), defaultState(0) {}
 
 _AnimGraph::Node& _AnimGraph::AddNode() {
     _nodes.push_back(Node::New());
@@ -10,6 +10,9 @@ _AnimGraph::Node& _AnimGraph::AddNode() {
 }
 
 _AnimGraph::State _AnimGraph::GetNewState() {
+	if (!_nodes.size()) {
+		Debug::Warning("AnimGraph::GetNewState", "no states in current graph!");
+	}
     State s = {};
     s.inTransition = false;
     s.node = _nodes.front();

@@ -177,6 +177,7 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 
 void EAssetList::Init() {
 	_exts[(int)AssetType::AnimClip] = { "animclip" };
+	_exts[(int)AssetType::AnimGraph] = { "animgraph" };
     _exts[(int)AssetType::Armature] = { "armature" };
     _exts[(int)AssetType::Background] = { "hdr", "exr" };
     _exts[(int)AssetType::Material] = { "material" };

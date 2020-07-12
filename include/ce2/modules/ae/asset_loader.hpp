@@ -25,6 +25,7 @@ public:
 	static Asset Load(AssetType, const std::string&, bool);
 
 	CE_MOD_AE_DEF(AnimClip);
+	CE_MOD_AE_DEF(AnimGraph);
 	CE_MOD_AE_DEF(Armature);
 	CE_MOD_AE_DEF(Background);
 	CE_MOD_AE_DEF(Material);

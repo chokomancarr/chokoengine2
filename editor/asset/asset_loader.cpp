@@ -108,67 +108,6 @@ bool EAssetLoader::Load(const std::string& path, const EExportType t) {
 
 #undef CE_E_EX
 
-/*
-CE_E_AL_IMPL(AnimClip) {
-	const auto meta = LoadMeta(path);
-	std::ifstream strm(ChokoEditor::assetPath + path, std::ios::binary);
-	char sig[5] = {};
-	strm.read(sig, 4);
-	if (!!std::strcmp(sig, "ANIM")) {
-		Debug::Error("AssetLoader", "AnimClip signature incorrect!");
-		return nullptr;
-	}
-	uint16_t n, r1, r2;
-	strm.read((char*)&n, 2);
-	strm.read((char*)&r1, 2);
-	strm.read((char*)&r2, 2);
-	std::vector<_AnimClip::Entry> es(n);
-	for (auto& e : es) {
-		std::getline(strm, e.signature, '\0');
-		std::vector<_AnimClip::Value> trs;
-		for (uint16_t a = r1; a <= r2; a++) {
-			Vec3 v31;
-			strm.read((char*)&v31, sizeof(Vec3));
-			Quat q;
-			strm.read((char*)&q, sizeof(Quat));
-			Vec3 v32;
-			strm.read((char*)&v32, sizeof(Vec3));
-			trs.push_back(_AnimClip::Value(v31, q, v32));
-		}
-		e.values = Curve<_AnimClip::Value>(trs, r1, r2);
-	}
-	auto clip = AnimClip::New();
-	clip->entries(es);
-	clip->range(Int2(r1, r2));
-	return clip;
-}
-
-CE_E_AL_IMPL(Armature) {
-	const auto meta = LoadMeta(path);
-	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	if (data.group[0].key.string != "armature") {
-		Debug::Error("AssetLoader", "Armature entry missing!");
-		return nullptr;
-	}
-	auto arm = Armature::New();
-	arm->bones(LoadBones(data.group[0].value));
-	return arm;
-}
-
-CE_E_AL_IMPL(VShader) {
-	const auto meta = LoadMeta(path);
-	const auto data = JsonParser::Parse(IO::ReadFile(ChokoEditor::assetPath + path));
-	auto shad = VShader::New();
-	for (auto& n : data.group) {
-		shad->nodes.push_back(_VShaderNode::FromSig(n.key.string));
-	}
-	for (size_t a = 0, n = data.group.size(); a < n; a++) {
-		shad->nodes[a]->Parse(data.group[a].value, shad);
-	}
-	return shad;
-}
-*/
-
 CE_E_AL_IMPL_EX(Model) {
 	const auto meta = ModuleAE::AssetLoader::LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);

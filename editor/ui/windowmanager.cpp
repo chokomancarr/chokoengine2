@@ -46,7 +46,7 @@ void EWindowManager::LoadWindows() {
 	windows.push_back(std::make_shared<EW_Browser>());
 	SETPOS(Rect(0, 350, 400, 250));
 	windows.back()->Init();
-	windows.push_back(std::make_shared<EW_GameView>());
+	windows.push_back(std::make_shared<EW_AnimGrapher>());
 	SETPOS(Rect(400, 350, 350, 250));
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Hierarchy>());
@@ -160,6 +160,7 @@ void EWindowManager::Draw() {
 		SELWND("Game Output", EW_GameView);
 		SELWND("Hierarchy", EW_Hierarchy);
 		SELWND("Inspector", EW_Inspector);
+		SELWND("Anim Graph Editor", EW_AnimGrapher);
 		//SELWND("Animation", EW_AnimEditor);
 
 		if (Input::KeyDown(InputKey::Escape)) {

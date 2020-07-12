@@ -50,6 +50,7 @@ Asset AssetLoader::Load(AssetType t, const std::string& path, bool async) {
 	if (path == "none") return nullptr;
 	switch (t) {
 		CE_E_LD(AnimClip)
+		CE_E_LD(AnimGraph)
 		CE_E_LD(Armature)
 		CE_E_LD(Background)
 		CE_E_LD(Material)

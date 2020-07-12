@@ -40,6 +40,12 @@ enum class CallbackSig {
 	VIEW_FOCUS_OBJECT,
 	VIEW_FOCUS_OBJECT_TREE,
 
+	// -------  anim graph  ----------
+
+	ANIMGRAPH_STATE_NEW,
+	ANIMGRAPH_STATE_DELETE,
+
+
 	_COUNT,
 	Undefined
 };

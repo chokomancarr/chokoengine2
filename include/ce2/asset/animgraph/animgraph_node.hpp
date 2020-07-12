@@ -8,10 +8,13 @@ class _AnimGraph::_Node : public _Object {
 
 	std::vector<Link> _links;
 
+	float _speed;
+
 public:
 	_Node();
 
 	CE_GET_SET_MEMBER(clip);
+	CE_GET_SET_MEMBER(speed);
 	CE_GET_SET_MEMBER(links);
 };
 

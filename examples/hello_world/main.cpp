@@ -3,11 +3,10 @@
  */
 
 /* Include this file instead of chokoengine.hpp
- * to use shorthand functions
  */
 #include "chokolait.hpp"
 
-/* All ChokoEngine fucntions are contained in
+/* All ChokoEngine functions are contained in
  * the ChokoEngine namespace
  */
 using namespace ChokoEngine;
@@ -15,7 +14,7 @@ using namespace ChokoEngine;
 int main() {
 	/* Initializes ChokoLait
 	 * This must be called first
-	 * before other ChokoEngine operations
+	 * before other engine operations
 	 */
 	if (!ChokoLait::Init(
 		/* Title of the window
@@ -28,7 +27,7 @@ int main() {
 		 */
 		600)) {
 
-		/* Initialization failed, we're done
+		/* Initialization failed, we're done for
 		 */
 		return -1;
 	}
@@ -40,7 +39,7 @@ int main() {
 		 * All frame-dependant calls should come after this function
 		 */
 		ChokoLait::Update(
-			/* optional function to call before updating the scene
+			/* optional function to call while updating the scene
 			 */
 			nullptr
 		);

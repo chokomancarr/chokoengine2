@@ -1,5 +1,6 @@
 target_sources(Module_AssetEditor PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/animclip.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/animgraph.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/armature.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/background.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/material.cpp

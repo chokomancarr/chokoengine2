@@ -2,6 +2,7 @@
 #include "chokoeditor.hpp"
 
 #include "window.hpp"
+#include "windows/ew_animgrapher.hpp"
 #include "windows/ew_browser.hpp"
 #include "windows/ew_gameview.hpp"
 #include "windows/ew_hierarchy.hpp"

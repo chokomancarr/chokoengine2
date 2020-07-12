@@ -29,6 +29,8 @@ const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
 	{ CallbackSig::VIEW_TOGGLE_PERSPECTIVE, "VIEW_TOGGLE_PERSPECTIVE" },
 	{ CallbackSig::VIEW_FOCUS_OBJECT, "VIEW_FOCUS_OBJECT" },
 	{ CallbackSig::VIEW_FOCUS_OBJECT_TREE, "VIEW_FOCUS_OBJECT_TREE" },
+	{ CallbackSig::ANIMGRAPH_STATE_NEW, "ANIMGRAPH_STATE_NEW" },
+	{ CallbackSig::ANIMGRAPH_STATE_DELETE, "ANIMGRAPH_STATE_DELETE" },
 	{ CallbackSig::_COUNT, "_COUNT" },
 	{ CallbackSig::Undefined, "Undefined" }
 };

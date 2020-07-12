@@ -24,6 +24,9 @@ public:
 	_AnimGraph();
 
 	CE_GET_SET_MEMBER(nodes);
+	CE_GET_SET_MEMBER(vars);
+
+	int defaultState;
 
 	Node& AddNode();
 
