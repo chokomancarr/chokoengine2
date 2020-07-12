@@ -1,13 +1,16 @@
 #include "chokoengine.hpp"
 
 CE_BEGIN_NAMESPACE
-Vec3::Vec3() : x(0), y(0), z(0) {}
 
 Vec3::Vec3(float w) : x(w), y(w), z(w) {}
 
 Vec3::Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 
 Vec3::Vec3(Vec2 v, float z) : x(v.x), y(v.y) {}
+
+float Vec3::operator [](const int i) const {
+	return (&x)[i];
+}
 
 Vec3 Vec3::operator -() const {
 	return Vec3(-x, -y, -z);
@@ -77,12 +80,16 @@ Vec3 Vec3::cross(const Vec3& v) const {
 	);
 }
 
-float Vec3::length() const {
-	return std::sqrt(x*x + y*y + z*z);
-}
-
 Vec3 Vec3::normalized() const {
 	return (*this) / length();
+}
+
+float Vec3::length() const {
+	return std::sqrt(x * x + y * y + z * z);
+}
+
+float Vec3::length2() const {
+	return x * x + y * y + z * z;
 }
 
 std::string Vec3::str() const {
@@ -112,6 +119,7 @@ Vec3 Vec3::front() {
 Vec3 Vec3::back() {
 	return Vec3(0, 0, -1);
 }
+
 
 Vec3 operator* (const glm::mat3& m, const Vec3& v) {
 	auto t = (m * *(glm::vec3*)&v.x);

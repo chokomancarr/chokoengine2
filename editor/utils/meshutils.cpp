@@ -31,6 +31,7 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	};
 
 	MeshSurfaceData data = {};
+	/*
 
 	const auto& poss = m->positions();
 	const auto& uvs = m->texcoords();
@@ -154,7 +155,7 @@ MeshSurfaceData MeshUtils::GenSurfaceData(const Mesh& m) {
 	data.conData = TextureBuffer::New(
 		VertexBuffer_New(true, 4, data.indCount * 6, cons.data()),
 		GL_RGBA32F);
-
+	*/
 	return data;
 }
 
