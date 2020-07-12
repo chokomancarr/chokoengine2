@@ -3,21 +3,26 @@
 
 CE_BEGIN_NAMESPACE
 
-class Vec2 : public glm::vec2 {
+class Vec2 {
 public:
-	Vec2();
-	Vec2(float v);
-	Vec2(float x, float y);
-	Vec2(const glm::vec2& q);
+	Vec2(const float v = 0);
+	Vec2(const float x, float y);
 
-	Vec2 operator *(const Vec2& rhs);
-	Vec2 operator +(const Vec2& rhs);
-	Vec2 operator -(const Vec2& rhs);
+	float x, y;
+
+	float operator [](const int i) const;
+
+	Vec2 operator +(const Vec2& rhs) const;
+	Vec2 operator -(const Vec2& rhs) const;
+	Vec2 operator *(const Vec2& rhs) const;
+	Vec2 operator /(const Vec2& rhs) const;
 
 	Vec2& operator +=(const Vec2& rhs);
 	Vec2& operator -=(const Vec2& rhs);
 
-	Vec2 normalized();
+	Vec2 normalized() const;
+	float length() const;
+	float dot(const Vec2& rhs) const;
 
 	static Vec2 left();
 	static Vec2 right();

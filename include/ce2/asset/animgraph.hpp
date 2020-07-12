@@ -6,10 +6,11 @@ CE_BEGIN_NAMESPACE
 class _AnimGraph : public _Asset { CE_OBJECT_COMMON
 public:
 	CE_OBJECT(Node);
-	CE_OBJECT(Link);
 
 	class _Var;
 	class Var;
+
+	class Link;
 
 	/* Object containing the current state of the machine
 	 * Required for every update operation
@@ -40,6 +41,6 @@ public:
 CE_END_NAMESPACE
 
 #include "animgraph/animgraph_node.hpp"
-#include "animgraph/animgraph_link.hpp"
 #include "animgraph/animgraph_var.hpp"
+#include "animgraph/animgraph_link.hpp"
 #include "animgraph/animgraph_state.hpp"

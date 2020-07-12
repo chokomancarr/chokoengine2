@@ -5,6 +5,10 @@ CE_BEGIN_ED_NAMESPACE
 
 namespace {
 	EDropdownMenu menu_empty;
+
+	constexpr int NW = 120;
+	constexpr int NH = 40;
+	const Vec2 NWH(NW, NH);
 }
 
 void EW_AnimGrapher::RegAsset(AnimGraph g) {
@@ -45,13 +49,22 @@ void EW_AnimGrapher::DrawMenu() {
 	static EUILayout::PanState st = {};
 	const auto rect2 = position.sub(1, 20, 1, 1);
 	Vec2 off = EUILayout::BeginPan(rect2, Rect(0, 0, 300, 200), st);
-	//UI::defaultFont()->alignment(FontAlign::TopCenter);
+	UI::defaultFont()->alignment(FontAlign::TopCenter);
 
 	for (size_t a = 0; a < _nodes.size(); a++) {
 		const auto& nd = _graph->nodes()[a];
 		const auto& _nd = _nodes[a];
-		UI::Rect(Rect(off.x + _nd.position.x, off.y + _nd.position.y, 60, 20), Color(0.5f, 0.7f));
-		UI::Label(Rect(off.x + _nd.position.x, off.y + _nd.position.y, 60, 20), nd->name(), Color::white());
+		const auto& lks = nd->links();
+		for (auto& lk : lks) {
+			UI::Line(off + _nd.position + NWH * 0.5f, off + _nodes[lk.target].position + NWH * 0.5f, Color::red());
+		}
+	}
+	
+	for (size_t a = 0; a < _nodes.size(); a++) {
+		const auto& nd = _graph->nodes()[a];
+		const auto& _nd = _nodes[a];
+		UI::Rect(Rect(off.x + _nd.position.x, off.y + _nd.position.y, NW, NH), Color(0.5f, 0.7f));
+		UI::Label(Rect(off.x + _nd.position.x + NW / 2, off.y + _nd.position.y + 2, NW, 16), nd->name(), Color::white());
 	}
 
 	if (rect2.Contains(Input::mousePosition())) {
@@ -60,7 +73,7 @@ void EW_AnimGrapher::DrawMenu() {
 		}
 	}
 
-	//UI::defaultFont()->alignment(FontAlign::TopLeft);
+	UI::defaultFont()->alignment(FontAlign::TopLeft);
 	EUILayout::EndPan(st);
 }
 

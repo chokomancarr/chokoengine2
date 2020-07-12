@@ -6,7 +6,7 @@ CE_BEGIN_NAMESPACE
 struct _AnimGraph::State {
 	bool inTransition;
 	pNode node;
-	pLink link;
+	int link;
 	std::vector<_Var> vars;
 };
 

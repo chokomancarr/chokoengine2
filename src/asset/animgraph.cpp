@@ -16,7 +16,7 @@ _AnimGraph::State _AnimGraph::GetNewState() {
     State s = {};
     s.inTransition = false;
     s.node = _nodes.front();
-    s.link = pLink();
+    s.link = 0;
     for (auto& v : _vars) {
         s.vars.push_back(v.defaultValue);
     }

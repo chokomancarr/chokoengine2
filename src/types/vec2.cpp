@@ -2,24 +2,28 @@
 
 CE_BEGIN_NAMESPACE
 
-Vec2::Vec2() : glm::vec2() {}
+Vec2::Vec2(float w) : x(w), y(w) {}
 
-Vec2::Vec2(float w) : glm::vec2(w) {}
+Vec2::Vec2(float x, float y) : x(x), y(y) {}
 
-Vec2::Vec2(float x, float y) : glm::vec2(x, y) {}
-
-Vec2::Vec2(const glm::vec2& q) : glm::vec2(q) {}
-
-Vec2 Vec2::operator *(const Vec2& rhs) {
-	return Vec2(x * rhs.x, y * rhs.y);
+float Vec2::operator [](const int i) const {
+	return (&x)[i];
 }
 
-Vec2 Vec2::operator +(const Vec2& rhs) {
+Vec2 Vec2::operator +(const Vec2& rhs) const {
 	return Vec2(x + rhs.x, y + rhs.y);
 }
 
-Vec2 Vec2::operator -(const Vec2& rhs) {
+Vec2 Vec2::operator -(const Vec2& rhs) const {
 	return Vec2(x - rhs.x, y - rhs.y);
+}
+
+Vec2 Vec2::operator *(const Vec2& rhs) const {
+	return Vec2(x * rhs.x, y * rhs.y);
+}
+
+Vec2 Vec2::operator /(const Vec2& rhs) const {
+	return Vec2(x / rhs.x, y / rhs.y);
 }
 
 Vec2& Vec2::operator +=(const Vec2& rhs) {
@@ -34,8 +38,16 @@ Vec2& Vec2::operator -=(const Vec2& rhs) {
 	return *this;
 }
 
-Vec2 Vec2::normalized() {
-	return static_cast<Vec2>(glm::normalize((glm::vec2)*this));
+Vec2 Vec2::normalized() const {
+	return (*this) / length();
+}
+
+float Vec2::length() const {
+	return std::sqrt(x*x + y*y);
+}
+
+float Vec2::dot(const Vec2& rhs) const {
+	return x * rhs.x + y * rhs.y;
 }
 
 Vec2 Vec2::left() {
