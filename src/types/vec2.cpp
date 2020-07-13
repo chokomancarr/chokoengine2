@@ -6,7 +6,7 @@ Vec2::Vec2(float w) : x(w), y(w) {}
 
 Vec2::Vec2(float x, float y) : x(x), y(y) {}
 
-float Vec2::operator [](const int i) const {
+float& Vec2::operator [](const int i) {
 	return (&x)[i];
 }
 

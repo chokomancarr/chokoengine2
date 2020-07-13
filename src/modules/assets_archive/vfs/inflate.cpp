@@ -1,5 +1,6 @@
 #include "inflate.hpp"
 #include <zlib.h>
+#include <assert.h> 
 
 CE_BEGIN_NAMESPACE
 

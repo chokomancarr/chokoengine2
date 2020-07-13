@@ -1,4 +1,5 @@
 #include "backend/chokoengine_backend.hpp"
+#include "ext/glmext.hpp"
 #include "glsl/minVert.h"
 #include "glsl/pointLightFrag.h"
 #include "glsl/pointLightFrag_s.h"
@@ -19,7 +20,7 @@ void Renderer::RenderLight_Point(const Light& l, const FrameBuffer& gbuf, const 
 	const auto& pos = l->object()->transform()->worldPosition();
 
 	pointLightShad->Bind();
-	glUniformMatrix4fv(pointLightShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+	glUniformMatrix4fv(pointLightShad->Loc(0), 1, GL_FALSE, fptr(ip));
 	glUniform2f(pointLightShad->Loc(1), tar->_width, tar->_height);
 	glUniform1i(pointLightShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -88,7 +89,7 @@ void Renderer::RenderLight_Point_Shadow(const Light& l) {
 
 		MVP::Switch(true);
 		MVP::Clear();
-		MVP::Mul(_p);
+		MVP::Mul(glm_cast(_p));
 		MVP::Push();
 		MVP::Mul(Mat4x4::Rotation(rs[a]));
 		MVP::Push();
@@ -109,7 +110,7 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	const auto& fwd = l->object()->transform()->forward();
 
 	spotLightShad->Bind();
-	glUniformMatrix4fv(spotLightShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+	glUniformMatrix4fv(spotLightShad->Loc(0), 1, GL_FALSE, fptr(ip));
 	glUniform2f(spotLightShad->Loc(1), tar->_width, tar->_height);
 	glUniform1i(spotLightShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -134,7 +135,7 @@ void Renderer::RenderLight_Spot(const Light& l, const FrameBuffer& gbuf, const M
 	if (l->_shadow && !tr) {
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, l->shadowBuffer_2D->_depth->_pointer);
-		glUniformMatrix4fv(spotLightShad->Loc(14), 1, GL_FALSE, &l->_lastShadowMatrix[0][0]);
+		glUniformMatrix4fv(spotLightShad->Loc(14), 1, GL_FALSE, fptr(l->_lastShadowMatrix));
 		glUniform1f(spotLightShad->Loc(15), l->_shadowStrength);
 		glUniform1f(spotLightShad->Loc(16), l->_shadowBias);
 	}
@@ -159,7 +160,7 @@ void Renderer::RenderLight_Spot_Shadow(const Light& l) {
 	l->shadowBuffer_2D->Clear();
 
 	const auto& p = l->_lastShadowMatrix = 
-		glm::perspectiveFov<float>(l->_angle * 2 * Math::deg2rad, l->_shadowResolution, l->_shadowResolution, 0.1f, l->_distance)
+		glm_cast(glm::perspectiveFov<float>(l->_angle * 2 * Math::deg2rad, l->_shadowResolution, l->_shadowResolution, 0.1f, l->_distance))
 		* Mat4x4::Rotation(Vec3(180, 0, 0))
 		* l->object()->transform()->worldMatrix().inverse();
 

@@ -1,5 +1,6 @@
 #include "chokoeditor.hpp"
 #include "glsl/arm_bone.h"
+#include "ext/glmext.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -42,7 +43,7 @@ void EW_S_Rig::DrawActive(const Component& c, const Mat4x4& p) {
 	_boneProg->Bind();
 	for (auto& b : rig->boneObjs()) {
 		const auto& MV = b.obj->transform()->worldMatrix();
-		glUniformMatrix4fv(_boneProg->Loc(0), 1, false, glm::value_ptr(p * MV));
+		glUniformMatrix4fv(_boneProg->Loc(0), 1, false, fptr(p * MV));
 		glUniform1f(_boneProg->Loc(1), b.bone.length);
 		if (b.obj.lock() == ESceneInfo::selectedObject) {
 			glUniform4f(_boneProg->Loc(2), 1, 1, 0, 1);

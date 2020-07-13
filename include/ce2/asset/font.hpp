@@ -25,7 +25,7 @@ class _Font : public _Asset { CE_OBJECT_COMMON
 	struct _glyph_st {
         GLuint tex;
 		uint o2s[256];
-		glm::ivec2 off[256];
+		Int2 off[256];
 	};
 	std::unordered_map<uint, std::unordered_map<uint, _glyph_st>> _glyphs;
 

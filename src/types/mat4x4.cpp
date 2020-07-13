@@ -1,21 +1,32 @@
 #include "chokoengine.hpp"
+#include "ext/glmext.hpp"
 
 CE_BEGIN_NAMESPACE
 
-Mat4x4::Mat4x4() : glm::mat4() {}
-
-Mat4x4::Mat4x4(float f) : glm::mat4(f) {}
+Mat4x4::Mat4x4(float f) : data({}) {
+	data[0] = data[5] = data[10] = data[15] = f;
+}
 
 Mat4x4::Mat4x4(float a, float b, float c, float d, 
         float e, float f, float g, float h, 
         float i, float j, float k, float l, 
         float m, float n, float o, float p)
-        : glm::mat4(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) {}
+	: data({ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p }) {}
 
-Mat4x4::Mat4x4(const glm::mat4& m) : glm::mat4(m) {}
+float& Mat4x4::operator[](const int i) {
+	return data[i];
+}
+
+Vec4 Mat4x4::operator*(const Vec4& rhs) const {
+	return glm_cast((*(glm::mat4*)this) * (*(glm::vec4*)&rhs));
+}
+
+Mat4x4 Mat4x4::operator*(const Mat4x4& rhs) const {
+	return glm_cast((*(glm::mat4*)this) * (*(glm::mat4*)&rhs));
+}
 
 Mat4x4 Mat4x4::inverse() const {
-	return glm::inverse(*this);
+	return glm_cast(glm::inverse(*(glm::mat4*)this));
 }
 
 Mat4x4 Mat4x4::Identity() {

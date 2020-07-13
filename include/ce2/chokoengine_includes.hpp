@@ -16,13 +16,6 @@
 
 #include <GLFW/glfw3.h>
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/transform.hpp"
-#include "glm/gtx/quaternion.hpp"
-
 CE_BEGIN_NAMESPACE
 
 /* type extensions
@@ -31,10 +24,6 @@ typedef unsigned char byte;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned short ushort;
-
-typedef glm::tvec2<int, glm::highp> Int2;
-typedef glm::tvec3<int, glm::highp> Int3;
-typedef glm::tvec4<int, glm::highp> Int4;
 
 CE_END_NAMESPACE
 
@@ -56,8 +45,12 @@ class Color;
 class Vec2;
 class Vec3;
 class Vec4;
+class Int2;
+class Int3;
+class Int4;
 class Quat;
 class Rect;
+class Mat3x3;
 class Mat4x4;
 
 class _VertexBuffer;
@@ -123,8 +116,12 @@ CE_END_NAMESPACE
 #include "types/vec2.hpp"
 #include "types/vec3.hpp"
 #include "types/vec4.hpp"
+#include "types/int2.hpp"
+#include "types/int3.hpp"
+#include "types/int4.hpp"
 #include "types/quat.hpp"
 #include "types/rect.hpp"
+#include "types/mat3x3.hpp"
 #include "types/mat4x4.hpp"
 
 #include "utils/cursor.hpp"

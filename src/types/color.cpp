@@ -3,18 +3,37 @@
 CE_BEGIN_NAMESPACE
 
 Color::Color()
-        : glm::vec4(0), h(0), s(0), v(0) {}
+        : r(0), g(0), b(0), a(0), h(0), s(0), v(0) {}
 
 Color::Color(const float r, const float g, const float b, const float a)
-        : glm::vec4(r, g, b, a), h(0), s(0), v(0) {}
+        : r(r), g(g), b(b), a(a), h(0), s(0), v(0) {}
 
 Color::Color(const float c, const float a)
-        : glm::vec4(c, c, c, a), h(0), s(0), v(0) {}
-Color::Color(const glm::vec4& v)
-        : glm::vec4(v), h(0), s(0), v(0) {}
+        : r(c), g(c), b(c), a(a), h(0), s(0), v(0) {}
+
+Color::Color(const Vec4& v) : r(v.x), g(v.y), b(v.z), a(v.w), h(0), s(0), v(0) {}
+
+Color::operator Vec4() const {
+	return Vec4(r, g, b, a);
+}
+
+Color Color::operator *(const Color& c) const {
+	return Color(r*c.r, g*c.g, b*c.b, a*c.a);
+}
+
+Color Color::operator *(const float f) const {
+	return Color(r*f, g*f, b*f, a*f);
+}
+
+Color Color::operator +(const Color& c) const {
+	return Color(r+c.r, g+c.g, b+c.b, a+c.a);
+}
+
+Color Color::operator -(const Color& c) const {
+	return Color(r-c.r, g-c.g, b-c.b, a-c.a);
+}
 
 void Color::ComputeHSV() {
-
 	float mn = std::min(std::min(r, g), b);
 	float mx = std::max(std::max(r, g), b);
 
@@ -39,10 +58,10 @@ void Color::ComputeHSV() {
 
 void Color::ComputeRGB() {
 	Vec4 ct;
-	ct.r = Math::Clamp(std::abs(h * 6 - 3) - 1.f, 0.f, 1.f);
-	ct.g = 1 - Math::Clamp(std::abs(h * 6 - 2) - 1.f, 0.f, 1.f);
-	ct.b = 1 - Math::Clamp(std::abs(h * 6 - 4) - 1.f, 0.f, 1.f);
-	ct.a = 1;
+	ct.x = Math::Clamp(std::abs(h * 6 - 3) - 1.f, 0.f, 1.f);
+	ct.y = 1 - Math::Clamp(std::abs(h * 6 - 2) - 1.f, 0.f, 1.f);
+	ct.z = 1 - Math::Clamp(std::abs(h * 6 - 4) - 1.f, 0.f, 1.f);
+	ct.w = 1;
 	*((Vec4*)this) = Math::Lerp(Math::Lerp(ct, Vec4(1), 1 - s), Vec4(0), 1 - v);
 }
 

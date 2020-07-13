@@ -36,7 +36,7 @@ _RenderTarget::~_RenderTarget() {
 }
 
 void _RenderTarget::Clear(const Color& c, const float d) const {
-	glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0, &c[0]);
+	glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0, &c.r);
 	if (_depth) glClearBufferfv(GL_DEPTH, 0, &d);
 }
 

@@ -3,14 +3,23 @@
 
 CE_BEGIN_NAMESPACE
 
-class Color : public glm::vec4 {
+class Color {
 public:
     Color();
     Color(const float r, const float g, const float b, const float a = 1);
     Color(const float c, const float a = 1);
-    Color(const glm::vec4& v);
+	Color(const Vec4& v);
 
+	operator Vec4() const;
+
+	float r, g, b, a;
 	float h, s, v;
+
+	Color operator *(const Color& c) const;
+	Color operator *(const float f) const;
+
+	Color operator +(const Color& c) const;
+	Color operator -(const Color& c) const;
 
 	void ComputeHSV();
 	void ComputeRGB();

@@ -16,7 +16,7 @@ class UI { CE_CLASS_COMMON
 	static CE_EXPORT Shader texShad;
 
 	static CE_EXPORT float _alpha;
-	static CE_EXPORT glm::mat3 matrix;
+	static CE_EXPORT Mat3x3 matrix;
 	static CE_EXPORT bool matrixIsI;
 
 	static CE_EXPORT Font _defaultFont;

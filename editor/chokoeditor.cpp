@@ -58,7 +58,7 @@ void pg(uint64_t* f) {
 	gshad->Bind();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	for (int i = 2; i >= 0; i--) {
-		glUniform4f(gshad->Loc(0), gcl[i].r, gcl[i].g, gcl[i].b, 1);
+		glUniform4f(gshad->Loc(0), gcl[i].x, gcl[i].y, gcl[i].z, 1);
 		gvao[i]->Bind();
 		glDrawArrays(GL_LINE_STRIP, 0, gi);
 		gvao[i]->Unbind();

@@ -1,4 +1,5 @@
 #include "backend/chokoengine_backend.hpp"
+#include "ext/glmext.hpp"
 #include "glsl/minVert.h"
 #include "glsl/skyFrag.h"
 #include "glsl/probeLightFrag.h"
@@ -231,8 +232,8 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	tar->BindTarget();
 	
 	transOverlayShad->Bind();
-	glUniformMatrix4fv(transOverlayShad->Loc(0), 1, false, &p[0][0]);
-	glUniformMatrix4fv(transOverlayShad->Loc(1), 1, false, &ip[0][0]);
+	glUniformMatrix4fv(transOverlayShad->Loc(0), 1, false, fptr(p));
+	glUniformMatrix4fv(transOverlayShad->Loc(1), 1, false, fptr(ip));
 	glUniform2f(transOverlayShad->Loc(2), _w, _h);
 	auto cp = ip * Vec4(0, 0, -1, 1);
 	cp /= cp.w;
@@ -272,7 +273,7 @@ void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip
 	}
 	else {
 		skyShad->Bind();
-		glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+		glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, fptr(ip));
 		glUniform2f(skyShad->Loc(1), w, h);
 		glUniform1i(skyShad->Loc(2), false); //is_ortho
 		glUniform1i(skyShad->Loc(3), 0);
@@ -390,7 +391,7 @@ void Renderer::RenderCamera(const Camera& cam) {
 			_w, _h, cam->nearClip(), cam->farClip());
 	}
 
-	const auto& p = cam->_lastViewProjectionMatrix = projMat
+	const auto& p = cam->_lastViewProjectionMatrix = glm_cast(projMat)
 		* Quat::FromAxisAngle(Vec3(0, 1, 0), 180).matrix()
 		* cam->object()->transform()->worldMatrix().inverse();
 
@@ -411,7 +412,7 @@ void Renderer::RenderCamera(const Camera& cam) {
 	RenderScene(btar, cam->_blitTargets[1], p, gbuf, [&]() {
 		if ((cam->_clearType == CameraClearType::Color)
 				|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
-			glClearBufferfv(GL_COLOR, 0, &cam->_clearColor[0]);
+			glClearBufferfv(GL_COLOR, 0, &cam->_clearColor.r);
 		}
 		if ((cam->_clearType == CameraClearType::Depth)
 			|| (cam->_clearType == CameraClearType::ColorAndDepth))

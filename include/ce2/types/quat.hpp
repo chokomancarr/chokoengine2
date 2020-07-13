@@ -3,13 +3,13 @@
 
 CE_BEGIN_NAMESPACE
 
-class Quat : public glm::quat {
-	Quat(const glm::quat& q);
-
+class Quat {
 public:
     Quat();
     Quat(float w, Vec3 v);
     Quat(float w, float x, float y, float z);
+
+	float x, y, z, w;
 
 	Quat operator *(const Quat& rhs) const;
 	Quat operator *(const float& rhs) const;

@@ -1,41 +1,39 @@
 #include "chokoengine.hpp"
+#include "ext/glmext.hpp"
 
 CE_BEGIN_NAMESPACE
 
 #define TG(v) *(glm::vec3*)&(v).x
 #define FG(v) *(Vec3*)&(v)
 
-Quat::Quat(const glm::quat& q) : glm::quat(q) {}
+Quat::Quat() : x(0), y(0), z(0), w(1) {}
 
-Quat::Quat() : glm::quat() {}
+Quat::Quat(float w, Vec3 v) : x(v.x), y(v.y), z(v.z), w(w) {}
 
-Quat::Quat(float w, Vec3 v) : glm::quat(w, TG(v)) {}
-
-Quat::Quat(float w, float x, float y, float z) : glm::quat(w, x, y, z) {}
+Quat::Quat(float w, float x, float y, float z) : x(x), y(y), z(z), w(w) {}
 
 Quat Quat::operator *(const Quat& rhs) const{
-	return static_cast<Quat>((glm::quat)(*this) * (glm::quat)(rhs));
+	return glm_cast((*(glm::quat*)this) * (*(glm::quat*)&rhs));
 }
-
-Quat Quat::operator *(const float& rhs) const{
-	return static_cast<Quat>((glm::quat)(*this) * rhs);
+ 
+Quat Quat::operator *(const float& v) const{
+	return Quat(w*v, x*v, y*v, z*v);
 }
 
 Vec3 Quat::operator *(const Vec3& rhs) const{
-	auto t = (glm::quat)(*this) * TG(rhs);
-	return FG(t);
+	return glm_cast((*(glm::quat*)this) * (*(glm::vec3*)&rhs));
 }
 
 Mat4x4 Quat::matrix() const {
-	return glm::mat4_cast(*this);
+	return glm_cast(glm::mat4_cast(*(glm::quat*)this));
 }
 
 Quat Quat::normalized() const {
-	return static_cast<Quat>(glm::normalize((glm::quat)*this));
+	return glm_cast(glm::normalize(*(glm::quat*)this));
 }
 
 Quat Quat::inverse() const {
-	return static_cast<Quat>(glm::inverse((glm::quat)*this));
+	return Quat(w, -x, -y, -z);
 }
 
 Quat Quat::identity() {
@@ -43,11 +41,11 @@ Quat Quat::identity() {
 }
 
 Quat Quat::FromEuler(const Vec3& e) {
-	return glm::quat(Math::deg2rad * TG(e));
+	return glm_cast(glm::quat(Math::deg2rad * TG(e)));
 }
 
 Vec3 Quat::ToEuler(const Quat& q) {
-	return *(Vec3*)glm::value_ptr(glm::eulerAngles(q));
+	return glm_cast(glm::eulerAngles(*(glm::quat*)&q));
 }
 
 Quat Quat::FromAxisAngle(Vec3 axis, float angle) {
@@ -105,7 +103,7 @@ Quat Quat::LookAt(const Vec3& tarr, const Vec3& up) {
 }
 
 Quat Quat::Slerp(const Quat& a, const Quat& b, const float t) {
-	return glm::slerp(a, b, t);
+	return glm_cast(glm::slerp(*(glm::quat*)&a, *(glm::quat*)&b, t));
 }
 
 CE_END_NAMESPACE

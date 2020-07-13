@@ -82,7 +82,7 @@ GLuint _Font::CreateGlyph(uint sz, uint mask) {
         else {
             g.o2s[a] = _face->glyph->advance.x >> 6;
         }
-        g.off[a] = glm::ivec2(_face->glyph->bitmap_left, sz - _face->glyph->bitmap_top);
+        g.off[a] = Int2(_face->glyph->bitmap_left, sz - _face->glyph->bitmap_top);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     if (!mask) {

@@ -1,4 +1,5 @@
 #include "chokoeditor.hpp"
+#include "ext/glmext.hpp"
 #include "utils/glutils.hpp"
 #include "glsl/wcol.h"
 
@@ -22,7 +23,7 @@ void GLUtils::DrawElemsW(GLenum tp, int n, int o, const Color& col, const Mat4x4
 		});
 	}
 	simpleShad->Bind();
-	glUniformMatrix4fv(simpleShad->Loc(0), 1, false, &mat[0][0]);
+	glUniformMatrix4fv(simpleShad->Loc(0), 1, false, fptr(mat));
 	glUniform4f(simpleShad->Loc(1), col.r, col.g, col.b, col.a);
 	glDrawElements(tp, n, GL_UNSIGNED_INT, (byte*)o);
 	simpleShad->Unbind();

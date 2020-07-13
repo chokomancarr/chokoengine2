@@ -4,6 +4,10 @@ target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/depth_cubemap.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/framebuffer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/cube_framebuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/int2.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/int3.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/int4.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/mat3x3.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/mat4x4.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/quat.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/rect.cpp

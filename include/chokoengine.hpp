@@ -1,10 +1,9 @@
 #pragma once
 #include "ce2/defines.hpp"
 
-/* system headers
- */
 #include <algorithm>
 #include <array>
+#include <assert.h> 
 #include <fstream>
 #include <iostream>
 #include <map>

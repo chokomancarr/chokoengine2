@@ -10,7 +10,7 @@ public:
 
 	float x, y;
 
-	float operator [](const int i) const;
+	float& operator [](const int i);
 
 	Vec2 operator -() const;
 

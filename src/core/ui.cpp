@@ -16,7 +16,7 @@ Shader UI::colShad;
 Shader UI::texShad;
 
 float UI::_alpha;
-glm::mat3 UI::matrix;
+Mat3x3 UI::matrix;
 bool UI::matrixIsI;
 
 Font UI::_defaultFont;
@@ -35,7 +35,7 @@ bool UI::Init() {
     InitVao();
 
     _alpha = 1;
-    matrix = glm::mat3(1);
+    matrix = Mat3x3::Identity();
     matrixIsI = true;
 
     return true;

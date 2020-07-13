@@ -1,4 +1,5 @@
 #include "chokoengine.hpp"
+#include "ext/glmext.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -74,7 +75,7 @@ void _Material::Bind() {
 			glUniform4f(v._location, v._val_v4.x, v._val_v4.y, v._val_v4.z, v._val_v4.w);
 			break;
 		case ShaderVariableType::Matrix:
-			glUniformMatrix4fv(v._location, 1, false, &v._val_m[0][0]);
+			glUniformMatrix4fv(v._location, 1, false, fptr(v._val_m));
 			break;
 		case ShaderVariableType::Texture:
 			if (!v._val_t) break;

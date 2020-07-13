@@ -35,7 +35,7 @@ T Math::Repeat(const T& a, const T& b, const T& t) {
 	if (t > a && t < b) return t;
 	if (b <= a) return a;
 	const auto ba = b - a;
-	return ba * glm::fract((t - a) / ba) + a;
+	return ba * std::fmod((t - a) / ba, (T)1) + a;
 }
 
 CE_END_NAMESPACE

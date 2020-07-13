@@ -1,4 +1,5 @@
 #include "backend/chokoengine_backend.hpp"
+#include "ext/glmext.hpp"
 #include "glsl/voxelFill.h"
 #include "glsl/voxelDebug.h"
 
@@ -43,7 +44,7 @@ void GI::Voxelizer::Bake(const Mat4x4& v, float sz) {
 	CE_NOT_IMPLEMENTED
 #else
 	const auto& p = glm::ortho(-sz / 2, sz / 2, -sz / 2, sz / 2, 0.f, sz);
-	lastVP = p * v;
+	lastVP = glm_cast(p) * v;
 
 	res->BindTarget();
 	float zero[4] = {};
@@ -61,8 +62,8 @@ void GI::Voxelizer::Bake(const Mat4x4& v, float sz) {
 	for (auto& rend : Renderer::orends) {
 		const auto& mesh = rend->_mesh;
 		if (!mesh) continue;
-		const auto MVP = lastVP * rend->object()->transform()->worldMatrix();
-		glUniformMatrix4fv(voxShad->Loc(0), 1, false, &MVP[0][0]);
+		const auto mvp = lastVP * rend->object()->transform()->worldMatrix();
+		glUniformMatrix4fv(voxShad->Loc(0), 1, false, fptr(mvp));
 		mesh->_vao->Bind();
 		for (size_t a = 0; a < rend->_mesh->materialCount(); a++) {
 			mesh->_elos[a]->Bind();
@@ -83,7 +84,7 @@ void GI::Voxelizer::DrawDebug(const Mat4x4& p) {
 	voxDebugShad->Bind();
 
 	glUniform1i(voxDebugShad->Loc(0), reso);
-	glUniformMatrix4fv(voxDebugShad->Loc(1), 1, false, &mvp[0][0]);
+	glUniformMatrix4fv(voxDebugShad->Loc(1), 1, false, fptr(mvp));
 	glUniform1f(voxDebugShad->Loc(2), 0.01f);
 	glUniform1i(voxDebugShad->Loc(3), 0);
 	glActiveTexture(GL_TEXTURE0);

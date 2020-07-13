@@ -1,4 +1,5 @@
 #include "backend/chokoengine_backend.hpp"
+#include "ext/glmext.hpp"
 
 CE_BEGIN_BK_NAMESPACE
 
@@ -25,12 +26,12 @@ void Renderer::RenderLightProbe(const LightProbe& lp) {
 	for (int a = 0; a < 6; a++) {
 		auto& tar = lp->_fbo->_pointers[a];
 
-		const auto& p = _p * Mat4x4::Rotation(rs[a]) * _t;
+		const auto& p = glm_cast(_p) * Mat4x4::Rotation(rs[a]) * _t;
 
 		RenderScene(tar, lp->_fbo->_tmpPointer, p, gbuf, [&]() {
 			if ((lp->_clearType == CameraClearType::Color)
 					|| (lp->_clearType == CameraClearType::ColorAndDepth)) {
-				glClearBufferfv(GL_COLOR, 0, &lp->_clearColor[0]);
+				glClearBufferfv(GL_COLOR, 0, &lp->_clearColor.r);
 			}
 			if ((lp->_clearType == CameraClearType::Depth)
 				|| (lp->_clearType == CameraClearType::ColorAndDepth))
@@ -45,7 +46,7 @@ void Renderer::RenderLightProbe(const LightProbe& lp) {
 
 void Renderer::ApplyLightProbe(const LightProbe& lp, int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip) {
 	probeShad->Bind();
-	glUniformMatrix4fv(probeShad->Loc(0), 1, GL_FALSE, &ip[0][0]);
+	glUniformMatrix4fv(probeShad->Loc(0), 1, GL_FALSE, fptr(ip));
 	glUniform2f(probeShad->Loc(1), w, h);
 	glUniform1i(probeShad->Loc(2), 0);
 	glActiveTexture(GL_TEXTURE0);

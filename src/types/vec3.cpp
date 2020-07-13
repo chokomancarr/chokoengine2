@@ -8,7 +8,11 @@ Vec3::Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 
 Vec3::Vec3(Vec2 v, float z) : x(v.x), y(v.y) {}
 
-float Vec3::operator [](const int i) const {
+Vec3::operator Vec2() const {
+	return Vec2(x, y);
+}
+
+float& Vec3::operator [](const int i) {
 	return (&x)[i];
 }
 
@@ -118,12 +122,6 @@ Vec3 Vec3::front() {
 
 Vec3 Vec3::back() {
 	return Vec3(0, 0, -1);
-}
-
-
-Vec3 operator* (const glm::mat3& m, const Vec3& v) {
-	auto t = (m * *(glm::vec3*)&v.x);
-	return *(Vec3*)&t;
 }
 
 CE_END_NAMESPACE

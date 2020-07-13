@@ -5,13 +5,15 @@ CE_BEGIN_NAMESPACE
 
 class Vec3 {
 public:
-	float x, y, z;
-
 	Vec3(float v = 0);
 	Vec3(float x, float y, float z);
 	Vec3(Vec2 v, float z);
 
-	float operator [](const int i) const;
+	float x, y, z;
+
+	explicit operator Vec2() const;
+
+	float& operator [](const int i);
 
 	Vec3 operator -() const;
 
@@ -44,7 +46,5 @@ public:
 	static Vec3 front();
 	static Vec3 back();
 };
-
-Vec3 operator* (const glm::mat3& m, const Vec3& v);
 
 CE_END_NAMESPACE
