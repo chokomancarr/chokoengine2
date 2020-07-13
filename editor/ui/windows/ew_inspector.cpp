@@ -4,7 +4,13 @@ CE_BEGIN_ED_NAMESPACE
 
 EW_I_Status::UMap EW_Inspector::statuses = EW_I_Status::UMap();
 
+std::function<void(const Rect&)> EW_Inspector::customDrawer = nullptr;
+
 void EW_Inspector::DrawMenu() {
+	if (customDrawer) {
+		customDrawer(position);
+		return;
+	}
 	using ST = ESceneInfo::SelType;
 	switch (ESceneInfo::selectedType) {
 	case ST::None:

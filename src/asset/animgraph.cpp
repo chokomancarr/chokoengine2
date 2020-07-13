@@ -6,6 +6,7 @@ _AnimGraph::_AnimGraph() : _Asset(AssetType::AnimGraph), _nodes({}), _vars({}), 
 
 _AnimGraph::Node& _AnimGraph::AddNode() {
     _nodes.push_back(Node::New());
+	_nodes.back()->name("new state");
     return _nodes.back();
 }
 
@@ -28,14 +29,7 @@ void _AnimGraph::Update(State& st) const {
 }
 
 _AnimClip::VQ _AnimGraph::Get(const std::string& sig) const {
-    auto& ee = _nodes[0]->clip()->entries();
-    auto it = std::find_if(ee.begin(), ee.end(), [&](const _AnimClip::Entry& e) {
-        return e.signature == sig;
-    });
-    if (it == ee.end()) {
-        return _AnimClip::VQ();
-    }
-	return it->Get(0);
+	return _nodes[0]->clip()->Get(sig, std::fmod(Time::time(), 1.f) * 24);
 }
 
 CE_END_NAMESPACE

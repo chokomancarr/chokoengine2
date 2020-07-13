@@ -16,9 +16,14 @@ class EW_AnimGrapher : public EWindow {
 	Vec2 viewCenter;
 	float viewScale;
 
+	int inspNode;
+	int linkSrcNode;
+
 	void RegAsset(AnimGraph g);
 
 	void AddState(const Vec2& pos);
+
+	void DrawInspectMenu(const Rect&);
 
 protected:
 

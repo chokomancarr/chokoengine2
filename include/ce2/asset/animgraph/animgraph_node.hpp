@@ -15,7 +15,7 @@ public:
 
 	CE_GET_SET_MEMBER(clip);
 	CE_GET_SET_MEMBER(speed);
-	CE_GET_SET_MEMBER(links);
+	CE_GET_SET_MEMBER_MUT(links);
 };
 
 CE_END_NAMESPACE

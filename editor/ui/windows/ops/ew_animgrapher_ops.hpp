@@ -9,6 +9,7 @@ public:
 	static void Reg();
 
     CE_DEF_CALLBACK(StateAddNew);
+	CE_DEF_CALLBACK(SetLinkSrc);
 };
 
 CE_END_ED_NAMESPACE

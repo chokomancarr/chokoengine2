@@ -31,6 +31,8 @@ const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
 	{ CallbackSig::VIEW_FOCUS_OBJECT_TREE, "VIEW_FOCUS_OBJECT_TREE" },
 	{ CallbackSig::ANIMGRAPH_STATE_NEW, "ANIMGRAPH_STATE_NEW" },
 	{ CallbackSig::ANIMGRAPH_STATE_DELETE, "ANIMGRAPH_STATE_DELETE" },
+	{ CallbackSig::ANIMGRAPH_SET_LINK_SOURCE, "ANIMGRAPH_SET_LINK_SOURCE" },
+	{ CallbackSig::ANIMGRAPH_SET_LINK_DEST, "ANIMGRAPH_SET_LINK_DEST" },
 	{ CallbackSig::_COUNT, "_COUNT" },
 	{ CallbackSig::Undefined, "Undefined" }
 };

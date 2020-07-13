@@ -14,6 +14,8 @@ protected:
 public:
 	static EW_I_Status::UMap statuses;
 
+	static std::function<void(const Rect&)> customDrawer;
+
 	EW_Inspector();
 
 	bool Init() override;

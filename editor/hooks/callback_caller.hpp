@@ -7,8 +7,9 @@ class ECallbackCaller {
 public:
 	CallbackSig sig;
 	ECallbackArgs args;
+	EWindow* wnd;
 
-	ECallbackCaller(CallbackSig = CallbackSig::Undefined, ECallbackArgs = ECallbackArgs());
+	ECallbackCaller(CallbackSig = CallbackSig::Undefined, ECallbackArgs = {}, EWindow* = nullptr);
 
 	void operator ()() const;
 };

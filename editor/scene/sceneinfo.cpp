@@ -16,6 +16,7 @@ void ESceneInfo::Clear() {
     selectedObject = nullptr;
     selectedAsset = nullptr;
     selectedString.clear();
+	EW_Inspector::customDrawer = nullptr;
 }
 
 void ESceneInfo::Select(const std::string& s) {

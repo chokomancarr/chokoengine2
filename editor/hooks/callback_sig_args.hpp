@@ -6,11 +6,11 @@ CE_BEGIN_ED_NAMESPACE
 #define CALLBACKSIGARG(sig, ...) {CallbackSig::sig, ECallbackArgs({\
 	__VA_ARGS__\
 })}
+#define CALLBACKSIGARG_EMPTY(sig) {CallbackSig::sig, ECallbackArgs({})}
+
 
 const std::unordered_map<CallbackSig, ECallbackArgs> CallbackSigArgs = {
-	CALLBACKSIGARG(GLOBAL_OPEN,
-		//no args
-	),
+	CALLBACKSIGARG_EMPTY(GLOBAL_OPEN),
 
 
 
@@ -29,6 +29,15 @@ const std::unordered_map<CallbackSig, ECallbackArgs> CallbackSigArgs = {
 		ECallbackArg("obj", pObject())
 	),
 
+
+
+	CALLBACKSIGARG_EMPTY(ANIMGRAPH_STATE_NEW),
+	CALLBACKSIGARG(ANIMGRAPH_STATE_DELETE,
+		ECallbackArg("id", -1)
+	),
+	CALLBACKSIGARG(ANIMGRAPH_SET_LINK_SOURCE,
+		ECallbackArg("id", -1)
+	)
 };
 
 #undef CALLBACKSIGARG

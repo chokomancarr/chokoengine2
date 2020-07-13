@@ -25,7 +25,7 @@ _AnimClip::VQ _Animator::Get(const std::string& sig) const {
 	}
 	else {
 		if (!_graph) return _AnimClip::VQ();
-		CE_NOT_IMPLEMENTED
+		return _graph->Get(sig);
 	}
 }
 
@@ -43,7 +43,7 @@ void _Animator::OnLateUpdate() {
 	}
 	else {
 		if (!_graph) return;
-		CE_NOT_IMPLEMENTED
+		_graph->Update(_state);
 	}
 }
 
