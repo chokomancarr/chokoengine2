@@ -3,19 +3,25 @@
 
 CE_BEGIN_NAMESPACE
 
-class _AnimGraph::_Node : public _Object {
+class _AnimGraph::Node {
+
 	AnimClip _clip;
 
-	std::vector<Link> _links;
-
-	float _speed;
+	float _length;
 
 public:
-	_Node();
+	Node();
 
-	CE_GET_SET_MEMBER(clip);
-	CE_GET_SET_MEMBER(speed);
-	CE_GET_SET_MEMBER_MUT(links);
+	std::string name;
+
+	CE_GET_SET_MEMBER_F(clip);
+
+	CE_GET_MEMBER(length);
+
+	float speed;
+	bool repeat;
+
+	std::vector<Link> links;
 };
 
 CE_END_NAMESPACE

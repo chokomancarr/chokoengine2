@@ -33,9 +33,9 @@ CE_MOD_AE_IMPL(AnimGraph) {
 	const auto& stts = data.Get("states");
 	for (auto& stt : stts.group) {
 		auto& nd = res->AddNode();
-		nd->name(stt.key.string);
-		nd->clip(AssetLoader::Get<AnimClip>(AssetType::AnimClip, stt.value.Get("clip").string, async));
-		nd->speed(stt.value.Get("speed").ToFloat());
+		nd.name = stt.key.string;
+		nd.clip(AssetLoader::Get<AnimClip>(AssetType::AnimClip, stt.value.Get("clip").string, async));
+		nd.speed = stt.value.Get("speed").ToFloat();
 	}
 
 	const auto& trss = data.Get("transitions");
@@ -95,7 +95,7 @@ CE_MOD_AE_IMPL(AnimGraph) {
 
 			links.push_back(lnk);
 		}
-		res->nodes()[from]->links(links);
+		res->nodes()[from].links = links;
 	}
 
 	return res;

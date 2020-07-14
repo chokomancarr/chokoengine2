@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 
 class _AnimGraph : public _Asset { CE_OBJECT_COMMON
 public:
-	CE_OBJECT(Node);
+	class Node;
 
 	class _Var;
 	class Var;
@@ -24,18 +24,18 @@ private:
 public:
 	_AnimGraph();
 
-	CE_GET_SET_MEMBER(nodes);
-	CE_GET_SET_MEMBER(vars);
+	CE_GET_SET_MEMBER_MUT(nodes);
+	CE_GET_SET_MEMBER_MUT(vars);
 
 	int defaultState;
 
 	Node& AddNode();
 
-	State GetNewState();
+	State GetNewState() const;
 
 	void Update(State&) const;
 
-	_AnimClip::VQ Get(const std::string& sig) const;
+	_AnimClip::VQ Get(const State&, const std::string& sig) const;
 };
 
 CE_END_NAMESPACE

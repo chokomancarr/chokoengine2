@@ -19,6 +19,8 @@ public:
 
 			_COUNT
 		} comp;
+
+		bool Check(const _AnimGraph& g, const State&) const;
 	};
 
 	int target;

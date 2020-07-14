@@ -25,7 +25,7 @@ _AnimClip::VQ _Animator::Get(const std::string& sig) const {
 	}
 	else {
 		if (!_graph) return _AnimClip::VQ();
-		return _graph->Get(sig);
+		return _graph->Get(_state, sig);
 	}
 }
 
@@ -43,6 +43,9 @@ void _Animator::OnLateUpdate() {
 	}
 	else {
 		if (!_graph) return;
+		//
+		_state.vars[0].b = Input::KeyHold(InputKey::W);
+
 		_graph->Update(_state);
 	}
 }

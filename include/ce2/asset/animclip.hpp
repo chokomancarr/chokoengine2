@@ -26,6 +26,8 @@ public:
 		bool isQuat;
 		Vec4 v;
 		Quat q;
+
+		VQ Blend(const VQ& rhs, float t) const;
 	};
 	VQ Get(const std::string& sig, float t) const;
 };

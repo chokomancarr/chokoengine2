@@ -2,6 +2,22 @@
 
 CE_BEGIN_NAMESPACE
 
+_AnimClip::VQ _AnimClip::VQ::Blend(const VQ& rhs, float t) const {
+	if (!valid) return rhs;
+	if (!rhs.valid) return *this;
+
+	VQ res = {};
+	res.valid = true;
+	if (isQuat) {
+		res.q = Quat::Slerp(q, rhs.q, t);
+	}
+	else {
+		res.v = Math::Lerp(v, rhs.v, t);
+	}
+	return res;
+}
+
+
 _AnimClip::_AnimClip() : _Asset(AssetType::AnimClip), _entries({}), _range(0), _repeat(false) {}
 
 _AnimClip::VQ _AnimClip::Get(const std::string& sig, float t) const {

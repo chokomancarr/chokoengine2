@@ -20,7 +20,6 @@ public:
 	std::string name;
 	Type type;
 	_Var defaultValue;
-	_Var value;
 };
 
 CE_END_NAMESPACE

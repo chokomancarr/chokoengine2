@@ -45,25 +45,26 @@ void EW_AnimGrapher::AddState(const Vec2& pos) {
 
 void EW_AnimGrapher::DrawInspectMenu(const Rect& position) {
 	auto& nd = _graph->nodes()[inspNode];
+	const auto pnd = &nd;
 	
 	static auto lt = UI_Ext::Layout::InfoSt();
 	UI_Ext::Layout::BeginLayout(position.sub(2, 20, 2, 0), lt);
 
 	CE_E_LBL("name");
-	nd->name(UI::I::TextField(CE_E_VL_RECT, nd->name(), Color()));
+	nd.name = UI::I::TextField(CE_E_VL_RECT, nd.name, Color());
 	CE_E_INC_Y();
 
 	CE_E_LBL("type: single");
 	CE_E_INC_Y();
 
-	CE_E_ASSET_REF("clip", nd->clip, nd);
+	CE_E_ASSET_REF("clip", pnd->clip, pnd);
 
-	CE_E_EDIT_F_FV(nd->, "speed", speed);
+	CE_E_EDIT_F(nd., "speed", speed);
 
 	CE_E_LBL("transitions");
 	CE_E_INC_Y();
-	for (auto& tr : nd->links()) {
-		UI_Ext::Layout::Block("-> " + _graph->nodes()[tr.target]->name(), lt, [&]() {
+	for (auto& tr : nd.links) {
+		UI_Ext::Layout::Block("-> " + _graph->nodes()[tr.target].name, lt, [&]() {
 			CE_E_EDIT_TG(tr., "trigger on exit", useExitLength);
 			CE_E_EDIT_F(tr., "duration", length);
 
@@ -116,7 +117,7 @@ void EW_AnimGrapher::DrawMenu() {
 	for (size_t a = 0; a < _nodes.size(); a++) {
 		const auto& nd = _graph->nodes()[a];
 		const auto& _nd = _nodes[a];
-		const auto& lks = nd->links();
+		const auto& lks = nd.links;
 		for (auto& lk : lks) {
 			UI::Line(off + _nd.position + NWH * 0.5f, off + _nodes[lk.target].position + NWH * 0.5f, Color::red());
 		}
@@ -135,10 +136,10 @@ void EW_AnimGrapher::DrawMenu() {
 			hovered = true;
 			if (linkSrcNode > -1) {
 				if (linkSrcNode != a) {
-					const auto& ns = _graph->nodes()[linkSrcNode];
+					auto& ns = _graph->nodes()[linkSrcNode];
 					_AnimGraph::Link lnk = {};
 					lnk.target = a;
-					ns->links().push_back(lnk);
+					ns.links.push_back(lnk);
 
 					inspNode = linkSrcNode;
 					EW_Inspector::customDrawer = std::bind(&EW_AnimGrapher::DrawInspectMenu, this, std::placeholders::_1);
@@ -157,7 +158,7 @@ void EW_AnimGrapher::DrawMenu() {
 				EO_Dropdown::Reg(Input::mousePosition() + Vec2(1, 1), menu_node, false);
 			}
 		}
-		UI::Label(Rect(off.x + _nd.position.x, off.y + _nd.position.y + 2, NW, 16), nd->name(), Color::white());
+		UI::Label(Rect(off.x + _nd.position.x, off.y + _nd.position.y + 2, NW, 16), nd.name, Color::white());
 	}
 
 	if (!hovered && rect2.Contains(Input::mousePosition())) {
