@@ -23,4 +23,5 @@ public:
 
 CE_END_ED_NAMESPACE
 
+#include "inspector/asset.hpp"
 #include "inspector/sceneobject.hpp"

@@ -26,7 +26,7 @@ void UI_Ext::Layout::BeginLayout(const Rect& r, InfoSt& st) {
 	st.current = &st.base;
 }
 
-void UI_Ext::Layout::Block(const std::string& title, InfoSt& st, std::function<void()> f) {
+CE_UI_BUTTON_MASK UI_Ext::Layout::Block(const std::string& title, InfoSt& st, std::function<void()> f, CE_UI_BUTTON_MASK btns) {
 	const auto pblk = st.current;
 	auto& blk = pblk->children.Get(pblk->i++);
 	blk.i = 0;
@@ -41,6 +41,15 @@ void UI_Ext::Layout::Block(const std::string& title, InfoSt& st, std::function<v
 	UI::Texture(Rect(st.x + 1, st.y, 16, 16), EIcons::icons[blk.expanded ? "minus" : "plus"], Color(0.8f));
 	UI::Label(Rect(st.x + 18, st.y, st.w, 17), title, Color::white());
 
+	CE_UI_BUTTON_MASK retmask = 0;
+	int xm = st.x + st.w - 17;
+	if (!!(btns & CE_UI_BUTTON_CLOSE)) {
+		static const auto xbtn = EIcons::icons["close"];
+		if (UI::I::Button(Rect(xm, st.y, 16, 16), Color(), xbtn, Color::red()) == InputMouseStatus::HoverUp) {
+			retmask = CE_UI_BUTTON_CLOSE;
+		}
+	}
+
 	st.y += 17;
 	UI::Rect(Rect(st.x, st.y, st.w, blk.h), Color(0.1f, 0.3f));
 	blk.y0 = st.y;
@@ -54,6 +63,8 @@ void UI_Ext::Layout::Block(const std::string& title, InfoSt& st, std::function<v
 	st.y += 1;
 	st.w += 4;
 	st.current = pblk;
+
+	return retmask;
 }
 
 float UI_Ext::Layout::EndLayout(InfoSt& st) {

@@ -43,8 +43,14 @@ public:
 
 	template <typename E>
 	static void RegEnumStr(const Rect& r, E& slot, const std::unordered_map<E, std::string>& strs);
+	template <typename E>
+	static void RegEnumStr(const Rect& r, E& slot, const std::string* strs);
 	template <typename E, typename F>
 	static void RegEnumStr(const Rect& r, const E& slot, const std::unordered_map<E, std::string>& strs, std::function<void(F)> setter);
+	
+	template <typename E>
+	static void RegEnumGeneric(const Rect& r, E& slot, const std::function<void(std::vector<std::pair<std::string, int>>&)> filler);
+
 };
 
 CE_END_ED_NAMESPACE

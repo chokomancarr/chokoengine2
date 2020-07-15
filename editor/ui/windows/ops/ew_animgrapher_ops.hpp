@@ -10,6 +10,7 @@ public:
 
     CE_DEF_CALLBACK(StateAddNew);
 	CE_DEF_CALLBACK(SetLinkSrc);
+	CE_DEF_CALLBACK(Save);
 };
 
 CE_END_ED_NAMESPACE

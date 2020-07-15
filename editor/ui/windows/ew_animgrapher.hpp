@@ -18,6 +18,7 @@ class EW_AnimGrapher : public EWindow {
 
 	int inspNode;
 	int linkSrcNode;
+	int dragNode;
 
 	void RegAsset(AnimGraph g);
 

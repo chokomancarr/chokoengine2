@@ -20,7 +20,7 @@ void EW_Inspector::DrawMenu() {
 		EW_I_SceneObject::Draw(ESceneInfo::selectedObject, position + Rect(0, 20, 0, -20));
 		break;
 	case ST::Asset:
-
+		EW_I_Asset::Draw(ESceneInfo::selectedAsset, position + Rect(0, 20, 0, -20));
 		break;
 	case ST::String:
 		UI::Label(Rect(position.x() + 2, position.y() + 22, position.w() - 4, 16), ESceneInfo::selectedString, Color(0.8f, 0.5f));

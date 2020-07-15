@@ -14,6 +14,7 @@
 #define CE_E_LBL(lbl) UI::Label(Rect(lt.x + 3, lt.y, CE_E_LBL_W - 3, 16), lbl, Color(0.8f))
 
 #define CE_E_VL_RECT Rect(lt.x + CE_E_LBL_W, lt.y, lt.w - CE_E_LBL_W - 2, 16)
+#define CE_E_VL2_RECT Rect(lt.x + lt.w - CE_E_LBL_W - 2, lt.y, CE_E_LBL_W, 16)
 
 #define CE_E_EDIT_ST(tp, pr, lbl, nm, gt, st)\
 	CE_E_LBL(lbl);\
@@ -92,6 +93,14 @@
 	}\
 }\
 CE_E_INC_Y();
+
+#define CE_E_LIST_ADD(vec, con, fn) {\
+	if (UI::I::Button(CE_E_VL2_RECT, UIButtonStyle(Color(0.2f)), "Add") == InputMouseStatus::HoverUp) {\
+		vec.push_back(con);\
+		fn;\
+	}\
+	CE_E_INC_Y();\
+}
 
 #include "ew_macros_selref.hpp"
 #include "ew_macros_dropdown.hpp"

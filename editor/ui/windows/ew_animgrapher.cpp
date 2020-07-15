@@ -11,6 +11,7 @@ namespace {
 	constexpr int NW = 120;
 	constexpr int NH = 30;
 	const Vec2 NWH(NW, NH);
+	Vec2 dragOffset;
 }
 
 void EW_AnimGrapher::RegAsset(AnimGraph g) {
@@ -20,6 +21,7 @@ void EW_AnimGrapher::RegAsset(AnimGraph g) {
 
 	inspNode = -1;
 	linkSrcNode = -1;
+	dragNode = -1;
 
 	const auto meta = ModuleAE::AssetLoader::LoadMeta(g->assetSignature());
 
@@ -63,22 +65,35 @@ void EW_AnimGrapher::DrawInspectMenu(const Rect& position) {
 
 	CE_E_LBL("transitions");
 	CE_E_INC_Y();
+	int i = 0;
 	for (auto& tr : nd.links) {
-		UI_Ext::Layout::Block("-> " + _graph->nodes()[tr.target].name, lt, [&]() {
+		auto bret = UI_Ext::Layout::Block("-> " + _graph->nodes()[tr.target].name, lt, [&]() {
 			CE_E_EDIT_TG(tr., "trigger on exit", useExitLength);
 			CE_E_EDIT_F(tr., "duration", length);
 
 			CE_E_LBL("conditions");
-			CE_E_INC_Y();
+			CE_E_LIST_ADD(tr.conditions, std::vector<_AnimGraph::Link::Cond>());
 			for (auto& cds : tr.conditions) {
 				UI_Ext::Layout::Block("", lt, [&]() {
 					for (auto& cd : cds) {
 						const auto& vr = _graph->vars()[cd.paramId];
-						CE_E_LBL(vr.name);
+						UI::Texture(Rect(lt.x + 3, lt.y, 16, 16), EIcons::icons["close"], Color::red());
+						if (UI::I::Button(Rect(lt.x + 20, lt.y, CE_E_LBL_W - 3, 16), Color(0.2f), vr.name) == InputMouseStatus::HoverUp) {
+							EO_SelectEnum::RegEnumGeneric(Rect(lt.x + 20, lt.y, CE_E_LBL_W - 3, 16), cd.paramId, 
+									std::function<void(std::vector<std::pair<std::string, int>>&)>([&](std::vector<std::pair<std::string, int>>& vec){
+								int x = 0;
+								for (auto& v : _graph->vars()) {
+									vec.push_back(std::make_pair(v.name, x++));
+								}
+							}));
+						}
 						const std::string condstrs[] = {
 							"==", "!=", ">", "<", ">=", "<="
 						};
-						UI::I::Button(Rect(lt.x + 80, lt.y, 50, 16), Color(0.2f), condstrs[(int)cd.comp]);
+						if (UI::I::Button(Rect(lt.x + CE_E_LBL_W + 22, lt.y, 50, 16), UIButtonStyle(Color(0.2f)), condstrs[(int)cd.comp]) == InputMouseStatus::HoverUp) {
+							EO_SelectEnum::RegEnumStr(Rect(lt.x + CE_E_LBL_W + 22, lt.y, 50, 16), cd.comp, condstrs);
+						}
+						
 						typedef decltype(vr.type) _CTp;
 						switch (vr.type) {
 						case _CTp::Bool:
@@ -87,9 +102,13 @@ void EW_AnimGrapher::DrawInspectMenu(const Rect& position) {
 						}
 						CE_E_INC_Y();
 					}
+					CE_E_LIST_ADD(cds, _AnimGraph::Link::Cond());
 				});
 			}
-		});
+		}, CE_UI_BUTTON_CLOSE);
+		if (UI_Ext::Layout::HandleButtons(bret, nd.links, nd.links.begin() + i))
+			break;
+		i++;
 	}
 
 	UI_Ext::Layout::EndLayout(lt);
@@ -124,6 +143,15 @@ void EW_AnimGrapher::DrawMenu() {
 	}
 	
 	bool hovered = false;
+	if (dragNode > -1) {
+		hovered = true;
+		if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Hold) {
+			_nodes[dragNode].position = Input::mousePosition() - off - dragOffset;
+		}
+		else {
+			dragNode = -1;
+		}
+	}
 	for (size_t a = 0; a < _nodes.size(); a++) {
 		const auto& nd = _graph->nodes()[a];
 		const auto& _nd = _nodes[a];
@@ -150,6 +178,11 @@ void EW_AnimGrapher::DrawMenu() {
 				inspNode = a;
 				EW_Inspector::customDrawer = std::bind(&EW_AnimGrapher::DrawInspectMenu, this, std::placeholders::_1);
 			}
+		}
+		else if (mst == InputMouseStatus::HoverDown) {
+			hovered = true;
+			dragNode = a;
+			dragOffset = Input::mousePosition() - off - _nd.position;
 		}
 		else if (mst == InputMouseStatus::Hover) {
 			hovered = true;
@@ -189,6 +222,7 @@ bool EW_AnimGrapher::Init() {
 	menu = &menu_empty.items;
 
 	addi(New State, CallbackSig::ANIMGRAPH_STATE_NEW);
+	addi(Save, CallbackSig::ANIMGRAPH_SAVE);
 
 	Ops::Reg();
 

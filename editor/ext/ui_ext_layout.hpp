@@ -4,6 +4,16 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+typedef uint CE_UI_BUTTON_MASK;
+
+//variables used for additional buttons in layout
+constexpr uint CE_UI_BUTTON_CLOSE	= 1 << 0;
+constexpr uint CE_UI_BUTTON_UPDOWN	= 1 << 1;
+
+//these are only for return values, do not pass as argument
+constexpr uint CE_UI_BUTTON_UP		= 1 << 2;
+constexpr uint CE_UI_BUTTON_DOWN	= 1 << 3;
+
 class UI_Ext::Layout {
 
 public:
@@ -35,9 +45,17 @@ public:
 
 	static void BeginLayout(const Rect&, InfoSt&);
 
-	static void Block(const std::string& title, InfoSt&, std::function<void()>);
+	static CE_UI_BUTTON_MASK Block(const std::string& title, InfoSt&, std::function<void()>, CE_UI_BUTTON_MASK = 0);
 
 	static float EndLayout(InfoSt&);
+
+	template <typename T>
+	static bool HandleButtons(CE_UI_BUTTON_MASK, std::vector<T>&, const T&);
+
+	template <typename T>
+	static bool HandleButtons(CE_UI_BUTTON_MASK, std::vector<T>&, typename std::vector<T>::const_iterator);
 };
 
 CE_END_ED_NAMESPACE
+
+#include "ui_ext_layout.inl"

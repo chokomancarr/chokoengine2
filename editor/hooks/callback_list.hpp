@@ -42,6 +42,8 @@ enum class CallbackSig {
 
 	// -------  anim graph  ----------
 
+	ANIMGRAPH_SAVE,
+
 	ANIMGRAPH_STATE_NEW,
 	ANIMGRAPH_STATE_DELETE,
 
