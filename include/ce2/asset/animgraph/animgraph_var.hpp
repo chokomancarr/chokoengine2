@@ -15,7 +15,9 @@ public:
 	enum class Type {
 		Bool,
 		Int,
-		Float
+		Float,
+
+		_COUNT
 	};
 	std::string name;
 	Type type;

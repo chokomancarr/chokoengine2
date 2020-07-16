@@ -40,6 +40,7 @@ namespace {
         auto it = std::find_if(vs.begin(), vs.end(), [&nm](const ScriptVal& v) {
             return v.var.name == nm;
         });
+		if (it == vs.end()) return ScriptVal::invalid;
         return *it;
     }
 }
@@ -54,7 +55,8 @@ namespace {
     }\
     IMPL_SET(tp) {\
         GETV\
-        v.val_ ## i = vl;\
+		if (&v != &ScriptVal::invalid)\
+	        v.val_ ## i = vl;\
     }
 
 IMPL_GETSET(int, i)

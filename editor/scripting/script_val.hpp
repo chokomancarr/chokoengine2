@@ -22,6 +22,8 @@ public:
 	SceneObject val_obj;
 	Component val_comp;
 	std::vector<ScriptVal> val_vec;
+
+	static ScriptVal invalid;
 };
 
 CE_END_ED_NAMESPACE
