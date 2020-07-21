@@ -20,6 +20,8 @@ public:
 	CE_GET_SET_MEMBER(entries);
 	CE_GET_SET_MEMBER(range);
 	CE_GET_SET_MEMBER(repeat);
+	
+	float length() const;
 
 	struct VQ {
 		bool valid = false;

@@ -2,7 +2,8 @@
 
 CE_BEGIN_NAMESPACE
 
-#define TIMERATE Time::delta() * 24
+#define FRAMERATE 24
+#define TIMERATE Time::delta() * FRAMERATE
 
 _AnimGraph::_AnimGraph() : _Asset(AssetType::AnimGraph), _nodes({}), _vars({}), defaultState(0) {}
 
@@ -28,13 +29,17 @@ _AnimGraph::State _AnimGraph::GetNewState() const {
 
 void _AnimGraph::Update(State& st) const {
 	if (st.transition_time < 0) {
-		//check for transition
 		for (const auto& tr : st.node_current->links) {
-			//check exit time
-
 			for (auto& cnds : tr.conditions) {
 				for (auto& cnd : cnds) {
 					if (!cnd.Check(*this, st)) {
+						goto nosat;
+					}
+				}
+
+				if (tr.useExitLength) {
+					const auto len = st.node_current->length();
+					if (len - st.time_current > tr.exitLength * FRAMERATE) {
 						goto nosat;
 					}
 				}
@@ -57,25 +62,25 @@ void _AnimGraph::Update(State& st) const {
 			st.node_current = st.node_target;
 		}
 		else {
-			if ((st.time_target += TIMERATE) > st.node_target->length() && st.node_target->repeat) {
-				st.time_target -= st.node_target->length();
+			const auto len = st.node_target->length();
+			if ((st.time_target += TIMERATE * st.node_target->speed) > len && st.node_target->repeat) {
+				st.time_target -= len;
 			}
 		}
 	}
 
-	if ((st.time_current += TIMERATE) > st.node_current->length() && st.node_current->repeat) {
-		st.time_current -= st.node_current->length();
+	const auto len = st.node_current->length();
+	if ((st.time_current += TIMERATE * st.node_current->speed) > len && st.node_current->repeat) {
+		st.time_current -= len;
 	}
 }
 
 _AnimClip::VQ _AnimGraph::Get(const State& st, const std::string& sig) const {
-	const auto cur = !st.node_current->clip() ? _AnimClip::VQ() :
-		st.node_current->clip()->Get(sig, st.time_current);
+	const auto cur = st.node_current->Get(st, sig, st.time_current);
 
 	if (st.transition_time < 0) return cur;
 
-	const auto tar = !st.node_target->clip() ? _AnimClip::VQ() :
-		st.node_target->clip()->Get(sig, st.time_target);
+	const auto tar = st.node_target->Get(st, sig, st.time_target);
 	
 	return cur.Blend(tar, st.transition_time / st.transition_max);
 }

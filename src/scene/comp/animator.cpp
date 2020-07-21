@@ -110,8 +110,6 @@ void _Animator::OnLateUpdate() {
 	}
 	else {
 		if (!_graph) return;
-		//
-		//_state.vars[0].b = Input::KeyHold(InputKey::W);
 
 		_graph->Update(_state);
 	}

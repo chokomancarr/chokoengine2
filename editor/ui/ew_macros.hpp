@@ -85,7 +85,7 @@
 #define CE_E_EDIT_ENUM(lbl, nm, strs, cp) {\
 	CE_E_LBL(lbl);\
 	const auto& _vl = nm();\
-	using _Tp = std::remove_const_ref<decltype(_vl)>::type;\
+	using _Tp = std::decay<decltype(_vl)>::type;\
 	if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(Color(0.2f)), strs.at(_vl)) == InputMouseStatus::HoverUp) {\
 			EO_SelectEnum::RegEnumStr(CE_E_VL_RECT, _vl, strs, std::function<void(_Tp)>([cp](_Tp vl) {\
 				nm(vl);\

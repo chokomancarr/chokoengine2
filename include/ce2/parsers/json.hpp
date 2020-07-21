@@ -34,14 +34,14 @@ public:
 	std::string string;
 
 	const JsonObject& Get(const std::string& k) const;
-	bool ToBool() const;
-	int ToInt() const;
-	float ToFloat() const;
-	Vec2 ToVec2() const;
-	Vec3 ToVec3() const;
-	Vec4 ToVec4() const;
-	Quat ToQuat() const;
-	Color ToColor() const;
+	bool ToBool(const bool def = false) const;
+	int ToInt(const int def = 0) const;
+	float ToFloat(const float def = 0) const;
+	Vec2 ToVec2(const Vec2 def = Vec2()) const;
+	Vec3 ToVec3(const Vec3 def = Vec3()) const;
+	Vec4 ToVec4(const Vec4 def = Vec4()) const;
+	Quat ToQuat(const Quat def = Quat::identity()) const;
+	Color ToColor(const Color def = Color()) const;
 	template <typename T>
 	T ToEnum(const std::initializer_list<std::string>& entries) const;
 

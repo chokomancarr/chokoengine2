@@ -1,6 +1,5 @@
 #pragma once
 #include "ext/ui_ext.hpp"
-#include "ext/traits_ext.hpp"
 #include "ew_macros.hpp"
 
 #define CE_E_ASSET_SIG(nm) !nm ? "[none]" : nm->assetSignature()
@@ -20,7 +19,7 @@
 
 #define CE_E_ASSET_SELECT(nm, cp) {\
 	const auto& _vl = nm();\
-	using _Tp = std::remove_const_ref<decltype(_vl)>::type;\
+	using _Tp = std::decay<decltype(_vl)>::type;\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(_vl)) == InputMouseStatus::HoverUp) {\
 			EO_SelectRef::RegAsset(_vl, std::function<void(decltype(_vl))>([cp](decltype(_vl) vl) {\
 				nm(vl);\
@@ -30,7 +29,7 @@
 }
 
 #define CE_E_ASSET_SELECT_FV(nm) {\
-	using _Tp = std::remove_reference<decltype(nm)>::type;\
+	using _Tp = std::decay<decltype(nm)>::type;\
 	if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(nm)) == InputMouseStatus::HoverUp) {\
 			EO_SelectRef::RegAsset(nm, std::function<void(decltype(nm))>([&](decltype(nm) vl) {\
 				nm = vl;\

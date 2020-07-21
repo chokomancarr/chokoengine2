@@ -5,6 +5,8 @@ CE_BEGIN_MOD_PE_NAMESPACE
 
 std::string PlayerDebug::projectPath = "";
 
+Input::State PlayerDebug::inputState = {};
+
 void PlayerDebug::Init() {
 	PDSyncer::Init();
 
@@ -45,7 +47,7 @@ void PlayerDebug::Main() {
 
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {
-
+			Input::state(inputState);
 		});
 		ChokoLait::Paint(0, paint);
 

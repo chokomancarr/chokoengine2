@@ -31,6 +31,8 @@ bool PDSyncer::SyncFrame() {
 
 	if (!!(baseMem->status_flags & PDSyncFlags::KILL)) {
 		Debug::Message("Syncer", "Received kill signal! Exiting ...");
+		volatile auto flags = baseMem->status_flags;
+		baseMem->status_flags = (flags & ~PDSyncFlags::EDITOR_SYNCED) | PDSyncFlags::APP_SYNCED;
 		return false;
 	}
 
@@ -42,7 +44,7 @@ bool PDSyncer::SyncFrame() {
     baseMem->screen_width = Display::width();
     baseMem->screen_height = Display::height();
 
-	Input::state((const Input::State&)baseMem->input_state);
+	PlayerDebug::inputState = (const Input::State&)baseMem->input_state;
 
     const volatile auto pxlsz = baseMem->screen_width * baseMem->screen_height * 4;
     if (pxlsz != pixelsMem.length()) {

@@ -25,6 +25,8 @@ class PlayerDebug {
 public:
     static std::string projectPath;
 
+	static Input::State inputState;
+
     static void Init();
 
     static void Main();

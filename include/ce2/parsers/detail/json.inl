@@ -10,6 +10,7 @@ T JsonObject::ToEnum(const std::initializer_list<std::string>& entries) const {
     for (auto& e : entries) {
         if (e == string)
             return (T)i;
+		i++;
     }
 	Debug::Warning("JsonObject", "Value \"" + string + "\" does not match any enum values!");
     std::string ents = "";

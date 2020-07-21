@@ -34,8 +34,16 @@ CE_MOD_AE_IMPL(AnimGraph) {
 	for (auto& stt : stts.group) {
 		auto& nd = res->AddNode();
 		nd.name = stt.key.string;
+		nd.type = stt.value.Get("type").ToEnum<_AnimGraph::Node::Type>({"Single", "Linear1D"});
 		nd.clip(AssetLoader::Get<AnimClip>(AssetType::AnimClip, stt.value.Get("clip").string, async));
+		const auto& c1d = stt.value.Get("clips1D");
+		for (auto& c1 : c1d.group) {
+			nd.clips1D().push_back(std::make_pair(c1.key.ToFloat(),
+				AssetLoader::Get<AnimClip>(AssetType::AnimClip, c1.value.string, async)));
+		}
+		nd.var1D = stt.value.Get("var1D").ToInt();
 		nd.speed = stt.value.Get("speed").ToFloat();
+		nd.repeat = stt.value.Get("repeat").ToBool();
 	}
 
 	const auto& trss = data.Get("transitions");
@@ -49,7 +57,7 @@ CE_MOD_AE_IMPL(AnimGraph) {
 			lnk.length = tr.value.Get("length").ToFloat();
 			lnk.offset = tr.value.Get("offset").ToFloat();
 			lnk.useExitLength = tr.value.Get("on_exit").ToBool();
-			//lnk.exitLength = tr.value.Get("exit_length").ToFloat();
+			lnk.exitLength = tr.value.Get("exit_length").ToFloat();
 			
 			const auto& cnds = tr.value.Get("conditions").list;
 			lnk.conditions.reserve(cnds.size());

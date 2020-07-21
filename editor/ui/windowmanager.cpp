@@ -46,7 +46,8 @@ void EWindowManager::LoadWindows() {
 	windows.push_back(std::make_shared<EW_Browser>());
 	SETPOS(Rect(0, 350, 400, 250));
 	windows.back()->Init();
-	windows.push_back(std::make_shared<EW_AnimGrapher>());
+	//windows.push_back(std::make_shared<EW_AnimGrapher>());
+	windows.push_back(std::make_shared<EW_GameView>());
 	SETPOS(Rect(400, 350, 350, 250));
 	windows.back()->Init();
 	windows.push_back(std::make_shared<EW_Hierarchy>());

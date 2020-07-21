@@ -2,6 +2,8 @@
 
 CE_BEGIN_ED_NAMESPACE
 
+#define ASSIG(nm) (!(nm) ? "none" : (nm)->assetSignature())
+
 CE_EAW_IMPL(AnimGraph) {
 	JsonObject params(JsonObject::Type::Group);
 	for (auto& p : obj->vars()) {
@@ -28,9 +30,18 @@ CE_EAW_IMPL(AnimGraph) {
 	
 	JsonObject states(JsonObject::Type::Group);
 	for (auto& st : obj->nodes()) {
+		const std::string tpnms[] = {
+			"Single", "Linear1D"
+		};
+		JsonObject clips1D(JsonObject::Type::Group);
+		for (auto& g : st.clips1D()) {
+			clips1D.group.push_back(JsonPair(std::to_string(g.first), ASSIG(g.second)));
+		}
 		JsonPair pr(JsonObject(st.name), JsonObject({
-			JsonPair(JsonObject("type"), JsonObject("single")),
-			JsonPair(JsonObject("clip"), !st.clip() ? "none" : st.clip()->assetSignature()),
+			JsonPair(JsonObject("type"), tpnms[(int)st.type]),
+			JsonPair(JsonObject("clip"), ASSIG(st.clip())),
+			JsonPair(JsonObject("clips1D"), clips1D),
+			JsonPair(JsonObject("var1D"), std::to_string(st.var1D)),
 			JsonPair(JsonObject("speed"), std::to_string(st.speed)),
 			JsonPair(JsonObject("repeat"), JsonObject(st.repeat ? "1" : "0"))
 		}));
@@ -82,7 +93,8 @@ CE_EAW_IMPL(AnimGraph) {
 				data.group.push_back(JsonPair(std::to_string(lnk.target), JsonObject({
 					JsonPair(JsonObject("length"), std::to_string(lnk.length)),
 					JsonPair(JsonObject("offset"), std::to_string(lnk.offset)),
-					JsonPair(JsonObject("on_ext"), JsonObject(lnk.useExitLength ? "1" : "0")),
+					JsonPair(JsonObject("on_exit"), JsonObject(lnk.useExitLength ? "1" : "0")),
+					JsonPair(JsonObject("exit_length"), std::to_string(lnk.exitLength)),
 					JsonPair(JsonObject("conditions"), cdata2)
 					})));
 			}

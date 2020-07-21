@@ -96,6 +96,7 @@ void EPlayer::Sync() {
 void EPlayer::Stop() {
     playing = false;
 	baseMem->status_flags |= PDSyncFlags::KILL;
+	Sync();
 	baseMem.close();
 }
 

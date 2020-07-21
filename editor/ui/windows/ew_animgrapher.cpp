@@ -56,12 +56,50 @@ void EW_AnimGrapher::DrawInspectMenu(const Rect& position) {
 	nd.name = UI::I::TextField(CE_E_VL_RECT, nd.name, Color());
 	CE_E_INC_Y();
 
-	CE_E_LBL("type: single");
+	
+	CE_E_LBL("type");
+	const std::string tpnms[] = {
+		"single", "1D blend"
+	};
+	if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(Color(0.2f)), tpnms[(int)nd.type]) == InputMouseStatus::HoverUp) {
+		EO_SelectEnum::RegEnumStr(CE_E_VL_RECT, nd.type, tpnms);
+	}
+
 	CE_E_INC_Y();
 
-	CE_E_ASSET_REF("clip", pnd->clip, pnd);
+	using _NTp = _AnimGraph::Node::Type;
+	switch (nd.type) {
+	case _NTp::Single:
+		CE_E_ASSET_REF("clip", pnd->clip, pnd);
+		break;
+	case _NTp::Linear1D: {
+		UI_Ext::Layout::Block("clips", lt, [&]() {
+			auto& clips = nd.clips1D();
+			for (auto& cds : clips) {
+				UI::Texture(Rect(lt.x + 3, lt.y, 16, 16), EIcons::icons["close"], Color::red());
+				cds.first = UI_Ext::TextFieldF(Rect(lt.x + 20, lt.y, CE_E_LBL_W - 20, 16), cds.first);
+				CE_E_ASSET_SELECT_FV(cds.second);
+				CE_E_INC_Y();
+			}
+			CE_E_LIST_ADD(clips, std::make_pair(0.f, AnimClip(nullptr)));
+		});
+		CE_E_LBL("blend");
+		const auto& vr = _graph->vars()[nd.var1D];
+		if (UI::I::Button(CE_E_VL_RECT, Color(0.2f), vr.name) == InputMouseStatus::HoverUp) {
+			EO_SelectEnum::RegEnumGeneric(CE_E_VL_RECT, nd.var1D,
+				std::function<void(std::vector<std::pair<std::string, int>>&)>([&](std::vector<std::pair<std::string, int>>& vec) {
+				int x = 0;
+				for (auto& v : _graph->vars()) {
+					vec.push_back(std::make_pair(v.name, x++));
+				}
+			}));
+		}
+		CE_E_INC_Y();
+	}
+	}
 
 	CE_E_EDIT_F(nd., "speed", speed);
+	CE_E_EDIT_TG(nd., "repeat", repeat);
 
 	CE_E_LBL("transitions");
 	CE_E_INC_Y();
@@ -69,6 +107,9 @@ void EW_AnimGrapher::DrawInspectMenu(const Rect& position) {
 	for (auto& tr : nd.links) {
 		auto bret = UI_Ext::Layout::Block("-> " + _graph->nodes()[tr.target].name, lt, [&]() {
 			CE_E_EDIT_TG(tr., "trigger on exit", useExitLength);
+			if (tr.useExitLength) {
+				CE_E_EDIT_F(tr., "exit threshold", exitLength);
+			}
 			CE_E_EDIT_F(tr., "duration", length);
 
 			CE_E_LBL("conditions");
@@ -138,7 +179,14 @@ void EW_AnimGrapher::DrawMenu() {
 		const auto& _nd = _nodes[a];
 		const auto& lks = nd.links;
 		for (auto& lk : lks) {
-			UI::Line(off + _nd.position + NWH * 0.5f, off + _nodes[lk.target].position + NWH * 0.5f, Color::red());
+			const auto p1 = off + _nd.position + NWH * 0.5f;
+			const auto p2 = off + _nodes[lk.target].position + NWH * 0.5f;
+			const auto dir = (p2 - p1).normalized();
+			const auto tn = Vec2(dir.y, -dir.x);
+			const auto cn = (p1 + p2) / 2.f;
+			UI::Line(p1, p2, Color::red());
+			UI::Line(cn, cn + (tn - dir) * 5, Color::red());
+			UI::Line(cn, cn - (tn + dir) * 5, Color::red());
 		}
 	}
 	

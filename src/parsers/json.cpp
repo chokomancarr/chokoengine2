@@ -174,62 +174,61 @@ const JsonObject& JsonObject::Get(const std::string& k) const {
 	return null;
 }
 
-bool JsonObject::ToBool() const {
+bool JsonObject::ToBool(const bool def) const {
 	if ((string == "true") || (string == "1"))
 		return true;
 	if ((string == "false") || (string == "0"))
 		return false;
-	Debug::Warning("JsonObject", "Value \"" + string + "\" cannot be casted to bool, assuming false!");
-	return false;
+	return def;
 }
 
-int JsonObject::ToInt() const {
-	return std::stoi(string);
+int JsonObject::ToInt(const int def) const {
+	return StrExt::ToInt(string, def);
 }
 
-float JsonObject::ToFloat() const {
-	return std::stof(string);
+float JsonObject::ToFloat(const float def) const {
+	return StrExt::ToFloat(string, def);
 }
 
-Vec2 JsonObject::ToVec2() const {
+Vec2 JsonObject::ToVec2(const Vec2 def) const {
 	return Vec2(
-		std::stof(list[0].string),
-		std::stof(list[1].string)
+		StrExt::ToFloat(list[0].string, def.x),
+		StrExt::ToFloat(list[1].string, def.y)
 	);
 }
 
-Vec3 JsonObject::ToVec3() const {
+Vec3 JsonObject::ToVec3(const Vec3 def) const {
 	return Vec3(
-		std::stof(list[0].string),
-		std::stof(list[1].string),
-		std::stof(list[2].string)
+		StrExt::ToFloat(list[0].string, def.x),
+		StrExt::ToFloat(list[1].string, def.y),
+		StrExt::ToFloat(list[2].string, def.z)
 	);
 }
 
-Vec4 JsonObject::ToVec4() const {
+Vec4 JsonObject::ToVec4(const Vec4 def) const {
 	return Vec4(
-		std::stof(list[0].string),
-		std::stof(list[1].string),
-		std::stof(list[2].string),
-		std::stof(list[3].string)
+		StrExt::ToFloat(list[0].string, def.x),
+		StrExt::ToFloat(list[1].string, def.y),
+		StrExt::ToFloat(list[2].string, def.z),
+		StrExt::ToFloat(list[3].string, def.w)
 	);
 }
 
-Quat JsonObject::ToQuat() const {
+Quat JsonObject::ToQuat(const Quat def) const {
 	return Quat(
-		std::stof(list[0].string),
-		std::stof(list[1].string),
-		std::stof(list[2].string),
-		std::stof(list[3].string)
+		StrExt::ToFloat(list[0].string, def.w),
+		StrExt::ToFloat(list[1].string, def.x),
+		StrExt::ToFloat(list[2].string, def.y),
+		StrExt::ToFloat(list[3].string, def.z)
 	);
 }
 
-Color JsonObject::ToColor() const {
+Color JsonObject::ToColor(const Color def) const {
 	return Color(
-		std::stof(list[0].string),
-		std::stof(list[1].string),
-		std::stof(list[2].string),
-		std::stof(list[3].string)
+		StrExt::ToFloat(list[0].string, def.r),
+		StrExt::ToFloat(list[1].string, def.g),
+		StrExt::ToFloat(list[2].string, def.b),
+		StrExt::ToFloat(list[3].string, def.a)
 	);
 }
 
@@ -275,7 +274,6 @@ JsonObject JsonObject::FromColor(const Color& c) {
 	});
 }
 
-#pragma optimize( "", off )
 std::string JsonObject::DoExport(int ind) const {
 	const bool min = ind < 0;
 	std::string res;

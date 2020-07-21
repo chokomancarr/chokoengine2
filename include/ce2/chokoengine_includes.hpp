@@ -109,9 +109,6 @@ CE_OBJECT(Script)
 
 CE_END_NAMESPACE
 
-#include "parsers/json.hpp"
-#include "parsers/mesh.hpp"
-
 #include "types/color.hpp"
 #include "types/vec2.hpp"
 #include "types/vec3.hpp"
@@ -123,6 +120,9 @@ CE_END_NAMESPACE
 #include "types/rect.hpp"
 #include "types/mat3x3.hpp"
 #include "types/mat4x4.hpp"
+
+#include "parsers/json.hpp"
+#include "parsers/mesh.hpp"
 
 #include "utils/cursor.hpp"
 #include "utils/math.hpp"
