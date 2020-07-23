@@ -1,5 +1,6 @@
 target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/crvalue.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/depth_texture.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/depth_cubemap.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/framebuffer.cpp

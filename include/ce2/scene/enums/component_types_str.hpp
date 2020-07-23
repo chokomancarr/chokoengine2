@@ -13,6 +13,7 @@ const std::unordered_map<ComponentType, std::string> ComponentTypeStr = {
 	{ ComponentType::Light, "Light" },
 	{ ComponentType::LightProbe, "LightProbe" },
 	{ ComponentType::MeshRenderer, "MeshRenderer" },
+	{ ComponentType::ParticleSystem, "ParticleSystem" },
 	{ ComponentType::Rig, "Rig" },
 	{ ComponentType::Script, "Script" },
 	{ ComponentType::_COUNT, "_COUNT" },

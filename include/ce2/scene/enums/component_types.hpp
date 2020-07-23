@@ -9,6 +9,7 @@ enum class ComponentType {
 	Light,
 	LightProbe,
 	MeshRenderer,
+	ParticleSystem,
 	Rig,
 	Script,
 	_COUNT,

@@ -25,12 +25,20 @@ public:
 
 	void Set(const void* data, size_t len);
 
+	template <typename T>
+	std::vector<T> Get();
+
 	void Bind() const;
 	void Unbind() const;
 
 	friend class _TransformFeedback;
+
+private:
+	void _Get(void* const buf);
 };
 
 VertexBuffer VertexBuffer_New(bool isf, size_t dim, size_t num, const void* data, size_t stride = 0, GLenum type = GL_ARRAY_BUFFER, GLenum usage = GL_STATIC_COPY);
 
 CE_END_NAMESPACE
+
+#include "detail/vertexbuffer.inl"

@@ -23,6 +23,14 @@ void _VertexBuffer::Set(const void* data, size_t len) {
 	Unbind();
 }
 
+void _VertexBuffer::_Get(void* buf) {
+	Bind();
+	const auto src = glMapBuffer(_type, GL_READ_ONLY);
+	memcpy(buf, src, _dim * _num * 4);
+	glUnmapBuffer(_type);
+	Unbind();
+}
+
 void _VertexBuffer::Bind() const {
 	glBindBuffer(_type, _pointer);
 }

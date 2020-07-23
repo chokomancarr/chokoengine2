@@ -8,6 +8,7 @@ std::array<EW_I_Component::_DrawFn, (size_t)ComponentType::_COUNT> EW_I_Componen
     DrawLight,
 	DrawLightProbe,
     DrawMeshRenderer,
+	DrawParticleSystem,
     DrawRig,
     DrawScript
 };

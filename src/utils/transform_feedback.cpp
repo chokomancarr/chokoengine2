@@ -2,27 +2,54 @@
 
 CE_BEGIN_NAMESPACE
 
-_TransformFeedback::_TransformFeedback(const std::string& shader, std::initializer_list<const char*> outNms) {
-	auto _shader = glCreateShader(GL_VERTEX_SHADER);
-	const char* cc[1] = { shader.c_str() };
-	glShaderSource(_shader, 1, cc, nullptr);
-	glCompileShader(_shader);
-	int compile_result;
-	glGetShaderiv(_shader, GL_COMPILE_STATUS, &compile_result);
-	if (!compile_result) {
-		int info_log_length = 0;
-		glGetShaderiv(_shader, GL_INFO_LOG_LENGTH, &info_log_length);
-		if (!!info_log_length) {
-			std::vector<char> shader_log(info_log_length);
-			glGetShaderInfoLog(_shader, info_log_length, NULL, &shader_log[0]);
-			_shader = 0;
-			Debug::Error("_TransformFeedback", std::string(shader_log.data(), info_log_length));
+namespace {
+	bool trycompile(GLuint& shad) {
+		glCompileShader(shad);
+		int compile_result;
+		glGetShaderiv(shad, GL_COMPILE_STATUS, &compile_result);
+		if (!compile_result) {
+			int info_log_length = 0;
+			glGetShaderiv(shad, GL_INFO_LOG_LENGTH, &info_log_length);
+			if (!!info_log_length) {
+				std::vector<char> shader_log(info_log_length);
+				glGetShaderInfoLog(shad, info_log_length, NULL, &shader_log[0]);
+				shad = 0;
+				Debug::Error("_TransformFeedback", std::string(shader_log.data(), info_log_length));
+			}
+			glDeleteShader(shad);
+			return false;
 		}
-		glDeleteShader(_shader);
+		return true;
+	}
+}
+
+_TransformFeedback::_TransformFeedback(const std::string& shader, std::initializer_list<const char*> outNms)
+	: _TransformFeedback(shader, "", outNms) {}
+
+_TransformFeedback::_TransformFeedback(const std::string& vert, const std::string& geom, std::initializer_list<const char*> outNms) {
+	const bool hasg = geom != "";
+
+	const char* cc[2] = { vert.c_str(), geom.c_str() };
+	GLuint _vshad = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(_vshad, 1, cc, nullptr);
+	if (!trycompile(_vshad)) {
 		return;
 	}
+	GLuint _gshad;
+	if (hasg) {
+		 _gshad = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(_gshad, 1, cc + 1, nullptr);
+		if (!trycompile(_gshad)) {
+			glDeleteShader(_vshad);
+			return;
+		}
+	}
+	
 	_program = glCreateProgram();
-	glAttachShader(_program, _shader);
+	glAttachShader(_program, _vshad);
+	if (hasg) {
+		glAttachShader(_program, _gshad);
+	}
 	glTransformFeedbackVaryings(_program, outNms.size(), outNms.begin(), GL_SEPARATE_ATTRIBS);
 	int link_result = 0;
 	glLinkProgram(_program);
@@ -37,8 +64,12 @@ _TransformFeedback::_TransformFeedback(const std::string& shader, std::initializ
 		_program = 0;
 		return;
 	}
-	glDetachShader(_program, _shader);
-	glDeleteShader(_shader);
+	glDetachShader(_program, _vshad);
+	glDeleteShader(_vshad);
+	if (hasg) {
+		glDetachShader(_program, _gshad);
+		glDeleteShader(_gshad);
+	}
 }
 
 void _TransformFeedback::AddUniforms(std::initializer_list<const char*> nms) {
@@ -67,9 +98,9 @@ void _TransformFeedback::Unbind() {
 	glUseProgram(0);
 }
 
-void _TransformFeedback::Exec(int n) {
+void _TransformFeedback::Exec(int n, GLuint type) {
 	glEnable(GL_RASTERIZER_DISCARD);
-	glBeginTransformFeedback(GL_POINTS);
+	glBeginTransformFeedback(type);
 	glDrawArrays(GL_POINTS, 0, (n > 0) ? n : _vao->buffer(0)->num() * 3);
 	glEndTransformFeedback();
 	glDisable(GL_RASTERIZER_DISCARD);
@@ -78,6 +109,10 @@ void _TransformFeedback::Exec(int n) {
 
 TransformFeedback TransformFeedback_New(const std::string& shader, std::initializer_list<const char*> outNms) {
 	return std::make_shared<_TransformFeedback>(shader, outNms);
+}
+
+TransformFeedback TransformFeedback_New(const std::string& vert, const std::string& geom, std::initializer_list<const char*> outNms) {
+	return std::make_shared<_TransformFeedback>(vert, geom, outNms);
 }
 
 CE_END_NAMESPACE

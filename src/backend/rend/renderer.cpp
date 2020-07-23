@@ -51,6 +51,7 @@ std::vector<Camera> Renderer::cameras;
 std::vector<Light> Renderer::lights;
 std::vector<MeshRenderer> Renderer::orends, Renderer::trends;
 std::vector<LightProbe> Renderer::probes;
+std::vector<ParticleSystem> Renderer::parsyss;
 Background Renderer::sky;
 
 void Renderer::ScanObjects(const std::vector<SceneObject>& oo) {
@@ -83,6 +84,9 @@ void Renderer::ScanObjects(const std::vector<SceneObject>& oo) {
 			}
 			case ComponentType::LightProbe:
 				probes.push_back(static_cast<LightProbe>(c));
+				break;
+			case ComponentType::ParticleSystem:
+				parsyss.push_back(static_cast<ParticleSystem>(c));
 				break;
 			default:
 				break;
@@ -191,6 +195,10 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 
 	for (auto& r : trends) {
 		RenderMesh(r, p);
+	}
+
+	for (auto& s : parsyss) {
+		Particles::Render(s, p, ip);
 	}
 
 	gbuf->Unbind();
@@ -323,6 +331,7 @@ void Renderer::RegisterScene(const Scene& scene) {
 	orends.clear();
 	trends.clear();
 	probes.clear();
+	parsyss.clear();
 
 	ScanObjects(scene->objects());
 

@@ -31,14 +31,13 @@ namespace {
 
 	addCompArr GenArrGens() {
 		addCompArr res;
-		int i = 0;
-#define add(nm, ...) res[i++] = [](SceneObject& o) { o->AddComponent<nm>(__VA_ARGS__); }
-#define addv(nm, tp, ...) res[i++] = [](SceneObject& o) { o->AddComponent<tp>(__VA_ARGS__); }
+#define add(nm, ...) res[(int)ComponentType::nm] = [](SceneObject& o) { o->AddComponent<nm>(__VA_ARGS__); }
+#define addv(nm, tp, ...) res[(int)ComponentType::nm] = [](SceneObject& o) { o->AddComponent<tp>(__VA_ARGS__); }
 		add(Animator, );
 		add(Camera, );
 		add(Light, LightType::Point);
-		i++;
 		add(MeshRenderer, );
+		add(ParticleSystem, );
 		add(Rig, );
 		addv(Script, DummyScript, );
 #undef add

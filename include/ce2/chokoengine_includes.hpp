@@ -42,12 +42,15 @@ CE_BEGIN_NAMESPACE
 /* class declarations
  */
 class Color;
+class CRValue;
 class Vec2;
 class Vec3;
 class Vec4;
 class Int2;
 class Int3;
 class Int4;
+class FCurve;
+class Gradient;
 class Quat;
 class Rect;
 class Mat3x3;
@@ -104,18 +107,22 @@ CE_OBJECT(MeshModifier)
 CE_OBJECT(MeshShapeModifier)
 CE_OBJECT(MeshSkinModifier)
 CE_OBJECT(MeshClothModifier)
+CE_OBJECT(ParticleSystem)
 CE_OBJECT(Rig)
 CE_OBJECT(Script)
 
 CE_END_NAMESPACE
 
 #include "types/color.hpp"
+#include "types/crvalue.hpp"
 #include "types/vec2.hpp"
 #include "types/vec3.hpp"
 #include "types/vec4.hpp"
 #include "types/int2.hpp"
 #include "types/int3.hpp"
 #include "types/int4.hpp"
+#include "types/fcurve.hpp"
+#include "types/gradient.hpp"
 #include "types/quat.hpp"
 #include "types/rect.hpp"
 #include "types/mat3x3.hpp"

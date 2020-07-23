@@ -82,6 +82,19 @@
 	}\
 	CE_E_INC_Y();
 
+#define CE_E_EDIT_CRV_FV(pr, lbl, nm) {\
+	CE_E_LBL(lbl);\
+	const float _w = (lt.w - CE_E_LBL_W - 2) / 2;\
+	const auto& def_vl = pr nm();\
+	const auto res_const = UI_Ext::TextFieldF(Rect(lt.x + CE_E_LBL_W, lt.y, _w - 8, 16), def_vl.constant);\
+	UI::Label(Rect(lt.x + CE_E_LBL_W + _w - 6, lt.y, _w, 16), "+?", Color(0.8f));\
+	const auto res_rand = UI_Ext::TextFieldF(Rect(lt.x + CE_E_LBL_W + _w + 10, lt.y, _w - 10, 16), def_vl.random);\
+	if (res_const != def_vl.constant || res_rand != def_vl.random) {\
+		pr nm(CRValue(res_const, res_rand));\
+	}\
+	CE_E_INC_Y();\
+}
+
 #define CE_E_EDIT_ENUM(lbl, nm, strs, cp) {\
 	CE_E_LBL(lbl);\
 	const auto& _vl = nm();\

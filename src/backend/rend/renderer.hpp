@@ -18,6 +18,7 @@ public:
 	static std::vector<Light> lights;
 	static std::vector<MeshRenderer> orends, trends;
 	static std::vector<LightProbe> probes;
+	static std::vector<ParticleSystem> parsyss;
 	static Background sky;
 
 private:
@@ -64,6 +65,10 @@ public:
 	static void RenderCamera(const Camera& cam);
 
 	friend class GI;
+
+	class Particles;
 };
 
 CE_END_BK_NAMESPACE
+
+#include "renderer_particles.hpp"

@@ -137,6 +137,7 @@ set(enum_gen_strs
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light/enums/light_type
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light/enums/light_falloff
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light_probe/enums/light_probe_updatefreq
+	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/particle_system/enums/particle_emission_shape
 )
 
 foreach (enumfl ${enum_gen_strs})
