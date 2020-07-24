@@ -21,13 +21,15 @@ UI_Ext::Layout::Block("Behavior", lt, [&]() {
 });
 
 UI_Ext::Layout::Block("Attributes", lt, [&]() {
-	CE_E_LBL("speed");
+	CE_E_LBL("size");
 	{
 		bool tg = UI::I::Button(CE_E_VL_RECT, Color(0.2f)) == InputMouseStatus::HoverUp;
+		if (UI_Ext::Layout::GetNextBlock(lt).expanded) {
+			UI::Texture(Rect(lt.x + lt.w - 18, lt.y, 16, 16), EIcons::icons["close"]);
+		}
 		CE_E_INC_Y();
 		UI_Ext::Layout::IBlock(tg, lt, [&]() {
-			UI::Rect(Rect(lt.x + 2, lt.y + 2, lt.w - 4, lt.w * 0.7), Color(0.1f));
-			lt.y += lt.w * 0.7 + 4;
+			UI_Ext::Editor::FCurve(lt, c->lifetimeSize());
 		}, CE_UI_BLOCK_CLOSED);
 	}
 

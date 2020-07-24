@@ -5,6 +5,7 @@ target_sources(ChokoEngine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/depth_cubemap.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/framebuffer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/cube_framebuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/fcurve.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/gradient.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/int2.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/int3.cpp
