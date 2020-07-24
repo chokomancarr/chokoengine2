@@ -25,7 +25,8 @@ void Renderer::Particles::InitProgs() {
 		->AddUniforms({ "numParticles", "randSeed", "DT", "emissionShape",
 			"pLifetime", "pRotation0", "pScale0", "pSpeed0", "pASpeed0",
 			"pAccel" });
-	(_outProg = TransformFeedback_New(glsl::particleout_tf_v, glsl::particleout_tf_g, { "out_pos", "out_normal", "out_tangent", "out_texCoord" }))
+	(_outProg = TransformFeedback_New(glsl::particleout_tf_v, glsl::particleout_tf_g,
+		{ "out_pos", "out_normal", "out_tangent", "out_texCoord" }))
 		->AddUniforms({ "camUp", "camRight", "camFwd" });
 }
 
@@ -53,17 +54,13 @@ void Renderer::Particles::CleanDeadPar(_ParticleSystem& par) {
 		par._data[0]->buffer(2)->Get<Vec4>()
 	};
 
-	auto L = data[0].begin();
+	auto L0 = data[0].begin();
+	auto L = L0;
 	auto R = data[0].begin() + par._activenumpar - 1;
-
-	auto L1 = data[1].begin();
-	auto L2 = data[2].begin();
-	auto R1 = data[1].begin() + par._activenumpar - 1;
-	auto R2 = data[2].begin() + par._activenumpar - 1;
 
 	while (R->x <= 0) {
 		R->x = R->y = 0;
-		R--; R1--; R2--;
+		R--;
 		if (!(--par._activenumpar))
 			break;
 	}
@@ -71,17 +68,17 @@ void Renderer::Particles::CleanDeadPar(_ParticleSystem& par) {
 	while (L < R) {
 		if (L->x <= 0) {
 			std::swap(*L, *R);
-			std::swap(*L1, *R1);
-			std::swap(*L2, *R2);
+			std::swap(data[1][L - L0], data[1][R - L0]);
+			std::swap(data[2][L - L0], data[2][R - L0]);
 
 			while (R->x <= 0) {
 				R->x = R->y = 0;
-				R--; R1--; R2--;
+				R--;
 				if (!(--par._activenumpar))
 					break;
 			}
 		}
-		L++; L1++; L2++;
+		L++;
 	}
 
 	for (int a = 0; a < NBUF; a++) {
@@ -171,14 +168,14 @@ void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, con
 	const auto& mat = par->_material;
 
 	par->_mesh->Bind();
-	mat->shader()->ApplyFlags();
+	mat->shader()->ApplyFlags(); glDepthMask(GL_FALSE);
 	mat->SetUniform("_MV", mv);
 	mat->SetUniform("_P", p);
 	mat->SetUniform("_MVP", p * mv);
 	mat->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, par->_activenumpar * 6);
 	mat->Unbind();
-	par->_mesh->Unbind();
+	par->_mesh->Unbind(); glDepthMask(GL_TRUE);
 }
 
 CE_END_BK_NAMESPACE

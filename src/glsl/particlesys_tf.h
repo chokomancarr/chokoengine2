@@ -23,7 +23,12 @@ uniform vec2 pScale0;
 uniform vec2 pSpeed0;
 uniform vec2 pASpeed0;
 
-uniform vec3 pAccel;
+uniform sampler1D pSpeedGrad;
+uniform sampler1D pSizeGrad;
+uniform sampler1D pColorGrad;
+
+uniform vec3 pForce;
+uniform vec3 pForceR;
 
 out vec4 outbuf0;
 out vec4 outbuf1;
@@ -61,7 +66,7 @@ void main () {
 
 		// sphere
 		{
-			pos = vec3(2, 0, 0);
+			pos = vec3(0);
 			float th = RND(rnd) * 2 * PI;
 			float z = RND(rnd) * 2 - 1;
 			float xy = sqrt(1 - z*z);
@@ -75,8 +80,8 @@ void main () {
 	hp -= DT;
 	
     // --------- particle simulation ------------
-	pos += vel * DT + 0.5 * pAccel * DT*DT;
-	vel += pAccel * DT;
+	pos += vel * DT + 0.5 * pForce * DT*DT;
+	vel += pForce * DT;
 	rot += avel * DT;
 
 

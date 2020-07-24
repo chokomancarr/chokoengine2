@@ -14,6 +14,10 @@ constexpr uint CE_UI_BUTTON_UPDOWN	= 1 << 1;
 constexpr uint CE_UI_BUTTON_UP		= 1 << 2;
 constexpr uint CE_UI_BUTTON_DOWN	= 1 << 3;
 
+typedef uint CE_UI_BLOCK_FLAGS;
+
+constexpr uint CE_UI_BLOCK_CLOSED	= 1 << 0;
+
 class UI_Ext::Layout {
 
 public:
@@ -26,10 +30,12 @@ public:
 			std::vector<Block> blks = {};
 			int n = 0;
 			void Clear();
-			Block& Get(int i);
+			Block& Get(int i, bool expanded = true);
 		};
 
 		struct Block {
+			Block(bool e = true) : expanded(e) {}
+
 			bool expanded = true;
 			float y0 = 0;
 			float h = 0;
@@ -45,7 +51,11 @@ public:
 
 	static void BeginLayout(const Rect&, InfoSt&);
 
-	static CE_UI_BUTTON_MASK Block(const std::string& title, InfoSt&, std::function<void()>, CE_UI_BUTTON_MASK = 0);
+	static const InfoSt::Block& GetNextBlock(InfoSt& st);
+
+	static CE_UI_BUTTON_MASK Block(const std::string& title, InfoSt&, std::function<void()>, CE_UI_BUTTON_MASK = 0, CE_UI_BLOCK_FLAGS = 0);
+
+	static void IBlock(bool toggle, InfoSt&, std::function<void()>, CE_UI_BLOCK_FLAGS = 0);
 
 	static float EndLayout(InfoSt&);
 

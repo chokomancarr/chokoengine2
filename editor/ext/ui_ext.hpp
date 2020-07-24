@@ -26,9 +26,11 @@ public:
 
 	class Debug;
 	class Layout;
+	class Editor;
 };
 
 CE_END_ED_NAMESPACE
 
 #include "ui_ext_debug.hpp"
 #include "ui_ext_layout.hpp"
+#include "ui_ext_editor.hpp"

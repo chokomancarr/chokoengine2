@@ -5,7 +5,8 @@ CE_BEGIN_NAMESPACE
 
 enum class ShaderQueue {
     Opaque,
-    Transparent
+    Transparent,
+	Overlay
 };
 
 CE_END_NAMESPACE

@@ -19,7 +19,11 @@ T Math::LerpAngle(const T& a, const T& b, const F& t) {
 }
 
 template <typename T>
-T Math::ILerp(const T& a, const T& b, const T& c) {
+T Math::ILerp(const T& a, const T& b, const T& c, bool clamped) {
+	if (clamped) {
+		if (c <= a) return 0;
+		if (c >= b) return 1;
+	}
     return (c - a) / (b - a);
 }
 

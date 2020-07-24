@@ -27,9 +27,14 @@ class _ParticleSystem : public _Component { CE_COMPONENT_COMMON
 
 	Vec3 _force, _randomForce;
 
+	Vec3 _torque, _randomTorque;
+
 	int _maxparticles;
 
 	Material _material;
+
+	bool _useTextureTiling;
+	Int2 _textureTiles;
 
 public:
 	_ParticleSystem();
@@ -60,15 +65,21 @@ public:
 
 	CE_GET_SET_MEMBER(lifetime);
 
-	CE_GET_SET_MEMBER(lifetimeSpeed);
-	CE_GET_SET_MEMBER(lifetimeSize);
+	CE_GET_SET_MEMBER_MUT(lifetimeSpeed);
+	CE_GET_SET_MEMBER_MUT(lifetimeSize);
 
-	CE_GET_SET_MEMBER(lifetimeColor);
+	CE_GET_SET_MEMBER_MUT(lifetimeColor);
 
 	CE_GET_SET_MEMBER(force);
 	CE_GET_SET_MEMBER(randomForce);
 
+	CE_GET_SET_MEMBER(torque);
+	CE_GET_SET_MEMBER(randomTorque);
+
 	CE_GET_SET_MEMBER(material);
+
+	CE_GET_SET_MEMBER(useTextureTiling);
+	CE_GET_SET_MEMBER(textureTiles);
 
 	void OnPostLogic() override;
 

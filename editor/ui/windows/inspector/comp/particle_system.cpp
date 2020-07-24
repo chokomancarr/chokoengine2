@@ -18,8 +18,31 @@ UI_Ext::Layout::Block("Generation", lt, [&]() {
 
 UI_Ext::Layout::Block("Behavior", lt, [&]() {
 	CE_E_EDIT_CRV_FV(c->, "lifetime", lifetime);
+});
 
-	
+UI_Ext::Layout::Block("Attributes", lt, [&]() {
+	CE_E_LBL("speed");
+	{
+		bool tg = UI::I::Button(CE_E_VL_RECT, Color(0.2f)) == InputMouseStatus::HoverUp;
+		CE_E_INC_Y();
+		UI_Ext::Layout::IBlock(tg, lt, [&]() {
+			UI::Rect(Rect(lt.x + 2, lt.y + 2, lt.w - 4, lt.w * 0.7), Color(0.1f));
+			lt.y += lt.w * 0.7 + 4;
+		}, CE_UI_BLOCK_CLOSED);
+	}
+
+	CE_E_LBL("color");
+	{
+		bool tg = UI::I::Button(CE_E_VL_RECT, Color(0.2f)) == InputMouseStatus::HoverUp;
+		UI::Texture(CE_E_VL_RECT.sub(1, 1, 1, 1), c->lifetimeColor().GetLookupTexture());
+		if (UI_Ext::Layout::GetNextBlock(lt).expanded) {
+			UI::Texture(Rect(lt.x + lt.w - 18, lt.y, 16, 16), EIcons::icons["close"]);
+		}
+		CE_E_INC_Y();
+		UI_Ext::Layout::IBlock(tg, lt, [&]() {
+			UI_Ext::Editor::Gradient(lt, c->lifetimeColor());
+		}, CE_UI_BLOCK_CLOSED);
+	}
 });
 
 UI_Ext::Layout::Block("Forces", lt, [&]() {

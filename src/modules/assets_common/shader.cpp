@@ -5,16 +5,17 @@ CE_BEGIN_NAMESPACE
 namespace ModuleAC {
     Shader LoadShader(const JsonObject& data) {
         std::string nm, vs, fs;
-        bool tr = false;
+		ShaderQueue qu = ShaderQueue::Opaque;
         JsonObject vrs;
         for (auto& d : data.group) {
             if (d.key.string == "name") {
                 nm = d.value.string;
             }
             if (d.key.string == "type") {
-                if (d.value.string == "Transparent") tr = true;
+				if (d.value.string == "Transparent") qu = ShaderQueue::Transparent;
+				if (d.value.string == "Overlay") qu = ShaderQueue::Overlay;
                 else if (d.value.string != "Opaque") {
-                    Debug::Warning("Shader Asset Loader", "unknown \"type\" value: \"" + d.value.string + "\" (accepted values: \"Opaque\", \"Transparent\")!");
+                    Debug::Warning("Shader Asset Loader", "unknown \"type\" value: \"" + d.value.string + "\" (accepted values: \"Opaque\", \"Transparent\", \"Overlay\")!");
                 }
             }
             if (d.key.string == "variables") {
@@ -29,7 +30,7 @@ namespace ModuleAC {
         }
         auto shd = Shader::New(vs, fs);
         shd->name(nm);
-        shd->queue(tr ? ShaderQueue::Transparent : ShaderQueue::Opaque);
+        shd->queue(qu);
         shd->RegisterStandardUniforms();
         for (auto v : vrs.group) {
             std::string vtp = v.value.string;

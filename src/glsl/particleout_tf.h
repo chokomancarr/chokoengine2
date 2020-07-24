@@ -11,6 +11,7 @@ layout(location=2) in vec4 inbuf2;
 out vec3 v2g_pos;
 out float v2g_scl;
 out float v2g_rot;
+out vec4 v2g_col;
 
 void main () {
 	float hp = inbuf0.x;
@@ -24,6 +25,7 @@ void main () {
 	v2g_pos = pos;
 	v2g_scl = scl;
 	v2g_rot = rot;
+	v2g_col = vec4(1, 1, 1, hp / maxhp);
 }
 )";
 
@@ -37,6 +39,7 @@ layout(triangle_strip, max_vertices = 6) out;
 in vec3[] v2g_pos;
 in float[] v2g_scl;
 in float[] v2g_rot;
+in vec4[] v2g_col;
 
 uniform vec3 camUp;
 uniform vec3 camRight;
@@ -46,6 +49,7 @@ out vec3 out_pos;
 out vec3 out_normal;
 out vec3 out_tangent;
 out vec2 out_texCoord;
+out vec4 out_color;
 
 void main () {
 	float th = v2g_rot[0] * PI / 180;
@@ -67,6 +71,7 @@ void main () {
 		out_normal = -camFwd;
 		out_tangent = camRight;
 		out_texCoord = vec2(px, py);
+		out_color = v2g_col[0];
 		EmitVertex();
 		if (a == 2) {
 			EndPrimitive();

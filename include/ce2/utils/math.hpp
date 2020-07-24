@@ -23,7 +23,7 @@ namespace Math {
 	 * given the value C
 	 */
     template <typename T>
-    T ILerp(const T& a, const T& b, const T& c);
+	T ILerp(const T& a, const T& b, const T& c, bool clamped = false);
 
 	/* Bound t between a and b via minmax
 	 */

@@ -39,6 +39,7 @@ public:
 	CE_GET_MEMBER(hdr);
 
     void SetPixelsRaw(const std::vector<byte>&);
+	void SetPixelsRaw(const std::vector<float>&);
 
     virtual void Bind();
     virtual void Unbind() const;

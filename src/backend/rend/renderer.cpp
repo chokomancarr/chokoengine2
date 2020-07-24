@@ -198,7 +198,10 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	}
 
 	for (auto& s : parsyss) {
-		Particles::Render(s, p, ip);
+		if (!!s->_material && !!s->_material->_shader
+				&& s->_material->_shader->_queue == ShaderQueue::Transparent) {
+			Particles::Render(s, p, ip);
+		}
 	}
 
 	gbuf->Unbind();
@@ -234,7 +237,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 
 	tar->UnbindTarget();
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBlendFunc(GL_ONE, GL_ZERO);
 
 	tar->BindTarget();
@@ -268,6 +271,14 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	_emptyVao->Unbind();
 	transOverlayShad->Unbind();
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	for (auto& s : parsyss) {
+		if (!!s->_material && !!s->_material->_shader
+			&& s->_material->_shader->_queue == ShaderQueue::Overlay) {
+			Particles::Render(s, p, ip);
+		}
+	}
 
 	tar->UnbindTarget();
 }
