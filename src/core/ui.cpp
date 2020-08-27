@@ -368,4 +368,17 @@ void UI::EndStencil() {
 	_stencilRects.clear();
 }
 
+void UI::Rotate(const CE_NS Vec2& center, float angle) {
+	float a = -angle * Math::deg2rad;
+	matrix *= Mat3x3(1, 0, 0, 0, 1, 0, center.x, center.y, 1)
+		* Mat3x3(cos(a), -sin(a), 0, sin(a), cos(a), 0, 0, 0, 1)
+		* Mat3x3(1, 0, 0, 0, 1, 0, -center.x, -center.y, 1);
+	matrixIsI = false;
+}
+
+void UI::ResetMatrix() {
+	matrix = Mat3x3();
+	matrixIsI = true;
+}
+
 CE_END_NAMESPACE

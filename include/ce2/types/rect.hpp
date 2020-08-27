@@ -24,6 +24,8 @@ public:
 
     float area() const;
 
+	Vec2 center() const;
+
 	Rect operator +(const Rect& rhs) const;
 
 	Rect operator *(const Vec2& v) const;

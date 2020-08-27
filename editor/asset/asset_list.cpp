@@ -213,6 +213,10 @@ void EAssetList::Reimport(const std::string& sig) {
 }
 
 const Asset& EAssetList::Get(AssetType t, const std::string& sig, bool async) {
+	if ((int)t >= (int)AssetType::_COUNT) {
+		static Asset _null = nullptr;
+		return _null;
+	}
 	auto& ar = _entries[(int)t];
 	auto i = std::find_if(ar.begin(), ar.end(), [&](const _Entry& e) {
 		return e.sig == sig;

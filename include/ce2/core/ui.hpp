@@ -108,6 +108,10 @@ public:
 	 */
 	static void EndStencil();
 
+	static void Rotate(const CE_NS Vec2& center, float angle);
+
+	static void ResetMatrix();
+
     /* Interactive UI elements
      * (see interactive_ui.hpp)
      */

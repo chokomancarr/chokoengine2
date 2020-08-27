@@ -25,7 +25,6 @@ uniform vec2 pASpeed0;
 
 uniform sampler1D pSpeedGrad;
 uniform sampler1D pSizeGrad;
-uniform sampler1D pColorGrad;
 
 uniform vec3 pForce;
 uniform vec3 pForceR;

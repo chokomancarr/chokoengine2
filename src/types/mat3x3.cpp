@@ -24,6 +24,10 @@ Mat3x3 Mat3x3::operator*(const Mat3x3& rhs) const {
 	return glm_cast((*(glm::mat3*)this) * (*(glm::mat3*)&rhs));
 }
 
+Mat3x3& Mat3x3::operator*=(const Mat3x3& rhs) {
+	return (*this = *this * rhs);
+}
+
 Mat3x3 Mat3x3::inverse() const {
 	return glm_cast(glm::inverse(*(glm::mat3*)this));
 }

@@ -16,6 +16,8 @@ public:
 	Vec3 operator *(const Vec3& rhs) const;
 	Mat3x3 operator *(const Mat3x3& rhs) const;
 
+	Mat3x3& operator *=(const Mat3x3& rhs);
+
 	Mat3x3 inverse() const;
 
     static Mat3x3 Identity();

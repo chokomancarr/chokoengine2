@@ -24,10 +24,10 @@ void Renderer::Particles::InitProgs() {
 	(_simProg = TransformFeedback_New(glsl::particlesys_tf, { "outbuf0", "outbuf1", "outbuf2" }))
 		->AddUniforms({ "numParticles", "randSeed", "DT", "emissionShape",
 			"pLifetime", "pRotation0", "pScale0", "pSpeed0", "pASpeed0",
-			"pAccel" });
+			"pForce" });
 	(_outProg = TransformFeedback_New(glsl::particleout_tf_v, glsl::particleout_tf_g,
-		{ "out_pos", "out_normal", "out_tangent", "out_texCoord" }))
-		->AddUniforms({ "camUp", "camRight", "camFwd" });
+		{ "out_pos", "out_texCoord", "out_color" }))
+		->AddUniforms({ "camUp", "camRight", "camFwd", "pColorGrad" });
 }
 
 void Renderer::Particles::InitBuffers(_ParticleSystem& par) {
@@ -42,9 +42,10 @@ void Renderer::Particles::InitBuffers(_ParticleSystem& par) {
 
 	par._mesh = VertexArray_New();
 	par._mesh->AddBuffer(VertexBuffer_New(true, 3, par._maxparticles * 6, nullptr));
-	par._mesh->AddBuffer(VertexBuffer_New(true, 3, par._maxparticles * 6, nullptr));
-	par._mesh->AddBuffer(VertexBuffer_New(true, 3, par._maxparticles * 6, nullptr));
+	par._mesh->AddBuffer(VertexBuffer_New(true, 3, par._maxparticles * 6, nullptr)); //not used
+	par._mesh->AddBuffer(VertexBuffer_New(true, 3, par._maxparticles * 6, nullptr)); //not used
 	par._mesh->AddBuffer(VertexBuffer_New(true, 2, par._maxparticles * 6, nullptr));
+	par._mesh->AddBuffer(VertexBuffer_New(true, 4, par._maxparticles * 6, nullptr));
 }
 
 void Renderer::Particles::CleanDeadPar(_ParticleSystem& par) {
@@ -133,7 +134,6 @@ void Renderer::Particles::UpdateData(_ParticleSystem& par) {
 		ExecTimestep(par);
 }
 
-#pragma optimize("", off)
 void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, const Mat4x4& ip) {
 	if (!par->_material || !par->_material->_shader) return;
 	if (!_outProg) {
@@ -148,7 +148,8 @@ void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, con
 	Vec4 fwd = imv * (ip * Vec4::front()).normalized();
 
 	_outProg->vao(par->_data[0]);
-	_outProg->outputs(par->_mesh->buffers());
+	const auto bufs = par->_mesh->buffers();
+	_outProg->outputs({ bufs[0], bufs[3], bufs[4] });
 	_outProg->Bind();
 
 	int i = 0;
@@ -156,12 +157,13 @@ void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, con
 	Bind(LOC, (Vec3)up);
 	Bind(LOC, (Vec3)rht);
 	Bind(LOC, (Vec3)fwd);
+	glUniform1i(LOC, 0);
+	glActiveTexture(GL_TEXTURE0);
+	par->_lifetimeColor.GetLookupTexture()->Bind();
 #undef LOC
 
 	_outProg->Exec(par->_activenumpar, GL_TRIANGLES);
 	_outProg->Unbind();
-
-	auto pos = par->_mesh->buffer(0)->Get<Vec3>();
 
 	// -----------  actual drawing  --------------
 

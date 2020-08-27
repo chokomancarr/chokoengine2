@@ -8,6 +8,8 @@ layout(location=0) in vec4 inbuf0;
 layout(location=1) in vec4 inbuf1;
 layout(location=2) in vec4 inbuf2;
 
+uniform sampler2D pColorGrad;
+
 out vec3 v2g_pos;
 out float v2g_scl;
 out float v2g_rot;
@@ -22,10 +24,13 @@ void main () {
 	vec3 vel = inbuf2.xyz;
 	float avel = inbuf2.w;
 
+	float rhp = hp / maxhp;
+
 	v2g_pos = pos;
 	v2g_scl = scl;
 	v2g_rot = rot;
-	v2g_col = vec4(1, 1, 1, hp / maxhp);
+	v2g_col = texture(pColorGrad, vec2(1 - rhp, 0.5));
+	v2g_col.a *= rhp;
 }
 )";
 
@@ -46,8 +51,8 @@ uniform vec3 camRight;
 uniform vec3 camFwd;
 
 out vec3 out_pos;
-out vec3 out_normal;
-out vec3 out_tangent;
+//out vec3 out_normal;
+//out vec3 out_tangent;
 out vec2 out_texCoord;
 out vec4 out_color;
 
@@ -68,8 +73,8 @@ void main () {
 		float py = lut[a*2+1];
 		
 		out_pos = v2g_pos[0] + (px*2-1)*dx + (py*2-1)*dy;
-		out_normal = -camFwd;
-		out_tangent = camRight;
+		//out_normal = -camFwd;
+		//out_tangent = camRight;
 		out_texCoord = vec2(px, py);
 		out_color = v2g_col[0];
 		EmitVertex();

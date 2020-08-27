@@ -24,6 +24,10 @@ float Rect::area() const {
 	return _w * _w + _h * _h;
 }
 
+Vec2 Rect::center() const {
+	return Vec2(_x + _w / 2, _y + _h / 2);
+}
+
 Rect Rect::operator +(const Rect& rhs) const {
 	return Rect(_x + rhs._x, _y + rhs._y, _w + rhs._w, _h + rhs._h);
 }
