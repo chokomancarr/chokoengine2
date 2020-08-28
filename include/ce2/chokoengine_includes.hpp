@@ -100,6 +100,7 @@ CE_OBJECT(Component)
 CE_OBJECT(Animator)
 CE_OBJECT(Camera)
 CE_OBJECT(CameraEffect)
+CE_OBJECT(Collider)
 CE_OBJECT(Light)
 CE_OBJECT(LightProbe)
 CE_OBJECT(MeshRenderer)
@@ -109,6 +110,7 @@ CE_OBJECT(MeshSkinModifier)
 CE_OBJECT(MeshClothModifier)
 CE_OBJECT(ParticleSystem)
 CE_OBJECT(Rig)
+CE_OBJECT(Rigidbody)
 CE_OBJECT(Script)
 
 CE_END_NAMESPACE
@@ -130,6 +132,8 @@ CE_END_NAMESPACE
 
 #include "parsers/json.hpp"
 #include "parsers/mesh.hpp"
+
+#include "physics/physics.hpp"
 
 #include "utils/cursor.hpp"
 #include "utils/math.hpp"

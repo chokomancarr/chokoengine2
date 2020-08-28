@@ -10,11 +10,13 @@ CE_BEGIN_NAMESPACE
 const std::unordered_map<ComponentType, std::string> ComponentTypeStr = {
 	{ ComponentType::Animator, "Animator" },
 	{ ComponentType::Camera, "Camera" },
+	{ ComponentType::Collider, "Collider" },
 	{ ComponentType::Light, "Light" },
 	{ ComponentType::LightProbe, "LightProbe" },
 	{ ComponentType::MeshRenderer, "MeshRenderer" },
 	{ ComponentType::ParticleSystem, "ParticleSystem" },
 	{ ComponentType::Rig, "Rig" },
+	{ ComponentType::Rigidbody, "Rigidbody" },
 	{ ComponentType::Script, "Script" },
 	{ ComponentType::_COUNT, "_COUNT" },
 	{ ComponentType::Unknown, "Unknown" }

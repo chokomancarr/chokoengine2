@@ -35,9 +35,11 @@ class _PrefabComp : public _PrefabObjBase {
 
 	CE_PR_DEF_COMP(Animator)
 	CE_PR_DEF_COMP(Camera)
+	CE_PR_DEF_COMP(Collider)
 	CE_PR_DEF_COMP(Light)
 	CE_PR_DEF_COMP(MeshRenderer)
 	CE_PR_DEF_COMP(Rig)
+	CE_PR_DEF_COMP(Rigidbody)
 	CE_PR_DEF_COMP(Script)
 #undef CE_PR_DEF_COMP
 

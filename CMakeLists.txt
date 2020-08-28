@@ -63,15 +63,9 @@ if (MSVC)
     )
 endif()
 
-if (MSVC)
-    set(LINK_DIRS
-        ${PROJECT_SOURCE_DIR}/chokoballs/build/lib/Release
-    )
-else()
-    set(LINK_DIRS
-        ${PROJECT_SOURCE_DIR}/chokoballs/build/lib
-    )
-endif()
+set(LINK_DIRS
+    ${PROJECT_SOURCE_DIR}/chokoballs/build/lib
+)
 
 set(LIBS
 	${OPENGL_gl_LIBRARY}
@@ -80,7 +74,7 @@ set(LIBS
 	${JPEG_LIBRARY}
 	${FREETYPE_LIBRARIES}
 	${ZLIB_LIBRARIES}
-	#ChokoBalls
+	ChokoBalls
 )
 if (NOT APPLE)
 set(LIBS
@@ -134,6 +128,7 @@ set(enum_gen_strs
 	${PROJECT_SOURCE_DIR}/include/ce2/core/enums/input_key
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/enums/component_types
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/camera/enums/camera_clear_type
+	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/collider/enums/collider_type
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light/enums/light_type
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light/enums/light_falloff
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light_probe/enums/light_probe_updatefreq

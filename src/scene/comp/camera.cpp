@@ -24,4 +24,10 @@ void _Camera::AddEffect(const CameraEffect& e) {
 	_effects.push_back(e);
 }
 
+Vec3 _Camera::ScreenToWorldCoords(const Vec2& p) const {
+	const Vec4 p4((p.x / Display::width()) * 2.f - 1.f, 1.f - (p.y / Display::height()) * 2.f, 1.f, 1.f);
+	const Vec4 res = _lastViewProjectionMatrix.inverse() * p4;
+	return (Vec3)res / res.w;
+}
+
 CE_END_NAMESPACE

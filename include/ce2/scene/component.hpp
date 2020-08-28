@@ -88,9 +88,11 @@ CE_END_NAMESPACE
 
 #include "comp/animator.hpp"
 #include "comp/camera.hpp"
+#include "comp/collider.hpp"
 #include "comp/light.hpp"
 #include "comp/light_probe.hpp"
 #include "comp/mesh_renderer.hpp"
 #include "comp/particle_system.hpp"
 #include "comp/rig.hpp"
+#include "comp/rigidbody.hpp"
 #include "comp/script.hpp"

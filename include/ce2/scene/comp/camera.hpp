@@ -74,7 +74,9 @@ public:
 	CE_GET_SET_MEMBER(effects);
 	/* Adds an effect at the back of the list
 	 */
-	void AddEffect(const CameraEffect& e);
+	void AddEffect(const CameraEffect&);
+
+	Vec3 ScreenToWorldCoords(const Vec2&) const;
 };
 
 CE_END_NAMESPACE

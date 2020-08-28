@@ -6,11 +6,13 @@ CE_BEGIN_NAMESPACE
 enum class ComponentType {
 	Animator,
 	Camera,
+	Collider,
 	Light,
 	LightProbe,
 	MeshRenderer,
 	ParticleSystem,
 	Rig,
+	Rigidbody,
 	Script,
 	_COUNT,
 	Unknown

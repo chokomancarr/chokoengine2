@@ -8,10 +8,12 @@ _PrefabComp::_PrefabComp(const Component& c)
 #define CS(tp) case ComponentType::tp: Set ## tp((tp)c); break;
 	switch (type) {
 		CS(Camera)
+		CS(Collider)
 		CS(Animator)
 		CS(Light)
 		CS(MeshRenderer)
 		CS(Rig)
+		CS(Rigidbody)
 		CS(Script)
 	default:
 		CE_NOT_IMPLEMENTED
@@ -36,10 +38,12 @@ SceneObject _PrefabComp::Instantiate(const SceneObject& o) const {
 #define CS(tp) case ComponentType::tp: Instantiate ## tp(o); break;
 	switch (type) {
 		CS(Camera)
+		CS(Collider)
 		CS(Animator)
 		CS(Light)
 		CS(MeshRenderer)
 		CS(Rig)
+		CS(Rigidbody)
 		CS(Script)
 	default:
 		CE_NOT_IMPLEMENTED

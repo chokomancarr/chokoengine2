@@ -8,3 +8,4 @@ ChokoEngine 2
    introduction
    Tutorial/index
    Reference/index
+   Developer/index
