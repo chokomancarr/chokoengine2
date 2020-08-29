@@ -23,6 +23,8 @@ public:
 
 	_Collider(const _Collider& rhs);
 
+	void OnStart() override;
+
 	CE_GET_SET_MEMBER_F(type);
 
 	CE_GET_SET_MEMBER(radius);

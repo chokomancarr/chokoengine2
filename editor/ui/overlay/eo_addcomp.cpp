@@ -35,10 +35,12 @@ namespace {
 #define addv(nm, tp, ...) res[(int)ComponentType::nm] = [](SceneObject& o) { o->AddComponent<tp>(__VA_ARGS__); }
 		add(Animator, );
 		add(Camera, );
+		add(Collider, );
 		add(Light, LightType::Point);
 		add(MeshRenderer, );
 		add(ParticleSystem, );
 		add(Rig, );
+		add(Rigidbody, );
 		addv(Script, DummyScript, );
 #undef add
 		return res;

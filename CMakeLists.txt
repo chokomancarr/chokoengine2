@@ -105,6 +105,20 @@ else()
     )
 endif()
 
+if (MSVC)
+	set(DLLS
+        ${PROJECT_SOURCE_DIR}/chokoballs/build/bin/ChokoBalls.dll
+	)
+elseif (LINUX)
+	set(DLLS
+		${PROJECT_SOURCE_DIR}/chokoballs/build/bin/libChokoBalls.so
+	)
+else()
+	set(DLLS
+		
+	)
+endif()
+
 include_directories(${INC_DIRS})
 link_directories(${LINK_DIRS})
 
@@ -227,3 +241,13 @@ foreach(tasknm ${taskrunner_list})
 	target_include_directories(${tasknm} PRIVATE editor/taskrunners/${tasknm})
 	target_link_libraries(${tasknm} ${LIBS})
 endforeach()
+
+foreach (file_i ${DLLS})
+	add_custom_command(
+		TARGET ChokoEngine
+		POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		${file_i}
+		"${CMAKE_BINARY_DIR}/bin/"
+	)
+endforeach(file_i)

@@ -29,6 +29,7 @@ public:
 		std::string title;
 		bool visible;
 		bool createScene;
+		bool enablePhysics;
 
         /* We need to explicit-construct these
          * or else clang bugs out
@@ -36,7 +37,8 @@ public:
         InitOptionsSt() :
             title("ChokoLait App"),
             visible(true),
-			createScene(true)
+			createScene(true),
+			enablePhysics(false)
             {}
 	};
 

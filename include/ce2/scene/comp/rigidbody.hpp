@@ -4,6 +4,8 @@
 CE_BEGIN_NAMESPACE
 
 class _Rigidbody : public _Component { CE_COMPONENT_COMMON
+	bool _dynamic;
+	
 	float _mass;
 	float _moment;
 
@@ -23,6 +25,7 @@ public:
 
 	void OnStart() override;
 
+	CE_GET_SET_MEMBER_F(dynamic);
 	CE_GET_SET_MEMBER_F(mass);
 	CE_GET_SET_MEMBER_F(moment);
 	CE_GET_SET_MEMBER_F(bounce);

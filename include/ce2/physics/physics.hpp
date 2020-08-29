@@ -3,11 +3,8 @@
 
 CE_BEGIN_NAMESPACE
 
-class Physics { CE_CLASS_COMMON
-	
-	static bool Init();
-
-	static void Update();
+class Physics {	CE_CLASS_COMMON
+	static CE_EXPORT float _timeScale;
 
 	/* Call this on:
 	 * - rigidbody added / removed
@@ -39,6 +36,15 @@ public:
 			return !!collider;
 		}
 	};
+
+	CE_GET_SET_ST_MEMBER_F(timeScale);
+
+	/* Initializes the physics engine
+	 * ChokoLait should call this for you
+	 */
+	static bool Init();
+
+	static void Update(Scene&);
 	
 	static RayHit Raycast(const Ray&);
 

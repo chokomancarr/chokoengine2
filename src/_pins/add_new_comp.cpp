@@ -11,3 +11,4 @@
 
 #include "../../editor/ui/windows/inspector/component.hpp"
 #include "../../editor/ui/windows/inspector/component.cpp"
+#include "../../editor/ui/overlay/eo_addcomp.cpp"

@@ -28,6 +28,10 @@ bool ChokoLait::Init(int w, int h, const InitOptionsSt& opts) {
 		return false;
 	}
 
+	if (opts.enablePhysics && !Physics::Init()) {
+		return false;
+	}
+
 	if (opts.createScene) {
 		scene = Scene::New();
 	}
@@ -64,9 +68,7 @@ void ChokoLait::Update(emptyCallbackFunc func) {
 
 	if (!!scene) {
 		scene->Update();
-		if (0) {
-			scene->PhysicsUpdate();
-		}
+		Physics::Update(scene);
 		scene->LateUpdate();
 		scene->PostLogic();
 	}

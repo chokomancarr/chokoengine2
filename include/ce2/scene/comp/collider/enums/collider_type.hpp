@@ -9,8 +9,7 @@ enum class ColliderType {
 	Sphere,
     Cube,
     Capsule,
-    Mesh,
-	_COUNT
+    Mesh
 };
 
 CE_END_NAMESPACE

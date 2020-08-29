@@ -13,8 +13,7 @@ const std::unordered_map<ColliderType, std::string> ColliderTypeStr = {
 	{ ColliderType::Sphere, "Sphere" },
 	{ ColliderType::Cube, "Cube" },
 	{ ColliderType::Capsule, "Capsule" },
-	{ ColliderType::Mesh, "Mesh" },
-	{ ColliderType::_COUNT, "_COUNT" }
+	{ ColliderType::Mesh, "Mesh" }
 };
 
 CE_END_NAMESPACE
