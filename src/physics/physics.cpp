@@ -124,6 +124,7 @@ void Physics::OnBodyAdded(const SceneObject& o) {
 		switch (col->type()) {
 		case ColliderType::InfPlane:
 			obj->collider = CB::Collider_InfPlane::New();
+			break;
 		case ColliderType::Sphere:
 			obj->collider = CB::Collider_Sphere::New(col->radius());
 			break;
