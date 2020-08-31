@@ -5,6 +5,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 CE_OBJECT(ScriptInfo);
+typedef CE_PL_NS ScriptClassEntry ScriptClass;
 typedef CE_PL_NS ScriptVarEntry ScriptVar;
 class ScriptVal;
 CE_OBJECT(DummyScript)

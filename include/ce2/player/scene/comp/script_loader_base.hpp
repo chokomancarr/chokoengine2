@@ -1,6 +1,7 @@
 #pragma once
 #include "chokoplayer.hpp"
 #include "script_var_entry.hpp"
+#include "script_class_entry.hpp"
 
 /*
  * The program must implement the script loader derived from this class,

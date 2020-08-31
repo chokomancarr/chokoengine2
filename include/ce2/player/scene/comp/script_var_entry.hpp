@@ -23,6 +23,8 @@ struct ScriptVarEntry {
         Class
     } type;
 
+	bool is_vector;
+
 	AssetType type_asset;
 	ComponentType type_comp;
 

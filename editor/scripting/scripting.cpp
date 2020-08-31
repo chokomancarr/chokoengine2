@@ -3,6 +3,12 @@
 CE_BEGIN_ED_NAMESPACE
 
 namespace {
+	void rmlinecomment(std::string& s) {
+		auto res = std::strstr(s.data(), "//");
+		if (res) {
+			s.resize(res - s.data());
+		}
+	}
 	int bracketCnt(const std::string& s) {
 		int i = 0;
 		for (auto& c : s) {
@@ -33,7 +39,15 @@ namespace {
 	}
 
 	bool parseVar(const std::string& ln, size_t& st, ScriptVar& vr, const ScriptInfo& res) {
-		const auto& tp = vr.name = nextWord(ln, st, &st);
+		auto& tp = vr.name = nextWord(ln, st, &st);
+		if (tp.substr(0, 12) == "std::vector<" && tp.back() == '>') {
+			vr.is_vector = true;
+			tp = tp.substr(12);
+			tp.pop_back();
+		}
+		else {
+			vr.is_vector = false;
+		}
 		static const std::string typeSs[] = {
 			"int", "float",
 			"Vec2", "Vec3", "Vec4"
@@ -45,8 +59,16 @@ namespace {
 			}
 		}
 		
+		for (auto& a : res->classes) {
+			if (tp == a.name) {
+				vr.type = ScriptVar::Type::Class;
+				vr.sub_class = tp;
+				return true;
+			}
+		}
+
 		for (auto& a : AssetTypeStr) {
-			if (a.second == tp) {
+			if (tp == a.second) {
 				vr.type = ScriptVar::Type::Asset;
 				vr.type_asset = a.first;
 				vr.sub_class = tp;
@@ -94,8 +116,11 @@ ScriptInfo EScripting::ParseInfo(const std::string& sig) {
 	int br = 0;
 	int line = 1;
 	bool isclass = false;
+	bool issubclass = false;
+	ScriptClass subclass;
 	int cbr, sbr;
 	while (std::getline(strm, ln)) {
+		rmlinecomment(ln);
 		br += bracketCnt(ln);
 		if (br < 0) {
 			ERRT("Unexpected '}'" + LN
@@ -116,8 +141,30 @@ ScriptInfo EScripting::ParseInfo(const std::string& sig) {
 			if (br < cbr) {
 				return res;
 			}
+
+			if (!issubclass) {
+				auto st = (size_t)std::strstr(ln.c_str(), "CE_SERIALIZABLE");
+				if (st > 0) {
+					st = st - (size_t)ln.c_str() + 16;
+					std::string nm = nextWord(ln, st, &st);
+					if (nm != "class") {
+						ERRT("Expected 'class' after CE_SERIALIZABLE!");
+					}
+					subclass.name = nextWord(ln, st, &st);
+					subclass.vars.clear();
+					issubclass = true;
+					Debug::Message("Script Var", "subclass \"" + subclass.name + "\" start" + LN);
+				}
+			}
+			else if (br == cbr) {
+				issubclass = false;
+				res->classes.push_back(subclass);
+				Debug::Message("Script Var", "subclass \"" + subclass.name + "\" end" + LN);
+			}
+
+
 			auto st = (size_t)std::strstr(ln.c_str(), "CE_SERIALIZE");
-			if (st) {
+			if (st > 0) {
 				ScriptVar vr;
 				st = st - (size_t)ln.c_str() + 13;
 				if (!parseVar(ln, st, vr, res))
@@ -125,9 +172,14 @@ ScriptInfo EScripting::ParseInfo(const std::string& sig) {
 
 				std::string nm = nextWord(ln, st, &st);
 				do {
-					Debug::Message("Script Var", "\"" + vr.name + "\" = \"" + nm + "\"" + LN);
+					Debug::Message("Script Var", "var \"" + nm + "\" (" + vr.name + (vr.is_vector ? " array)" : ")") + LN);
 					vr.name = nm;
-					res->vars.push_back(vr);
+					if (issubclass) {
+						subclass.vars.push_back(vr);
+					}
+					else {
+						res->vars.push_back(vr);
+					}
 					nm = nextWord(ln, st, &st);
 				} while (nm.length() > 0);
 			}

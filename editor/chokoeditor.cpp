@@ -112,6 +112,7 @@ inline void paint() {
 
 	pg(dt);
 
+	/*
 	const Vec2 r0(Display::width() - 250, Display::height() - 200);
 
 	UI::Rect(Rect(r0.x, r0.y, 240, 190), Color(0.2f, 0.7f));
@@ -119,6 +120,7 @@ inline void paint() {
 	UI::Label(Rect(r0.x + 10, r0.y + 30, 200, 20), "simulating", Color(0.8f));
 	runphys = UI::I::Toggle(Rect(r0.x + 200, r0.y + 30, 16, 16), runphys, Color(0.3f));
 	Physics::timeScale(runphys ? 1 : 0);
+	*/
 }
 
 std::string ChokoEditor::projectRoot;
@@ -132,10 +134,10 @@ void ChokoEditor::Init() {
 void ChokoEditor::Main() {
 	ChokoLait::InitOptionsSt opts;
 	opts.title = "ChokoEditor";
-	opts.enablePhysics = true;
+	//opts.enablePhysics = true;
 	ChokoLait::Init(1000, 600, opts);
 
-	Physics::timeScale(0);
+	//Physics::timeScale(0);
 
 	auto font = Font::New(IO::path() + "res/font.ttf");
 	UI::defaultFont(font);

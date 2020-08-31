@@ -8,6 +8,7 @@ public:
 	std::string className;
 	std::string sig;
 
+	std::vector<CE_PL_NS ScriptClassEntry> classes;
 	std::vector<CE_PL_NS ScriptVarEntry> vars;
 };
 
