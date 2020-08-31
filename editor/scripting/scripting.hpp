@@ -8,6 +8,7 @@ CE_OBJECT(ScriptInfo);
 typedef CE_PL_NS ScriptClassEntry ScriptClass;
 typedef CE_PL_NS ScriptVarEntry ScriptVar;
 class ScriptVal;
+class ScriptValClass;
 CE_OBJECT(DummyScript)
 
 class EScripting {
@@ -21,5 +22,6 @@ CE_END_ED_NAMESPACE
 
 #include "script_info.hpp"
 #include "script_val.hpp"
+#include "script_val_class.hpp"
 #include "comp/script_dummy_loader.hpp"
 #include "loader_generator.hpp"

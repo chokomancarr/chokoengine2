@@ -1,11 +1,12 @@
 #pragma once
 #include "chokoeditor.hpp"
+#include "script_val_class.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
 class ScriptVal {
 public:
-	ScriptVal(const ScriptVar& vr);
+	ScriptVal(const ScriptVar& vr = {}, const ScriptInfo& info = nullptr);
 
 	ScriptVar var;
 	union {
@@ -22,6 +23,7 @@ public:
 	SceneObject val_obj;
 	Component val_comp;
 	std::vector<ScriptVal> val_vec;
+	ScriptValClass val_class;
 
 	static ScriptVal invalid;
 };

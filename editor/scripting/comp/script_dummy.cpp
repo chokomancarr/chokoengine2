@@ -18,7 +18,7 @@ void _DummyScript::info(const pScriptInfo& i) {
 
 	//
 	for (auto& v : i->vars) {
-		vals.push_back(v);
+		vals.push_back(ScriptVal(v, i.lock()));
 	}
 }
 
