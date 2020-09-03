@@ -43,6 +43,7 @@ std::vector<ScriptVar> _DummyScriptLoader::GetVarsOf(const std::string& sig) {
 }
 
 namespace {
+#pragma optimize("", off)
     ScriptVal& getslot(const std::string& nm) {
 		const auto& ss = StrExt::Split(nm, '.');
 		ScriptVal* res = nullptr;
@@ -83,7 +84,9 @@ namespace {
 
 void _DummyScriptLoader::set_vecsize(const std::string& nm, const size_t n) {
 	GETV;
-	v.val_vec.resize(n);
+	auto v2 = v.var;
+	v2.is_vector = false;
+	v.val_vec.resize(n, ScriptVal(v2, _target->info().lock()));
 }
 size_t _DummyScriptLoader::get_vecsize(const std::string& nm) {
 	GETV;
