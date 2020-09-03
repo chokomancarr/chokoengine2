@@ -29,19 +29,41 @@ void _DummyScriptLoader::activeTarget(const Component& c) {
 }
 
 std::vector<ScriptVar> _DummyScriptLoader::GetVarsOf(const std::string& sig) {
-    auto& info = (sig.empty()) ? _target->info()
-        : EAssetList::GetScr(sig);
-    return info->vars;
+	auto ss = StrExt::Split(sig, '.');
+    auto& info = (ss[0].empty()) ? _target->info()
+        : EAssetList::GetScr(ss[0]);
+	if (ss.size() < 2) {
+		return info->vars;
+	}
+	else {
+		return std::find_if(info->classes.begin(), info->classes.end(), [&ss](const Player::ScriptClassEntry& e) {
+			return e.name == ss[1];
+		})->vars;
+	}
 }
 
 namespace {
     ScriptVal& getslot(const std::string& nm) {
-        auto& vs = _target->vals;
-        auto it = std::find_if(vs.begin(), vs.end(), [&nm](const ScriptVal& v) {
-            return v.var.name == nm;
-        });
-		if (it == vs.end()) return ScriptVal::invalid;
-        return *it;
+		const auto& ss = StrExt::Split(nm, '.');
+		ScriptVal* res = nullptr;
+		for (auto s : ss) {
+			auto& vs = (res) ? res->val_class.val : _target->vals;
+			const auto arrc = s.find('!');
+			int arri = -1;
+			if (arrc != std::string::npos) {
+				arri = std::stoi(s.substr(0, arrc));
+				s = s.substr(arrc + 1);
+			}
+			auto it = std::find_if(vs.begin(), vs.end(), [&s](const ScriptVal& v) {
+				return v.var.name == s;
+			});
+			if (it == vs.end()) {
+				EDebug::Log("ScriptLoader", "failed to read slot \"" + nm + "\" for script " + _target->info()->className + "!");
+				return ScriptVal::invalid;
+			}
+			res = (arri > -1) ? &(it->val_vec[arri]) : &(*it);
+		}
+        return *res;
     }
 }
 
@@ -58,6 +80,15 @@ namespace {
 		if (&v != &ScriptVal::invalid)\
 	        v.val_ ## i = vl;\
     }
+
+void _DummyScriptLoader::set_vecsize(const std::string& nm, const size_t n) {
+	GETV;
+	v.val_vec.resize(n);
+}
+size_t _DummyScriptLoader::get_vecsize(const std::string& nm) {
+	GETV;
+	return v.val_vec.size();
+}
 
 IMPL_GETSET(int, i)
 IMPL_GETSET(float, f)

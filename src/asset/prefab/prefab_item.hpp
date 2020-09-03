@@ -49,6 +49,11 @@ public:
 
 	Type type;
 
+	/* array items have values in [itemgroup]
+	 * with contents of type [type]
+	 */
+	bool is_array;
+
 	PrefabItem(Type);
 	PrefabItem(float);
 	PrefabItem(int);
@@ -67,7 +72,7 @@ public:
 	PrefabItem(PrefabItemGroup);
 	PrefabItem(PrefabObjGroup);
 
-	PrefabItem(const std::string& tp, const JsonObject&);
+	PrefabItem(std::string tp, const JsonObject&, const Type force = (Type)-1);
 
 	template <typename T>
 	typename std::enable_if<std::is_enum<T>::value, T>::type

@@ -8,6 +8,11 @@
  * and set it to _ScriptLoaderBase::instance.
  */
 
+/*
+ * Signature format:
+ * (class foo)a.b[5].c -> a.5!b.c
+ */
+
 CE_BEGIN_PL_NAMESPACE
 
 #define CE_PL_SCR_GETSET(tp)\
@@ -30,6 +35,9 @@ public:
 
 	virtual std::vector<ScriptVarEntry> GetVarsOf(const std::string&) = 0;
 
+	virtual void set_vecsize(const std::string&, const size_t) = 0;
+	virtual size_t get_vecsize(const std::string&) = 0;
+
 	CE_PL_SCR_GETSET(int)
 	CE_PL_SCR_GETSET(float)
 	CE_PL_SCR_GETSET(Vec2)
@@ -47,6 +55,8 @@ public:
 	tp get_ ## tp(const std::string&) override;
 
 #define CE_PL_SCR_GETSET_DEFS\
+	void set_vecsize(const std::string&, const size_t) override;\
+	size_t get_vecsize(const std::string&) override;\
 	CE_PL_SCR_GETSET_DEF(int)\
 	CE_PL_SCR_GETSET_DEF(float)\
 	CE_PL_SCR_GETSET_DEF(Vec2)\

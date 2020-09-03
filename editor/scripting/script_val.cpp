@@ -10,7 +10,10 @@ ScriptVal::ScriptVal(const ScriptVar& vr, const ScriptInfo& info)
 		for (auto& sc : info->classes) {
 			if (sc.name == vr.sub_class) {
 				val_class.var = sc;
-				val_class.val.resize(sc.vars.size());
+				val_class.val.reserve(sc.vars.size());
+				for (auto& v : sc.vars) {
+					val_class.val.push_back(ScriptVal(v, info));
+				}
 			}
 		}
 	}
