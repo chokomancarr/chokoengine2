@@ -10,8 +10,11 @@ _PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, boo
 		CE_PR_ADDV(position, tr->localPosition());
 		CE_PR_ADDV(rotation, tr->localRotation());
 		CE_PR_ADDV(scale, tr->localScale());
-		if (o->parent() != p) {
-			CE_PR_ADDV(parent, Prefab_ObjRef(o, p));
+		const auto& p2 = o->parent().lock();
+		if (p2 != p) {
+			auto oref = Prefab_ObjRef(p2, p);
+			oref.path.insert(oref.path.begin(), std::make_pair(p->name(), 0));
+			CE_PR_ADDV(parent, std::move(oref));
 		}
 	}
 

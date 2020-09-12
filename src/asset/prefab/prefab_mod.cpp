@@ -161,6 +161,17 @@ JsonObject _PrefabMod::ToJson() const {
 
 		res.group.push_back(JsonPair(JsonObject("modcomps"), mc));
 	}
+
+	if (!add_comps.empty()) {
+		JsonObject ac(JsonObject::Type::Group);
+		for (auto& a : add_comps) {
+			ac.group.push_back(a.second->ToJson());
+			ac.group.back().value.group.push_back(
+				JsonPair(JsonObject("__comp__index.Int"), JsonObject(std::to_string(a.first))));
+		}
+
+		res.group.push_back(JsonPair(JsonObject("addcomps"), ac));
+	}
 	
 	return res;
 }
