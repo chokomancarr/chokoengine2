@@ -24,6 +24,14 @@ Vec3 Quat::operator *(const Vec3& rhs) const{
 	return glm_cast((*(glm::quat*)this) * (*(glm::vec3*)&rhs));
 }
 
+bool Quat::operator ==(const Quat& rhs) const {
+	return (x == rhs.x) && (y == rhs.y) && (z == rhs.z) && (w == rhs.w);
+}
+
+bool Quat::operator !=(const Quat& rhs) const {
+	return (x != rhs.x) || (y != rhs.y) || (z != rhs.z) || (w != rhs.w);
+}
+
 Mat4x4 Quat::matrix() const {
 	return glm_cast(glm::mat4_cast(*(glm::quat*)this));
 }

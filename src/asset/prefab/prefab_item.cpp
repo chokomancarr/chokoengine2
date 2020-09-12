@@ -11,11 +11,11 @@ CE_BEGIN_NAMESPACE
  */
 
 #define PR_CTOR(tp, tpe, vr) PrefabItem::PrefabItem(tp t)\
-		: value({}), type(Type::tpe), is_array(false) {\
+		: PrefabItem(Type::tpe) {\
 	value.vr = t;\
 }
 
-PrefabItem::PrefabItem(Type t) : value({}), type(t), is_array(false) {}
+PrefabItem::PrefabItem(Type t) : value({}), type(t), is_array(false), is_default(false) {}
 
 PR_CTOR(float, Float, f)
 PR_CTOR(int, Int, i)
@@ -26,7 +26,7 @@ PR_CTOR(const Quat&, Quat, q)
 PR_CTOR(const std::string&, String, s)
 PR_CTOR(const Color&, Vec4, v4);
 
-PrefabItem::PrefabItem(const Asset& a) : value({}), type(Type::Asset), is_array(false) {
+PrefabItem::PrefabItem(const Asset& a) : PrefabItem(Type::Asset) {
 	auto& av = value.assetref;
 	if (!a) {
 		av.sig = "none";
@@ -37,19 +37,19 @@ PrefabItem::PrefabItem(const Asset& a) : value({}), type(Type::Asset), is_array(
 		av.assetType = a->assetType;
 	}
 }
-PrefabItem::PrefabItem(const Prefab_ObjRef& s) : value({}), type(Type::SceneObject), is_array(false) {
+PrefabItem::PrefabItem(const Prefab_ObjRef& s) : PrefabItem(Type::SceneObject) {
 	value.scobjref = s;
 }
-PrefabItem::PrefabItem(const Component& c) : value({}), type(Type::Component), is_array(false) {
+PrefabItem::PrefabItem(const Component& c) : PrefabItem(Type::Component) {
 	//auto& cv = value.compref;
 	//cv.obj = Prefab_ObjRef(c->object(), ChokoEditor::scene->objects()[1]);
 	//cv.type = c->componentType;
 
 }
-PrefabItem::PrefabItem(PrefabItemGroup g) : value({}), type(Type::ItemGroup), is_array(false) {
+PrefabItem::PrefabItem(PrefabItemGroup g) : PrefabItem(Type::ItemGroup) {
 	value.group = std::move(g);
 }
-PrefabItem::PrefabItem(PrefabObjGroup g) : value({}), type(Type::ObjGroup), is_array(false) {
+PrefabItem::PrefabItem(PrefabObjGroup g) : PrefabItem(Type::ObjGroup) {
 	value.objgroup = std::move(g);
 }
 
@@ -71,8 +71,12 @@ const std::string CE_ES_TypeS[] = {
 	"ObjGroup"
 };
 
-PrefabItem::PrefabItem(std::string tp, const JsonObject& vl, const Type force) : value({}), is_array(false) {
+PrefabItem::PrefabItem(std::string tp, const JsonObject& vl, const Type force) : PrefabItem(Type::Int) {
 	if (force == (Type)-1) {
+		if (tp.back() == '!') {
+			is_default = true;
+			tp.pop_back();
+		}
 		if (tp.back() == '*') {
 			is_array = true;
 			tp.pop_back();
@@ -83,6 +87,7 @@ PrefabItem::PrefabItem(std::string tp, const JsonObject& vl, const Type force) :
 				break;
 			}
 		}
+		if (is_default) return;
 		if (is_array) {
 			for (auto& l : vl.list) {
 				value.group.emplace_back(PrefabItem("", l, type));
@@ -91,6 +96,10 @@ PrefabItem::PrefabItem(std::string tp, const JsonObject& vl, const Type force) :
 		}
 	}
 	else {
+		if (vl.type == JsonObject::Type::String && vl.string == "__DEFAULT__") {
+			is_default = true;
+			return;
+		}
 		type = force;
 	}
 	switch (type) {
@@ -176,6 +185,10 @@ PrefabItem::PrefabItem(std::string tp, const JsonObject& vl, const Type force) :
 
 JsonPair PrefabItem::ToJson(const std::string& nm) const {
 	JsonObject res;
+	if (is_default) {
+		return JsonPair(JsonObject(nm + "." + CE_ES_TypeS[(int)type] + 
+			(is_array? "*!" : "!")), JsonObject("__DEFAULT__"));
+	}
 	if (is_array) {
 		res = JsonObject(JsonObject::Type::List);
 		for (auto& i : value.group) {

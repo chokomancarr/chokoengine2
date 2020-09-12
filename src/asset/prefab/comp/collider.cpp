@@ -9,6 +9,11 @@ CE_PR_IMPL_COMP(Collider) {
 
 CE_PR_IMPL_COMP_INST(Collider) {
 	auto c = o->AddComponent<Collider>();
+
+	ApplyCollider(c);
+}
+
+CE_PR_IMPL_COMP_APP(Collider) {
 	c->type(CE_PR_GET(type, ColliderType::Sphere));
 	CE_PR_SET(radius);
 }

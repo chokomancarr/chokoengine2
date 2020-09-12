@@ -16,7 +16,7 @@ typedef Player::ScriptVarEntry Var;
     }
 
 #define GETV(_k, _v) case PrefabItem::Type::_k:\
-    loader->set_ ## _v(parentsig + v.name, v.Get<_v>());\
+    Loader::instance->set_ ## _v(parentsig + v.name, v.Get<_v>());\
     break;
 
 namespace {
@@ -63,39 +63,41 @@ namespace {
 		}
 	}
 
-	void SetPrbItem(const PrefabItem& v, Player::ScriptLoaderBase& loader, Component& c, const std::string& parentsig = "", bool isv = false) {
+	void SetPrbItem(const PrefabItem& v, const Component& c, const std::string& parentsig = "", bool isv = false) {
 		if (v.is_array) {
 			const auto n = v.value.group.size();
-			loader->set_vecsize(parentsig + v.name, n);
+			Loader::instance->set_vecsize(parentsig + v.name, n);
 			for (size_t a = 0; a < n; a++) {
-				SetPrbItem(v.value.group[a], loader, c, parentsig + std::to_string(a) + "!" + v.name, true);
+				SetPrbItem(v.value.group[a], c, parentsig + std::to_string(a) + "!" + v.name, true);
 			}
 		}
-		switch (v.type) {
-			GETV(Float, float)
-			GETV(Int, int)
-			GETV(Vec2, Vec2)
-			GETV(Vec3, Vec3)
-			GETV(Vec4, Vec4)
-			GETV(Quat, Quat)
-			GETV(Asset, Asset)
-		case PrefabItem::Type::SceneObject: {
-			const auto nm = v.name;
-			const auto oref = v.Get<Prefab_ObjRef>();
-			PrefabState::refresolvers.top().push_back([loader, c, nm, oref]() {
-				loader->activeTarget(c);
-				loader->set_SceneObject(nm, oref.Seek(PrefabState::activeBaseObjs.top()->children()));
-			});
-			break;
-		}
-		case PrefabItem::Type::ItemGroup: {
-			for (auto& v2 : v.value.group) {
-				SetPrbItem(v2, loader, c, parentsig + v.name + ".");
+		else {
+			switch (v.type) {
+				GETV(Float, float)
+				GETV(Int, int)
+				GETV(Vec2, Vec2)
+				GETV(Vec3, Vec3)
+				GETV(Vec4, Vec4)
+				GETV(Quat, Quat)
+				GETV(Asset, Asset)
+			case PrefabItem::Type::SceneObject: {
+					const auto nm = v.name;
+					const auto oref = v.Get<Prefab_ObjRef>();
+					PrefabState::refresolvers.top().push_back([c, nm, oref]() {
+						Loader::instance->activeTarget(c);
+						Loader::instance->set_SceneObject(nm, oref.Seek(PrefabState::activeBaseObjs.top()));
+					});
+					break;
+				}
+			case PrefabItem::Type::ItemGroup: {
+				for (auto& v2 : v.value.group) {
+					SetPrbItem(v2, c, parentsig + v.name + ".");
+				}
+				break;
 			}
-			break;
-		}
-		default:
-			CE_NOT_IMPLEMENTED
+			default:
+				CE_NOT_IMPLEMENTED
+			}
 		}
 	}
 }
@@ -113,15 +115,20 @@ CE_PR_IMPL_COMP(Script) {
 
 CE_PR_IMPL_COMP_INST(Script) {
     auto tar = CE_PR_GETI(script);
-    auto loader = Loader::instance->GetLoaderOf(
-        tar->second.value.s);
-	auto c = loader->Instantiate();
+    auto c = Loader::instance
+		->GetLoaderOf(tar->second.value.s)
+		->Instantiate();
     o->_components.push_back(c);
     c->_object = o;
-    const auto& vars = CE_PR_GETI(variables)->second.value.group;
-    for (auto& v : vars) {
-		SetPrbItem(v, loader, c);
-    }
+    
+	ApplyScript((Script)c);
+}
+
+CE_PR_IMPL_COMP_APP(Script) {
+	const auto& vars = CE_PR_GETI(variables)->second.value.group;
+	for (auto& v : vars) {
+		SetPrbItem(v, c);
+	}
 }
 
 CE_END_NAMESPACE

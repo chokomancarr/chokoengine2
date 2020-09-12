@@ -11,7 +11,7 @@ public:
 
 	std::vector<std::pair<std::string, int>> path;
 
-	const SceneObject& Seek(const std::vector<SceneObject>&) const;
+	const SceneObject& Seek(const SceneObject&) const;
 
 	JsonObject ToJson() const;
 };

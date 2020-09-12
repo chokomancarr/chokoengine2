@@ -12,8 +12,10 @@ _MeshRenderer::_MeshRenderer(const _MeshRenderer& rhs) : CE_COMPDEF(MeshRenderer
 
 void _MeshRenderer::mesh(const Mesh& m) {
 	_mesh = m;
-	_materials.clear();
-	if (!m) return;
+	if (!m) {
+		_materials.clear();
+		return;
+	}
 	_materials.resize(m->materialCount(), nullptr);
 	for (auto& md : _modifiers) {
 		md->OnSetMesh(m);

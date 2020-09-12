@@ -53,6 +53,7 @@ public:
 	 * with contents of type [type]
 	 */
 	bool is_array;
+	bool is_default;
 
 	PrefabItem(Type);
 	PrefabItem(float);

@@ -13,6 +13,10 @@ CE_PR_IMPL_COMP(Animator) {
 CE_PR_IMPL_COMP_INST(Animator) {
 	auto c = o->AddComponent<Animator>();
 
+	ApplyAnimator(c);
+}
+
+CE_PR_IMPL_COMP_APP(Animator) {
 	CE_PR_SET(single);
 	CE_PR_SET(repeat);
 

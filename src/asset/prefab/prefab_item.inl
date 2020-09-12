@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 
 template <typename T, typename std::enable_if<
 	std::is_enum<T>::value && !std::is_same<T, PrefabItem::Type>::value, T>::type*>
-PrefabItem::PrefabItem(const T& e) : value({}), type(Type::Int) {
+PrefabItem::PrefabItem(const T& e) : PrefabItem(Type::Int) {
 	value.i = (int)e;
 }
 

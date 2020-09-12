@@ -15,6 +15,9 @@ public:
 	Quat operator *(const float& rhs) const;
 	Vec3 operator *(const Vec3& rhs) const;
 
+	bool operator ==(const Quat& rhs) const;
+	bool operator !=(const Quat& rhs) const;
+
 	Mat4x4 matrix() const;
 
 	Quat normalized() const;

@@ -14,6 +14,8 @@ namespace PrefabState {
 
 	extern std::stack<SceneObject> activeBaseObjs;
 
+	extern std::stack<std::unordered_set<size_t>> ids_indirect;
+
 	extern std::stack<std::vector<std::function<void()>>> refresolvers;
 }
 

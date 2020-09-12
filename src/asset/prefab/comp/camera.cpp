@@ -16,6 +16,11 @@ CE_PR_IMPL_COMP(Camera) {
 CE_PR_IMPL_COMP_INST(Camera) {
 	auto c = o->AddComponent<Camera>();
 
+	ApplyCamera(c);
+}
+
+CE_PR_IMPL_COMP_APP(Camera) {
+
 }
 
 CE_END_NAMESPACE

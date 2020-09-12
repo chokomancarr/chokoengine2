@@ -56,7 +56,7 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 
 	const auto& par = CE_PR_GETI(parent);
 	CE_PR_IFVALID(par) {
-		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top()->children());
+		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top());
 		if (!!pr2) {
 			res->parent(pr2);
 		}
@@ -76,11 +76,26 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
 			c->Instantiate(res);
 		}
 	}
+	
+	//if any components added children, add them to indirect ids
+	const std::function<void(const std::vector<SceneObject>&)> doadd
+		= [&](const std::vector<SceneObject>& oo) {
+		for (auto& o : oo) {
+			PrefabState::ids_indirect.top().emplace(o->id());
+			doadd(o->children());
+		}
+	};
+	doadd(res->children());
+
 	const auto& chlds = CE_PR_GETI(children);
 	CE_PR_IFVALID(chlds) {
 		for (auto& c : chlds->second.value.objgroup) {
 			c->Instantiate(res);
 		}
+	}
+
+	for (auto& m : mods) {
+		m->Instantiate(res);
 	}
 
 	return res;

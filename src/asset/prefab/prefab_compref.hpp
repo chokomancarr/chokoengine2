@@ -12,7 +12,7 @@ public:
 	Prefab_ObjRef objref;
 	ComponentType type;
 
-	Component Seek(const std::vector<SceneObject>&) const;
+	Component Seek(const SceneObject&) const;
 
 	JsonObject ToJson() const;
 };

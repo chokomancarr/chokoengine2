@@ -169,7 +169,7 @@ float UI::I::SliderTr(const CE_NS Rect& r, const Vec2& range, float value) {
 
 float UI::I::SliderY(const CE_NS Rect& r, const Vec2& range, float value, const Color& color) {
 	Rect(r, color);
-	const auto v = SliderTr(r, range, value);
+	const auto v = SliderYTr(r, range, value);
 	Rect(CE_NS Rect(r.x() + 1, r.y() + 1, r.w() - 2, (r.h() - 2) * Math::Clamp(Math::ILerp(range.x, range.y, value), 0.f, 1.f)), Color::white());
 	return v;
 }

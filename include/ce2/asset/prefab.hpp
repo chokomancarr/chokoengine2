@@ -28,6 +28,8 @@ public:
 	JsonObject ToJson() const;
 
     SceneObject Instantiate(_Sig2Ass) const;
+
+	std::unique_ptr<_ObjBase>& GetPrefabObj(size_t id);
 };
 
 CE_END_NAMESPACE

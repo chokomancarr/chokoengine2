@@ -2,6 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
+#pragma optimize("", off)
 _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool flnk)
 		: tar(obj->prefabInfo().prefab.lock()) {
 	name = "prefab";
@@ -23,19 +24,22 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 	/* if flnk, look for child objects that are not a part of sub-prefabs
 	 * in that case, the first parent prefab should be us
 	 */
-	const std::function<void(const SceneObject&)> find = [&](const SceneObject& o) {
+	const std::function<void(const SceneObject&, bool)> find = [&](const SceneObject& o, bool first) {
 		const auto& info = o->prefabInfo();
 		const auto id = o->id();
 		/* we check if the object is spawned by any prefab other than the base object
 		 * as prefabs may contain other prefabs as well
 		 */
-		if (std::find_if(cids.begin(), cids.end(), [id](ChokoEngine::objectid i) {
-			return i == id;
-		}) != cids.end()) { //this object is spawned with this prefab
+		if (!!cids.count(id)) { //this object is spawned with this prefab
 			if (flnk) { //we are topmost, check for non-linked objects in children
 				for (auto& c : o->children()) {
-					find(c);
+					find(c, false);
 				}
+			}
+			const auto ptar = tar->GetPrefabObj(first ? 0 : info.id).get();
+			auto mod = PrefabMod_New((const _PrefabObj*)ptar, o, obj);
+			if (!mod->empty()) {
+				mods.push_back(std::move(mod));
 			}
 		}
 		else if (!!info.prefab) { //spawn a prefab
@@ -49,7 +53,7 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 		}
 	};
 
-	find(obj);
+	find(obj, true);
 	if (chlds.size() > 0) {
 		CE_PR_ADDV(children, std::move(chlds));
 	}
@@ -68,7 +72,7 @@ SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
 
 	const auto& par = CE_PR_GETI(parent);
 	CE_PR_IFVALID(par) {
-		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top()->children());
+		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top());
 		if (!!pr2) {
 			res->parent(pr2);
 		}
@@ -85,6 +89,10 @@ SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
 		for (auto& c : chlds->second.value.objgroup) {
 			c->Instantiate(res);
 		}
+	}
+
+	for (auto& m : mods) {
+		m->Instantiate(res);
 	}
 
 	return res;

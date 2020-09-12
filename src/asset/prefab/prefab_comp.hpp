@@ -5,6 +5,7 @@ CE_BEGIN_NAMESPACE
 
 #define CE_PR_IMPL_COMP(nm) void _PrefabComp::Set ## nm (const nm& c)
 #define CE_PR_IMPL_COMP_INST(nm) void _PrefabComp::Instantiate ## nm(const SceneObject& o) const
+#define CE_PR_IMPL_COMP_APP(nm) void _PrefabComp::Apply ## nm(const nm& c) const
 
 #define CE_PR_IFVALID(it) if (it != items.end())
 
@@ -24,14 +25,17 @@ V _CE_PR_GET(const _PrefabObjBase* ptr, const std::string& nm, const V& vl) {
 #define CE_PR_GET(nm, vl) _CE_PR_GET(this, #nm, vl)
 
 #define CE_PR_SET(nm) c->nm(CE_PR_GET(nm, c->nm()))
-#define CE_PR_SET_A(nm, tp) c->nm((tp)_CE_PR_GET<Asset>(this, #nm, nullptr))
+#define CE_PR_SET_A(nm, tp) c->nm((tp)_CE_PR_GET<Asset>(this, #nm, c->nm()))
+
+#define CE_PR_NO_ITEMGROUP {}
 
 /* We should change this to class template if possible
  */
 class _PrefabComp : public _PrefabObjBase {
 #define CE_PR_DEF_COMP(nm)\
 	void Set ## nm(const nm&);\
-	void Instantiate ## nm(const SceneObject&) const;
+	void Instantiate ## nm(const SceneObject&) const;\
+	void Apply ## nm(const nm&) const;
 
 	CE_PR_DEF_COMP(Animator)
 	CE_PR_DEF_COMP(Camera)
@@ -51,6 +55,8 @@ public:
 	ComponentType type;
 
 	SceneObject Instantiate(const SceneObject&) const override;
+
+	void Apply(const Component&) const;
 };
 
 CE_END_NAMESPACE

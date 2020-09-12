@@ -3,6 +3,8 @@
 CE_BEGIN_NAMESPACE
 
 namespace PrefabMR {
+	PrefabItem toPrefab(const MeshSkinModifier& mod);
+
 	void instMeshModifier(MeshShapeModifier& mod, const PrefabItemGroup& data);
 	void instMeshModifier(MeshSkinModifier& mod, const PrefabItemGroup& data);
 	void instMeshModifier(MeshClothModifier& mod, const PrefabItemGroup& data);
@@ -10,10 +12,41 @@ namespace PrefabMR {
 
 CE_PR_IMPL_COMP(MeshRenderer) {
 	CE_PR_ADD(mesh);
+
+	/*
+	const auto& mods = c->modifiers();
+	if (!!mods.size()) {
+		PrefabItemGroup modres;
+		for (auto& m : mods) {
+			if (m->type == MeshModifierType::Skin) {
+				modres.push_back(PrefabMR::toPrefab((MeshSkinModifier)m));
+			}
+			else {
+				CE_NOT_IMPLEMENTED
+			}
+		}
+		items.push_back(std::make_pair("modifiers", std::move(modres)));
+	}
+	*/
+
+	const auto& mats = c->materials();
+	if (!!mats.size()) {
+		PrefabItem matres(PrefabItem::Type::Asset);
+		matres.is_array = true;
+		for (auto& m : mats) {
+			matres.value.group.push_back((Asset)m);
+		}
+		items.push_back(std::make_pair("materials", std::move(matres)));
+	}
 }
 
 CE_PR_IMPL_COMP_INST(MeshRenderer) {
 	auto c = o->AddComponent<MeshRenderer>();
+	
+	ApplyMeshRenderer(c);
+}
+
+CE_PR_IMPL_COMP_APP(MeshRenderer) {
 	CE_PR_SET_A(mesh, Mesh);
 	const auto& mods = _CE_PR_GET<const PrefabItemGroup&>(this, "modifiers", {});
 	for (auto& m : mods) {
@@ -21,12 +54,17 @@ CE_PR_IMPL_COMP_INST(MeshRenderer) {
 			PrefabMR::instMeshModifier(c->AddModifier<MeshSkinModifier>(), m.value.group);
 		}
 	}
-	const auto& mats = _CE_PR_GET<const PrefabItemGroup&>(this, "materials", {});
-	std::vector<Material> _mats;
-	for (auto& m : mats){
-		_mats.push_back((Material)m.Get<Asset>());
+	const auto& mats = _CE_PR_GET<const PrefabItemGroup&>(this, "materials", *(const PrefabItemGroup*)nullptr);
+	if (&mats) {
+		std::vector<Material> _mats = c->materials();
+		const auto n = mats.size();
+		_mats.resize(std::max(n, _mats.size()));
+		for (int a = 0; a < n; a++) {
+			if (!mats[a].is_default)
+				_mats[a] = ((Material)mats[a].Get<Asset>());
+		}
+		c->materials(_mats);
 	}
-	c->materials(_mats);
 }
 
 CE_END_NAMESPACE

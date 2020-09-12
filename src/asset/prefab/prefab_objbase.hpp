@@ -22,6 +22,8 @@ public:
 
 	std::vector<std::pair<std::string, PrefabItem>> items = {};
 
+	std::vector<PrefabMod> mods = {};
+
 	virtual JsonPair ToJson() const;
 
 	virtual SceneObject Instantiate(const SceneObject&) const = 0;

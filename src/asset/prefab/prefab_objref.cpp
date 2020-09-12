@@ -37,11 +37,11 @@ Prefab_ObjRef::Prefab_ObjRef(const JsonObject& json) {
 	}
 }
 
-const SceneObject& Prefab_ObjRef::Seek(const std::vector<SceneObject>& objs) const {
+const SceneObject& Prefab_ObjRef::Seek(const SceneObject& root) const {
 	typedef decltype(path)::const_iterator _it;
 	static SceneObject null = nullptr;
 	if (!path.size()) {
-		return null;
+		return root;
 	}
 
 	const std::function<const SceneObject&(_it, const std::vector<SceneObject>&)> seek = 
@@ -62,7 +62,7 @@ const SceneObject& Prefab_ObjRef::Seek(const std::vector<SceneObject>& objs) con
 		return null;
 	};
 
-	return seek(path.begin(), objs);
+	return seek(path.begin(), root->children());
 }
 
 JsonObject Prefab_ObjRef::ToJson() const {

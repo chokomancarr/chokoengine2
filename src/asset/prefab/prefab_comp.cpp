@@ -52,4 +52,20 @@ SceneObject _PrefabComp::Instantiate(const SceneObject& o) const {
 	return nullptr;
 }
 
+void _PrefabComp::Apply(const Component& c) const {
+#define CS(tp) case ComponentType::tp: Apply ## tp((tp)c); break;
+	switch (c->componentType) {
+		CS(Camera)
+		CS(Collider)
+		CS(Animator)
+		CS(Light)
+		CS(MeshRenderer)
+		CS(Rig)
+		CS(Rigidbody)
+		CS(Script)
+	default:
+		CE_NOT_IMPLEMENTED
+	}
+}
+
 CE_END_NAMESPACE

@@ -22,6 +22,11 @@ CE_PR_IMPL_COMP(Light) {
 
 CE_PR_IMPL_COMP_INST(Light) {
 	auto c = o->AddComponent<Light>(CE_PR_GET(type, LightType::Point));
+	
+	ApplyLight(c);
+}
+
+CE_PR_IMPL_COMP_APP(Light) {
 	CE_PR_SET(strength);
 	CE_PR_SET(distance);
 	CE_PR_SET(radius);

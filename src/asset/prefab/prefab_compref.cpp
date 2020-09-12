@@ -20,8 +20,8 @@ Prefab_CompRef::Prefab_CompRef(const JsonObject& json)
 	}
 }
 
-Component Prefab_CompRef::Seek(const std::vector<SceneObject>& objs) const {
-	const auto& obj = objref.Seek(objs);
+Component Prefab_CompRef::Seek(const SceneObject& root) const {
+	const auto& obj = objref.Seek(root);
 	const auto& comps = obj->components();
 	const auto it = std::find_if(comps.begin(), comps.end(), [&](const Component& c) {
 		return c->componentType == type;

@@ -13,17 +13,23 @@ public:
 	public:
 		bool hasInfo;
 
-		pSceneObject head; //top object spawned, null for this object
+		pSceneObject head; //top object spawned, null if is this object
 		size_t id; //unique object index from prefab
+
 		/* the values below are only read from head
 		 */
 		pPrefab prefab; //closest prefab spawner
 		/* list of objects spawned, including those from sub-prefabs
 		 * this determines which objects to exclude during serialization
 		 */
-		std::vector<ChokoEngine::objectid> ids;
+		std::unordered_set<ChokoEngine::objectid> ids;
+		/* list of objects spawned indirectly
+		 * these objects are excluded by every prefab during serialization
+		 */
+		std::unordered_set<ChokoEngine::objectid> ids_indirect;
 
-		PrefabInfo() : hasInfo(false), head(nullptr), id(0), prefab(nullptr), ids({}) {}
+		PrefabInfo() : hasInfo(false), head(nullptr), id(0),
+			prefab(nullptr), ids({}), ids_indirect({}) {}
 
 		bool operator !() const {
 			return !hasInfo;
