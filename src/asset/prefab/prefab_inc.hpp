@@ -41,6 +41,7 @@ CE_END_NAMESPACE
 #include "prefab_objref.hpp"
 #include "prefab_compref.hpp"
 #include "prefab_objbase.hpp"
+#include "prefab_objtreebase.hpp"
 #include "prefab_item.hpp"
 #include "prefab_obj.hpp"
 #include "prefab_link.hpp"

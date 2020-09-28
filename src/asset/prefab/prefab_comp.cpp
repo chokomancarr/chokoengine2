@@ -3,7 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 _PrefabComp::_PrefabComp(const Component& c)
-		: type(c->componentType) {
+		: _PrefabObjBase(Type::Comp), type(c->componentType) {
 	name = ComponentTypeStr.at(type);
 #define CS(tp) case ComponentType::tp: Set ## tp((tp)c); break;
 	switch (type) {
@@ -21,7 +21,7 @@ _PrefabComp::_PrefabComp(const Component& c)
 #undef CS
 }
 
-_PrefabComp::_PrefabComp(const JsonPair& json) : _PrefabObjBase(json.value) {
+_PrefabComp::_PrefabComp(const JsonPair& json) : _PrefabObjBase(Type::Comp, json.value) {
 	auto it = std::find_if(ComponentTypeStr.begin(), ComponentTypeStr.end(), 
 		[&json](decltype(ComponentTypeStr)::const_reference i) {
 			return i.second == json.key.string;
@@ -34,7 +34,7 @@ _PrefabComp::_PrefabComp(const JsonPair& json) : _PrefabObjBase(json.value) {
 	}
 }
 
-SceneObject _PrefabComp::Instantiate(const SceneObject& o) const {
+SceneObject _PrefabComp::Instantiate(const SceneObject& o) {
 #define CS(tp) case ComponentType::tp: Instantiate ## tp(o); break;
 	switch (type) {
 		CS(Camera)

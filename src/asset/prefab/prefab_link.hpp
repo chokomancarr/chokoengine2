@@ -4,14 +4,18 @@
 CE_BEGIN_NAMESPACE
 
 class _PrefabLink : public _PrefabObjBase {
+	Prefab tar;
+
 public:
 	_PrefabLink(const SceneObject&, const SceneObject&, bool mod);
 
 	_PrefabLink(const JsonObject&);
 
-	Prefab tar;
+	Prefab& GetTarget();
 
-	SceneObject Instantiate(const SceneObject&) const override;
+	void LoadLinks() override;
+
+	SceneObject Instantiate(const SceneObject&) override;
 };
 
 CE_END_NAMESPACE

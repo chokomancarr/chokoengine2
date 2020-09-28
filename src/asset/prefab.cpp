@@ -4,7 +4,13 @@ CE_BEGIN_NAMESPACE
 
 _Prefab::_Prefab(const SceneObject& o, bool link) : _Asset(AssetType::Prefab) {
 	PrefabState::activeBaseObjs.push(o);
-	_data = PrefabObj_New(o, o->parent().lock(), link, true, true);
+	const auto& info = o->prefabInfo();
+	if (link && !!info.prefab && !info.head) { //this object (and its children) is spawned
+		_data = PrefabLink_New(o, o->parent().lock(), true);
+	}
+	else {
+		_data = PrefabObj_New(o, o->parent().lock(), link, true, true);
+	}
 	PrefabState::activeBaseObjs.pop();
 }
 
@@ -24,7 +30,7 @@ JsonObject _Prefab::ToJson() const {
 	return JsonObject({ _data->ToJson() });
 }
 
-SceneObject _Prefab::Instantiate(_Sig2Ass fn) const {
+SceneObject _Prefab::Instantiate(_Sig2Ass fn) {
 	PrefabState::sig2AssFn = fn;
 	//PrefabState::prefabStack.push_back(get_shared<_Prefab>());
 	PrefabState::activeBaseObjs.push(nullptr);
@@ -70,6 +76,9 @@ SceneObject _Prefab::Instantiate(_Sig2Ass fn) const {
 	PrefabState::refresolvers.pop();
 	PrefabState::ids_indirect.pop();
 	PrefabState::activeBaseObjs.pop();
+
+	_UpdateObjs();
+
 	return res;
 }
 
@@ -97,6 +106,53 @@ namespace {
 
 PrefabObjBase& _Prefab::GetPrefabObj(size_t id) {
 	return _Get(_data, id);
+}
+
+namespace {
+	typedef _Prefab::_ObjTreeBase _TreeBase;
+
+	void _AddBranch(PrefabObjBase& data, _TreeBase& tree) {
+		if (data->_type == _PrefabObjBase::Type::Object) {
+			tree.obj = data.get();
+			tree.name = _CE_PR_GET<std::string>(tree.obj, "name", "");
+		}
+		else {
+			auto lnk = (_PrefabLink*)data.get();
+			auto tar = lnk->GetTarget();
+			tree = *tar->GetTree();
+
+			for (auto& m : lnk->mods) {
+				auto& tar = m->target.Seek<_TreeBase&>(tree,
+					[](_TreeBase& t) {
+						return t.name;
+					},
+					[](_TreeBase& t) {
+						return t.children.size();
+					},
+					[](_TreeBase& t, size_t i) -> _TreeBase& {
+						return t.children[i];
+					});
+				tar.mods.push_back(m.get());
+			}
+		}
+		auto& items = data->items;
+		const auto& chlds = CE_PR_GETI(children);
+		CE_PR_IFVALID(chlds) {
+			for (auto& c : chlds->second.value.objgroup) {
+				tree.children.push_back({});
+				_AddBranch(c, tree.children.back());
+			}
+		}
+	}
+}
+
+std::unique_ptr<_TreeBase>& _Prefab::GetTree() {
+	return _tree;
+}
+
+void _Prefab::_UpdateObjs() {
+	_tree = std::unique_ptr<_ObjTreeBase>(new _ObjTreeBase());
+	_AddBranch(_data, *_tree);
 }
 
 CE_END_NAMESPACE

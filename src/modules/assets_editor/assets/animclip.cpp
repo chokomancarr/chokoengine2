@@ -4,7 +4,6 @@ CE_BEGIN_MOD_AE_NAMESPACE
 
 #define READ(vr) strm.read((char*)&vr, sizeof(vr))
 
-#pragma optimize("", off)
 CE_MOD_AE_IMPL(AnimClip) {
 	std::ifstream strm(_basePath + path, std::ios::binary);
 	if (!strm) return nullptr;
@@ -57,23 +56,23 @@ CE_MOD_AE_IMPL(AnimClip) {
 			for (int32_t a = framestart; a <= frameend; a++) {
 				strm.read(dt.buf, numchn * 4);
 				if (isquat) {
-					qvals.push_back(std::make_pair(a, dt.q));
+					qvals.push_back(std::make_pair((float)a, dt.q));
 				}
 				else {
-					vvals.push_back(std::make_pair(a, dt.v));
+					vvals.push_back(std::make_pair((float)a, dt.v));
 				}
 			}
 		}
 		else {
 			uint16_t time;
-			for (int32_t a = 0; a < numframes; a++) {
+			for (uint32_t a = 0; a < numframes; a++) {
 				strm.read(dt.buf, numchn * 4);
 				READ(time);
 				if (isquat) {
-					entry.values_q.AddKey(time + framestart, dt.q);
+					entry.values_q.AddKey((float)(time + framestart), dt.q);
 				}
 				else {
-					entry.values_v.AddKey(time + framestart, dt.v);
+					entry.values_v.AddKey((float)(time + framestart), dt.v);
 				}
 			}
 		}

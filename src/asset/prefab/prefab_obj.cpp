@@ -2,7 +2,8 @@
 
 CE_BEGIN_NAMESPACE
 
-_PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, bool flnk, bool first) {
+_PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, bool flnk, bool first)
+		: _PrefabObjBase(Type::Object) {
 	name = "object";
 	CE_PR_ADDV(name, o->name());
 	if (!first) {
@@ -43,9 +44,9 @@ _PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, boo
 	}
 }
 
-_PrefabObj::_PrefabObj(const JsonObject& json) : _PrefabObjBase(json) {}
+_PrefabObj::_PrefabObj(const JsonObject& json) : _PrefabObjBase(Type::Object, json) {}
 
-SceneObject _PrefabObj::Instantiate(const SceneObject& pr) const {
+SceneObject _PrefabObj::Instantiate(const SceneObject& pr) {
 	SceneObject res = SceneObject::New(
 		_CE_PR_GET<std::string>(this, "name", "New Object"),
 		CE_PR_GET(position, Vec3()),

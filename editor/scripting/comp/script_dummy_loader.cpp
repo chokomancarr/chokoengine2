@@ -43,7 +43,6 @@ std::vector<ScriptVar> _DummyScriptLoader::GetVarsOf(const std::string& sig) {
 }
 
 namespace {
-#pragma optimize("", off)
     ScriptVal& getslot(const std::string& nm) {
 		const auto& ss = StrExt::Split(nm, '.');
 		ScriptVal* res = nullptr;

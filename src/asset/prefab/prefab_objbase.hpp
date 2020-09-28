@@ -10,15 +10,24 @@ CE_BEGIN_NAMESPACE
 	items.back().second.value.objgroup)
 
 class _Prefab::_ObjBase {
-protected:
-	_ObjBase() = default;
+public:
+	enum class Type {
+		Object,
+		Link,
+		Comp
+	};
 
-	_ObjBase(const JsonObject&);
+protected:
+	_ObjBase(Type t);
+
+	_ObjBase(Type t, const JsonObject&);
 
 	std::string name;
 
 public:
 	virtual ~_ObjBase() = default;
+
+	const Type _type;
 
 	std::vector<std::pair<std::string, PrefabItem>> items = {};
 
@@ -26,7 +35,9 @@ public:
 
 	virtual JsonPair ToJson() const;
 
-	virtual SceneObject Instantiate(const SceneObject&) const = 0;
+	virtual void LoadLinks() {}
+
+	virtual SceneObject Instantiate(const SceneObject&) = 0;
 };
 
 CE_END_NAMESPACE

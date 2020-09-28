@@ -99,10 +99,25 @@ float EW_Browser::DrawFolder(float& off, Folder& fd, int level) {
 			fd.expanded = !fd.expanded;
 		}
 	}
-	if (!prs && UI::I::Button(Rect(position.x() + 1, off, mw - 2, 16), style)
-			== InputMouseStatus::HoverUp) {
-		currentFd = &fd;
-		isa = true;
+	const Rect orect(position.x() + 1, off, mw - 2, 16);
+	const auto btn = UI::I::Button(orect, style);
+	if (!prs) {
+		if (btn == InputMouseStatus::HoverUp) {
+			currentFd = &fd;
+			isa = true;
+		}
+		else if (orect.Contains(Input::mousePosition())) {
+			if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up) {
+				if (EDragDrop::type == EDragDrop::Type::SceneObject) {
+					for (auto& o2 : EDragDrop::targetObj) {
+						ECallbackManager::Invoke(CallbackSig::ASSET_PREFAB_CREATE, ECallbackArgs({
+							ECallbackArg("obj", o2),
+							ECallbackArg("path", fd.path)
+						}));
+					}
+				}
+			}
+		}
 	}
 	if (hc) {
 		UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[fd.expanded ? "minus" : "plus"], Color(0.8f));
@@ -124,7 +139,6 @@ float EW_Browser::DrawFolder(float& off, Folder& fd, int level) {
 	return ol;
 }
 
-#pragma optimize("", off)
 void EW_Browser::DrawFiles() {
 	if (!currentFd || !currentFd->files.size()) return;
 	static UIButtonStyle style(Color(0, 0), Color(0.3f, 0.5f), Color(0.1f, 0.5f));
@@ -219,7 +233,7 @@ bool EW_Browser::Init() {
 
 	menu = &(menus_asset[(int)AssetType::Prefab].items = *menu);
 
-	addi(Add to scene, CallbackSig::PREFAB_SPAWN);
+	addi(Add to scene, CallbackSig::ASSET_PREFAB_SPAWN);
 	//addi(Collapse);
 
 	path = "";

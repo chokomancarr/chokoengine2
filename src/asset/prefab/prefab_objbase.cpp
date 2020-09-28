@@ -2,7 +2,9 @@
 
 CE_BEGIN_NAMESPACE
 
-_Prefab::_ObjBase::_ObjBase(const JsonObject& json) {
+_Prefab::_ObjBase::_ObjBase(Type t) : _type(t) {}
+
+_Prefab::_ObjBase::_ObjBase(Type t, const JsonObject& json) : _type(t) {
 	for (auto& i : json.group) {
 		auto lc = i.key.string.find_last_of('.');
 		const auto nm = i.key.string.substr(0, lc);

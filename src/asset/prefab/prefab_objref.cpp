@@ -23,7 +23,9 @@ Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path(0)
 	do {
 		const auto tpr = tar->parent().lock();
 		if (!tpr) {
-			Debug::Error("Prefab::ObjectRef", "target object is not in base tree! (" + _tnm0 + " -> " + base->name() + ")");
+			Debug::Warning("Prefab::ObjectRef", "target object is not in base tree! (" + _tnm0 + " -> " + base->name() + ")");
+			path = {};
+			return;
 		}
 		path.push_back(std::make_pair(tar->name(), indexof(tpr->children(), tar)));
 		tar = tpr;
@@ -38,31 +40,17 @@ Prefab_ObjRef::Prefab_ObjRef(const JsonObject& json) {
 }
 
 const SceneObject& Prefab_ObjRef::Seek(const SceneObject& root) const {
-	typedef decltype(path)::const_iterator _it;
-	static SceneObject null = nullptr;
-	if (!path.size()) {
-		return root;
-	}
-
-	const std::function<const SceneObject&(_it, const std::vector<SceneObject>&)> seek = 
-			[&](_it it, const std::vector<SceneObject>& oo) -> const SceneObject& {
-		const auto& s = it->first;
-		int i = it->second;
-		for (auto& o : oo) {
-			if (o->name() == s) {
-				if (!(i--)) {
-					it++;
-					if (it == path.end()) return o;
-					else {
-						return seek(it, o->children());
-					}
-				}
-			}
+	return Seek<SceneObject>(root,
+		[](SceneObject o) {
+			return o->name();
+		},
+		[](SceneObject o) {
+			return o->children().size();
+		},
+		[](SceneObject o, size_t i) {
+			return o->children()[i];
 		}
-		return null;
-	};
-
-	return seek(path.begin(), root->children());
+	);
 }
 
 JsonObject Prefab_ObjRef::ToJson() const {

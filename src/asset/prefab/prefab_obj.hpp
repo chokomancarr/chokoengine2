@@ -9,7 +9,7 @@ public:
 
 	_PrefabObj(const JsonObject&);
 
-	SceneObject Instantiate(const SceneObject&) const override;
+	SceneObject Instantiate(const SceneObject&) override;
 };
 
 CE_END_NAMESPACE

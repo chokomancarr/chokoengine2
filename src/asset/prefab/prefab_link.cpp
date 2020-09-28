@@ -2,9 +2,8 @@
 
 CE_BEGIN_NAMESPACE
 
-#pragma optimize("", off)
 _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool flnk)
-		: tar(obj->prefabInfo().prefab.lock()) {
+		: _PrefabObjBase(Type::Link), tar(obj->prefabInfo().prefab.lock()) {
 	name = "prefab";
 
 	CE_PR_ADDV(target, tar);
@@ -59,11 +58,21 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 	}
 }
 
-_PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(json) {}
+_PrefabLink::_PrefabLink(const JsonObject& json) : _PrefabObjBase(Type::Link, json) {}
 
-SceneObject _PrefabLink::Instantiate(const SceneObject& pr) const {
-	auto prb = CE_PR_GETI(target)->second.value.assetref.Load<Prefab>(AssetType::Prefab);
-	auto res = prb->Instantiate(PrefabState::sig2AssFn);
+Prefab& _PrefabLink::GetTarget() {
+	if (!tar) {
+		tar = CE_PR_GETI(target)->second.value.assetref.Load<Prefab>(AssetType::Prefab);
+	}
+	return tar;
+}
+
+void _PrefabLink::LoadLinks() {
+	GetTarget();
+}
+
+SceneObject _PrefabLink::Instantiate(const SceneObject& pr) {
+	auto res = GetTarget()->Instantiate(PrefabState::sig2AssFn);
 
 	res->name(_CE_PR_GET<std::string>(this, "name", res->name()));
 	res->transform()->localPosition(CE_PR_GET(position, Vec3()));

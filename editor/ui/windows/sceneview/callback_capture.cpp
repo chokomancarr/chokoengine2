@@ -2,7 +2,6 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-#pragma optimize("", off)
 void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 	const auto& mat = parent->_camera->lastViewProjectionMatrix();
 	UI::W::matrix(mat);

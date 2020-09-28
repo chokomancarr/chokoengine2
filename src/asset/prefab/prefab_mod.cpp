@@ -37,7 +37,6 @@ namespace {
 		}
 	}
 
-#pragma optimize("", off)
 	bool ChkEq(PrefabItem& me, const PrefabItem& tar) {
 		if (me.is_array) {
 			auto& grp = me.value.group;
@@ -81,7 +80,6 @@ namespace {
 	}
 }
 
-#pragma optimize("", off)
 _PrefabMod::_PrefabMod(const _PrefabObj* obj, const SceneObject& tar, const SceneObject& root) {
 	target = Prefab_ObjRef(tar, root);
 	const PIpv _emptyitems = {};
@@ -177,7 +175,7 @@ JsonObject _PrefabMod::ToJson() const {
 }
 
 void _PrefabMod::Instantiate(const SceneObject& obj) const {
-	auto& o = target.Seek(obj);
+	auto o = target.Seek(obj);
 	std::unordered_set<size_t> regd = {};
 	const auto n = o->components().size();
 

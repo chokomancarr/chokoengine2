@@ -26,8 +26,8 @@ enum class CallbackSig {
 	ASSET_REIMPORT,
 	ASSET_DELETE,
 
-	PREFAB_SPAWN,
-	PREFAB_APPLY,
+	ASSET_PREFAB_CREATE,
+	ASSET_PREFAB_SPAWN,
 
 	// --------- inspector -----------
 

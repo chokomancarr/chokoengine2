@@ -54,7 +54,7 @@ public:
 
 	ComponentType type;
 
-	SceneObject Instantiate(const SceneObject&) const override;
+	SceneObject Instantiate(const SceneObject&) override;
 
 	void Apply(const Component&) const;
 };

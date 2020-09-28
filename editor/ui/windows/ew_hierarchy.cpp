@@ -95,7 +95,7 @@ void EW_Hierarchy::DrawMenu() {
 						&& (EDragDrop::assetType.exportType == EExportType::Model
 							|| EDragDrop::assetType.assetType == AssetType::Prefab)) {
 					auto res = (Prefab)EAssetList::GetRedirected(EDragDrop::assetType, EDragDrop::target[0], true);
-					ECallbackManager::Invoke(CallbackSig::PREFAB_SPAWN, ECallbackArgs({
+					ECallbackManager::Invoke(CallbackSig::ASSET_PREFAB_SPAWN, ECallbackArgs({
 						ECallbackArg("obj", res)
 					}));
 				}

@@ -25,7 +25,11 @@ const std::unordered_map<CallbackSig, ECallbackArgs> CallbackSigArgs = {
 	),
 
 
-	CALLBACKSIGARG(PREFAB_SPAWN,
+	CALLBACKSIGARG(ASSET_PREFAB_CREATE,
+		ECallbackArg("obj", pObject()),
+		ECallbackArg("path", "")
+	),
+	CALLBACKSIGARG(ASSET_PREFAB_SPAWN,
 		ECallbackArg("obj", pObject())
 	),
 

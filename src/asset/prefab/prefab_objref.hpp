@@ -13,7 +13,15 @@ public:
 
 	const SceneObject& Seek(const SceneObject&) const;
 
+	template <typename T>
+	T Seek(T, 
+		const std::function<std::string(T)> nameof,
+		const std::function<size_t(T)> numchildren,
+		const std::function<T(T, size_t)> childof) const;
+
 	JsonObject ToJson() const;
 };
 
 CE_END_NAMESPACE
+
+#include "prefab_objref.inl"

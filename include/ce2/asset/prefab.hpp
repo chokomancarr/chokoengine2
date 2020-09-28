@@ -11,12 +11,14 @@ CE_BEGIN_NAMESPACE
 class _Prefab : public _Asset { CE_OBJECT_COMMON
 public:
 	class _ObjBase;
+	class _ObjTreeBase;
 
 	typedef std::function<Prefab(const std::string&)> _Sig2Prb;
 	typedef std::function<Asset(AssetType, const std::string&)> _Sig2Ass;
 
 private:
 	std::unique_ptr<_ObjBase> _data;
+	std::unique_ptr<_ObjTreeBase> _tree;
 
 public:
     _Prefab(const SceneObject&, bool link);
@@ -27,9 +29,13 @@ public:
 
 	JsonObject ToJson() const;
 
-    SceneObject Instantiate(_Sig2Ass) const;
+    SceneObject Instantiate(_Sig2Ass);
 
 	std::unique_ptr<_ObjBase>& GetPrefabObj(size_t id);
+
+	std::unique_ptr<_ObjTreeBase>& GetTree();
+
+	void _UpdateObjs();
 };
 
 CE_END_NAMESPACE
