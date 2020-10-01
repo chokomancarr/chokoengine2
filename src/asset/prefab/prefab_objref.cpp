@@ -2,8 +2,12 @@
 
 CE_BEGIN_NAMESPACE
 
-Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path(0) {
-	if (tar == base || !tar || !base) {
+Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path({}), empty(false) {
+	if (!tar) {
+		empty = true;
+		return;
+	}
+	if (tar == base || !base) {
 		return;
 	}
 	const auto _tnm0 = tar->name();
@@ -25,6 +29,7 @@ Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path(0)
 		if (!tpr) {
 			Debug::Warning("Prefab::ObjectRef", "target object is not in base tree! (" + _tnm0 + " -> " + base->name() + ")");
 			path = {};
+			empty = true;
 			return;
 		}
 		path.push_back(std::make_pair(tar->name(), indexof(tpr->children(), tar)));
@@ -33,9 +38,14 @@ Prefab_ObjRef::Prefab_ObjRef(SceneObject tar, const SceneObject& base) : path(0)
 	std::reverse(path.begin(), path.end());
 }
 
-Prefab_ObjRef::Prefab_ObjRef(const JsonObject& json) {
-	for (auto& p : json.group) {
-		path.push_back(std::make_pair(p.key.string, p.value.ToInt()));
+Prefab_ObjRef::Prefab_ObjRef(const JsonObject& json) : empty(false) {
+	if (json.type == JsonObject::Type::String && json.string == "none") {
+		empty = true;
+	}
+	else {
+		for (auto& p : json.group) {
+			path.push_back(std::make_pair(p.key.string, p.value.ToInt()));
+		}
 	}
 }
 
@@ -54,6 +64,9 @@ const SceneObject& Prefab_ObjRef::Seek(const SceneObject& root) const {
 }
 
 JsonObject Prefab_ObjRef::ToJson() const {
+	if (empty) {
+		return JsonObject("none");
+	}
 	JsonObject res(JsonObject::Type::Group);
 	for (auto& i : path) {
 		res.group.push_back(JsonPair(JsonObject(i.first), JsonObject(std::to_string(i.second))));

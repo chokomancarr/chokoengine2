@@ -7,7 +7,7 @@ class _PrefabLink : public _PrefabObjBase {
 	Prefab tar;
 
 public:
-	_PrefabLink(const SceneObject&, const SceneObject&, bool mod);
+	_PrefabLink(const SceneObject&, const SceneObject&, bool mod, int depth);
 
 	_PrefabLink(const JsonObject&);
 

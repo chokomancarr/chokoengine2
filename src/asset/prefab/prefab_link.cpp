@@ -2,9 +2,10 @@
 
 CE_BEGIN_NAMESPACE
 
-_PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool flnk)
-		: _PrefabObjBase(Type::Link), tar(obj->prefabInfo().prefab.lock()) {
+_PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool flnk, int depth)
+		: _PrefabObjBase(Type::Link) {
 	name = "prefab";
+	tar = obj->prefabInfo().uids[depth].prefab.lock();
 
 	CE_PR_ADDV(target, tar);
 	CE_PR_ADDV(name, obj->name());
@@ -20,32 +21,31 @@ _PrefabLink::_PrefabLink(const SceneObject& obj, const SceneObject& par, bool fl
 
 	const auto& cids = obj->prefabInfo().ids;
 	
-	/* if flnk, look for child objects that are not a part of sub-prefabs
-	 * in that case, the first parent prefab should be us
-	 */
 	const std::function<void(const SceneObject&, bool)> find = [&](const SceneObject& o, bool first) {
 		const auto& info = o->prefabInfo();
 		const auto id = o->id();
+
 		/* we check if the object is spawned by any prefab other than the base object
 		 * as prefabs may contain other prefabs as well
 		 */
 		if (!!cids.count(id)) { //this object is spawned with this prefab
+			const auto& ptar = tar->GetTreeObj(info.uids[depth].id);
+			auto mod = PrefabMod_New(ptar, o, obj);
+			if (!mod->empty()) {
+				mods.push_back(std::move(mod));
+			}
 			if (flnk) { //we are topmost, check for non-linked objects in children
 				for (auto& c : o->children()) {
 					find(c, false);
 				}
 			}
-			const auto ptar = tar->GetPrefabObj(first ? 0 : info.id).get();
-			auto mod = PrefabMod_New((const _PrefabObj*)ptar, o, obj);
-			if (!mod->empty()) {
-				mods.push_back(std::move(mod));
-			}
 		}
-		else if (!!info.prefab) { //spawn a prefab
-			if (!!info.head) {
-				Debug::Error("Prefab", "encountered non-head non-masked object in scan!");
-			}
-			chlds.push_back(PrefabLink_New(o, obj, false));
+		else if (!!info.uids.size() && !info.uids.back().id) { //spawn a prefab
+			auto it = std::find_if(info.uids.begin(), info.uids.end(),
+					[](const _SceneObject::PrefabInfo::UID& uid) {
+				return !uid.id;
+			});
+			chlds.push_back(PrefabLink_New(o, obj, false, it - info.uids.begin()));
 		}
 		else { //spawn
 			chlds.push_back(PrefabObj_New(o, obj, true, false, false));

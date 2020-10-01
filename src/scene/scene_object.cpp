@@ -3,13 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 void _SceneObject::UnlinkPrefabTree() {
-	if (!_prefabInfo.prefab) return;
-	if (!_prefabInfo.head) { //this object is the head
-
-	}
-	else {
-
-	}
+	
 }
 
 _SceneObject::_SceneObject(const std::string& nm, const Vec3& pos, const Quat& rot,

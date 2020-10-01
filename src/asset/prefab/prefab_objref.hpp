@@ -9,6 +9,7 @@ public:
 	Prefab_ObjRef(SceneObject tar, const SceneObject& base);
 	Prefab_ObjRef(const JsonObject&);
 
+	bool empty;
 	std::vector<std::pair<std::string, int>> path;
 
 	const SceneObject& Seek(const SceneObject&) const;

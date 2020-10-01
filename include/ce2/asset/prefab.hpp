@@ -33,6 +33,8 @@ public:
 
 	std::unique_ptr<_ObjBase>& GetPrefabObj(size_t id);
 
+	_ObjTreeBase& GetTreeObj(size_t id);
+
 	std::unique_ptr<_ObjTreeBase>& GetTree();
 
 	void _UpdateObjs();

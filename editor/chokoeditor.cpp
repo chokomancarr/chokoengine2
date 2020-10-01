@@ -170,19 +170,13 @@ void ChokoEditor::Main() {
 	std::cout << EDebug::ObjTree(scene->objects()[1]->children(), [](const SceneObject& o) {
 		std::string res = o->name() + " " + std::to_string(o->id()) + ": ";
 		auto info = o->prefabInfo();
-		if (!info.prefab) {
+		if (!info.uids.size()) {
 			res += "-";
 		}
 		else {
-			res += info.prefab->assetSignature() + " i" + std::to_string(info.id) + " ";
-			if (!!info.head) {
-				res += "h" + std::to_string(info.head->id()) + " ";
+			for (auto& uid : info.uids) {
+				res += "[" + uid.prefab->assetSignature() + " " + std::to_string(uid.id) + "] ";
 			}
-			res += "[";
-			for (auto& i : info.ids) {
-				res += std::to_string(i) + ", ";
-			}
-			res += "]";
 		}
 		return res;
 	}) << std::endl;

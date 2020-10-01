@@ -27,15 +27,18 @@ _PrefabObj::_PrefabObj(const SceneObject& o, const SceneObject& p, bool lnk, boo
 		}
 	}
 
-	const auto& prb = o->prefabInfo().prefab;
 	const auto& cch = o->children();
 	if (cch.size() > 0) {
 		auto& childs = CE_PR_ADDGROUP(children);
 		for (auto& c : cch) {
 			if (lnk) { //retain links
 				const auto& info = c->prefabInfo();
-				if (!!info.prefab && !info.head) { //this object (and its children) is spawned
-					childs.push_back(PrefabLink_New(c, o, flnk));
+				if (!!info.uids.size() && !info.uids.back().id) { //this object (and its children) is spawned
+					auto it = std::find_if(info.uids.begin(), info.uids.end(),
+						[](const _SceneObject::PrefabInfo::UID& uid) {
+						return !uid.id;
+					});
+					childs.push_back(PrefabLink_New(c, o, flnk, it - info.uids.begin()));
 					continue;
 				}
 			}

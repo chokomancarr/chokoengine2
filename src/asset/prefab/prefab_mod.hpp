@@ -7,6 +7,8 @@ class _PrefabMod {
 public:
 	//commands to modify object saved as obj to become tar
 	_PrefabMod(const _PrefabObj* obj, const SceneObject& tar, const SceneObject& root);
+	_PrefabMod(const _Prefab::_ObjTreeBase& obj, const SceneObject& tar, const SceneObject& root);
+
 	_PrefabMod(const JsonObject&);
 
 	Prefab_ObjRef target;

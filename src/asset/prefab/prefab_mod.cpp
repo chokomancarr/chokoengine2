@@ -3,6 +3,15 @@
 CE_BEGIN_NAMESPACE
 
 namespace {
+	/* for changes, we do not care of RHS has extra values:
+	 * A.x == B.x -> null
+	 * A.x != B.x -> x
+	 * A.x != null -> x
+	 * null != B.x -> null
+	 * A.x[1] != B.x[2] -> x[]
+	 * A.x[2] != B.x[2] -> x[i], __DEFAULT__
+	 */
+
 	typedef std::vector<std::pair<std::string, PrefabItem>> PIpv;
 	bool ChkEq(PrefabItem& me, const PrefabItem& tar);
 	void RmSame(PrefabItemGroup& me, const PrefabItemGroup& tar, bool repl) { //we assume only values change
@@ -71,6 +80,10 @@ namespace {
 		case PrefabItem::Type::Asset: {
 			return me.value.assetref.sig == tar.value.assetref.sig;
 		}
+		case PrefabItem::Type::SceneObject: {
+			//return me.value.scobjref == tar.value.scobjref; //this will not work
+			return true;
+		}
 		//case PrefabItem::Type::Component: {
 		//	return me.value.compref.objref.path == tar.value.compref.objref.path;
 		//}
@@ -112,6 +125,85 @@ _PrefabMod::_PrefabMod(const _PrefabObj* obj, const SceneObject& tar, const Scen
 			}
 			if (is_same_comp) { //check for changes
 				RmSame(cprb->items, ctar->items);
+
+				if (!cprb->items.empty()) {
+					mod_comps.push_back(std::move(cprb));
+				}
+				found = true;
+				regd.emplace(a);
+				break;
+			}
+		}
+		if (!found) { //add this comp
+			add_comps.push_back(std::make_pair(i, std::move(cprb)));
+		}
+		i++;
+	}
+}
+
+_PrefabMod::_PrefabMod(const _Prefab::_ObjTreeBase& obj, const SceneObject& tar, const SceneObject& root) {
+	target = Prefab_ObjRef(tar, root);
+	const PIpv _emptyitems = {};
+	auto& pitems = obj.obj ? obj.obj->items : _emptyitems;
+
+	using itp = std::pair<std::string, PrefabItem>;
+	auto cgsp = std::find_if(pitems.begin(), pitems.end(), [](const itp& i) {
+		return i.first == "components";
+	});
+	struct CMP {
+		_PrefabComp* obj;
+		std::vector<_PrefabComp*> mods;
+	};
+	std::vector<CMP> comps = {};
+
+	{
+		static const PrefabObjGroup _null;
+		const auto& tars = (cgsp == pitems.end()) ? _null : cgsp->second.value.objgroup;
+		for (auto& t : tars) {
+			CMP cmp = {};
+			cmp.obj = (_PrefabComp*)t.get();
+			comps.push_back(cmp);
+		}
+	}
+	for (auto it = obj.mods.rbegin(); it != obj.mods.rend(); it++) {
+		for (auto& mc : (*it)->mod_comps) {
+			for (auto& c2 : comps) {
+				if (c2.obj->type == mc->type) {
+					//check script type?
+					c2.mods.insert(c2.mods.begin(), mc.get());
+				}
+			}
+		}
+		for (auto& ac : (*it)->add_comps) {
+			CMP cmp = {};
+			cmp.obj = ac.second.get();
+			comps.insert(comps.begin() + ac.first, cmp);
+		}
+	}
+
+	const size_t n = comps.size();
+	std::unordered_set<size_t> regd = {};
+
+	int i = 0;
+	for (auto& c : tar->components()) { //assume components are unique
+		auto cprb = PrefabComp_New(c);
+		bool found = false;
+		for (size_t a = 0; a < n; a++) {
+			const auto& ctar = comps[a];
+			bool is_same_comp = false;
+			if (ctar.obj->type == c->componentType && (regd.find(a) == regd.end())) {
+				if (ctar.obj->type == ComponentType::Script) {
+					is_same_comp = (ctar.obj->items[0].second.value.s == cprb->items[0].second.value.s);
+				}
+				else {
+					is_same_comp = true;
+				}
+			}
+			if (is_same_comp) { //check for changes
+				for (auto& m : ctar.mods) {
+					RmSame(cprb->items, m->items);
+				}
+				RmSame(cprb->items, ctar.obj->items);
 
 				if (!cprb->items.empty()) {
 					mod_comps.push_back(std::move(cprb));

@@ -11,6 +11,11 @@ T Prefab_ObjRef::Seek(T root,
 	
 	typedef decltype(path)::const_iterator _it;
 	static std::remove_reference<T>::type null = {};
+	
+	if (empty) {
+		return null;
+	}
+	
 	if (!path.size()) {
 		return root;
 	}

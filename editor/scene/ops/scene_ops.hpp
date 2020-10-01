@@ -12,6 +12,9 @@ public:
     CE_DEF_CALLBACK(AddNewObjectAsChild);
 
     CE_DEF_CALLBACK(DeleteObject);
+
+	CE_DEF_CALLBACK(RemoveTopPrefabLink);
+	CE_DEF_CALLBACK(RemovePrefabLinks);
 };
 
 CE_END_ED_NAMESPACE

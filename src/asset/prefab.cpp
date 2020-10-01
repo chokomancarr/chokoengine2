@@ -5,8 +5,13 @@ CE_BEGIN_NAMESPACE
 _Prefab::_Prefab(const SceneObject& o, bool link) : _Asset(AssetType::Prefab) {
 	PrefabState::activeBaseObjs.push(o);
 	const auto& info = o->prefabInfo();
-	if (link && !!info.prefab && !info.head) { //this object (and its children) is spawned
-		_data = PrefabLink_New(o, o->parent().lock(), true);
+	if (link && !!info.uids.size()) { //this object (and its children) is spawned
+		if (!info.uids[0].id)
+			_data = PrefabLink_New(o, o->parent().lock(), true, 0);
+		else {
+			Debug::Error("Prefab::Prefab", "cannot create prefab from body of another prefab!");
+			return;
+		}
 	}
 	else {
 		_data = PrefabObj_New(o, o->parent().lock(), link, true, true);
@@ -16,12 +21,17 @@ _Prefab::_Prefab(const SceneObject& o, bool link) : _Asset(AssetType::Prefab) {
 
 _Prefab::_Prefab(const JsonObject& json, _Sig2Prb fn) : _Asset(AssetType::Prefab) {
 	PrefabState::sig2PrbFn = fn;
-	if (json.group[0].key.string != "object") {
-		Debug::Warning("Prefab", "Cannot create from json: no object entry!");
-		_deleted = true;
-		return;
+	const auto tp = json.group[0].key.string;
+	if (tp == "object") {
+		_data = PrefabObj_New(json.group[0].value);
 	}
-	_data = PrefabObj_New(json.group[0].value);
+	else if (tp == "prefab") {
+		_data = PrefabLink_New(json.group[0].value);
+	}
+	else {
+		Debug::Warning("Prefab", "Cannot create from json: no object or prefab entry!");
+		_deleted = true;
+	}
 }
 
 _Prefab::~_Prefab() {}
@@ -41,37 +51,47 @@ SceneObject _Prefab::Instantiate(_Sig2Ass fn) {
 	for (auto& rr : PrefabState::refresolvers.top()) {
 		rr();
 	}
-	_SceneObject::PrefabInfo info;
 
-	info.prefab = get_shared<_Prefab>();
-	info.ids = { res->id() };
-	info.ids_indirect = PrefabState::ids_indirect.top();
-	int i = 1;
-	int j = 0;
-	const std::function<void(const std::vector<SceneObject>&)> doadd
-		= [&](const std::vector<SceneObject>& oo) {
-		for (auto& o : oo) {
-			info.ids.emplace(o->id());
-			auto info2 = o->prefabInfo();
-			if (!info2.prefab) { //this object is spawned by this prefab
-				info2.prefab = info.prefab;
-				info2.head = res;
+	/* fill in prefab info so we can
+	 * link back when serializing
+	 */
+	if (_assetSignature != "<instantiated>") {
+		typedef _SceneObject::PrefabInfo::UID UID;
+		auto info = res->prefabInfo();
+		UID uid;
+		uid.prefab = get_shared<_Prefab>();
+		uid.id = 0;
+		uid.objs = { res };
+		info.ids = { res->id() };
+		info.ids_indirect = PrefabState::ids_indirect.top();
+
+		int i = 1;
+		int j = 0;
+		const std::function<void(const std::vector<SceneObject>&)> doadd
+			= [&](const std::vector<SceneObject>& oo) {
+			for (auto& o : oo) {
+				info.ids.emplace(o->id());
+				uid.objs.push_back(o);
+				auto info2 = o->prefabInfo();
+				UID uid2;
+				uid2.prefab = uid.prefab;
+				uid2.head = res;
 				if (!info.ids_indirect.count(o->id())) {
-					info2.id = i++;
+					uid2.id = i++;
 				}
 				else {
-					info2.id = (1 << 32) + j++;
+					uid2.id = (1 << 32) + j++;
 				}
+				info2.uids.insert(info2.uids.begin(), uid2);
+				o->prefabInfo(info2);
+				doadd(o->children());
 			}
-			else if (!info2.head && !info2.id) { //we register the head of a spawned object
-				info2.id = i++;
-			}
-			o->prefabInfo(info2);
-			doadd(o->children());
-		}
-	};
-	doadd(res->children());
-	res->prefabInfo(info);
+		};
+		doadd(res->children());
+
+		info.uids.insert(info.uids.begin(), uid);
+		res->prefabInfo(info);
+	}
 
 	PrefabState::refresolvers.pop();
 	PrefabState::ids_indirect.pop();
@@ -102,10 +122,30 @@ namespace {
 			return invalid;
 		}
 	}
+
+	_Prefab::_ObjTreeBase& _GetT(_Prefab::_ObjTreeBase& data, size_t& a) {
+		static _Prefab::_ObjTreeBase invalid = {};
+
+		if (!a--) {
+			return data;
+		}
+		else {
+			for (auto& c : data.children) {
+				auto& res = _GetT(c, a);
+				if (&res != &invalid)
+					return res;
+			}
+			return invalid;
+		}
+	}
 }
 
 PrefabObjBase& _Prefab::GetPrefabObj(size_t id) {
 	return _Get(_data, id);
+}
+
+_Prefab::_ObjTreeBase& _Prefab::GetTreeObj(size_t id) {
+	return _GetT(*_tree, id);
 }
 
 namespace {
