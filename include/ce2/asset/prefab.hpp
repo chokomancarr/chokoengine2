@@ -37,7 +37,11 @@ public:
 
 	std::unique_ptr<_ObjTreeBase>& GetTree();
 
-	void _UpdateObjs();
+	void Apply(const SceneObject&, bool tree = false, size_t id = -1);
+
+	void Revert(const SceneObject&, size_t id = -1);
+
+	void _UpdateObjs(const SceneObject&);
 };
 
 CE_END_NAMESPACE

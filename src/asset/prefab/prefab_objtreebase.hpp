@@ -10,6 +10,7 @@ public:
 	std::string name;
 	_ObjBase* obj;
 	std::vector<_PrefabMod*> mods;
+	bool indirect;
 
 	std::vector<_ObjTreeBase> children;
 };

@@ -55,7 +55,9 @@ float EW_Hierarchy::DrawMenuObject(float& off, const std::vector<SceneObject>& o
 		if (hc) {
 			UI::Texture(Rect(position.x() + dx, off, 16, 16), EIcons::icons[st->expanded ? "minus" : "plus"], Color(0.8f));
 		}
-		UI::Label(Rect(position.x() + dx + 17, off, position.w() - dx - 18, 16), o->name(), Color(0.8f));
+		bool isprb = !o->prefabInfo().uids.empty();
+		UI::Label(Rect(position.x() + dx + 17, off, position.w() - dx - 18, 16), o->name(), 
+			isprb ? Color(0.7f, 0.7f, 0.9f) : Color(0.8f));
 		
 		if (level > 0) {
 			ol = off + 8;

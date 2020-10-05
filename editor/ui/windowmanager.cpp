@@ -23,7 +23,7 @@ void EWindowManager::Init() {
 	addm(File);
 	addi(Open Project);
 	addi(Close Project);
-	addi(New Scene);
+	addi(New Scene, CallbackSig::GLOBAL_NEW);
 	addi(Save Scene, CallbackSig::GLOBAL_SAVE);
 	addi(Save Scene As, CallbackSig::GLOBAL_SAVE_AS);
 

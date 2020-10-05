@@ -58,7 +58,6 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) {
 	);
 
 	const bool istop = !PrefabState::activeBaseObjs.top();
-
 	if (istop) PrefabState::activeBaseObjs.top() = res;
 
 	const auto& par = CE_PR_GETI(parent);

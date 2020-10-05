@@ -14,6 +14,8 @@ public:
 
 	const AssetType assetType;
 
+	bool readonly;
+
     CE_GET_SET_MEMBER(assetSignature);
 };
 

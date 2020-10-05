@@ -95,7 +95,7 @@ class CE_Exporter():
         indent0 = "";
         
         self.write(prefab_file, indent(2) + "}\n")
-        self.write(prefab_file, indent(1) + "}\n}")
+        self.write(prefab_file, indent(1) + '},\n' + indent(1) + '"readonly":"1"\n}')
         
         printlog("-------export end--------")
 

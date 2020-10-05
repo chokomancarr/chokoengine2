@@ -18,6 +18,7 @@ void ESceneManager::Init() {
 	scene->AddNewObject()
 		->name("__scene__");
 
+	ECallbackManager::Register(CallbackSig::GLOBAL_NEW, CbFnFrom(Unload));
 	ECallbackManager::Register(CallbackSig::GLOBAL_SAVE, CbFnFrom(Save));
 
 	Ops::Reg();

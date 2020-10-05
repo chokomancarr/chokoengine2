@@ -79,6 +79,9 @@ SceneObject _PrefabLink::Instantiate(const SceneObject& pr) {
 	res->transform()->localRotation(CE_PR_GET(rotation, Quat::identity()));
 	res->transform()->localScale(CE_PR_GET(scale, Vec3(1)));
 
+	const bool istop = !PrefabState::activeBaseObjs.top();
+	if (istop) PrefabState::activeBaseObjs.top() = res;
+
 	const auto& par = CE_PR_GETI(parent);
 	CE_PR_IFVALID(par) {
 		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top());

@@ -8,6 +8,7 @@
 CE_BEGIN_ED_NAMESPACE
 
 const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
+	{ CallbackSig::GLOBAL_NEW, "GLOBAL_NEW" },
 	{ CallbackSig::GLOBAL_OPEN, "GLOBAL_OPEN" },
 	{ CallbackSig::GLOBAL_SAVE, "GLOBAL_SAVE" },
 	{ CallbackSig::GLOBAL_SAVE_AS, "GLOBAL_SAVE_AS" },
@@ -21,6 +22,9 @@ const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {
 	{ CallbackSig::OBJECT_NEW, "OBJECT_NEW" },
 	{ CallbackSig::OBJECT_NEW_CHILD, "OBJECT_NEW_CHILD" },
 	{ CallbackSig::OBJECT_DELETE, "OBJECT_DELETE" },
+	{ CallbackSig::OBJECT_PREFAB_APPLY_SINGLE, "OBJECT_PREFAB_APPLY_SINGLE" },
+	{ CallbackSig::OBJECT_PREFAB_APPLY_TREE, "OBJECT_PREFAB_APPLY_TREE" },
+	{ CallbackSig::OBJECT_PREFAB_RESET, "OBJECT_PREFAB_RESET" },
 	{ CallbackSig::ASSET_REFRESH, "ASSET_REFRESH" },
 	{ CallbackSig::ASSET_REIMPORT, "ASSET_REIMPORT" },
 	{ CallbackSig::ASSET_DELETE, "ASSET_DELETE" },
