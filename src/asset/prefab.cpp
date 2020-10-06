@@ -221,7 +221,7 @@ namespace {
 					const auto& items = po->items;
 					const auto& par = CE_PR_GETI(parent);
 					CE_PR_IFVALID(par) {
-						auto pr2 = par->second.value.scobjref.Seek<_TreeBase&>(tree,
+						auto& pr2 = par->second.value.scobjref.Seek<_TreeBase&>(tree,
 							[](_TreeBase& t) {
 							return t.name;
 						},

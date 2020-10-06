@@ -120,6 +120,27 @@ std::string StrExt::ParentFd(const std::string& s) {
 	}
 }
 
+std::string StrExt::ReplaceAll(std::string s, const std::initializer_list<std::pair<std::string, std::string>>& repl) {
+	size_t off = 0;
+	for (;;) {
+		int i = 0;
+		size_t ip = std::string::npos;
+		for (int a = 0; a < repl.size(); a++) {
+			const auto& r = repl.begin()[a];
+			auto pos = s.find(r.first, off);
+			if (pos < ip) {
+				i = a;
+				ip = pos;
+			}
+		}
+		if (ip == std::string::npos) return s;
+
+		const auto& r = repl.begin()[i];
+		s.replace(ip, r.first.size(), r.second);
+		off += r.second.size();
+	}
+}
+
 int StrExt::ToInt(const std::string& s, int def) {
 	try {
 		return std::stoi(s);

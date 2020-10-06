@@ -23,6 +23,8 @@ class _ScriptLoaderBase {
 public:
 	static CE_EXPORT ScriptLoaderBase instance;
 
+	/* Loads and sets the active script
+	 */
 	virtual ScriptLoaderBase GetLoaderOf(const std::string&) = 0;
 
 	virtual std::string sig() = 0;
@@ -33,6 +35,9 @@ public:
 
 	virtual ~_ScriptLoaderBase() = default;
 
+	/* if empty, returns vars of active script
+	 * else, returns vars of "script[.class1[.class2]]"
+	 */
 	virtual std::vector<ScriptVarEntry> GetVarsOf(const std::string&) = 0;
 
 	virtual void set_vecsize(const std::string&, const size_t) = 0;

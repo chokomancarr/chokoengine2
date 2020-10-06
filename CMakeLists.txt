@@ -134,6 +134,7 @@ target_compile_definitions(ChokoEngine PRIVATE BUILD_CHOKOENGINE=1)
 
 if(MSVC)
     target_sources(ChokoEngine PRIVATE cpp.hint)
+    set_target_properties(ChokoEngine PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
 
 add_subdirectory(src)
@@ -170,6 +171,9 @@ set(LIBS
 #------modules-------
 
 add_library(Module_AssetCommon STATIC "")
+if(MSVC)
+    set_target_properties(Module_AssetCommon PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+endif()
 add_subdirectory(src/modules/assets_common)
 target_link_libraries(Module_AssetCommon ${LIBS})
 
@@ -179,12 +183,18 @@ set(LIBS_MA
 )
 
 add_library(Module_AssetArchive STATIC "")
+if(MSVC)
+    set_target_properties(Module_AssetArchive PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+endif()
 target_compile_definitions(Module_AssetArchive PRIVATE BUILD_MODULE_AA=1)
 add_subdirectory(src/modules/assets_archive)
 target_include_directories(Module_AssetArchive PRIVATE include/ce2/modules/aa)
 target_link_libraries(Module_AssetArchive ${LIBS_MA})
 
 add_library(Module_AssetEditor STATIC "")
+if(MSVC)
+    set_target_properties(Module_AssetEditor PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+endif()
 target_compile_definitions(Module_AssetEditor PRIVATE BUILD_MODULE_AE=1)
 add_subdirectory(src/modules/assets_editor)
 target_include_directories(Module_AssetEditor PRIVATE include/ce2/modules/ae)
@@ -196,6 +206,9 @@ set(LIBS_E
 )
 
 add_library(Module_PlayerEditor STATIC "")
+if(MSVC)
+    set_target_properties(Module_PlayerEditor PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+endif()
 target_compile_definitions(Module_PlayerEditor PRIVATE BUILD_MODULE_PE=1)
 add_subdirectory(src/modules/player_editor)
 target_include_directories(Module_PlayerEditor PRIVATE include/ce2/modules/pe)
@@ -208,6 +221,7 @@ add_subdirectory(editor)
 
 if(MSVC)
     target_sources(ChokoEditor PRIVATE cpp.hint)
+    set_target_properties(ChokoEditor PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
 
 add_dependencies(ChokoEditor Module_AssetEditor Module_PlayerEditor)
@@ -237,6 +251,9 @@ set(taskrunner_list
 
 foreach(tasknm ${taskrunner_list})
 	add_executable(${tasknm} "")
+	if(MSVC)
+		set_target_properties(${tasknm} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+	endif()
 	add_subdirectory(editor/taskrunners/${tasknm})
 
 	target_include_directories(${tasknm} PRIVATE editor/taskrunners/${tasknm})

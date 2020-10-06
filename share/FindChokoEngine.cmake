@@ -65,6 +65,7 @@ IF(CE2_LIBRARY_TEMP)
 		${CE2_INCLUDE_TEMP}
 		${GLFW3_INCLUDE_DIR}
 		${GLM_INCLUDE_DIR}
+		${GLEW_INCLUDE_DIR}
 		${JPEG_INCLUDE_DIR}
 		${FREETYPE_INCLUDE_DIRS}
 	)
@@ -73,7 +74,6 @@ IF(CE2_LIBRARY_TEMP)
 		SET(CE2_LIBRARY_TEMP
 			${CE2_LIBRARY_TEMP}
 			${CMAKE_THREAD_LIBS_INIT}
-			${GLEW_INCLUDE_DIR}
 		)
 	ENDIF(NOT APPLE)
 
@@ -126,9 +126,6 @@ IF(CE2_LIBRARY_TEMP)
 	define_module(AssetCommon AC)
 	define_module(AssetEditor AE)
 	define_module(PlayerEditor PE)
-
-	message(STATUS "ChokoEngine headers: " ${CE2_INCLUDE_DIRS})
-	message(STATUS "ChokoEngine libs: " ${CE2_LIBRARIES})
 
 	set(CE2_INCLUDE_TEMP "${CE2_INCLUDE_TEMP}" CACHE INTERNAL "")
 	set(CE2_INCLUDE_DIRS "${CE2_INCLUDE_DIRS}" CACHE STRING "")
