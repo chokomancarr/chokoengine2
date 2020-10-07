@@ -16,6 +16,9 @@ Mat4x4::Mat4x4(float a, float b, float c, float d,
 float& Mat4x4::operator[](const int i) {
 	return data[i];
 }
+const float& Mat4x4::operator[](const int i) const {
+	return data[i];
+}
 
 Vec4 Mat4x4::operator*(const Vec4& rhs) const {
 	return glm_cast((*(glm::mat4*)this) * (*(glm::vec4*)&rhs));

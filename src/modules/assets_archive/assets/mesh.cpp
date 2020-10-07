@@ -6,7 +6,7 @@ CE_MOD_AA_IMPL(Mesh) {
 	const auto meta = LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "obj") {
-		return MeshLoader::LoadObj(_basePath + path);
+		return MeshLoader::LoadObj(IO::ReadFile(_basePath + path));
 	}
 	else if (ext == "mesh") {
 		return MeshLoader::LoadMesh(_basePath + path);

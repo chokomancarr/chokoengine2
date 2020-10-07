@@ -23,7 +23,9 @@ void EW_SceneView::DrawMenu() {
 bool EW_SceneView::_Init() {
 	EW_S_Camera::Init();
 	EW_S_Light::Init();
+	EW_S_Resources::Init();
 	EW_S_Rig::Init();
+	EW_S_Operator::Init();
 
 	Ops::Reg();
 
@@ -106,8 +108,8 @@ void EW_SceneView::ActiveUpdate() {
 	case ControlMode::Rotate: {
 		static float x = 0;
 		static float y = 0;
-		x -= Input::mouseDelta().y;
-		y -= Input::mouseDelta().x;
+		x += Input::mouseDelta().y;
+		y += Input::mouseDelta().x;
 		_pivot->transform()->localRotationEuler(Vec3(x, y, 0));
 		break;
 	}
@@ -124,7 +126,7 @@ void EW_SceneView::ActiveUpdate() {
 	}
 
 	s -= 0.2f * Input::mouseScroll().y;
-	_pivot->transform()->localScale(Vec3(std::pow(2, s)));
+	_pivot->transform()->localScale(Vec3(std::powf(2, s)));
 }
 
 void EW_SceneView::Render() {

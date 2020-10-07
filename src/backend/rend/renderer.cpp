@@ -114,12 +114,12 @@ void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 		mat->SetUniform("_P", P);
 		mat->SetUniform("_MVP", P * MV);
 		mat->Bind();
-		mesh->_elos[a]->Bind();
+		mesh->BindElo(a);
 		glDrawElements(GL_TRIANGLES, mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
-		mesh->_elos[a]->Unbind();
 		mat->Unbind();
 	}
-	vao->Unbind();
+	//vao->Unbind();
+	mesh->Unbind();
 }
 
 void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, const Mat4x4& p, const FrameBuffer& gbuf

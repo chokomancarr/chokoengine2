@@ -91,6 +91,9 @@ void _Material::Bind() {
 			v._val_cm->Bind();
 			tid++;
 			break;
+		default:
+			Debug::Warning("Material::Bind", "unknown type for variable \"" + v._name + "\" (skipped)!");
+			break;
 		}
 	}
 }

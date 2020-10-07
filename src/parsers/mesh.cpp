@@ -2,9 +2,8 @@
 
 CE_BEGIN_NAMESPACE
 
-Mesh MeshLoader::LoadObj(const std::string& path) {
-	std::ifstream strm(path, std::ios::binary);
-	if (!strm) return nullptr;
+Mesh MeshLoader::LoadObj(const std::string& data) {
+	std::stringstream strm(data);
 
 	std::string s;
 	//pool
@@ -19,6 +18,7 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 	std::vector<std::vector<Int3>> mtris(1);
 	int triCnt = 0; //total number of unique indices
 	int matCnt = -1;
+	bool hasuv = false;
 
 	std::unordered_map<uint64_t, int> triMap = {};
 
@@ -43,6 +43,7 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 			).normalized());
 		}
 		else if (ss0 == "vt") {
+			hasuv = true;
 			_uvs.push_back(Vec2(
 				std::stof(ss[1]),
 				std::stof(ss[2])
@@ -62,7 +63,7 @@ Mesh MeshLoader::LoadObj(const std::string& path) {
 				if (ss1.size() > 1) {
 					if (ss1[1] != "")
 						i3.y = std::stoi(ss1[1]);
-					if (ss1.size() > 1) {
+					if (ss1.size() > 2 && ss1[2] != "") {
 						i3.z = std::stoi(ss1[2]);
 					}
 				}

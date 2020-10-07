@@ -94,4 +94,17 @@ void _Mesh::Apply() {
 	GenBuffers();
 }
 
+void _Mesh::BindVao() const {
+	_vao->Bind();
+}
+
+void _Mesh::BindElo(int matid) const {
+	_elos[matid]->Bind();
+}
+
+void _Mesh::Unbind() const {
+	_vao->Unbind();
+	_elos[0]->Unbind();
+}
+
 CE_END_NAMESPACE

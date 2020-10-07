@@ -4,7 +4,6 @@ CE_BEGIN_ED_NAMESPACE
 
 void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 	const auto& mat = parent->_camera->lastViewProjectionMatrix();
-	UI::W::matrix(mat);
 
 	glDisable(GL_CULL_FACE);
 
@@ -13,15 +12,21 @@ void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 	if (!!ESceneInfo::selectedObject) {
 		const auto& tr = ESceneInfo::selectedObject->transform();
 		const auto& pos = tr->worldPosition();
+		const auto& ptr = parent->_pivot->transform();
 
 		for (auto& c : ESceneInfo::selectedObject->components()) {
 			const auto& f = EW_S_DrawCompList::activeFuncs[(int)c->componentType];
 			if (f) f(c, mat);
 		}
 
-		UI::W::Line(pos, pos + tr->right() * 0.3f, Color::red());
-		UI::W::Line(pos, pos + tr->up() * 0.3f, Color::green());
-		UI::W::Line(pos, pos + tr->forward() * 0.3f, Color::blue());
+		const float operatorSize = 200; //relative to pixels
+
+		EW_S_Operator::Draw(
+			Mat4x4::FromTRS(pos, tr->worldRotation(), Vec3(
+				operatorSize / parent->position.h())),
+			mat * ptr->worldMatrix() * Mat4x4::FromTRS(
+				ptr->worldPosition(), ptr->worldRotation(), Vec3(1.f)).inverse()
+		);
 	}
 
 	glEnable(GL_CULL_FACE);

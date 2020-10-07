@@ -28,6 +28,7 @@ void _MeshRenderer::materials(const std::vector<Material>& m) {
 }
 
 void _MeshRenderer::OnPostLogic() {
+	if (!_mesh) return;
 	_vao_final = _mesh->_vao;
 	for (auto& m : _modifiers) {
 		if (m->enabled) {

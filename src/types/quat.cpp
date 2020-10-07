@@ -49,11 +49,11 @@ Quat Quat::identity() {
 }
 
 Quat Quat::FromEuler(const Vec3& e) {
-	return glm_cast(glm::quat(Math::deg2rad * TG(e)));
+	return glm_cast(glm::quat(-Math::deg2rad * TG(e)));
 }
 
 Vec3 Quat::ToEuler(const Quat& q) {
-	return glm_cast(glm::eulerAngles(*(glm::quat*)&q));
+	return -glm_cast(glm::eulerAngles(*(glm::quat*)&q));
 }
 
 Quat Quat::FromAxisAngle(Vec3 axis, float angle) {

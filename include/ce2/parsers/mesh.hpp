@@ -4,7 +4,7 @@
 CE_BEGIN_NAMESPACE
 
 namespace MeshLoader {
-	Mesh LoadObj(const std::string& path);
+	Mesh LoadObj(const std::string& data);
 	Mesh LoadMesh(const std::string& path);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoeditor.hpp"
+#include "sceneview/resources.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 

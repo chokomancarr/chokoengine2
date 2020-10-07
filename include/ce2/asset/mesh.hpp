@@ -58,6 +58,10 @@ public:
 	 */
 	void Apply();
 
+	void BindVao() const;
+	void BindElo(int matid) const;
+	void Unbind() const;
+
 	friend class _MeshRenderer;
 };
 

@@ -13,6 +13,7 @@ public:
             float m, float n, float o, float p);
 
 	float& operator [](const int i);
+	const float& operator [](const int i) const;
 
 	Vec4 operator *(const Vec4& rhs) const;
 	Mat4x4 operator *(const Mat4x4& rhs) const;
