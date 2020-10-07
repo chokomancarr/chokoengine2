@@ -6,9 +6,7 @@ VShaderNode _VShaderNode::FromSig(const std::string& name) {
 #define SW(nm, cls, ...) if (name == #nm) return std::make_shared<cls>(__VA_ARGS__);
 	SW(color_input, VSN_Input_Color)
 	else SW(surface_output, VSN_Output_Surface)
-	else {
-		abort();
-	}
+	else CE_ABORT();
 };
 
 void _VShaderNode::Parse(const JsonObject& data, VShader& shad) {

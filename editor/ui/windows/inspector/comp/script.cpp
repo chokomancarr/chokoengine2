@@ -8,10 +8,10 @@ namespace {
 	void DrawVar(const ScriptInfo& info, ScriptVar& vr, ScriptVal& vl, UI_Ext::Layout::InfoSt& lt) {
 		if (vr.is_vector) {
 			int len = (int)vl.val_vec.size();
-			UI_Ext::Layout::Block(vr.name + "[" + std::to_string(len) + "]", lt, [&]() {
+			UI_Ext::Layout::Block(vr.name + " (size=" + std::to_string(len) + ")", lt, [&]() {
 				auto vr2 = vr;
 				vr2.is_vector = false;
-				CE_E_EDIT_I(, "num", len);
+				CE_E_EDIT_I(, "size", len);
 				vl.val_vec.resize(len, ScriptVal(vr2, info));
 				int a = 0;
 				for (auto& vl2 : vl.val_vec) {

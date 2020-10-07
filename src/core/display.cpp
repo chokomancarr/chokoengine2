@@ -47,7 +47,7 @@ bool Display::InitWindow(const std::string& title, uint w, uint h) {
 	if (GLEW_OK != GlewInitResult)
 	{
 		Debug::Error("System", "Glew error: " + std::string((const char*)glewGetErrorString(GlewInitResult)));
-		abort();
+		CE_ABORT();
 	}
 #endif
 

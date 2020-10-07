@@ -100,18 +100,18 @@ public:
 	std::string sig() override {
 		return _sig;
 	}
-	Component Instantiate() override { abort(); }
+	Component Instantiate() override { CE_ABORT(); }
 	void activeTarget(const Component& t) override {
 		tar = t;
 	}
 	std::vector<ScriptVarEntry> GetVarsOf(const std::string& s) override;
 
 #define _IMPL_GETSET(tp)\
-    void set_ ## tp(const std::string&, const tp&) override { std::cout << "NO" << std::endl; abort(); }\
-    tp get_ ## tp(const std::string&) override { std::cout << "NO" << std::endl; abort(); };
+    void set_ ## tp(const std::string&, const tp&) override { CE_ABORT(); }\
+    tp get_ ## tp(const std::string&) override { CE_ABORT(); };
 
-	void set_vecsize(const std::string&, const size_t) override { std::cout << "NO" << std::endl; abort(); }
-	size_t get_vecsize(const std::string&) override { std::cout << "NO" << std::endl; abort(); }
+	void set_vecsize(const std::string&, const size_t) override { CE_ABORT(); }
+	size_t get_vecsize(const std::string&) override { CE_ABORT(); }
     _IMPL_GETSET(int)
     _IMPL_GETSET(float)
     _IMPL_GETSET(Vec2)
@@ -123,16 +123,17 @@ public:
 #undef _IMPL_GETSET
 };
 
-#define _CE_MEMACC_S(nm)\
-if (i != -1) abort();\
-else return &c->nm;
+#define _CE_GETMEM_S(nm, cl)\
+if (s == #nm) {\
+    if (i != -1 || tsz != size_t(-1)) {\
+       CE_ABORT();\
+    }\
+    nextclass = #cl;\
+    return &c->nm;\
+}
 
-#define _CE_MEMACC_A(nm)\
-if (i == -1) abort();\
-else return &c->nm[i];
-
-#define _CE_GETMEM_C(nm, cl, fn)\
-else if (s == #nm) {\
+#define _CE_GETMEM_A(nm, cl)\
+if (s == #nm) {\
     if (tsz < size_t(-2)) {\
         c->nm.resize(tsz);\
         return nullptr;\
@@ -141,19 +142,9 @@ else if (s == #nm) {\
         return (void*)c->nm.size();\
     }\
     else {\
+		if (i == -1) CE_ABORT();\
         nextclass = #cl;\
-        fn\
-    }\
-}
-
-#define _CE_GETMEM_I(nm, fn)\
-else if (s == #nm) {\
-    if (tsz != size_t(-1)) {\
-        abort();\
-    }\
-    else {\
-        nextclass = "-";\
-        fn\
+        return &c->nm[i];\
     }\
 }
 
@@ -247,33 +238,33 @@ CE_BEGIN_PL_NAMESPACE
 
 namespace {
     void* getmember_this(_CE_GETMEMFNARGS) {
-        auto c = (_)" + nm + "*)cl;\n        if (0) { abort(); }\n";
+        auto c = (_)" + nm + "*)cl;\n";
 
 		for (auto& v : vars) {
-			const auto getstr = std::string(", _CE_MEMACC_") + (v.is_vector ? "A(" : "S(") + v.name + "))\n";
+			const auto getstr = std::string("        _CE_GETMEM_") + (v.is_vector ? "A(" : "S(") + v.name + ", ";
 			if (v.type == ScriptVar::Type::Class) {
-				impl << "        _CE_GETMEM_C(" + v.name + ", " + v.sub_class + getstr;
+				impl << getstr + v.sub_class + ");\n";
 			}
 			else {
-				impl << "        _CE_GETMEM_I(" + v.name + getstr;
+				impl << getstr + "-);\n";
 			}
 		}
-		impl << "        else abort();\n    }\n";
+		impl << "        CE_ABORT();\n    }\n";
 
 		for (auto& c : classes) {
 			impl << "    void* getmember_" + c.name + "(_CE_GETMEMFNARGS) {\n"
-"        auto c = (_" + nm + "::" + c.name + "*)cl;\n        if (0) { abort(); }\n";
+"        auto c = (_" + nm + "::" + c.name + "*)cl;\n";
 
 			for (auto& v : c.vars) {
-				const auto getstr = std::string(", _CE_MEMACC_") + (v.is_vector ? "A(" : "S(") + v.name + "))\n";
+				const auto getstr = std::string("        _CE_GETMEM_") + (v.is_vector ? "A(" : "S(") + v.name + ", ";
 				if (v.type == ScriptVar::Type::Class) {
-					impl << "        _CE_GETMEM_C(" + v.name + ", " + v.sub_class + getstr;
+					impl << getstr + v.sub_class + ");\n";
 				}
 				else {
-					impl << "        _CE_GETMEM_I(" + v.name + getstr;
+					impl << getstr + "-);\n";
 				}
 			}
-			impl << "        else abort();\n    }\n";
+			impl << "        CE_ABORT();\n    }\n";
 		}
 
 		impl << R"(

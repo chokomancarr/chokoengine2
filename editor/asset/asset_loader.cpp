@@ -114,7 +114,7 @@ CE_E_AL_IMPL_EX(Model) {
 	if (ext == "blend") {
 		return BlenderExporter::ExportBlend(CE_DIR_ASSET + path, CE_DIR_ASSET, ".exported/" + path + "/");
 	}
-	else abort(); //we should never get here
+	else CE_ABORT(); //we should never get here
 }
 
 CE_E_AL_IMPL_EX(Image) {
@@ -123,7 +123,7 @@ CE_E_AL_IMPL_EX(Image) {
 	if (ext == "psd") {
 		return BlenderExporter::ExportImage(CE_DIR_ASSET + path, CE_DIR_ASSET + ".exported/" + path + "/");
 	}
-	else abort(); //we should never get here
+	else CE_ABORT(); //we should never get here
 }
 
 CE_END_ED_NAMESPACE

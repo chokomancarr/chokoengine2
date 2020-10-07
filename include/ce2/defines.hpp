@@ -13,6 +13,15 @@
 #define CE_NOT_IMPLEMENTED\
     throw std::logic_error("Function not implemented!");
 
+#define CE_STRINGIFY(x) CE_STRINGIFY2(x)
+#define CE_STRINGIFY2(x) #x
+
+#define CE_ABORT()\
+	do {\
+		std::cerr << "process aborted at " __FILE__ ":" CE_STRINGIFY(__LINE__) "!" << std::endl;\
+		abort();\
+	} while (0)
+
 #ifdef _MSC_VER
 	#pragma warning(disable:4996)
 #endif

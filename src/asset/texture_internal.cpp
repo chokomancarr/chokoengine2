@@ -36,7 +36,7 @@ bool Texture_I::FromJPG(const std::string& path, uint& w, uint& h, byte& channel
 
 	info.err = jpeg_std_error(&err);
 	err.error_exit = [](j_common_ptr) {
-		abort();
+		CE_ABORT();
 	};
 	jpeg_create_decompress(&info);   //fills info structure
 

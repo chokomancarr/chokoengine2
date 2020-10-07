@@ -71,7 +71,8 @@ void PDSyncer::WaitForFlag(uint32_t f, bool b) {
     volatile auto val = baseMem.data();
     while (!(val->status_flags & f) == b) {
         if (Time::actualMillis() - millis > FLAG_TIMEOUT) {
-            abort();
+			Debug::Error("PlayerSyncer", "timeout!");
+			CE_ABORT();
         }
     }
     millis = Time::actualMillis();
