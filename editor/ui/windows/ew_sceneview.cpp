@@ -81,8 +81,16 @@ void EW_SceneView::Update() {
 }
 
 void EW_SceneView::ActiveUpdate() {
+	if (EW_S_Operator::editing) {
+		if (EW_S_Operator::editingParent == this) {
+			EW_S_Operator::Update();
+		}
+		return;
+	}
+
 	switch (Input::mouseStatus(InputMouseButton::Left)) {
-	case InputMouseStatus::Down: {
+	case InputMouseStatus::Hold: {
+		if (controlMode != ControlMode::None) break;
 		if (Input::KeyHold(InputKey::LeftShift)) {
 			controlMode = ControlMode::Pan;
 		}
@@ -92,10 +100,12 @@ void EW_SceneView::ActiveUpdate() {
 		else {
 			controlMode = ControlMode::Rotate;
 		}
+		Cursor::locked(true);
 		break;
 	}
 	case InputMouseStatus::Up: {
 		controlMode = ControlMode::None;
+		Cursor::locked(false);
 		break;
 	}
 	default:
@@ -114,19 +124,51 @@ void EW_SceneView::ActiveUpdate() {
 		break;
 	}
 	case ControlMode::Scale: {
-		s -= 0.1f * Input::mouseDelta().y;
+		s += 0.05f * Input::mouseDelta().x;
+		_pivot->transform()->localScale(Vec3(std::powf(2, s)));
 		break;
 	}
 	case ControlMode::Pan: {
+		/*
+		const auto& pos = _pivot->transform()->worldPosition();
+		auto cp = _camera->lastViewProjectionMatrix() * Vec4(pos, 1);
+		cp /= cp.w;
+		auto px = cp; px.x = 1;
+		auto py = cp; py.y = 1;
+		const auto ip = _camera->lastViewProjectionMatrix().inverse();
+		px = ip * px; px /= px.w;
+		py = ip * py; py /= py.w;
 
+		_pivot->transform()->worldPosition(
+			
+		);
+		*/
+		if (_camera->orthographic()) {
+			CE_NOT_IMPLEMENTED
+		}
+		else {
+			const auto& ctr = _camera->object()->transform();
+			float z = ctr->localPosition().z
+				* _pivot->transform()->localScale().x;
+			float th = _camera->fov() / 2;
+			float dy = std::tan(th * Math::deg2rad) * z;
+			float dx = dy * _target->width() / _target->height();
+			float mdx = Input::mouseDelta().x / position.w() * 2;
+			float mdy = Input::mouseDelta().y / position.h() * 2;
+			_pivot->transform()->localPosition(
+				_pivot->transform()->localPosition()
+				+ ctr->right() * dx * mdx
+				+ ctr->up() * dy * mdy
+			);
+		}
+		
 		break;
 	}
 	default:
+		s -= 0.2f * Input::mouseScroll().y;
+		_pivot->transform()->localScale(Vec3(std::powf(2, s)));
 		break;
 	}
-
-	s -= 0.2f * Input::mouseScroll().y;
-	_pivot->transform()->localScale(Vec3(std::powf(2, s)));
 }
 
 void EW_SceneView::Render() {

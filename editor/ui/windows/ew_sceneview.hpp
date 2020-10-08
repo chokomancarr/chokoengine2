@@ -36,6 +36,10 @@ public:
 
 	void Render() override;
 
+	CE_GET_MEMBER(target);
+	CE_GET_MEMBER(pivot);
+	CE_GET_MEMBER(camera);
+
 	class Ops;
 
 	class CaptureCallbacks;

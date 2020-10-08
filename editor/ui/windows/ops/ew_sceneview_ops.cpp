@@ -13,8 +13,10 @@ CE_IMPL_CALLBACK(EW_SceneView::Ops::ToggleProjectionMode) {
 }
 
 CE_IMPL_CALLBACK(EW_SceneView::Ops::ViewFocusObject) {
+	auto o = args.Get<SceneObject>("obj");
+	if (!o) return;
 	((EW_SceneView*)window)->_pivot->transform()
-		->localPosition(args.Get<SceneObject>("obj")->transform()->worldPosition());
+		->localPosition(o->transform()->worldPosition());
 }
 
 CE_END_ED_NAMESPACE

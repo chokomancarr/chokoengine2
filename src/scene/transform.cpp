@@ -107,15 +107,15 @@ void Transform::localScale(const Vec3& s) {
 }
 
 Vec3 Transform::forward() const {
-	return (Vec3)(_worldMatrix * Vec4(0, 0, 1, 0));
+	return ((Vec3)(_worldMatrix * Vec4(0, 0, 1, 0))).normalized();
 }
 
 Vec3 Transform::right() const {
-	return (Vec3)(_worldMatrix * Vec4(1, 0, 0, 0));
+	return ((Vec3)(_worldMatrix * Vec4(1, 0, 0, 0))).normalized();
 }
 
 Vec3 Transform::up() const {
-	return (Vec3)(_worldMatrix * Vec4(0, 1, 0, 0));
+	return ((Vec3)(_worldMatrix * Vec4(0, 1, 0, 0))).normalized();
 }
 
 CE_END_NAMESPACE

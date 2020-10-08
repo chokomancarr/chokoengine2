@@ -136,6 +136,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	gbuf->Clear();
 
 	glBlendFunc(GL_ONE, GL_ZERO);
+	glDepthMask(true);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_CULL_FACE);
 
@@ -146,6 +147,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	gbuf->Unbind();
 
 	glBlendFunc(GL_ONE, GL_ONE);
+	glDepthMask(false);
 	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
 
@@ -190,6 +192,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	gbuf->Clear();
 
 	glBlendFunc(GL_ONE, GL_ZERO);
+	glDepthMask(true);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_CULL_FACE);
 
@@ -207,6 +210,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	gbuf->Unbind();
 
 	glBlendFunc(GL_ONE, GL_ONE);
+	glDepthMask(false);
 	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
 
@@ -462,6 +466,7 @@ void Renderer::RenderCamera(const Camera& cam) {
 	//GI::Voxelizer::DrawDebug(p);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(false);
 	glDepthFunc(GL_ALWAYS);
 	glEnable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -474,11 +479,13 @@ void Renderer::RenderCamera(const Camera& cam) {
 		tar->BindTarget();
 	}
 	
-	//we need this or else invalid colors will stack,
+	//we need to do this or else invalid colors will stack,
 	//or we need to clear the screen first
-	glDisable(GL_BLEND);
-	UI::Texture(Display::fullscreenRect(), btar);
-	glEnable(GL_BLEND);
+	{
+		glDisable(GL_BLEND);
+		UI::Texture(Display::fullscreenRect(), btar);
+		glEnable(GL_BLEND);
+	}
 
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();

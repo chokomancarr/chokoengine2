@@ -6,8 +6,8 @@ CE_BEGIN_NAMESPACE
 class Cursor {
 	CE_CLASS_COMMON
 
-	static bool _locked;
-	static bool _visible;
+	static CE_EXPORT bool _locked;
+	static CE_EXPORT bool _visible;
 
 public:
 	

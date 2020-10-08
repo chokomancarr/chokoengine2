@@ -17,10 +17,14 @@ public:
 		View
 	} space;
 
-	static void Init();
+	static bool editing;
+	static EW_SceneView* editingParent;
 
-	static void Draw(const Mat4x4& mv, const Mat4x4& p);
-	static void DrawT(const Mat4x4& mv, const Mat4x4& p);
+	static void Init();
+	static void Update();
+
+	static void Draw(const pTransform& tr, EW_SceneView* parent);
+	static bool DrawT(const Mat4x4& mv, const Mat4x4& mvp);
 };
 
 CE_END_ED_NAMESPACE
