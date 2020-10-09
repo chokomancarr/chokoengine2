@@ -1,8 +1,44 @@
 #include "chokoeditor.hpp"
+#include "glsl/minVert.h"
+#include "glsl/outlineFrag.h"
+#include "utils/glutils.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
+namespace {
+	bool selectobjectid(const ChokoEngine::objectid id, const std::vector<SceneObject>& oo = ChokoEditor::scene->objects()) {
+		for (auto& o : oo) {
+			if (o->id() == id) {
+				ESceneInfo::Select(o);
+				return true;
+			}
+			else {
+				if (selectobjectid(id, o->children()))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	Shader hlShad;
+
+	Color hlCol = Color(0.5f);
+}
+
 void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
+	if (highlightId != 0) {
+		hlShad->Bind();
+		glUniform2f(hlShad->Loc(0), 1.f / _target->width(), 1.f / _target->height());
+		glUniform1i(hlShad->Loc(1), 0);
+		glActiveTexture(GL_TEXTURE0);
+		_camera->deferredBuffer()->tex(4)->Bind();
+		glUniform1i(hlShad->Loc(2), highlightId);
+		glUniform1i(hlShad->Loc(3), 1);
+		glUniform4f(hlShad->Loc(4), hlCol.r, hlCol.g, hlCol.b, hlCol.a);
+		GLUtils::DrawArrays(GL_TRIANGLES, 6);
+		hlShad->Unbind();
+	}
+
 	for (auto& o : objs) {
 		if (o == ESceneInfo::selectedObject) continue;
 		for (auto& c : o->components()) {
@@ -29,6 +65,12 @@ bool EW_SceneView::_Init() {
 
 	Ops::Reg();
 
+	(hlShad = Shader::New(glsl::minVert, glsl::outlineFrag))
+		->AddUniforms({
+			"dscreenSize", "idtex", "tarid",
+			"radius", "color"
+		});
+
 	return true;
 }
 
@@ -47,6 +89,7 @@ bool EW_SceneView::Init() {
 	_camera = o->AddComponent<Camera>();
 	_camera->clearColor(Color(0, 0));
 	_camera->target(_target);
+	_camera->writeExtraBuffers(true);
 	auto cc = o->AddComponent<Ref<CaptureCallbacks>>();
 	cc->parent = this;
 
@@ -78,6 +121,8 @@ void EW_SceneView::Update() {
 			ECallbackManager::Invoke(CallbackSig::VIEW_TOGGLE_PERSPECTIVE, ECallbackArgs(), this);
 		}
 	}
+
+	highlightId = 0;
 }
 
 void EW_SceneView::ActiveUpdate() {
@@ -88,9 +133,12 @@ void EW_SceneView::ActiveUpdate() {
 		return;
 	}
 
+	bool onclick = false;
+
 	switch (Input::mouseStatus(InputMouseButton::Left)) {
 	case InputMouseStatus::Hold: {
-		if (controlMode != ControlMode::None) break;
+		if (controlMode != ControlMode::None
+			|| Input::mouseDelta() == Vec2()) break;
 		if (Input::KeyHold(InputKey::LeftShift)) {
 			controlMode = ControlMode::Pan;
 		}
@@ -104,6 +152,7 @@ void EW_SceneView::ActiveUpdate() {
 		break;
 	}
 	case InputMouseStatus::Up: {
+		onclick = (controlMode == ControlMode::None);
 		controlMode = ControlMode::None;
 		Cursor::locked(false);
 		break;
@@ -129,20 +178,6 @@ void EW_SceneView::ActiveUpdate() {
 		break;
 	}
 	case ControlMode::Pan: {
-		/*
-		const auto& pos = _pivot->transform()->worldPosition();
-		auto cp = _camera->lastViewProjectionMatrix() * Vec4(pos, 1);
-		cp /= cp.w;
-		auto px = cp; px.x = 1;
-		auto py = cp; py.y = 1;
-		const auto ip = _camera->lastViewProjectionMatrix().inverse();
-		px = ip * px; px /= px.w;
-		py = ip * py; py /= py.w;
-
-		_pivot->transform()->worldPosition(
-			
-		);
-		*/
 		if (_camera->orthographic()) {
 			CE_NOT_IMPLEMENTED
 		}
@@ -167,6 +202,31 @@ void EW_SceneView::ActiveUpdate() {
 	default:
 		s -= 0.2f * Input::mouseScroll().y;
 		_pivot->transform()->localScale(Vec3(std::powf(2, s)));
+
+		const auto& gbuf = _camera->deferredBuffer();
+		if (gbuf) {
+			auto pos = Input::mousePosition() - Vec2(position.x(), position.y());
+			pos.y = position.h() - pos.y;
+			gbuf->Bind(true);
+			glReadBuffer(GL_COLOR_ATTACHMENT4);
+			int id[4] = {};
+			glReadPixels(pos.x, pos.y, 1, 1, GL_RGBA_INTEGER, GL_INT, id);
+			glReadBuffer(GL_COLOR_ATTACHMENT0);
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+			highlightId = id[0];
+			if (onclick) {
+				if (highlightId != 0) {
+					selectobjectid(highlightId);
+				}
+				else {
+					if (!!ESceneInfo::selectedObject) {
+						ESceneInfo::Clear();
+					}
+				}
+			}
+		}
+
 		break;
 	}
 }

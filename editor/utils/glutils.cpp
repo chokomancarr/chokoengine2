@@ -9,11 +9,15 @@ GLuint GLUtils::_vao = 0;
 
 Shader GLUtils::simpleShad = 0;
 
+void GLUtils::BindEmptyVao() {
+	if (!_vao) glGenVertexArrays(1, &_vao);
+	glBindVertexArray(_vao);
+}
+
 void GLUtils::DrawArrays(GLenum tp, int n, int o) {
-    if (!_vao) glGenVertexArrays(1, &_vao);
-    glBindVertexArray(_vao);
-    glDrawArrays(tp, o, n);
-    glBindVertexArray(0);
+	BindEmptyVao();
+	glDrawArrays(tp, o, n);
+	glBindVertexArray(0);
 }
 
 void GLUtils::DrawElemsW(GLenum tp, int n, int o, const Color& col, const Mat4x4& mat) {

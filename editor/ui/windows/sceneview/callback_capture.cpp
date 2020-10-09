@@ -13,7 +13,7 @@ void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 
     parent->DoDrawScene(ChokoEditor::scene->objects()[1]->children());
 
-	if (!!ESceneInfo::selectedObject && (parent->controlMode == EW_SceneView::ControlMode::None)) {
+	if (!!ESceneInfo::selectedObject) {
 		const auto& tr = ESceneInfo::selectedObject->transform();
 		const auto& pos = tr->worldPosition();
 
@@ -22,7 +22,7 @@ void EW_SceneView::CaptureCallbacks::OnPostBlit() {
 			if (f) f(c, mat);
 		}
 
-		EW_S_Operator::Draw(tr, parent);
+		EW_S_Operator::Draw(tr, parent, (parent->controlMode == EW_SceneView::ControlMode::None));
 	}
 
 	glEnable(GL_CULL_FACE);

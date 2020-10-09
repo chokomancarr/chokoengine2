@@ -23,8 +23,10 @@ public:
 	static void Init();
 	static void Update();
 
-	static void Draw(const pTransform& tr, EW_SceneView* parent);
-	static bool DrawT(const Mat4x4& mv, const Mat4x4& mvp);
+	static void Draw(const pTransform& tr, EW_SceneView* parent, bool active);
+
+private:
+	static bool DoDraw(const Mat4x4& mv, const Mat4x4& mvp, const Mesh& op, bool act);
 };
 
 CE_END_ED_NAMESPACE

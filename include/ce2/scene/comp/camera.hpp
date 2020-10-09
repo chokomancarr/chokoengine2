@@ -4,7 +4,9 @@
 CE_BEGIN_NAMESPACE
 
 class _Camera : public _Component { CE_COMPONENT_COMMON
+private:
 	FrameBuffer _deferredBuffer;
+	bool _writeExtraBuffers;
 
 	RenderTarget _target;
 	std::array<RenderTarget, 3> _blitTargets;
@@ -30,6 +32,8 @@ public:
 	_Camera();
 
 	_Camera(const _Camera& rhs);
+
+	CE_GET_MEMBER(deferredBuffer);
 
 	/* The rendering target
 	 * If this is null, the camera renders to the screen
@@ -72,6 +76,9 @@ public:
 	 * Effects are applied from front to back
 	 */
 	CE_GET_SET_MEMBER(effects);
+	
+	CE_GET_SET_MEMBER_F(writeExtraBuffers);
+	
 	/* Adds an effect at the back of the list
 	 */
 	void AddEffect(const CameraEffect&);

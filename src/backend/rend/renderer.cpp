@@ -18,6 +18,8 @@
  *     G8          //Roughness
  *     B8          //Occlusion
  *     A8          //Flags
+ *   Buffer 3:
+ *     RGB8        //Emission Color
  * 
  *  Transparent pass:
  *   Buffer 0:
@@ -30,7 +32,14 @@
  *     G8          //Roughness
  *     B8          //Occlusion
  *     A8          //Flags
+ *   Buffer 3:
+ *     RGB8        //Emission Color
  * 
+ *  Optional buffers:
+ *   Buffer4:
+ *     RGB32       //Speed vector
+ *     A32I        //Object ID
+ *
  * Notes:
  *   Computing Z from XY of normal map produces slight but noticeable artifacts, even in 32 bits
  *     -> Maybe increasing the resolution in small values will fix this? Does it matter for floats?
@@ -113,6 +122,7 @@ void Renderer::RenderMesh(const MeshRenderer& rend, const Mat4x4& P) {
 		mat->SetUniform("_MV", MV);
 		mat->SetUniform("_P", P);
 		mat->SetUniform("_MVP", P * MV);
+		mat->SetUniform("_object_id", (int)rend->object()->id());
 		mat->Bind();
 		mesh->BindElo(a);
 		glDrawElements(GL_TRIANGLES, mesh->_matTriangles[a].size() * 3, GL_UNSIGNED_INT, 0);
@@ -131,63 +141,9 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 
 	glViewport(0, 0, _w, _h);
 
-	//opaque pass
-	gbuf->Bind();
-	gbuf->Clear();
 
-	glBlendFunc(GL_ONE, GL_ZERO);
-	glDepthMask(true);
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_CULL_FACE);
+	// ------------------- transparent pass -----------------------
 
-	for (auto& r : orends) {
-		RenderMesh(r, p);
-	}
-
-	gbuf->Unbind();
-
-	glBlendFunc(GL_ONE, GL_ONE);
-	glDepthMask(false);
-	glDepthFunc(GL_ALWAYS);
-	glDisable(GL_CULL_FACE);
-
-	//we render to the temporary target
-	//because we want to random-sample from it
-	//later for the transparent pass
-	ttar->BindTarget();
-
-	if (preBlit) preBlit();
-
-	if (useProbes) {
-		for (auto& p : probes) {
-			ApplyLightProbe(p, _w, _h, gbuf, ip);
-		}
-	}
-	RenderSky(_w, _h, gbuf, ip, false);
-	
-	for (auto& l : lights) {
-		switch(l->_type) {
-		case LightType::Point:
-			RenderLight_Point(l, gbuf, ip, ttar, false);
-			break;
-		case LightType::Spot:
-			RenderLight_Spot(l, gbuf, ip, ttar, false);
-			break;
-		case LightType::Directional:
-			CE_NOT_IMPLEMENTED
-			break;
-		}
-	}
-
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, gbuf->_pointer);
-
-	glBlitFramebuffer(0, 0, _w, _h, 0, 0, _w, _h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
-	ttar->UnbindTarget();
-
-	//transparent pass
 	gbuf->Bind();
 	gbuf->Clear();
 
@@ -240,6 +196,67 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	}
 
 	tar->UnbindTarget();
+
+
+	// --------------------- opaque pass --------------------------
+
+	gbuf->Bind();
+	gbuf->Clear();
+
+	glBlendFunc(GL_ONE, GL_ZERO);
+	glDepthMask(true);
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+
+	for (auto& r : orends) {
+		RenderMesh(r, p);
+	}
+
+	gbuf->Unbind();
+
+	glBlendFunc(GL_ONE, GL_ONE);
+	glDepthMask(false);
+	glDepthFunc(GL_ALWAYS);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+
+	//we render to the temporary target
+	//because we want to random-sample from it
+	//later for the transparent pass
+	ttar->BindTarget();
+
+	if (preBlit) preBlit();
+
+	if (useProbes) {
+		for (auto& p : probes) {
+			ApplyLightProbe(p, _w, _h, gbuf, ip);
+		}
+	}
+	RenderSky(_w, _h, gbuf, ip, false);
+
+	for (auto& l : lights) {
+		switch (l->_type) {
+		case LightType::Point:
+			RenderLight_Point(l, gbuf, ip, ttar, false);
+			break;
+		case LightType::Spot:
+			RenderLight_Spot(l, gbuf, ip, ttar, false);
+			break;
+		case LightType::Directional:
+			CE_NOT_IMPLEMENTED
+				break;
+		}
+	}
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, gbuf->_pointer);
+	glBlitFramebuffer(0, 0, _w, _h, 0, 0, _w, _h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+	ttar->UnbindTarget();
+
+	
+	// --------------------- combine pass -------------------------
 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBlendFunc(GL_ONE, GL_ZERO);
@@ -422,10 +439,13 @@ void Renderer::RenderCamera(const Camera& cam) {
 	auto& gbuf = cam->_deferredBuffer;
 	auto& btar = cam->_blitTargets[0];
 
+#define DEF_GBUFFERS GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
+
 	if (!gbuf || gbuf->tex(0)->_width != _w || gbuf->tex(0)->_height != _h) {
-		gbuf = FrameBuffer_New(_w, _h, {
-			GL_RGBA, GL_RGB32F, GL_RGBA, GL_RGBA
-		});
+		gbuf = FrameBuffer_New(_w, _h, 
+			cam->_writeExtraBuffers ?
+				std::vector<uint>({ DEF_GBUFFERS, GL_RGBA32I }) :
+				std::vector<uint>({ DEF_GBUFFERS }));
 	}
 	if (!btar || btar->_width != _w || btar->_height != _h) {
 		for (auto& t : cam->_blitTargets) {

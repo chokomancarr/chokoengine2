@@ -9,6 +9,8 @@ class EW_SceneView : public EWindow {
 	SceneObject _pivot;
 	Camera _camera;
 
+	ChokoEngine::objectid highlightId;
+
 	enum class ControlMode {
 		None,
 		Rotate,

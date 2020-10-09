@@ -227,6 +227,7 @@ void _Shader::RegisterStandardUniforms() {
 	AddUniform("_MV", ShaderVariableType::Matrix);
 	AddUniform("_P", ShaderVariableType::Matrix);
 	AddUniform("_MVP", ShaderVariableType::Matrix);
+	AddUniform("_object_id", ShaderVariableType::Int);
 }
 
 void _Shader::Bind() const {
