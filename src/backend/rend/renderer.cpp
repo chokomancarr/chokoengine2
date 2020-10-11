@@ -475,22 +475,6 @@ void Renderer::RenderCamera(const Camera& cam) {
 	if (sw == 1) {
 		std::swap(cam->_blitTargets[0], cam->_blitTargets[1]);
 	}
-
-	btar->BindTarget();
-	glBlendFunc(GL_ONE, GL_ZERO);
-	glDepthFunc(GL_LEQUAL);
-	glDisable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-
-	//GI::Voxelizer::DrawDebug(p);
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask(false);
-	glDepthFunc(GL_ALWAYS);
-	glEnable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	//btar->Blit(tar, nullptr);
 	if (!tar) {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
@@ -505,6 +489,8 @@ void Renderer::RenderCamera(const Camera& cam) {
 		UI::Texture(Display::fullscreenRect(), btar);
 		glEnable(GL_BLEND);
 	}
+
+	glDepthMask(true); //if i dont put this line gameview is black, why tho
 
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();

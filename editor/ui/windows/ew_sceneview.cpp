@@ -100,7 +100,6 @@ bool EW_SceneView::Init() {
 	o->transform()->localPosition(Vec3(0, 0, 3));
 	o->transform()->localRotationEuler(Vec3(0, 180, 0));
 	_camera = o->AddComponent<Camera>();
-	_camera->clearColor(Color(0, 0));
 	_camera->target(_target);
 	_camera->writeExtraBuffers(true);
 	auto cc = o->AddComponent<Ref<CaptureCallbacks>>();
