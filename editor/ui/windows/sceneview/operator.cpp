@@ -2,6 +2,7 @@
 #include "obj/operatorT.h"
 #include "obj/operatorR.h"
 #include "obj/operatorS.h"
+#include "prefs/preferences.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -27,7 +28,7 @@ namespace {
 	}
 }
 
-EW_S_Operator::Mode EW_S_Operator::mode = Mode::Rotate;
+EW_S_Operator::Mode EW_S_Operator::mode = Mode::Translate;
 
 EW_S_Operator::Space EW_S_Operator::space = Space::Local;
 

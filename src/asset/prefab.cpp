@@ -132,6 +132,7 @@ namespace {
 		}
 		else {
 			for (auto& c : data.children) {
+				if (c.indirect) continue;
 				auto& res = _GetT(c, a);
 				if (&res != &invalid)
 					return res;
@@ -146,7 +147,11 @@ PrefabObjBase& _Prefab::GetPrefabObj(size_t id) {
 }
 
 _Prefab::_ObjTreeBase& _Prefab::GetTreeObj(size_t id) {
-	return _GetT(*_tree, id);
+	if (id > size_t(1) << 32) {
+		static _Prefab::_ObjTreeBase invalid = {};
+		return invalid;
+	}
+	else return _GetT(*_tree, id);
 }
 
 namespace {

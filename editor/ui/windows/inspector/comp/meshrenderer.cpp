@@ -59,34 +59,7 @@ CE_E_BEGIN_DRAWCOMP(MeshRenderer)
 		for (auto _m : mats) {
 			auto& m = *_m;
 			UI_Ext::Layout::Block(m->name() + " (Material)", lt, [&]() {
-				CE_E_ASSET_REF("shader", m->shader, m);
-				for (auto& v : m->variables()) {
-					switch (v.type()) {
-					case ShaderVariableType::Float: {
-						CE_E_EDIT_F_FV(v., v.name(), val_f);
-						break;
-					}
-					case ShaderVariableType::Color: {
-						CE_E_EDIT_CL_FV(v., v.name(), val_v4);
-						break;
-					}
-					case ShaderVariableType::Texture: {
-						CE_E_LBL(v.name());
-						if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 34, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(v.val_t())) == InputMouseStatus::HoverUp) {
-							EO_SelectRef::RegAsset(v.val_t(), std::function<void(const Texture&)>([&](const Texture& tx) {
-								v.val_t(tx);
-							}));
-						}
-						else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), AssetType::Texture, v.val_t((Texture)res))
-						UI::Texture(Rect(lt.x + lt.w - 35, lt.y, 16, 16), v.val_t());
-						CE_E_ASSET_SEEK_BTN();
-						CE_E_INC_Y();
-						break;
-					}
-					default:
-						break;
-					}
-				}
+				EW_I_Asset::DrawMaterial2(m, lt);
 			});
 		}
 	});

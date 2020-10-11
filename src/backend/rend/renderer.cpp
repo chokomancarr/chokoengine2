@@ -37,8 +37,7 @@
  * 
  *  Optional buffers:
  *   Buffer4:
- *     RGB32       //Speed vector
- *     A32I        //Object ID
+ *     R32I        //Object ID (root id << 16 | self id)
  *
  * Notes:
  *   Computing Z from XY of normal map produces slight but noticeable artifacts, even in 32 bits

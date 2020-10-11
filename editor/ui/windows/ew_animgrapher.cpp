@@ -45,12 +45,9 @@ void EW_AnimGrapher::AddState(const Vec2& pos) {
 	_graph->AddNode();
 }
 
-void EW_AnimGrapher::DrawInspectMenu(const Rect& position) {
+void EW_AnimGrapher::DrawInspectMenu(UI_Ext::Layout::InfoSt& lt) {
 	auto& nd = _graph->nodes()[inspNode];
 	const auto pnd = &nd;
-	
-	static auto lt = UI_Ext::Layout::InfoSt();
-	UI_Ext::Layout::BeginLayout(position.sub(2, 20, 2, 0), lt);
 
 	CE_E_LBL("name");
 	nd.name = UI::I::TextField(CE_E_VL_RECT, nd.name, Color());
@@ -151,8 +148,6 @@ void EW_AnimGrapher::DrawInspectMenu(const Rect& position) {
 			break;
 		i++;
 	}
-
-	UI_Ext::Layout::EndLayout(lt);
 }
 
 void EW_AnimGrapher::DrawMenu() {

@@ -39,6 +39,9 @@ namespace {
 			break;
 		}
 		case ScriptVar::Type::Asset: {
+			auto pvl = &vl;
+			//CE_E_ASSET_REF_FV(vr.name, pvl->val_asset, pvl);
+			//*
 			CE_E_LBL(vr.name);
 			if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(vl.val_asset)) == InputMouseStatus::HoverUp) {
 				auto pvl = &vl;
@@ -46,9 +49,11 @@ namespace {
 					pvl->val_asset = vv;
 				}), vl.var.type_asset);
 			}
-			else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), vl.var.type_asset, vl.val_asset = res)
-				CE_E_ASSET_SEEK_BTN();
+			else
+				CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), vl.var.type_asset, vl.val_asset = res)
+			CE_E_ASSET_SEEK_BTN(vl.val_asset);
 			CE_E_INC_Y();
+			//*/
 			break;
 		}
 		case ScriptVar::Type::SceneObject: {
@@ -104,7 +109,7 @@ if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), !!_
 	});
 }
 //else CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 17, 0), decltype(_vl), nm(res))
-CE_E_ASSET_SEEK_BTN();
+//CE_E_ASSET_SEEK_BTN();
 CE_E_INC_Y();
 
 for (size_t a = 0, n = scr->vals.size(); a < n; a++) {

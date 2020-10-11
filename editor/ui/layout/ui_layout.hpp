@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoeditor.hpp"
+#include "ext/ui_ext.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -18,6 +19,9 @@ public:
 
 	static float BeginScroll(const Rect&, ScrollState&);
 	static void EndScroll(ScrollState&, float);
+
+	static void BeginScroll(UI_Ext::Layout::InfoSt&, ScrollState&, float maxy);
+	static void EndScroll(UI_Ext::Layout::InfoSt&, ScrollState&);
 
 	static Vec2 BeginPan(const Rect& frame, const Rect& content, PanState&);
 	static void EndPan(PanState&);

@@ -2,6 +2,7 @@
 #include "ce2/parsers/mesh.hpp"
 #include "ext/ui_ext.hpp"
 #include "ce2/modules/ae/asset_loader.hpp"
+#include "prefs/preferences.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -104,13 +105,32 @@ inline void paint() {
 			pos.y += 14;
 		}
 	}
+	else {
+		if (EPreferences::showSettings) {
+			UI_Ext::IncLayer();
+			EPreferences::Draw();
+		}
+		else {
+			if (Input::KeyDown(InputKey::U) && Input::KeyHold(InputKey::LeftControl) && Input::KeyHold(InputKey::LeftAlt)) {
+				EPreferences::showSettings = true;
+			}
+		}
+	}
 
-	gt[2] = Time::actualMillis();
-	dt[2] = (gt[2] - gt0);
-	gt0 = gt[2];
-	UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(dt[2]) + " ms", Color::white());
 
-	pg(dt);
+	static bool showdebug = false;
+	if (Input::KeyDown(InputKey::D) && Input::KeyHold(InputKey::LeftControl) && Input::KeyHold(InputKey::LeftAlt)) {
+		showdebug = !showdebug;
+	}
+
+	if (showdebug) {
+		gt[2] = Time::actualMillis();
+		dt[2] = (gt[2] - gt0);
+		gt0 = gt[2];
+		UI::Label(Rect(10, Display::height() - 20, 100, 20), std::to_string(dt[2]) + " ms", Color::white());
+
+		pg(dt);
+	}
 
 	/*
 	const Vec2 r0(Display::width() - 250, Display::height() - 200);
@@ -147,6 +167,7 @@ void ChokoEditor::Main() {
 	ModuleAE::AssetLoader::Init(CE_DIR_ASSET);
 
 	EPaths::Init();
+	EPreferences::Init();
 	EAssetList::Init();
 	EImages::Init();
 	EIcons::Init();

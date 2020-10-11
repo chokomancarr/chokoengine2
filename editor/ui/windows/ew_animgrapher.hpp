@@ -24,7 +24,7 @@ class EW_AnimGrapher : public EWindow {
 
 	void AddState(const Vec2& pos);
 
-	void DrawInspectMenu(const Rect&);
+	void DrawInspectMenu(UI_Ext::Layout::InfoSt&);
 
 protected:
 

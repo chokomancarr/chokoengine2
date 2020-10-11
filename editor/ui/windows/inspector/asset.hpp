@@ -4,18 +4,27 @@
 
 #define EW_IA_DRAWARGS const Asset& _obj, UI_Ext::Layout::InfoSt& lt
 
-#define CE_EI_ASSET_DEF(tp) static void Draw ## tp(EW_IA_DRAWARGS);
+#define CE_EI_ASSET_DEF(tp)\
+private:\
+	static void Draw ## tp(EW_IA_DRAWARGS);\
+public:\
+	static void Draw ## tp ## 2(const tp& obj, UI_Ext::Layout::InfoSt& lt);
 
 #define CE_E_BEGIN_DRAWASSET(tp) void EW_I_Asset::Draw ## tp(EW_IA_DRAWARGS) {\
     tp obj = static_cast<tp>(_obj);
 
 #define CE_E_END_DRAWASSET }
 
+#define CE_E_BEGIN_DRAWASSET2(tp)\
+	void EW_I_Asset::Draw ## tp ## 2(const tp& obj, UI_Ext::Layout::InfoSt& lt) {
+
+#define CE_E_END_DRAWASSET2 }
+
 CE_BEGIN_ED_NAMESPACE
 
 class EW_I_Asset {
 public:
-	static void Draw(const Asset& o, Rect r);
+	static void Draw(const Asset& o, UI_Ext::Layout::InfoSt& lt);
 
 private:
 	typedef void(*_DrawFn)(EW_IA_DRAWARGS);

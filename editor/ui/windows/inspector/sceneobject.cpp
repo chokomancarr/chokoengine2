@@ -6,18 +6,15 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
+void EW_I_SceneObject::Draw(const SceneObject& o, UI_Ext::Layout::InfoSt& lt) {
 	auto status = EW_Inspector::statuses.Get<EW_IS_SceneObject>(o->id());
 
 	const auto nm = o->name();
 	auto tr = o->transform();
 
-	o->name(UI::I::TextField(Rect(r.x() + 20, r.y(), r.w() - 22, 16), nm, Color()));
+	o->name(UI::I::TextField(Rect(lt.x + 20, lt.y, lt.w - 22, 16), nm, Color()));
 
-	r.y(r.y() + 20);
-
-	static auto lt = UI_Ext::Layout::InfoSt();
-	UI_Ext::Layout::BeginLayout(r.sub(2, 0, 2, 0), lt);
+	CE_E_INC_Y();
 
 	auto& info = o->prefabInfo();
 	if (!!info.uids.size()) {
@@ -48,8 +45,6 @@ void EW_I_SceneObject::Draw(const SceneObject& o, Rect r) {
 	if (UI::I::Button(ra, Color(0.3f), "Add Component") == InputMouseStatus::HoverUp) {
 		EO_AddComp::Reg(ra, o);
 	}
-
-	UI_Ext::Layout::EndLayout(lt);
 }
 
 CE_END_ED_NAMESPACE

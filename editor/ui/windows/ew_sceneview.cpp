@@ -23,6 +23,7 @@ namespace {
 	Shader hlShad;
 
 	Color hlCol = Color(0.5f);
+	Color selCol = Color(1, 1, 0.3f);
 }
 
 void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
@@ -35,6 +36,18 @@ void EW_SceneView::DoDrawScene(const std::vector<SceneObject>& objs) {
 		glUniform1i(hlShad->Loc(2), highlightId);
 		glUniform1i(hlShad->Loc(3), 1);
 		glUniform4f(hlShad->Loc(4), hlCol.r, hlCol.g, hlCol.b, hlCol.a);
+		GLUtils::DrawArrays(GL_TRIANGLES, 6);
+		hlShad->Unbind();
+	}
+	if (!!ESceneInfo::selectedObject) {
+		hlShad->Bind();
+		glUniform2f(hlShad->Loc(0), 1.f / _target->width(), 1.f / _target->height());
+		glUniform1i(hlShad->Loc(1), 0);
+		glActiveTexture(GL_TEXTURE0);
+		_camera->deferredBuffer()->tex(4)->Bind();
+		glUniform1i(hlShad->Loc(2), ESceneInfo::selectedObject->id());
+		glUniform1i(hlShad->Loc(3), 2);
+		glUniform4f(hlShad->Loc(4), selCol.r, selCol.g, selCol.b, selCol.a);
 		GLUtils::DrawArrays(GL_TRIANGLES, 6);
 		hlShad->Unbind();
 	}
@@ -169,6 +182,7 @@ void EW_SceneView::ActiveUpdate() {
 		static float y = 0;
 		x += Input::mouseDelta().y;
 		y += Input::mouseDelta().x;
+		x = Math::Clamp(-90.f, 90.f, x);
 		_pivot->transform()->localRotationEuler(Vec3(x, y, 0));
 		break;
 	}

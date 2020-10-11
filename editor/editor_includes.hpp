@@ -13,8 +13,6 @@ CE_END_ED_NAMESPACE
 
 #include "asset/ext/visual_shader.hpp"
 
-#include "prefs/preferences.hpp"
-
 #include "builder/builder.hpp"
 
 #include "preview/preview.hpp"

@@ -1,5 +1,5 @@
 #pragma once
-#include "chokoeditor.hpp"
+#include "preferences.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
@@ -17,6 +17,8 @@ public:
 	static void Init();
 
 	static void Reg(const std::string& grp, const std::string& sig, Color& tar);
+
+	static void Draw(UI_Ext::Layout::InfoSt&);
 };
 
 CE_END_ED_NAMESPACE

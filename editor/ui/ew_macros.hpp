@@ -76,7 +76,7 @@
 	const auto ori_ ## nm = CE_E_GETVAL_FV(pr nm);\
 	UI::Rect(CE_E_VL_RECT, ori_ ## nm);\
 	if (UI::I::Button(CE_E_VL_RECT, UIButtonStyle(ori_ ## nm)) == InputMouseStatus::HoverUp) {\
-		EO_ColorPicker::Reg(CE_E_VL_RECT, ori_ ## nm, std::function<void(const Color&)>([&, c](const Color& vl) {\
+		EO_ColorPicker::Reg(CE_E_VL_RECT, ori_ ## nm, std::function<void(const Color&)>([&](const Color& vl) {\
 			CE_E_SETVAL_FV(pr nm, vl);\
 		}));\
 	}\

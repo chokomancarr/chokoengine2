@@ -40,17 +40,17 @@
 
 #define CE_E_ASSET_SEEK_BTN(nm) \
 if (UI::I::Button(Rect(lt.x + lt.w - 18, lt.y, 16, 16), UIButtonStyle(Color(0.2f))) == InputMouseStatus::HoverUp) {\
-	\
+	ESceneInfo::Select(nm);\
 }
 
 #define CE_E_ASSET_REF(nm, vl, cp)\
 	CE_E_LBL(nm);\
 	CE_E_ASSET_SELECT(vl, cp);\
-	CE_E_ASSET_SEEK_BTN();\
+	CE_E_ASSET_SEEK_BTN(vl());\
 	CE_E_INC_Y()
 
 #define CE_E_ASSET_REF_FV(nm, vl)\
 	CE_E_LBL(nm);\
 	CE_E_ASSET_SELECT_FV(vl);\
-	CE_E_ASSET_SEEK_BTN();\
+	CE_E_ASSET_SEEK_BTN(vl);\
 	CE_E_INC_Y()

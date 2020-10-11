@@ -26,7 +26,7 @@ CE_MOD_AE_IMPL(Material) {
 			mat->SetUniform(vrnm, vrvl.To ## tp());\
 		}
 		CE_E_ME(Float)
-else CE_E_ME(Color)
+		else CE_E_ME(Color)
 		else if (d.key.string == "Texture") {
 			mat->SetUniform(vrnm, Get<Texture>(AssetType::Texture, vrvl.string, async));
 		}

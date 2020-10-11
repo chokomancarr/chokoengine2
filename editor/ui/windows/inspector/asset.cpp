@@ -16,16 +16,18 @@ std::array<EW_I_Asset::_DrawFn, (size_t)AssetType::_COUNT> EW_I_Asset::_funcs = 
 	DrawTexture
 };
 
-void EW_I_Asset::Draw(const Asset& o, Rect r) {
-	static auto lt = UI_Ext::Layout::InfoSt();
-	UI_Ext::Layout::BeginLayout(r.sub(2, 0, 2, 0), lt);
-
+void EW_I_Asset::Draw(const Asset& o, UI_Ext::Layout::InfoSt& lt) {
 	CE_E_LBL(o->name());
 	CE_E_INC_Y();
 
-	_funcs[(int)o->assetType](o, lt);
+	if (UI::I::Button(Rect(lt.x, lt.y, 150, 16), Color(0.2f), "Apply")
+		== InputMouseStatus::HoverUp) {
+		EAssetWriter::Write(o);
+	}
+	CE_E_INC_Y();
+	CE_E_INC_Y();
 
-	UI_Ext::Layout::EndLayout(lt);
+	_funcs[(int)o->assetType](o, lt);
 }
 
 CE_END_ED_NAMESPACE
