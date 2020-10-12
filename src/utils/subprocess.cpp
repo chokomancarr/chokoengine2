@@ -30,7 +30,8 @@ int Subprocess::Run(const ProcessInfo& info) {
 	STARTUPINFO si = {};
 	PROCESS_INFORMATION pi;
 	si.cb = sizeof(si);
-	std::string cmd = "cmd /C \"\"" + program + "\" ";
+	std::string batcmd = (info.setenvCmd == "") ? "" : "\"" + info.setenvCmd + "\">NULL && ";
+	std::string cmd = "cmd /C \"" + batcmd + "\"" + program + "\" ";
 	for (auto& a : args) {
 		if (a[0] == '-' || a[0] == '\\')
 			cmd += " " + a;
@@ -40,6 +41,7 @@ int Subprocess::Run(const ProcessInfo& info) {
 	cmd += "\"";
 	auto wdir2 = wdir;
 	std::replace(wdir2.begin(), wdir2.end(), '/', '\\');
+	std::cout << cmd << std::endl;
 	if (!CreateProcess("C:\\Windows\\System32\\cmd.exe", &cmd[0], NULL, NULL, FALSE, NULL, 0, 
 			 wdir.empty() ? 0 : wdir2.c_str(), &si, &pi)) {
 		auto err = GetLastError();

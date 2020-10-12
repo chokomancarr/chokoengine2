@@ -3,6 +3,8 @@
 using namespace ChokoEngine;
 
 std::string BuilderDebug::projectRoot = "";
+std::string BuilderDebug::envBat = "";
+std::string BuilderDebug::cmakePath = "cmake";
 std::vector<std::string> BuilderDebug::cmakeConfigArgs = {};
 std::vector<std::string> BuilderDebug::cmakeBuildArgs = {};
 bool BuilderDebug::clean = false;
@@ -24,9 +26,10 @@ int BuilderDebug::Run() {
     }
 
     Subprocess::ProcessInfo info;
-    info.program = "cmake";
+    info.program = cmakePath;
     info.workingDir = projectRoot + "system/build/";
-    info.callback = printer;
+	info.setenvCmd = envBat;
+	info.callback = printer;
 
     if (clean || !IO::FileExists(projectRoot + "system/build/CMakeCache.txt")) {
         info.args = cmakeConfigArgs;

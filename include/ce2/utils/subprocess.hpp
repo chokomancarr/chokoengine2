@@ -11,11 +11,12 @@ public:
     struct ProcessInfo {
         std::string program;
         std::string workingDir;
+		std::string setenvCmd; //this is a windows thing, should remove
         std::vector<std::string> args;
         bool wait;
         _CbFunc callback;
 
-        ProcessInfo() : program(""), workingDir(""),
+        ProcessInfo() : program(""), workingDir(""), setenvCmd(""),
             args({}), wait(true), callback(nullptr) {}
     };
 

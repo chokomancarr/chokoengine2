@@ -32,6 +32,15 @@ int main(int argc, char** argv) {
         BuilderDebug::projectRoot + "config/project.json"
     ));
 
+	
+	const auto& bat = projcfg.Get("cmake_env_bat");
+	if (bat.type != CE_NS JsonObject::Type::Unknown) {
+		BuilderDebug::envBat = bat.string;
+	}
+	const auto& cmk = projcfg.Get("cmake_path");
+	if (cmk.type != CE_NS JsonObject::Type::Unknown) {
+		BuilderDebug::cmakePath = cmk.string;
+	}
     const auto& cargs = projcfg.Get("cmake_config_args").list;
     for (auto& c : cargs) {
         BuilderDebug::cmakeConfigArgs.push_back(c.string);
