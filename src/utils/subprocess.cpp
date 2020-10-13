@@ -30,8 +30,7 @@ int Subprocess::Run(const ProcessInfo& info) {
 	STARTUPINFO si = {};
 	PROCESS_INFORMATION pi;
 	si.cb = sizeof(si);
-	std::string batcmd = (info.setenvCmd == "") ? "" : "\"" + info.setenvCmd + "\">NULL && ";
-	std::string cmd = "cmd /C \"" + batcmd + "\"" + program + "\" ";
+	std::string cmd = "cmd /C \"\"" + program + "\" ";
 	for (auto& a : args) {
 		if (a[0] == '-' || a[0] == '\\')
 			cmd += " " + a;

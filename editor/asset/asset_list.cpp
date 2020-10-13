@@ -85,7 +85,7 @@ namespace {
 
 	template <typename E, typename T>
 	void scanone(std::vector<T>& ent, const std::string& sig, const std::string& path, E e,
-			const std::function<void(T&, bool)> fn) {
+			const std::function<bool(T&, bool)> fn) {
 		auto it = std::find_if(ent.begin(), ent.end(), [&](const T& e) {
 			return e.sig == sig;
 		});
@@ -103,7 +103,10 @@ namespace {
 			EAssetLoader::GenDefaultMeta(sig, e);
 			UpdateModTime(mpath, false);
 			metaold = true;
-			fn(*it, true);
+			if (!fn(*it, true)) { //discard
+				ent.erase(it);
+				return;
+			}
 			it->modtime = mt;
 		}
 		else {
@@ -120,12 +123,12 @@ namespace {
 	
 	template <typename E, typename T, size_t N>
 	bool doscan(const std::string& sig, const std::string& path, const std::string& ext, std::array<std::vector<T>, N>& ets,
-			const std::array<std::vector<std::string>, N>& exts, const std::function<void(E, T&, bool)> fn) {
+			const std::array<std::vector<std::string>, N>& exts, const std::function<bool(E, T&, bool)> fn) {
 		for (int a = 0; a < N; a++) {
 			for (auto& e : exts[a]) {
 				if (e == ext) {
 					scanone<E, T>(ets[a], sig, path, (E)a, [&](T& v, bool b) {
-						fn((E)a, v, b);
+						return fn((E)a, v, b);
 					});
 					return true;
 				}
@@ -150,21 +153,23 @@ bool EAssetList::Scan_Fd(const std::string& fd) {
 		const auto path = ffd + f;
 		if (ext == "hpp") {
 			scanone<EExtType, _ScriptEntry>(_scriptEntries, sig, path, EExtType::ScrHeader, [&](_ScriptEntry& v, bool) {
-				v.info = EScripting::ParseInfo(sig);
+				return (!!(v.info = EScripting::ParseInfo(sig)));
 			});
 		}
 		else if (doscan<AssetType, _Entry>(sig, path, ext, _entries, _exts, [&](AssetType t, _Entry& e, bool b) {
 			if (b && !!e.obj) {
 				e.obj = EAssetLoader::Load(sig, t);
 			}
+			return true;
 		})) {}
 		else if (doscan<EExportType, _Entry>(sig, path, ext, _exportEntries, _export_exts, [&](EExportType t, _Entry& e, bool b) {
 			if (b && EAssetLoader::Load(sig, t)) { //only reexport if file changed
 				dirty = true;
 			}
+			return true;
 		})) {}
 		else if (doscan<EExtType, _Entry>(sig, path, ext, _otherEntries, _other_exts, [&](EExtType t, _Entry& e, bool) {
-			
+			return true;
 		})) {}
     }
 

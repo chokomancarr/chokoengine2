@@ -28,7 +28,6 @@ int BuilderDebug::Run() {
     Subprocess::ProcessInfo info;
     info.program = cmakePath;
     info.workingDir = projectRoot + "system/build/";
-	info.setenvCmd = envBat;
 	info.callback = printer;
 
     if (clean || !IO::FileExists(projectRoot + "system/build/CMakeCache.txt")) {

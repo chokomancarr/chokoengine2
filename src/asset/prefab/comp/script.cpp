@@ -85,7 +85,8 @@ namespace {
 					const auto oref = v.Get<Prefab_ObjRef>();
 					PrefabState::refresolvers.top().push_back([c, nm, oref]() {
 						Loader::instance->activeTarget(c);
-						Loader::instance->set_SceneObject(nm, oref.Seek(PrefabState::activeBaseObjs.top()));
+						const auto tar = oref.Seek(PrefabState::activeBaseObjs.top());
+						Loader::instance->set_SceneObject(nm, tar);
 					});
 					break;
 				}

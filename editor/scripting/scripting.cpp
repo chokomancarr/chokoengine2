@@ -186,7 +186,10 @@ ScriptInfo EScripting::ParseInfo(const std::string& sig) {
 		}
 		line++;
 	}
-	ERRT("Expected '}' at EOF!");
+	if (br > 0) {
+		ERRT("Expected '}' at EOF!");
+	}
+	return nullptr;
 }
 
 CE_END_ED_NAMESPACE

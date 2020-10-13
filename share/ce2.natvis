@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="ChokoEngine::Ref&lt;*&gt;">
+		<DisplayString Condition="_object == nullptr || _object->_deleted">empty</DisplayString>
+		<DisplayString>Ref {((::$T1*)_object._Ptr)->_name} ({"$T1",sb})</DisplayString>
+		<Expand>
+			<ExpandedItem>*_object</ExpandedItem>
+		</Expand>
+	</Type>
+	<Type Name="ChokoEngine::Ref_w&lt;*&gt;">
+		<DisplayString Condition="(_object._Ptr == 0) || (_object._Rep-&gt;_Uses == 0)">WeakRef(empty / expired)</DisplayString>
+		<DisplayString>WeakRef {((::$T1*)_object._Ptr)->_name} ({"$T1",sb})</DisplayString>
+		<Expand>
+			<ExpandedItem>*(_object._Ptr)</ExpandedItem>
+		</Expand>
+	</Type>
+	<Type Name="ChokoEngine::_Object" Inheritable="false">
+		<DisplayString Condition="_loading">{_name} (loading)</DisplayString>
+		<DisplayString Condition="_deleted">{_name} (deleted)</DisplayString>
+		<DisplayString>{_name}</DisplayString>
+	</Type>
+</AutoVisualizer>

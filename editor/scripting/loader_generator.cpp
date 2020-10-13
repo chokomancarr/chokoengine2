@@ -33,6 +33,8 @@ target_sources(chokoeditor_project PRIVATE
 
 CE_BEGIN_PL_NAMESPACE
 
+Component _ScriptLoaderImpl::tar = nullptr;
+
 ScriptLoaderBase _ScriptLoaderImpl::GetLoaderOf(const std::string& s) {
 	if (!(instance = _lds[s])) {
 		if (0) {}
@@ -47,6 +49,23 @@ ScriptLoaderBase _ScriptLoaderImpl::GetLoaderOf(const std::string& s) {
 base << R"(
 	}
 	return instance;
+}
+
+void _ScriptLoaderImpl::activeTarget(const Component& t) {
+	tar = t;
+	const auto ptr = t.operator->();
+	if (0) {})";
+
+for (auto& e : ents) {
+	base << "\n\
+	else if (dynamic_cast<_" + e.info->className + "*>(ptr)) {\n\
+		instance = std::make_shared<_ScrLdImpl_" + e.info->className + ">();\n\
+	}";
+}
+
+base << R"(    else {
+		CE_ABORT();
+	}
 }
 
 std::vector<ScriptVarEntry> _ScriptLoaderImpl::GetVarsOf(const std::string& s) {
@@ -83,7 +102,7 @@ class _ScriptLoaderImpl : public _ScriptLoaderBase {
 protected:
 	const std::string _sig;
 	const std::vector<ScriptVarEntry> _entries;
-	Component tar;
+	static Component tar;
 	std::unordered_map<std::string, ScriptLoaderImpl> _lds;
 
 	_ScriptLoaderImpl(const std::string& s, const std::vector<ScriptVarEntry>& e)
@@ -92,7 +111,7 @@ public:
 	static void Init() {
 		instance = std::make_shared<_ScriptLoaderImpl>();
 	}
-	_ScriptLoaderImpl() : _sig(""), _entries({}), tar(nullptr), _lds({}) {}
+	_ScriptLoaderImpl() : _sig(""), _entries({}), _lds({}) {}
 
 	virtual ~_ScriptLoaderImpl() = default;
 
@@ -101,9 +120,7 @@ public:
 		return _sig;
 	}
 	Component Instantiate() override { CE_ABORT(); }
-	void activeTarget(const Component& t) override {
-		tar = t;
-	}
+	void activeTarget(const Component& t) override;
 	std::vector<ScriptVarEntry> GetVarsOf(const std::string& s) override;
 
 #define _IMPL_GETSET(tp)\
@@ -126,7 +143,8 @@ public:
 #define _CE_GETMEM_S(nm, cl)\
 if (s == #nm) {\
     if (i != -1 || tsz != size_t(-1)) {\
-       CE_ABORT();\
+        std::cerr << "Unexpected index id in getmem_single()!" << std::endl;\
+        CE_ABORT();\
     }\
     nextclass = #cl;\
     return &c->nm;\
@@ -142,7 +160,10 @@ if (s == #nm) {\
         return (void*)c->nm.size();\
     }\
     else {\
-		if (i == -1) CE_ABORT();\
+		if (i == -1) {\
+			std::cerr << "Unexpected index -1 in getmem_array()!" << std::endl;\
+			CE_ABORT();\
+		}\
         nextclass = #cl;\
         return &c->nm[i];\
     }\
@@ -249,7 +270,10 @@ namespace {
 				impl << getstr + "-);\n";
 			}
 		}
-		impl << "        CE_ABORT();\n    }\n";
+		impl << "\
+        std::cerr << \"unknown member \\\"\" + s + \"\\\" in getmember_this!\" << std::endl;\n\
+        CE_ABORT();\n\
+	}\n";
 
 		for (auto& c : classes) {
 			impl << "    void* getmember_" + c.name + "(_CE_GETMEMFNARGS) {\n"
@@ -264,7 +288,10 @@ namespace {
 					impl << getstr + "-);\n";
 				}
 			}
-			impl << "        CE_ABORT();\n    }\n";
+			impl << "\
+        std::cerr << \"unknown member \\\"\" + s + \"\\\" in getmember_" + c.name + "!\" << std::endl;\n\
+        CE_ABORT();\n\
+	}\n";
 		}
 
 		impl << R"(
