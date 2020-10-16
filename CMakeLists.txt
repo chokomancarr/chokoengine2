@@ -142,7 +142,6 @@ add_subdirectory(src)
 set(enum_gen_strs
 	${PROJECT_SOURCE_DIR}/include/ce2/asset/enums/asset_types
 	${PROJECT_SOURCE_DIR}/include/ce2/core/enums/input_key
-	${PROJECT_SOURCE_DIR}/include/ce2/scene/enums/component_types
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/camera/enums/camera_clear_type
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/collider/enums/collider_type
 	${PROJECT_SOURCE_DIR}/include/ce2/scene/comp/light/enums/light_type

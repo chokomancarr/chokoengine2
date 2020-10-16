@@ -7,6 +7,16 @@ CE_BEGIN_ED_NAMESPACE
 
 CE_E_BEGIN_DRAWCOMP(ParticleSystem)
 
+UI_Ext::Layout::Block("Simulation (Preview)", lt, [&]() {
+	bool running = !!(c->callbackMask() & CompCallbackFlag::EXEC_IN_EDIT_MODE);
+	if (UI::I::Button(Rect(lt.x, lt.y, lt.w / 2 - 1, 16), Color(0.3f),
+			running ? "stop" : "start") == InputMouseStatus::HoverUp) {
+		running = !running;
+		c->callbackMask(c->callbackMask() ^ CompCallbackFlag::EXEC_IN_EDIT_MODE);
+	}
+	CE_E_INC_Y();
+});
+
 UI_Ext::Layout::Block("Generation", lt, [&]() {
 	CE_E_EDIT_F_FV(c->, "rate", emissionRate);
 

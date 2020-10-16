@@ -55,33 +55,54 @@ public:
 	bool is_array;
 	bool is_default;
 
-	PrefabItem(Type);
-	PrefabItem(float);
-	PrefabItem(int);
-	PrefabItem(const Vec2&);
-	PrefabItem(const Vec3&);
-	PrefabItem(const Vec4&);
-	PrefabItem(const Quat&);
-	PrefabItem(const std::string&);
-	PrefabItem(const Color&);
-	PrefabItem(const Asset&);
-	PrefabItem(const Prefab_ObjRef&);
-	PrefabItem(const Component&);
+	PrefabItem(Type, const std::string& nm = "");
+	PrefabItem(float, const std::string& nm = "");
+	PrefabItem(int, const std::string& nm = "");
+	PrefabItem(const Vec2&, const std::string& nm = "");
+	PrefabItem(const Vec3&, const std::string& nm = "");
+	PrefabItem(const Vec4&, const std::string& nm = "");
+	PrefabItem(const Quat&, const std::string& nm = "");
+	PrefabItem(const std::string&, const std::string& nm = "");
+	PrefabItem(const Color&, const std::string& nm = "");
+	PrefabItem(const Asset&, const std::string& nm = "");
+	PrefabItem(const Prefab_ObjRef&, const std::string& nm = "");
+	PrefabItem(const Component&, const std::string& nm = "");
 	template <typename T, typename std::enable_if<
 		std::is_enum<T>::value && !std::is_same<T, Type>::value, T>::type* = nullptr>
-	PrefabItem(const T&);
-	PrefabItem(PrefabItemGroup);
-	PrefabItem(PrefabObjGroup);
+	PrefabItem(const T&, const std::string& nm = "");
+	PrefabItem(PrefabItemGroup, const std::string& nm = "");
+	PrefabItem(PrefabObjGroup, const std::string& nm = "");
+
+	//extension types
+	PrefabItem(const CRValue&, const std::string& nm = "");
+	PrefabItem(const FCurve&, const std::string& nm = "");
+	PrefabItem(const Gradient&, const std::string& nm = "");
 
 	PrefabItem(std::string tp, const JsonObject&, const Type force = (Type)-1);
 
+#define ISENUM std::is_enum<T>::value
+#define ISASSET is_base_ref_of<Asset, T>::value
+#define ISCOMP is_base_ref_of<Component, T>::value
+
 	template <typename T>
-	typename std::enable_if<std::is_enum<T>::value, T>::type
+	typename std::enable_if<ISENUM, T>::type
 		Get() const;
 
 	template <typename T>
-	typename std::enable_if<!std::is_enum<T>::value, T>::type
+	typename std::enable_if<ISASSET, T>::type
 		Get() const;
+
+	template <typename T>
+	typename std::enable_if<ISCOMP, T>::type
+		Get() const;
+
+	template <typename T>
+	typename std::enable_if<!ISENUM && !ISASSET && !ISCOMP, T>::type
+		Get() const;
+
+#undef ISENUM
+#undef ISASSET
+#undef ISCOMP
 
 	template <typename T>
 	T _Get() const;

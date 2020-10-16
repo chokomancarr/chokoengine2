@@ -20,6 +20,8 @@ public:
 
 	const ComponentType componentType;
 
+	CE_GET_SET_MEMBER(callbackMask);
+
 	SceneObject object();
 
 	/* Called during the first frame after this object

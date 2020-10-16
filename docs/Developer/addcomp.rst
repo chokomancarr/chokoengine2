@@ -6,17 +6,18 @@ List of files to modify
 
 include/ce2/
 
- - chokoengine_includes.hpp
+# - chokoengine_includes.hpp
  - scene/component.hpp
- - scene/enums/component_types.hpp
+ - scene/comp/detail/compdefsall.inl
+# - scene/enums/component_types.hpp
 
 src/
 
- - asset/prefab/prefab_comp.[hpp, cpp]
+# - asset/prefab/prefab_comp.[hpp, cpp]
 
 editor/
 
- - ui/windows/inspector/component.[hpp, cpp]
+# - ui/windows/inspector/component.[hpp, cpp]
  
 List of files to add
 --------------------

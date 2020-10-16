@@ -56,6 +56,24 @@ public:
 	friend class Ref_w;
 };
 
+template <typename T>
+struct is_ref_type {
+	static constexpr bool value = false;
+};
+template <typename T>
+struct is_ref_type<Ref<T>> {
+	static constexpr bool value = true;
+};
+
+template <typename B, typename D>
+struct is_base_ref_of {
+	static constexpr bool value = false;
+};
+template <typename B, typename D>
+struct is_base_ref_of<Ref<B>, Ref<D>> {
+	static constexpr bool value = std::is_base_of<B, D>::value;
+};
+
 CE_END_NAMESPACE
 
 #include "detail/ptrext_ref.inl"

@@ -10,12 +10,13 @@ CE_BEGIN_NAMESPACE
 /* Construct from values
  */
 
-#define PR_CTOR(tp, tpe, vr) PrefabItem::PrefabItem(tp t)\
-		: PrefabItem(Type::tpe) {\
+#define PR_CTOR(tp, tpe, vr) PrefabItem::PrefabItem(tp t, const std::string& nm)\
+		: PrefabItem(Type::tpe, nm) {\
 	value.vr = t;\
 }
 
-PrefabItem::PrefabItem(Type t) : value({}), type(t), is_array(false), is_default(false) {}
+PrefabItem::PrefabItem(Type t, const std::string& nm)
+	: name(nm), value({}), type(t), is_array(false), is_default(false) {}
 
 PR_CTOR(float, Float, f)
 PR_CTOR(int, Int, i)
@@ -26,7 +27,7 @@ PR_CTOR(const Quat&, Quat, q)
 PR_CTOR(const std::string&, String, s)
 PR_CTOR(const Color&, Vec4, v4);
 
-PrefabItem::PrefabItem(const Asset& a) : PrefabItem(Type::Asset) {
+PrefabItem::PrefabItem(const Asset& a, const std::string& nm) : PrefabItem(Type::Asset, nm) {
 	auto& av = value.assetref;
 	if (!a) {
 		av.sig = "none";
@@ -37,20 +38,31 @@ PrefabItem::PrefabItem(const Asset& a) : PrefabItem(Type::Asset) {
 		av.assetType = a->assetType;
 	}
 }
-PrefabItem::PrefabItem(const Prefab_ObjRef& s) : PrefabItem(Type::SceneObject) {
+PrefabItem::PrefabItem(const Prefab_ObjRef& s, const std::string& nm) : PrefabItem(Type::SceneObject, nm) {
 	value.scobjref = s;
 }
-PrefabItem::PrefabItem(const Component& c) : PrefabItem(Type::Component) {
+PrefabItem::PrefabItem(const Component& c, const std::string& nm) : PrefabItem(Type::Component, nm) {
 	//auto& cv = value.compref;
 	//cv.obj = Prefab_ObjRef(c->object(), ChokoEditor::scene->objects()[1]);
 	//cv.type = c->componentType;
 
 }
-PrefabItem::PrefabItem(PrefabItemGroup g) : PrefabItem(Type::ItemGroup) {
+PrefabItem::PrefabItem(PrefabItemGroup g, const std::string& nm) : PrefabItem(Type::ItemGroup, nm) {
 	value.group = std::move(g);
 }
-PrefabItem::PrefabItem(PrefabObjGroup g) : PrefabItem(Type::ObjGroup) {
+PrefabItem::PrefabItem(PrefabObjGroup g, const std::string& nm) : PrefabItem(Type::ObjGroup, nm) {
 	value.objgroup = std::move(g);
+}
+
+PrefabItem::PrefabItem(const CRValue& cr, const std::string& nm) : PrefabItem(Type::ItemGroup, nm) {
+	value.group.push_back(PrefabItem(cr.constant, "C"));
+	value.group.push_back(PrefabItem(cr.random, "R"));
+}
+
+PrefabItem::PrefabItem(const Gradient& g, const std::string& nm) : PrefabItem(Type::ItemGroup, nm) {
+	for (auto& i : g.entries) {
+		value.group.push_back(PrefabItem(i.value, std::to_string(i.position)));
+	}
 }
 
 /* Construct from json object

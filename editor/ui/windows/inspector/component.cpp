@@ -1,18 +1,12 @@
 #include "chokoeditor.hpp"
+#include "ce2/scene/comp/detail/compdefsall.inl"
 
 CE_BEGIN_ED_NAMESPACE
 
+#define CM(c) Draw ## c,
+
 std::array<EW_I_Component::_DrawFn, (size_t)ComponentType::_COUNT> EW_I_Component::_funcs = {
-    DrawAnimator,
-    DrawCamera,
-	DrawCollider,
-    DrawLight,
-	DrawLightProbe,
-    DrawMeshRenderer,
-	DrawParticleSystem,
-    DrawRig,
-	DrawRigidbody,
-    DrawScript
+    COMP_DEFS_ALL(CM)
 };
 
 void EW_I_Component::Draw(EW_IC_DRAWARGS) {

@@ -1,4 +1,5 @@
 #include "prefab_inc.hpp"
+#include "ce2/scene/comp/detail/compdefsall.inl"
 
 CE_BEGIN_NAMESPACE
 
@@ -7,14 +8,7 @@ _PrefabComp::_PrefabComp(const Component& c)
 	name = ComponentTypeStr.at(type);
 #define CS(tp) case ComponentType::tp: Set ## tp((tp)c); break;
 	switch (type) {
-		CS(Camera)
-		CS(Collider)
-		CS(Animator)
-		CS(Light)
-		CS(MeshRenderer)
-		CS(Rig)
-		CS(Rigidbody)
-		CS(Script)
+		COMP_DEFS_ALL(CS)
 	default:
 		CE_NOT_IMPLEMENTED
 	}
@@ -37,14 +31,7 @@ _PrefabComp::_PrefabComp(const JsonPair& json) : _PrefabObjBase(Type::Comp, json
 SceneObject _PrefabComp::Instantiate(const SceneObject& o) {
 #define CS(tp) case ComponentType::tp: Instantiate ## tp(o); break;
 	switch (type) {
-		CS(Camera)
-		CS(Collider)
-		CS(Animator)
-		CS(Light)
-		CS(MeshRenderer)
-		CS(Rig)
-		CS(Rigidbody)
-		CS(Script)
+		COMP_DEFS_ALL(CS)
 	default:
 		CE_NOT_IMPLEMENTED
 	}
@@ -55,17 +42,12 @@ SceneObject _PrefabComp::Instantiate(const SceneObject& o) {
 void _PrefabComp::Apply(const Component& c) const {
 #define CS(tp) case ComponentType::tp: Apply ## tp((tp)c); break;
 	switch (c->componentType) {
-		CS(Camera)
-		CS(Collider)
-		CS(Animator)
-		CS(Light)
-		CS(MeshRenderer)
-		CS(Rig)
-		CS(Rigidbody)
-		CS(Script)
+		COMP_DEFS_ALL(CS)
 	default:
 		CE_NOT_IMPLEMENTED
 	}
 }
+
+#undef SWITCH_COMPS
 
 CE_END_NAMESPACE

@@ -14,7 +14,7 @@ CE_PR_IMPL_COMP_INST(Collider) {
 }
 
 CE_PR_IMPL_COMP_APP(Collider) {
-	c->type(CE_PR_GET(type, ColliderType::Sphere));
+	CE_PR_SET(type);
 	CE_PR_SET(radius);
 }
 

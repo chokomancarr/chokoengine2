@@ -135,7 +135,7 @@ void Renderer::Particles::UpdateData(_ParticleSystem& par) {
 }
 
 void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, const Mat4x4& ip) {
-	if (!par->_material || !par->_material->_shader) return;
+	if (!par->_activenumpar || !par->_material || !par->_material->_shader) return;
 	if (!_outProg) {
 		InitProgs();
 	}
@@ -146,7 +146,7 @@ void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, con
 	Vec4 up = imv * (ip * Vec4::up()).normalized();
 	Vec4 rht = imv * (ip * Vec4::right()).normalized();
 	Vec4 fwd = imv * (ip * Vec4::front()).normalized();
-
+	
 	_outProg->vao(par->_data[0]);
 	const auto bufs = par->_mesh->buffers();
 	_outProg->outputs({ bufs[0], bufs[3], bufs[4] });
@@ -170,7 +170,7 @@ void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, con
 	const auto& mat = par->_material;
 
 	par->_mesh->Bind();
-	mat->shader()->ApplyFlags(); glDepthMask(GL_FALSE);
+	mat->shader()->ApplyFlags(); glDepthMask(GL_FALSE); glDepthFunc(GL_ALWAYS);
 	mat->SetUniform("_MV", mv);
 	mat->SetUniform("_P", p);
 	mat->SetUniform("_MVP", p * mv);

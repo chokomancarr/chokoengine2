@@ -29,23 +29,19 @@ V _CE_PR_GET(const _PrefabObjBase* ptr, const std::string& nm, const V& vl) {
 
 #define CE_PR_NO_ITEMGROUP {}
 
-/* We should change this to class template if possible
- */
+#include "ce2/scene/comp/detail/compdefsall.inl"
+
 class _PrefabComp : public _PrefabObjBase {
-#define CE_PR_DEF_COMP(nm)\
+#define DC(nm)\
 	void Set ## nm(const nm&);\
 	void Instantiate ## nm(const SceneObject&) const;\
 	void Apply ## nm(const nm&) const;
 
-	CE_PR_DEF_COMP(Animator)
-	CE_PR_DEF_COMP(Camera)
-	CE_PR_DEF_COMP(Collider)
-	CE_PR_DEF_COMP(Light)
-	CE_PR_DEF_COMP(MeshRenderer)
-	CE_PR_DEF_COMP(Rig)
-	CE_PR_DEF_COMP(Rigidbody)
-	CE_PR_DEF_COMP(Script)
+	COMP_DEFS_ALL(DC)
+
 #undef CE_PR_DEF_COMP
+
+#include "ce2/scene/comp/detail/compdefsall_undef.inl"
 
 public:
 	_PrefabComp(const Component&);

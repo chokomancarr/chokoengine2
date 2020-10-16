@@ -3,20 +3,17 @@
 
 CE_BEGIN_NAMESPACE
 
+#include "../comp/detail/compdefsall.inl"
+#define CM(c) c,
+
 enum class ComponentType {
-	Animator,
-	Camera,
-	Collider,
-	Light,
-	LightProbe,
-	MeshRenderer,
-	ParticleSystem,
-	Rig,
-	Rigidbody,
-	Script,
+	COMP_DEFS_ALL(CM)
 	_COUNT,
 	Unknown
 };
+
+#undef CM
+#include "../comp/detail/compdefsall_undef.inl"
 
 CE_END_NAMESPACE
 

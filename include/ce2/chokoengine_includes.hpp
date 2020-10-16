@@ -113,21 +113,14 @@ typedef Transform* pTransform;
 /* components
  */
 CE_OBJECT(Component)
-CE_OBJECT(Animator)
-CE_OBJECT(Camera)
+#include "scene/comp/detail/compdefsall.inl"
+COMP_DEFS_ALL(CE_OBJECT)
+#include "scene/comp/detail/compdefsall_undef.inl"
 CE_OBJECT(CameraEffect)
-CE_OBJECT(Collider)
-CE_OBJECT(Light)
-CE_OBJECT(LightProbe)
-CE_OBJECT(MeshRenderer)
 CE_OBJECT(MeshModifier)
 CE_OBJECT(MeshShapeModifier)
 CE_OBJECT(MeshSkinModifier)
 CE_OBJECT(MeshClothModifier)
-CE_OBJECT(ParticleSystem)
-CE_OBJECT(Rig)
-CE_OBJECT(Rigidbody)
-CE_OBJECT(Script)
 
 CE_END_NAMESPACE
 

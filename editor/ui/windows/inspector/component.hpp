@@ -11,16 +11,15 @@ class EW_I_Component {
 
     static std::array<_DrawFn, (size_t)ComponentType::_COUNT> _funcs;
 
-    static void DrawAnimator(EW_IC_DRAWARGS);
-    static void DrawCamera(EW_IC_DRAWARGS);
-	static void DrawCollider(EW_IC_DRAWARGS);
-    static void DrawLight(EW_IC_DRAWARGS);
-	static void DrawLightProbe(EW_IC_DRAWARGS);
-    static void DrawMeshRenderer(EW_IC_DRAWARGS);
-	static void DrawParticleSystem(EW_IC_DRAWARGS);
-	static void DrawRig(EW_IC_DRAWARGS);
-	static void DrawRigidbody(EW_IC_DRAWARGS);
-    static void DrawScript(EW_IC_DRAWARGS);
+#include "ce2/scene/comp/detail/compdefsall.inl"
+
+#define DR(c) static void Draw ## c(EW_IC_DRAWARGS);
+
+    COMP_DEFS_ALL(DR)
+
+#undef DR
+
+#include "ce2/scene/comp/detail/compdefsall_undef.inl"
 
 public:
 	static void Draw(EW_IC_DRAWARGS);
