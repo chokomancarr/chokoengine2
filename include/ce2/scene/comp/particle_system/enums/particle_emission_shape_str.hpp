@@ -9,7 +9,6 @@ CE_BEGIN_NAMESPACE
 
 const std::unordered_map<ParticleEmissionShape, std::string> ParticleEmissionShapeStr = {
 	{ ParticleEmissionShape::Cone, "Cone" },
-	{ ParticleEmissionShape::Rectangle, "Rectangle" },
 	{ ParticleEmissionShape::Sphere, "Sphere" }
 };
 

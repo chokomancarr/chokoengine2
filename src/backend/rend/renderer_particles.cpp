@@ -23,6 +23,7 @@ TransformFeedback Renderer::Particles::_outProg = nullptr;
 void Renderer::Particles::InitProgs() {
 	(_simProg = TransformFeedback_New(glsl::particlesys_tf, { "outbuf0", "outbuf1", "outbuf2" }))
 		->AddUniforms({ "numParticles", "randSeed", "DT", "emissionShape",
+			"radius", "angle", "length",
 			"pLifetime", "pRotation0", "pScale0", "pSpeed0", "pASpeed0",
 			"pForce" });
 	(_outProg = TransformFeedback_New(glsl::particleout_tf_v, glsl::particleout_tf_g,
@@ -101,7 +102,10 @@ void Renderer::Particles::ExecTimestep(_ParticleSystem& par) {
 	glUniform1i(LOC, par._activenumpar);
 	glUniform1i(LOC, rand());
 	glUniform1f(LOC, Time::delta());
-	glUniform1i(LOC, 0);
+	glUniform1i(LOC, (int)par._shape);
+	glUniform1f(LOC, par._radius);
+	glUniform1f(LOC, par._angle * Math::deg2rad);
+	glUniform1f(LOC, par._length);
 	Bind(LOC, par._lifetime);
 	Bind(LOC, par._initialRotation);
 	Bind(LOC, par._initialSize);
@@ -128,7 +132,6 @@ void Renderer::Particles::UpdateData(_ParticleSystem& par) {
 	const int pnum = (int)std::floor(par._partial_par);
 	par._partial_par -= pnum;
 	par._activenumpar = std::min(par._activenumpar + pnum, par._maxparticles);
-
 
 	if (par._activenumpar > 0)
 		ExecTimestep(par);
@@ -166,7 +169,6 @@ void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, con
 	_outProg->Unbind();
 
 	// -----------  actual drawing  --------------
-
 	const auto& mat = par->_material;
 
 	par->_mesh->Bind();
@@ -177,7 +179,7 @@ void Renderer::Particles::Render(const ParticleSystem& par, const Mat4x4& p, con
 	mat->Bind();
 	glDrawArrays(GL_TRIANGLES, 0, par->_activenumpar * 6);
 	mat->Unbind();
-	par->_mesh->Unbind(); glDepthMask(GL_TRUE);
+	par->_mesh->Unbind(); glDepthMask(GL_TRUE); glDepthFunc(GL_ALWAYS);
 }
 
 CE_END_BK_NAMESPACE

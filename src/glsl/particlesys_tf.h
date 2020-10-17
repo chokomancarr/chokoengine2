@@ -17,6 +17,10 @@ uniform float DT;
 
 uniform int emissionShape;
 
+uniform float radius;
+uniform float angle;
+uniform float length;
+
 uniform vec2 pLifetime;
 uniform vec2 pRotation0;
 uniform vec2 pScale0;
@@ -63,14 +67,26 @@ void main () {
 		scl = sampleCR(pScale0, rnd);
 		avel = sampleCR(pASpeed0, rnd);
 
-		// sphere
-		{
+		if (emissionShape == 0) { //cone
+			float a = RND(rnd) * 2 * PI;
+			float r = sqrt(RND(rnd));
+
+			pos.x = cos(a);
+			pos.y = sin(a);
+			pos.z = 0;
+
+			float th = r * angle;
+			float sth = sin(th);
+
+			vel = vec3(sth * pos.x, sth * pos.y, cos(th));
+			pos *= radius * r;
+		}
+		else if (emissionShape == 1) { //sphere
 			pos = vec3(0);
 			float th = RND(rnd) * 2 * PI;
 			float z = RND(rnd) * 2 - 1;
 			float xy = sqrt(1 - z*z);
 			vel = vec3(cos(th)*xy, sin(th)*xy, z);
-			
 		}
 
 		vel *= sampleCR(pSpeed0, rnd);

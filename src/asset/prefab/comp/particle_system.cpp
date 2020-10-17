@@ -9,6 +9,12 @@ CE_PR_IMPL_COMP(ParticleSystem) {
 	CE_PR_ADD(continuous);
 	CE_PR_ADD(prewarm);
 	CE_PR_ADD(timescale);
+
+	CE_PR_ADD(shape);
+	CE_PR_ADD(radius);
+	CE_PR_ADD(angle);
+	CE_PR_ADD(length);
+
 	CE_PR_ADD(initialSpeed);
 	CE_PR_ADD(initialSize);
 	CE_PR_ADD(initialRotation);
@@ -38,6 +44,12 @@ CE_PR_IMPL_COMP_APP(ParticleSystem) {
 	CE_PR_SET(continuous);
 	CE_PR_SET(prewarm);
 	CE_PR_SET(timescale);
+
+	CE_PR_SET(shape);
+	CE_PR_SET(radius);
+	CE_PR_SET(angle);
+	CE_PR_SET(length);
+
 	CE_PR_SET(initialSpeed);
 	CE_PR_SET(initialSize);
 	CE_PR_SET(initialRotation);

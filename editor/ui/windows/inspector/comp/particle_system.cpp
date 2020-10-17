@@ -26,6 +26,22 @@ UI_Ext::Layout::Block("Generation", lt, [&]() {
 	CE_E_EDIT_CRV_FV(c->, "rvelocity", initialRotSpeed);
 });
 
+UI_Ext::Layout::Block("Shape", lt, [&]() {
+	CE_E_EDIT_ENUM("shape", c->shape, ParticleEmissionShapeStr, c);
+
+	switch (c->shape()) {
+	case ParticleEmissionShape::Cone: {
+		CE_E_EDIT_F_FV(c->, "radius", radius);
+		CE_E_EDIT_F_FV(c->, "angle", angle);
+		break;
+	}
+	case ParticleEmissionShape::Sphere: {
+		CE_E_EDIT_F_FV(c->, "radius", radius);
+		break;
+	}
+	}
+});
+
 UI_Ext::Layout::Block("Behavior", lt, [&]() {
 	CE_E_EDIT_CRV_FV(c->, "lifetime", lifetime);
 });

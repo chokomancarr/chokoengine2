@@ -5,7 +5,6 @@ CE_BEGIN_NAMESPACE
 
 enum class ParticleEmissionShape {
     Cone,
-	Rectangle,
 	Sphere
 };
 

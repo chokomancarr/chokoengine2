@@ -248,10 +248,6 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 		}
 	}
 
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, gbuf->_pointer);
-	glBlitFramebuffer(0, 0, _w, _h, 0, 0, _w, _h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
 	ttar->UnbindTarget();
 
 	
@@ -293,6 +289,10 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 	transOverlayShad->Unbind();
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, gbuf->_pointer);
+	glBlitFramebuffer(0, 0, _w, _h, 0, 0, _w, _h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	
 	for (auto& s : parsyss) {
 		if (!!s->_material && !!s->_material->_shader
@@ -492,6 +492,7 @@ void Renderer::RenderCamera(const Camera& cam) {
 	}
 
 	glDepthMask(true); //if i dont put this line gameview is black, why tho
+	glDepthFunc(GL_ALWAYS);
 
 	for (auto& c : cam->_object.lock()->_components) {
 		c->OnPostBlit();

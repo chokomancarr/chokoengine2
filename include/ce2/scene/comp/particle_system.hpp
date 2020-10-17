@@ -1,5 +1,6 @@
 #pragma once
 #include "chokoengine.hpp"
+#include "particle_system/enums/particle_emission_shape.hpp"
 
 CE_BEGIN_NAMESPACE
 
@@ -12,6 +13,12 @@ class _ParticleSystem : public _Component { CE_COMPONENT_COMMON
 	bool _prewarm;
 
 	float _timescale;
+
+	ParticleEmissionShape _shape;
+
+	float _radius;
+	float _angle;
+	float _length;
 
 	CRValue _initialSpeed;
 	CRValue _initialSize;
@@ -57,6 +64,11 @@ public:
 	/* Simulation speed relative to game speed
 	 */
 	CE_GET_SET_MEMBER(timescale);
+
+	CE_GET_SET_MEMBER(shape);
+	CE_GET_SET_MEMBER(radius);
+	CE_GET_SET_MEMBER(angle);
+	CE_GET_SET_MEMBER(length);
 
 	CE_GET_SET_MEMBER(initialSpeed);
 	CE_GET_SET_MEMBER(initialSize);

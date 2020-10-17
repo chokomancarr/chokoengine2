@@ -3,18 +3,19 @@
 
 CE_BEGIN_NAMESPACE
 
-uint64_t Time::_millis0;
-uint64_t Time::_millis;
-uint64_t Time::_lastMillis;
-float Time::_time;
-float Time::_delta;
+uint64_t Time::_millis0 = 0;
+uint64_t Time::_millis = 0;
+uint64_t Time::_lastMillis = 0;
+float Time::_time = 0;
+float Time::_delta = 0;
 
 uint64_t Time::GetTicks() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 void Time::Reset() {
-    _millis0 = _millis = _lastMillis = GetTicks();
+    _millis0 = _lastMillis = GetTicks();
+	_millis = 0;
     _time = _delta = 0;
 }
 

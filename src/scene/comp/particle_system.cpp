@@ -4,6 +4,7 @@ CE_BEGIN_NAMESPACE
 
 _ParticleSystem::_ParticleSystem() : CE_COMPDEF(ParticleSystem),
 		_emit(true), _emissionRate(10), _continuous(true), _prewarm(true), _timescale(1),
+		_shape(ParticleEmissionShape::Sphere), _radius(1), _angle(30), _length(1),
 		_initialSpeed(CRValue(1, 0)), _initialSize(CRValue(1, 0)),
 		_initialRotation(CRValue(0, 0)), _initialRotSpeed(CRValue(0, 0)),
 		_lifetime(1), _lifetimeSpeed(std::vector<float>({ 1.0f })), _lifetimeSize(std::vector<float>({ 1.0f })),

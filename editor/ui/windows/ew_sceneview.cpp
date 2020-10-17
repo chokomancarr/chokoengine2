@@ -70,11 +70,13 @@ void EW_SceneView::DrawMenu() {
 }
 
 bool EW_SceneView::_Init() {
+	EW_S_Resources::Init();
+	EW_S_Operator::Init();
+	
 	EW_S_Camera::Init();
 	EW_S_Light::Init();
-	EW_S_Resources::Init();
+	EW_S_ParSys::Init();
 	EW_S_Rig::Init();
-	EW_S_Operator::Init();
 
 	Ops::Reg();
 

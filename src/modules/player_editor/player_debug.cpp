@@ -45,6 +45,8 @@ void PlayerDebug::Main() {
 
 	Debug::Message("ChokoPlayerD", "Loading done");
 
+	Time::Reset();
+
 	while (ChokoLait::alive()) {
 		ChokoLait::Update([]() {
 			Input::state(inputState);

@@ -10,7 +10,6 @@ class Time { CE_CLASS_COMMON
     static CE_EXPORT float _delta;
 
     static uint64_t GetTicks();
-    static void Reset();
     static void Update();
 public:
 	/* The current time in millisecond ticks
@@ -26,6 +25,8 @@ public:
     /* Time elapsed since last frame in seconds
      */
     CE_GET_ST_MEMBER(delta);
+
+	static void Reset();
 };
 
 CE_END_NAMESPACE

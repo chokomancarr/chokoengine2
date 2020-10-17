@@ -72,7 +72,7 @@ void main () {
 		float px = lut[a*2];
 		float py = lut[a*2+1];
 		
-		out_pos = v2g_pos[0] + (px*2-1)*dx + (py*2-1)*dy;
+		out_pos = v2g_pos[0] + ((px*2-1)*dx + (py*2-1)*dy) * v2g_scl[0];
 		//out_normal = -camFwd;
 		//out_tangent = camRight;
 		out_texCoord = vec2(px, py);

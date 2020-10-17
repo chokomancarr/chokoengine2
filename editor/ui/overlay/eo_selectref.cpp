@@ -5,11 +5,13 @@ CE_BEGIN_ED_NAMESPACE
 std::shared_ptr<EO_SelectRef> EO_SelectRef::instance = nullptr;
 
 void EO_SelectRef::Draw() {
-	UI::Rect(Rect(10, 10, 200, 400), Color(0.1f, 0.7f));
-	if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && !Rect(10, 10, 200, 400).Contains(Input::mouseDownPosition())) {
+	UI::Rect(Rect(10, 10, 300, 400), Color(0.1f, 0.7f));
+	if (Input::mouseStatus(InputMouseButton::Left) == InputMouseStatus::Up && !Rect(10, 10, 300, 400).Contains(Input::mouseDownPosition())) {
 		active = false;
 	}
-	float y = 12;
+	static EUILayout::ScrollState st = {};
+	const auto rect = Rect(10, 10, 300, 400);
+	float y = EUILayout::BeginScroll(rect, st);
 	if (UI::I::Button(Rect(12, y, 200, 16), UIButtonStyle(Color(0.1f, 0.7f)), "Cancel") == InputMouseStatus::HoverUp) {
 		active = false;
 	}
@@ -42,6 +44,8 @@ void EO_SelectRef::Draw() {
 		}
 		break;
 	}
+
+	EUILayout::EndScroll(st, y);
 }
 
 namespace {

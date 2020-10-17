@@ -15,4 +15,5 @@ CE_END_ED_NAMESPACE
 
 #include "camera.hpp"
 #include "light.hpp"
+#include "particle_system.hpp"
 #include "rig.hpp"
