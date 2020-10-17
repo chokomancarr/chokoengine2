@@ -40,8 +40,6 @@ namespace {
 		}
 		case ScriptVar::Type::Asset: {
 			auto pvl = &vl;
-			//CE_E_ASSET_REF_FV(vr.name, pvl->val_asset, pvl);
-			//*
 			CE_E_LBL(vr.name);
 			if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)), CE_E_ASSET_SIG(vl.val_asset)) == InputMouseStatus::HoverUp) {
 				auto pvl = &vl;
@@ -51,6 +49,24 @@ namespace {
 			}
 			else
 				CE_E_ASSET_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), vl.var.type_asset, vl.val_asset = res)
+			CE_E_ASSET_SEEK_BTN(vl.val_asset);
+			CE_E_INC_Y();
+			//*/
+			break;
+		}
+		case ScriptVar::Type::Component: {
+			auto pvl = &vl;
+			CE_E_LBL(vr.name);
+			if (UI::I::Button(CE_E_VL_RECT.sub(0, 0, 17, 0), UIButtonStyle(Color(0.2f)),
+					!vl.val_comp ? "[none]" : vl.val_comp->object()->name() + " (" + ComponentTypeStr.at(vr.type_comp) + ")"
+					) == InputMouseStatus::HoverUp) {
+				auto pvl = &vl;
+				EO_SelectRef::RegComp(vl.val_comp, std::function<void(const Component&)>([pvl](const Component& vv) {
+					pvl->val_comp = vv;
+				}));
+			}
+			else
+				CE_E_COMP_DROP(CE_E_VL_RECT.sub(0, 0, 34, 0), vr.type_comp, vl.val_comp = res)
 			CE_E_ASSET_SEEK_BTN(vl.val_asset);
 			CE_E_INC_Y();
 			//*/

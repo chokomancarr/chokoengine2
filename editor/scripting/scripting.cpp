@@ -79,13 +79,14 @@ namespace {
 			vr.type = ScriptVar::Type::SceneObject;
 			return true;
 		}
-		/*for (int a = 0; a < (int)ComponentType::_COUNT; a++) {
-			if (tp == ComponentTypeStrs[a]) {
-				vr.type = ScriptVar::Type::Comp;
-				vr.typeComp = (ComponentType)a;
+		for (int a = 0; a < (int)ComponentType::_COUNT; a++) {
+			if (tp == ComponentTypeStr.at((ComponentType)a)) {
+				vr.type = ScriptVar::Type::Component;
+				vr.type_comp = (ComponentType)a;
 				return true;
 			}
 		}
+		/*
 		for (auto& t : res->types) {
 			if (t->name == tp) {
 				vr.type = ScriptVar::Type::ExtType;

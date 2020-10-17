@@ -51,6 +51,7 @@ public:
 	CE_PL_SCR_GETSET(Quat)
 	CE_PL_SCR_GETSET(Asset)
 	CE_PL_SCR_GETSET(SceneObject)
+	CE_PL_SCR_GETSET(Component)
 };
 
 #undef CE_PL_SCR_GETSET
@@ -69,7 +70,8 @@ public:
 	CE_PL_SCR_GETSET_DEF(Vec4)\
 	CE_PL_SCR_GETSET_DEF(Quat)\
 	CE_PL_SCR_GETSET_DEF(Asset)\
-	CE_PL_SCR_GETSET_DEF(SceneObject)
+	CE_PL_SCR_GETSET_DEF(SceneObject)\
+	CE_PL_SCR_GETSET_DEF(Component)
 
 #define CE_PL_SCR_GETSET_EMPTY(tp)\
 	void set_ ## tp(const std::string&, const tp&) override {}\

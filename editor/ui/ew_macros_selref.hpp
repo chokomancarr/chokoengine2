@@ -54,3 +54,21 @@ if (UI::I::Button(Rect(lt.x + lt.w - 18, lt.y, 16, 16), UIButtonStyle(Color(0.2f
 	CE_E_ASSET_SELECT_FV(vl);\
 	CE_E_ASSET_SEEK_BTN(vl);\
 	CE_E_INC_Y()
+
+
+
+#define CE_E_COMP_DROP(r, tp, fn) {\
+	InputMouseStatus mst;\
+	if (EDragDrop::IsSingle() && EDragDrop::type == EDragDrop::Type::SceneObject\
+			&& (mst = UI::I::ButtonTr(r)) != InputMouseStatus::None) {\
+		UI::Rect(r, Color(1, 1, 0, 0.5f));\
+		if (mst == InputMouseStatus::Up) {\
+			for (auto& res : ((SceneObject)EDragDrop::targetObj[0])->components()) {\
+				if (res->componentType == tp) {\
+					fn;\
+					break;\
+				}\
+			}\
+		}\
+	}\
+}

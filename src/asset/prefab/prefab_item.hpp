@@ -66,7 +66,7 @@ public:
 	PrefabItem(const Color&, const std::string& nm = "");
 	PrefabItem(const Asset&, const std::string& nm = "");
 	PrefabItem(const Prefab_ObjRef&, const std::string& nm = "");
-	PrefabItem(const Component&, const std::string& nm = "");
+	PrefabItem(const Prefab_CompRef&, const std::string& nm = "");
 	template <typename T, typename std::enable_if<
 		std::is_enum<T>::value && !std::is_same<T, Type>::value, T>::type* = nullptr>
 	PrefabItem(const T&, const std::string& nm = "");

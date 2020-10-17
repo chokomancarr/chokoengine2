@@ -41,11 +41,8 @@ PrefabItem::PrefabItem(const Asset& a, const std::string& nm) : PrefabItem(Type:
 PrefabItem::PrefabItem(const Prefab_ObjRef& s, const std::string& nm) : PrefabItem(Type::SceneObject, nm) {
 	value.scobjref = s;
 }
-PrefabItem::PrefabItem(const Component& c, const std::string& nm) : PrefabItem(Type::Component, nm) {
-	//auto& cv = value.compref;
-	//cv.obj = Prefab_ObjRef(c->object(), ChokoEditor::scene->objects()[1]);
-	//cv.type = c->componentType;
-
+PrefabItem::PrefabItem(const Prefab_CompRef& c, const std::string& nm) : PrefabItem(Type::Component, nm) {
+	value.compref = c;
 }
 PrefabItem::PrefabItem(PrefabItemGroup g, const std::string& nm) : PrefabItem(Type::ItemGroup, nm) {
 	value.group = std::move(g);

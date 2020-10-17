@@ -10,9 +10,7 @@ typedef Player::ScriptVarEntry Var;
 
 #define ADDV(tp, vr)\
     case Var::Type::tp: {\
-        auto r = PrefabItem(LDGET(vr));\
-        r.name = v.name;\
-        return r;\
+        return PrefabItem(LDGET(vr), v.name);\
     }
 
 #define GETV(_k, _v) case PrefabItem::Type::_k:\
@@ -44,9 +42,10 @@ namespace {
 			ADDV(Quat, Quat)
 			ADDV(Asset, Asset)
 		case Var::Type::SceneObject: {
-			auto r = PrefabItem(Prefab_ObjRef(LDGET(SceneObject), PrefabState::activeBaseObjs.top()));
-			r.name = v.name;
-			return r;
+			return PrefabItem(Prefab_ObjRef(LDGET(SceneObject), PrefabState::activeBaseObjs.top()), v.name);
+		}
+		case Var::Type::Component: {
+			return PrefabItem(Prefab_CompRef(LDGET(Component), PrefabState::activeBaseObjs.top()), v.name);
 		}
 		case Var::Type::Class: {
 			auto r = PrefabItem(PrefabItem::Type::ItemGroup);
@@ -81,15 +80,31 @@ namespace {
 				GETV(Quat, Quat)
 				GETV(Asset, Asset)
 			case PrefabItem::Type::SceneObject: {
-					const auto nm = v.name;
-					const auto oref = v.Get<Prefab_ObjRef>();
-					PrefabState::refresolvers.top().push_back([c, nm, oref]() {
-						Loader::instance->activeTarget(c);
-						const auto tar = oref.Seek(PrefabState::activeBaseObjs.top());
-						Loader::instance->set_SceneObject(nm, tar);
-					});
-					break;
-				}
+				const auto nm = v.name;
+				const auto oref = v.Get<Prefab_ObjRef>();
+				PrefabState::refresolvers.top().push_back([c, nm, oref]() {
+					Loader::instance->activeTarget(c);
+					const auto tar = oref.Seek(PrefabState::activeBaseObjs.top());
+					Loader::instance->set_SceneObject(nm, tar);
+				});
+				break;
+			}
+			case PrefabItem::Type::Component: {
+				const auto nm = v.name;
+				const auto cref = v.Get<Prefab_CompRef>();
+				PrefabState::refresolvers.top().push_back([c, nm, cref]() {
+					Loader::instance->activeTarget(c);
+					const auto tar = cref.objref.Seek(PrefabState::activeBaseObjs.top());
+					if (!tar) return;
+					for (auto& c : tar->components()) {
+						if (c->componentType == cref.type) {
+							Loader::instance->set_Component(nm, c);
+							return;
+						}
+					}
+				});
+				break;
+			}
 			case PrefabItem::Type::ItemGroup: {
 				for (auto& v2 : v.value.group) {
 					SetPrbItem(v2, c, parentsig + v.name + ".");

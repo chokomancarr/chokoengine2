@@ -5,7 +5,7 @@ CE_BEGIN_NAMESPACE
 namespace PrefabMR {
 	PrefabItem toPrefab(const MeshSkinModifier& mod) {
 		PrefabItemGroup res = {};
-		res.push_back(PrefabItem((Component)mod->rig().lock()));
+		res.push_back(PrefabItem(Prefab_CompRef(mod->rig().lock(), PrefabState::activeBaseObjs.top())));
 
 		return PrefabItem(std::move(res));
 	}

@@ -137,20 +137,22 @@ public:
     _IMPL_GETSET(Quat)
     _IMPL_GETSET(Asset)
     _IMPL_GETSET(SceneObject)
+    _IMPL_GETSET(Component)
 #undef _IMPL_GETSET
 };
 
-#define _CE_GETMEM_S(nm, cl)\
+#define _CE_GETMEM_S(nm, cl, fn)\
 if (s == #nm) {\
     if (i != -1 || tsz != size_t(-1)) {\
         std::cerr << "Unexpected index id in getmem_single()!" << std::endl;\
         CE_ABORT();\
     }\
     nextclass = #cl;\
+	fn;\
     return &c->nm;\
 }
 
-#define _CE_GETMEM_A(nm, cl)\
+#define _CE_GETMEM_A(nm, cl, fn)\
 if (s == #nm) {\
     if (tsz < size_t(-2)) {\
         c->nm.resize(tsz);\
@@ -165,9 +167,21 @@ if (s == #nm) {\
 			CE_ABORT();\
 		}\
         nextclass = #cl;\
+		fn;\
         return &c->nm[i];\
     }\
 }
+
+#define _CE_ASSET_REGSET(tp) assetsetter = _scrimpl_ptr_set<tp, Asset>
+#define _CE_COMP_REGSET(tp) compsetter = _scrimpl_ptr_set<tp, Component>
+
+template <typename T, typename U>
+void _scrimpl_ptr_set(const void* ptr, const U& val) {
+	(*(T*)ptr) = (T)val;
+}
+
+typedef void(*_scrimplCompSetFn)(const void*, const Component&);
+typedef void(*_scrimplAssetSetFn)(const void*, const Asset&);
 
 #define _CE_GETMEMFNARGS void* cl, const std::string& s, int i, size_t tsz, std::string& nextclass
 typedef void* (*_scrimpl_getmemFn)(_CE_GETMEMFNARGS);
@@ -258,16 +272,26 @@ CE_BEGIN_PL_NAMESPACE
 		impl << R"(    }) {}
 
 namespace {
+	_scrimplAssetSetFn assetsetter;
+	_scrimplCompSetFn compsetter;
+
     void* getmember_this(_CE_GETMEMFNARGS) {
         auto c = (_)" + nm + "*)cl;\n";
 
 		for (auto& v : vars) {
 			const auto getstr = std::string("        _CE_GETMEM_") + (v.is_vector ? "A(" : "S(") + v.name + ", ";
 			if (v.type == ScriptVar::Type::Class) {
-				impl << getstr + v.sub_class + ");\n";
+				impl << getstr + v.sub_class + ", );\n";
 			}
 			else {
-				impl << getstr + "-);\n";
+				std::string setter = "";
+				if (v.type == ScriptVar::Type::Asset) {
+					setter = "_CE_ASSET_REGSET(" + AssetTypeStr.at(v.type_asset) + ")";
+				}
+				else if (v.type == ScriptVar::Type::Component) {
+					setter = "_CE_COMP_REGSET(" + ComponentTypeStr.at(v.type_comp) + ")";
+				}
+				impl << getstr + "-, " + setter + ");\n";
 			}
 		}
 		impl << "\
@@ -282,10 +306,14 @@ namespace {
 			for (auto& v : c.vars) {
 				const auto getstr = std::string("        _CE_GETMEM_") + (v.is_vector ? "A(" : "S(") + v.name + ", ";
 				if (v.type == ScriptVar::Type::Class) {
-					impl << getstr + v.sub_class + ");\n";
+					impl << getstr + v.sub_class + ", );\n";
 				}
 				else {
-					impl << getstr + "-);\n";
+					std::string setter = "";
+					if (v.type == ScriptVar::Type::Component) {
+						setter = "_CE_COMP_REGSET(" + ComponentTypeStr.at(v.type_comp) + ")";
+					}
+					impl << getstr + "-, " + setter + ");\n";
 				}
 			}
 			impl << "\
@@ -360,7 +388,22 @@ GETSET(Vec3)
 GETSET(Vec4)
 GETSET(Quat)
 GETSET(SceneObject)
-GETSET(Asset)
+
+Asset IMPLCLASSREPL::get_Asset(const std::string& s) {
+	CE_NOT_IMPLEMENTED;
+}
+void IMPLCLASSREPL::set_Asset(const std::string& s, const Asset& v) {
+    const auto ptr = &_scrimpl_getslot<size_t>(s, tar.operator->(), _fnMap);
+	assetsetter(ptr, v);
+}
+
+Component IMPLCLASSREPL::get_Component(const std::string& s) {
+	CE_NOT_IMPLEMENTED;
+}
+void IMPLCLASSREPL::set_Component(const std::string& s, const Component& v) {
+    const auto ptr = &_scrimpl_getslot<size_t>(s, tar.operator->(), _fnMap);
+	compsetter(ptr, v);
+}
 
 CE_END_PL_NAMESPACE
 )", {
