@@ -45,6 +45,8 @@ void PlayerDebug::Main() {
 
 	Debug::Message("ChokoPlayerD", "Loading done");
 
+	std::cout << ChokoLait::scene->Tree() << std::endl;
+
 	Time::Reset();
 
 	while (ChokoLait::alive()) {

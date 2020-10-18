@@ -10,6 +10,11 @@ class ChokoEngine {
 public:
 	typedef uint64_t objectid;
 
+	/* is the program running in editor mode?
+	 * you should NEVER change this value
+	 */
+	static CE_EXPORT bool is_editor;
+
 	static bool Init();
 	static void Cleanup();
 };

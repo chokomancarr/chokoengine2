@@ -152,6 +152,7 @@ void ChokoEditor::Init() {
 }
 
 void ChokoEditor::Main() {
+	ChokoEngine::is_editor = true;
 	ChokoLait::InitOptionsSt opts;
 	opts.title = "ChokoEditor";
 	//opts.enablePhysics = true;

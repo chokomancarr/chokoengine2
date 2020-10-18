@@ -2,8 +2,9 @@
 
 CE_BEGIN_NAMESPACE
 
-bool ChokoEngine::Init() {
+bool ChokoEngine::is_editor = false;
 
+bool ChokoEngine::Init() {
 #define TRYINIT(nm)\
 	if (!nm::Init()) return false;
 

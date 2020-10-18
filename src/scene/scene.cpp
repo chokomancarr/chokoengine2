@@ -40,7 +40,7 @@ namespace {
 	}
 }
 
-_Scene::_Scene() : _objects(0), _sky(nullptr) {}
+_Scene::_Scene() : _objects(0), _sky(nullptr), _callbackFlags(0) {}
 
 SceneObject _Scene::AddNewObject(const SceneObject& parent) {
 	auto o = SceneObject::New("New Object");
@@ -98,8 +98,9 @@ std::vector<SceneObject> _Scene::FindAllByPred(std::function<bool(const SceneObj
 }
 
 #define TRYCALL(fn)\
-	if ((c->_callbackMask & _callbackFlags) == _callbackFlags)\
-		c->fn()
+	if ((c->_callbackMask & _callbackFlags) == _callbackFlags){\
+		c->fn();\
+	}
 
 #define RECCALL(nm, fn)\
 static const std::function<void(const std::vector<SceneObject>&)> nm\
