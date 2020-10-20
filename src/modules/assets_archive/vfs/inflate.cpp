@@ -4,13 +4,15 @@
 
 CE_BEGIN_NAMESPACE
 
-std::vector<unsigned char> ZLIB::Inflate(unsigned char* data, unsigned int len) {
+std::vector<unsigned char> ZLIB::Inflate(const std::vector<byte>& data) {
+	return data;
+
     z_stream strm = {};
     if (inflateInit(&strm) != Z_OK) {
         return {};
     }
-    strm.next_in = data;
-    strm.avail_in = len;
+    strm.next_in = (byte*)data.data();
+    strm.avail_in = data.size();
 
     std::vector<unsigned char> res = {};
     std::array<unsigned char, 1024> buf;

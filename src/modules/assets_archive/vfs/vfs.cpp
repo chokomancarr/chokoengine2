@@ -3,7 +3,11 @@
 
 CE_BEGIN_NAMESPACE
 
+std::unordered_map<std::string, ArchiveParser::Entry> ArchiveParser::entries;
+std::vector<std::ifstream> ArchiveParser::streams;
+
 void ArchiveParser::Init(const std::string& path) {
+	Debug::Message("ArchiveParser", "loading archive");
     int ms = 0;
     JsonObject json = JsonParser::Parse(IO::ReadFile(path + "_index.json"));
     for (auto& j : json.group) {
@@ -20,6 +24,7 @@ void ArchiveParser::Init(const std::string& path) {
     for (int a = 0; a <= ms; a++) {
         streams[a].open(path + std::to_string(a) + ".dat", std::ios::binary);
     }
+	Debug::Message("ArchiveParser", "loaded " + std::to_string(ms + 1) + " archives");
 }
 
 std::vector<byte> ArchiveParser::Read(const std::string& sig) {
@@ -28,14 +33,22 @@ std::vector<byte> ArchiveParser::Read(const std::string& sig) {
     auto& strm = streams[e.fileIndex];
     strm.seekg(e.pos);
     strm.clear();
-    std::vector<char> data(e.len);
-    strm.read(data.data(), e.len);
-    return ZLIB::Inflate((byte*)data.data(), e.len);
+    std::vector<byte> data(e.len);
+    strm.read((char*)data.data(), e.len);
+    return ZLIB::Inflate(data);
 }
 
 std::string ArchiveParser::ReadStr(const std::string& sig) {
     const auto& dt = Read(sig);
     return std::string((char*)dt.data(), dt.size());
+}
+
+ArchiveParser::Strm ArchiveParser::GetStrm(const std::string& sig) {
+	const auto& e = entries[sig];
+	auto& strm = streams[e.fileIndex];
+	strm.seekg(e.pos);
+	strm.clear();
+	return Strm(strm, e.len);
 }
 
 JsonObject ArchiveParser::GetMetaOf(const std::string& sig) {

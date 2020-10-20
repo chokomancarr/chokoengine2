@@ -1,6 +1,7 @@
-#include "module_ae_inc.hpp"
+#pragma once
+#include "inc.hpp"
 
-CE_BEGIN_MOD_AE_NAMESPACE
+CE_BEGIN_MOD_AC_NAMESPACE
 
 namespace {
 	void LoadBones(const JsonObject& data, std::vector<ArmatureBone>& bones) {
@@ -29,11 +30,17 @@ namespace {
 	}
 }
 
-CE_MOD_AE_IMPL(Armature) {
-	const auto meta = LoadMeta(path);
-	const auto data = JsonParser::Parse(IO::ReadFile(_basePath + path));
-	
-	return ModuleAC::LoadArmature(data);
+Armature LoadArmature(const JsonObject& data) {
+	if (data.group[0].key.string != "armature") {
+		Debug::Error("LoadArmature", "Cannot create from json, no armature entry!");
+		return nullptr;
+	}
+	std::vector<ArmatureBone> bones = {};
+	LoadBones(data.group[0].value, bones);
+
+	Armature arm = Armature::New();
+	arm->bones(bones);
+	return arm;
 }
 
-CE_END_MOD_AE_NAMESPACE
+CE_END_MOD_AC_NAMESPACE

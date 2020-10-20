@@ -3,13 +3,12 @@
 CE_BEGIN_MOD_AA_NAMESPACE
 
 CE_MOD_AA_IMPL(Mesh) {
-	const auto meta = LoadMeta(path);
 	const auto ext = StrExt::ExtensionOf(path);
 	if (ext == "obj") {
-		return MeshLoader::LoadObj(IO::ReadFile(_basePath + path));
+		return MeshLoader::LoadObj(ArchiveParser::ReadStr(path));
 	}
 	else if (ext == "mesh") {
-		return MeshLoader::LoadMesh(_basePath + path);
+		return MeshLoader::LoadMesh(ArchiveParser::GetStrm(path).strm);
 	}
 	else {
 		CE_NOT_IMPLEMENTED

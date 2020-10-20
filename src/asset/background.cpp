@@ -76,21 +76,18 @@ void _Background::LoadAsync() {
 	_loading = false;
 }
 
-_Background::_Background(const std::string& path, int div, bool async) : _Asset(AssetType::Background), _pointer(0), _width(0), _height(0), _layers(div), _brightness(1) {
+_Background::_Background(const std::string& path, int div, bool async)
+	: _Background(std::ifstream(path, std::ios::binary), 0, div, async) {}
+
+_Background::_Background(std::istream& strm, size_t sz, int div, bool async) : _Asset(AssetType::Background), _pointer(0), _width(0), _height(0), _layers(div), _brightness(1) {
     if (!initd)
         Init();
 
     //_asyncThread = std::thread([&](const std::string& path) {
 	//	CE_OBJECT_SET_ASYNC_LOADING;
-        std::string ss = path.substr(path.find_last_of('.') + 1, std::string::npos);
 
-        if (ss != "hdr") {
-            Debug::Error("Background", "Cannot open non-hdr file \"" + path + "\"!");
-            return;
-        }
-
-        if (!Texture_I::FromHDR(path, _width, _height, _channels, _pixels))
-            return;
+    if (!Texture_I::FromHDR(strm, sz, _width, _height, _channels, _pixels))
+        return;
 
 	//	CE_OBJECT_SET_ASYNC_READY;
 	//}, path);
@@ -106,8 +103,8 @@ _Background::_Background(const std::string& path, int div, bool async) : _Asset(
 
 	std::vector<RenderTarget> mips(_layers, nullptr);
 
-    auto tmp0 = //Texture::New(_width, _height, GL_RGB32F, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true), _pixels.data(), GL_RGB, GL_FLOAT);
-        Texture::New(path, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, _layers, true));
+    auto tmp0 = Texture::New(_width, _height, GL_RGB32F, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, 0, true), _pixels.data(), GL_RGB, GL_FLOAT);
+//        Texture::New(path, TextureOptions(TextureWrap::Repeat, TextureWrap::Mirror, _layers, true));
     uint w = _width / 2, h = _height / 2;
     ggxBlurMat->SetUniform("mainTex", tmp0);
     for (int a = 1; a <= _layers; a++) {

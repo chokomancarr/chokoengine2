@@ -122,7 +122,7 @@ void EWindowManager::Draw() {
 		ECallbackManager::Invoke(CallbackSig::GLOBAL_BUILD_DEBUG);
 	}
 	if (UI::I::Button(Rect(310, 2, 50, 16), Color(0.3f, 0.3f, 0.3f), "build_rel") == InputMouseStatus::HoverUp) {
-		ECallbackManager::Invoke(CallbackSig::GLOBAL_BUILD);
+		ECallbackManager::Invoke(CallbackSig::GLOBAL_BUILD_RELEASE);
 	}
 
 	if (maximizeId > -1) {

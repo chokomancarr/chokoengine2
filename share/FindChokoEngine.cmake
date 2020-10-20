@@ -47,6 +47,7 @@ IF(CE2_LIBRARY_TEMP)
 	find_package(glm REQUIRED)
 	find_package(JPEG REQUIRED)
 	find_package(Freetype REQUIRED)
+	find_package(ZLIB REQUIRED)
 	if (NOT APPLE)
 		find_package(GLEW REQUIRED)
 	endif()
@@ -68,6 +69,7 @@ IF(CE2_LIBRARY_TEMP)
 		${GLEW_INCLUDE_DIR}
 		${JPEG_INCLUDE_DIR}
 		${FREETYPE_INCLUDE_DIRS}
+		${ZLIB_INCLUDE_DIRS}
 	)
 
 	IF(NOT APPLE)
@@ -84,6 +86,7 @@ IF(CE2_LIBRARY_TEMP)
 		${GLM_LIBRARY}
 		${JPEG_LIBRARY}
 		${FREETYPE_LIBRARIES}
+		${ZLIB_LIBRARIES}
 	)
 	if(MSVC)
 		set(CE2_LIBRARIES
@@ -126,6 +129,7 @@ IF(CE2_LIBRARY_TEMP)
 	define_module(AssetCommon AC)
 	define_module(AssetEditor AE)
 	define_module(PlayerEditor PE)
+	define_module(PlayerRelease PR)
 
 	set(CE2_INCLUDE_TEMP "${CE2_INCLUDE_TEMP}" CACHE INTERNAL "")
 	set(CE2_INCLUDE_DIRS "${CE2_INCLUDE_DIRS}" CACHE STRING "")

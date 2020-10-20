@@ -114,6 +114,9 @@ Mesh MeshLoader::LoadObj(const std::string& data) {
 
 Mesh MeshLoader::LoadMesh(const std::string& path) {
 	std::ifstream strm(path, std::ios::binary);
+	return LoadMesh(strm);
+}
+Mesh MeshLoader::LoadMesh(std::istream& strm) {
 	if (!strm) return nullptr;
 
 	std::string s;

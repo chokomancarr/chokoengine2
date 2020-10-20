@@ -16,7 +16,7 @@ void EAssetArchiver::Exec(const std::string& tar) {
 
     int fi = 0;
     size_t fsz = 0;
-    std::ofstream fl(tar + std::to_string(fi) + ".dat");
+    std::ofstream fl(tar + "assets" + std::to_string(fi) + ".dat", std::ios::binary);
 
 	EDebug::Log("Asset Archive", "generating archives: 0");
 
@@ -42,14 +42,18 @@ void EAssetArchiver::Exec(const std::string& tar) {
                 fi++;
                 fsz = 0;
                 fl.close();
-                fl.open(tar + std::to_string(fi) + ".dat");
+                fl.open(tar + "assets" + std::to_string(fi) + ".dat", std::ios::binary);
 
 				EDebug::Log("Asset Archive", "generating archives: " + std::to_string(fi));
             }
+			else {
+				fl.write("\x00\xFF\x00\xFF", 4);
+				fsz += 4;
+			}
         }
     }
 
-    std::ofstream(tar + "_index.json") << JsonParser::Export(list);
+    std::ofstream(tar + "assets_index.json") << JsonParser::Export(list);
 
 	EDebug::Log("Asset Archive", "archive generation completed");
 };

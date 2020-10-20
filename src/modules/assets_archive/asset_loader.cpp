@@ -21,10 +21,7 @@ std::array<std::unordered_map<std::string, Asset>, (int)AssetType::_COUNT> Asset
 void AssetLoader::Init(const std::string& basePath) {
 	_basePath = basePath;
 	_AssetLoaderImpl::Init();
-}
-
-JsonObject AssetLoader::LoadMeta(const std::string& path) {
-	return JsonParser::Parse(IO::ReadFile(_basePath + path + ".meta"));
+	ArchiveParser::Init(basePath + "assets");
 }
 
 #define CE_E_LD(nm) case AssetType::nm: {\
@@ -39,6 +36,7 @@ Asset AssetLoader::Load(AssetType t, const std::string& path, bool async) {
 	if (path == "none") return nullptr;
 	switch (t) {
 		CE_E_LD(AnimClip)
+		CE_E_LD(AnimGraph)
 		CE_E_LD(Armature)
 		CE_E_LD(Background)
 		CE_E_LD(Material)

@@ -1,4 +1,4 @@
-#include "asset_loader.hpp"
+#include "module_aa_inc.hpp"
 
 CE_BEGIN_MOD_AA_NAMESPACE
 

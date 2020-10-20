@@ -5,13 +5,24 @@ CE_BEGIN_NAMESPACE
 
 class ArchiveParser {
 public:
-    struct Entry {
-        int fileIndex;
-        size_t pos;
-        size_t len;
-        JsonObject meta;
-    };
-    static std::unordered_map<std::string, Entry> entries;
+	struct Entry {
+		int fileIndex;
+		size_t pos;
+		size_t len;
+		JsonObject meta;
+	};
+	struct Strm {
+		Strm(std::ifstream& strm, size_t len) : strm(strm), len(len) {}
+
+		Strm(const Strm&) = delete;
+		Strm(Strm&&) = default;
+		Strm& operator= (const Strm&) = delete;
+
+		std::ifstream& strm;
+		size_t len;
+	};
+	
+	static std::unordered_map<std::string, Entry> entries;
     static std::vector<std::ifstream> streams;
 
     // /dir/to/file [0/1/2/... .dat]
@@ -19,6 +30,8 @@ public:
 
     static std::vector<byte> Read(const std::string& sig);
     static std::string ReadStr(const std::string& sig);
+
+	static Strm GetStrm(const std::string& sig);
 
     static JsonObject GetMetaOf(const std::string& sig);
 };

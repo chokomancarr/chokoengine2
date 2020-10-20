@@ -1,58 +1,21 @@
-/****************************************************************************\
-
-  hdr.c: RADIANCE .HDR file parser for anyview
-  extracted, adapted, and de-C++-ified by Cliff Woolley
-  from R.I.S.E version 0.9.3 build 67 by Aravind Krishnaswamy:
-
-	//  HDRReader.cpp - Implementation of the HDRReader class
-	//
-	//  Author: Aravind Krishnaswamy
-	//  Date of Birth: November 17, 2001
-	//
-	//This license is based off the original BSD license.
-
-	//Copyright (c) 2001-2004, Aravind Krishnaswamy
-	//All rights reserved.
-
-	//Redistribution and use in source and binary forms,
-	//with or without modification, are permitted provided
-	//that the following conditions are met:
-
-	//Redistributions of source code must retain the above copyright notice,
-	//this list of conditions and the following disclaimer. 
-
-	//Redistributions in binary form must reproduce the above copyright notice,
-	//this list of conditions and the following disclaimer in the documentation
-	//and/or other materials provided with the distribution.
-
-	//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-	//AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-	//IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-	//ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-	//LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-	//CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	//SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	//INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	//CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	//ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
-	//THE POSSIBILITY OF SUCH DAMAGE.
-
-\****************************************************************************/
-
-//Modified for write ability
-
 #include "hdr.h"
 #include <algorithm>
 #include <cmath>
 #include <string.h>
 
-const char * hdr::szSignature = "#?RADIANCE";
-const char * hdr::szFormat = "FORMAT=32-bit_rle_rgbe";
+namespace {
+	const char* szSignature = "#?RADIANCE";
+	const char* szFormat = "FORMAT=32-bit_rle_rgbe";
+}
 
-/* HDR Function Definitions */
-unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int *h)
-{
-	//Debug::Message("hdr", "Opening " + std::string(filename));
+unsigned char* hdr::read_hdr(const char *filename, unsigned int *w, unsigned int *h) {
+	return read_hdr(std::ifstream(filename, std::ios::binary), w, h);
+}
+
+unsigned char* hdr::read_hdr(std::istream& strm, unsigned int *w, unsigned int *h) {
+	if (!strm) {
+		return nullptr;
+	}
 
 	char buf[1024] = {0};
 	char col[4] = {0};
@@ -62,18 +25,8 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 	int bFlippedY = 0;
 	int cnt, i, component;
 
-	FILE* fp;
-	fp = fopen(filename, "rb");
-
-	if (!fp) {
-		//Debug::Error("hdr", "Cannot open file " + std::string(filename) + "!");
-		return nullptr;
-	}
-
 	/* Verify the RADIANCE signature */
-	fseek(fp, 0, SEEK_SET);
-	fread(buf, 1, 10, fp);
-
+	strm.read(buf, 10);
 	if (strncmp(szSignature, buf, 10) != 0) {
 		fprintf(stderr, "read_hdr(): RADIANCE signature not found!\n");
 		return NULL;
@@ -83,10 +36,10 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 	 * tells us the dimensions of the image */
 	/* Check to see if each line contains the format std::string */
 	do {
-		fgets(buf, sizeof(buf), fp);
-	} while (!feof(fp) && strncmp(buf, "FORMAT", 6));
+		strm.getline(buf, sizeof(buf));
+	} while (strm && strncmp(buf, "FORMAT", 6));
 
-	if (feof(fp)) {
+	if (!strm) {
 		fprintf(stderr, "read_hdr(): unexpected EOF looking for FORMAT string\n");
 		return NULL;
 	}
@@ -100,11 +53,10 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 	/* Now look for the -Y or +Y */
 	/* Check to see if each line contains the size std::string */
 	do {
-		fgets(buf, sizeof(buf), fp);
-	} while (!feof(fp) &&
-			 (strncmp(buf, "-Y", 2) && strncmp(buf, "+Y", 2)));
+		strm.getline(buf, sizeof(buf));
+	} while (strm && (strncmp(buf, "-Y", 2) && strncmp(buf, "+Y", 2)));
 
-	if (feof(fp)) {
+	if (!strm) {
 		fprintf(stderr, "read_hdr(): unexpected EOF looking for image dimensions\n");
 		return NULL;
 	}
@@ -148,7 +100,7 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 		int step = bFlippedX ? -1 : 1;
 
 		/* Start by reading the first four bytes of every scanline */
-		if (fread(col, 1, 4, fp) != 4) {
+		if (!strm.read(col, 4)) {
 			fprintf(stderr, "read_hdr(): unexpected EOF reading data\n");
 			free(imagergbe);
 			return NULL;
@@ -168,7 +120,7 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 				while (x < (*w)) {
 					/* Check to see if we have a run */
 					unsigned char num;
-					if (fread(&num, 1, 1, fp) != 1) {
+					if (!strm.read((char*)&num, 1)) {
 						fprintf(stderr, "read_hdr(): unexpected EOF reading data\n");
 						free(imagergbe);
 						return NULL;
@@ -176,7 +128,7 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 					if (num <= 128) {
 						/* No run, just values, just just read all the values */
 						for (i=0; i<num; ++i) {
-							if (fread(&imagergbe[component+pos*4], 1, 1, fp) != 1) {
+							if (!strm.read((char*)&imagergbe[component + pos * 4], 1)) {
 								fprintf(stderr, "read_hdr(): unexpected EOF reading data\n");
 								free(imagergbe);
 								return NULL;
@@ -188,7 +140,7 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 						/* We have a run, so get the value and set all the
 						 * values for this run */
 						unsigned char value;
-						if (fread(&value, 1, 1, fp) != 1) {
+						if (!strm.read((char*)&value, 1)) {
 							fprintf(stderr, "read_hdr(): unexpected EOF reading data\n");
 							free(imagergbe);
 							return NULL;
@@ -210,7 +162,7 @@ unsigned char *hdr::read_hdr(const char *filename, unsigned int *w, unsigned int
 			int pos = start;
 			for (unsigned int x=0; x<(*w); ++x) {
 				if (x > 0) {
-					if (fread(col, 1, 4, fp) != 4) {
+					if (!strm.read(col, 4)) {
 						fprintf(stderr, "read_hdr(): unexpected EOF reading data\n");
 						free(imagergbe);
 						return NULL;

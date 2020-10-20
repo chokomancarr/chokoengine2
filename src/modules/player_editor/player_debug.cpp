@@ -37,11 +37,16 @@ inline void paint() {
 }
 
 void PlayerDebug::Main() {
-	CE_PL_NS SceneManager::scenePaths.push_back(projectPath + "assets/.ce/startup.scene");
+	Player::SceneManager::scenes.push_back(
+		Player::SceneManager::Entry{
+			"__default",
+			projectPath + "assets/.ce/startup.scene"
+		}
+	);
 
 	Debug::Message("ChokoPlayerD", "Loading startup scene");
 
-	ChokoLait::scene = CE_PL_NS SceneManager::Load(0);
+	ChokoLait::scene = Player::SceneManager::Load(0);
 
 	Debug::Message("ChokoPlayerD", "Loading done");
 

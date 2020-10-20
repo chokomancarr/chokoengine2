@@ -3,7 +3,7 @@
 CE_BEGIN_MOD_AA_NAMESPACE
 
 CE_MOD_AA_IMPL(Texture) {
-	const auto meta = LoadMeta(path);
+	const auto meta = ArchiveParser::GetMetaOf(path);
 	auto opts = TextureOptions();
 	for (auto& g : meta.group) {
 		if (g.key.string == "xwrap")
@@ -15,7 +15,9 @@ CE_MOD_AA_IMPL(Texture) {
 		else if (g.key.string == "linear")
 			opts.linear = g.value.ToBool();
 	}
-	return Texture::New(_basePath + path, opts, async);
+
+	auto strm = ArchiveParser::GetStrm(path);
+	return Texture::New(strm.strm, strm.len, path.substr(path.find_last_of('.') + 1), opts, async);
 }
 
 CE_END_MOD_AA_NAMESPACE

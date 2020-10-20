@@ -4,9 +4,15 @@
 CE_BEGIN_ED_NAMESPACE
 
 class ESceneManager {
-
 public:
 	static std::string activeScenePath;
+
+	struct Entry {
+		std::string name;
+		std::string sig;
+		bool enabled;
+	};
+	static std::vector<Entry> scenes;
 
 	static void Init();
 
@@ -20,6 +26,12 @@ public:
 	static void SaveAs(const std::string& path, bool regActive = true);
 
 	static const SceneObject& sceneBaseObj();
+
+	static void LoadSceneList();
+	static void WriteSceneList();
+
+	static std::string GetRelSceneIndex();
+	static std::vector<std::vector<byte>> GetRelScenes();
 
 	class Ops;
 };

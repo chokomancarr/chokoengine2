@@ -31,12 +31,16 @@ public:
     static void FlipY(std::vector<byte>& data, uint w, uint h);
 
     static bool FromJPG(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
+	static bool FromJPG(std::istream& strm, size_t n, uint& w, uint& h, byte& channels, std::vector<byte>& data);
 
     static bool FromPNG(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
+	static bool FromPNG(std::istream& strm, size_t n, uint& w, uint& h, byte& channels, std::vector<byte>& data);
 
     static bool FromBMP(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
+	static bool FromBMP(std::istream& strm, size_t n, uint& w, uint& h, byte& channels, std::vector<byte>& data);
 
 	static bool FromHDR(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data);
+	static bool FromHDR(std::istream& strm, size_t n, uint& w, uint& h, byte& channels, std::vector<byte>& data);
 };
 
 CE_END_NAMESPACE

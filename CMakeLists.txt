@@ -87,6 +87,7 @@ if(MSVC)
     set(LIBS
         ${LIBS}
 		-Profile
+		Dbghelp.lib
     )
 elseif(APPLE)
     set(LIBS
@@ -203,6 +204,10 @@ set(LIBS_E
 	${LIBS}
 	Module_AssetEditor
 )
+set(LIBS_A
+	${LIBS}
+	Module_AssetArchive
+)
 
 add_library(Module_PlayerEditor STATIC "")
 if(MSVC)
@@ -212,6 +217,15 @@ target_compile_definitions(Module_PlayerEditor PRIVATE BUILD_MODULE_PE=1)
 add_subdirectory(src/modules/player_editor)
 target_include_directories(Module_PlayerEditor PRIVATE include/ce2/modules/pe)
 target_link_libraries(Module_PlayerEditor ${LIBS_E})
+
+add_library(Module_PlayerRelease STATIC "")
+if(MSVC)
+    set_target_properties(Module_PlayerRelease PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+endif()
+target_compile_definitions(Module_PlayerRelease PRIVATE BUILD_MODULE_PR=1)
+add_subdirectory(src/modules/player_release)
+target_include_directories(Module_PlayerRelease PRIVATE include/ce2/modules/pr)
+target_link_libraries(Module_PlayerRelease ${LIBS_R})
 
 #------editor-------
 
@@ -246,6 +260,7 @@ target_link_libraries(ChokoEditor ${LIBS_E})
 
 set(taskrunner_list
 	builder_dbg
+	builder_rel
 )
 
 foreach(tasknm ${taskrunner_list})

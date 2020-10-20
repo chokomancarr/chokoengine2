@@ -1,6 +1,5 @@
 #pragma once
 #include "chokoengine.hpp"
-#include "bd_defines.hpp"
 
 /* Directory structure
  * project_root/
@@ -26,5 +25,3 @@ public:
 
     static int Run();
 };
-
-#include "bd_includes.hpp"

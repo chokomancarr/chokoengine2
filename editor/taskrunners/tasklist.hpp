@@ -13,7 +13,8 @@ CE_BEGIN_ED_NAMESPACE
 #endif
 
 namespace TaskList {
-    const std::string builderDebug = "builder_dbg" CE_PROG_EXT;
+	const std::string builderDebug = "builder_dbg" CE_PROG_EXT;
+	const std::string builderRelease = "builder_rel" CE_PROG_EXT;
 }
 
 #undef CE_PROG_EXT

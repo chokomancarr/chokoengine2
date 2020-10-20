@@ -17,10 +17,6 @@ int BuilderDebug::Run() {
     Debug::Message("Builder", "Generating debug binary for project \""
         + projectRoot + "\"");
 
-    // --- generate script resolver ---
-
-    // --- execute cmake ---
-
     if (clean) {
         IO::RemoveFile(projectRoot + "system/build/CMakeCache.txt");
     }
@@ -43,7 +39,7 @@ int BuilderDebug::Run() {
     }
 
     info.args = {
-        "--build", "."
+        "--build", ".", "--target", "chokoeditor_project"
     };
     info.args.insert(info.args.end(), cmakeBuildArgs.begin(), cmakeBuildArgs.end());
 

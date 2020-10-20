@@ -14,8 +14,6 @@ class AssetLoader {
 public:
 	static void Init(const std::string& basePath);
 
-	static JsonObject LoadMeta(const std::string&);
-
 	template <typename T>
 	static T Get(AssetType, const std::string&, bool, bool forceReload = false);
 
