@@ -3,7 +3,7 @@
 CE_BEGIN_MOD_AA_NAMESPACE
 
 CE_MOD_AA_IMPL(AnimClip) {
-	CE_NOT_IMPLEMENTED
+	return ModuleAC::LoadAnimClip(ArchiveParser::GetStrm(path));
 }
 
 CE_END_MOD_AA_NAMESPACE

@@ -8,7 +8,7 @@ CE_MOD_AA_IMPL(Mesh) {
 		return MeshLoader::LoadObj(ArchiveParser::ReadStr(path));
 	}
 	else if (ext == "mesh") {
-		return MeshLoader::LoadMesh(ArchiveParser::GetStrm(path).strm);
+		return MeshLoader::LoadMesh(ArchiveParser::GetStrm(path));
 	}
 	else {
 		CE_NOT_IMPLEMENTED

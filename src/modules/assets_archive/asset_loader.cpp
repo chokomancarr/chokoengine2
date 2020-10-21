@@ -34,6 +34,7 @@ void AssetLoader::Init(const std::string& basePath) {
 
 Asset AssetLoader::Load(AssetType t, const std::string& path, bool async) {
 	if (path == "none") return nullptr;
+	async = false;
 	switch (t) {
 		CE_E_LD(AnimClip)
 		CE_E_LD(AnimGraph)

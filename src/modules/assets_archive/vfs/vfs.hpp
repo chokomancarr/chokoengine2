@@ -11,16 +11,6 @@ public:
 		size_t len;
 		JsonObject meta;
 	};
-	struct Strm {
-		Strm(std::ifstream& strm, size_t len) : strm(strm), len(len) {}
-
-		Strm(const Strm&) = delete;
-		Strm(Strm&&) = default;
-		Strm& operator= (const Strm&) = delete;
-
-		std::ifstream& strm;
-		size_t len;
-	};
 	
 	static std::unordered_map<std::string, Entry> entries;
     static std::vector<std::ifstream> streams;
@@ -31,7 +21,7 @@ public:
     static std::vector<byte> Read(const std::string& sig);
     static std::string ReadStr(const std::string& sig);
 
-	static Strm GetStrm(const std::string& sig);
+	static DataStream GetStrm(const std::string& sig);
 
     static JsonObject GetMetaOf(const std::string& sig);
 };

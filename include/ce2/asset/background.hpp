@@ -26,8 +26,7 @@ public:
     /* Constructs a background image from a hdr file
      * \p div specifies the number of layers of the precomputed gloss map
      */
-	_Background(const std::string& path, int div, bool async = false);
-	_Background(std::istream& strm, size_t sz, int div, bool async = false);
+	_Background(DataStream strm, int div, bool async = false);
 
     ~_Background();
 

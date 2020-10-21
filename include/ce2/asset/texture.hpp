@@ -29,8 +29,7 @@ public:
     /* Loads an image from the specified path
      * Supported formats: png, jpg, bmp, hdr
      */
-	_Texture(std::istream& strm, size_t sz, const std::string& ext, const TextureOptions& opts = TextureOptions(), bool async = false);
-	_Texture(const std::string& path, const TextureOptions& opts = TextureOptions(), bool async = false);
+	_Texture(DataStream strm, const TextureOptions& opts = TextureOptions(), bool async = false);
 
     virtual ~_Texture(); //allow render targets etc to override
 

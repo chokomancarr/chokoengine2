@@ -76,17 +76,14 @@ void _Background::LoadAsync() {
 	_loading = false;
 }
 
-_Background::_Background(const std::string& path, int div, bool async)
-	: _Background(std::ifstream(path, std::ios::binary), 0, div, async) {}
-
-_Background::_Background(std::istream& strm, size_t sz, int div, bool async) : _Asset(AssetType::Background), _pointer(0), _width(0), _height(0), _layers(div), _brightness(1) {
+_Background::_Background(DataStream strm, int div, bool async) : _Asset(AssetType::Background), _pointer(0), _width(0), _height(0), _layers(div), _brightness(1) {
     if (!initd)
         Init();
 
     //_asyncThread = std::thread([&](const std::string& path) {
 	//	CE_OBJECT_SET_ASYNC_LOADING;
 
-    if (!Texture_I::FromHDR(strm, sz, _width, _height, _channels, _pixels))
+    if (!Texture_I::FromHDR(std::move(strm), _width, _height, _channels, _pixels))
         return;
 
 	//	CE_OBJECT_SET_ASYNC_READY;

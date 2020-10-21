@@ -1,5 +1,5 @@
 #pragma once
-#include "chokoengine.hpp"
+#include "chokoplayer.hpp"
 
 #define CE_MOD_AC_NS ModuleAC
 
@@ -12,6 +12,8 @@
 
 CE_BEGIN_MOD_AC_NAMESPACE
 
+AnimClip LoadAnimClip(DataStream strm);
+AnimGraph LoadAnimGraph(const JsonObject& data);
 Armature LoadArmature(const JsonObject& data);
 Shader LoadShader(const JsonObject& data);
 

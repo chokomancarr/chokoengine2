@@ -9,7 +9,7 @@ std::vector<std::ifstream> ArchiveParser::streams;
 void ArchiveParser::Init(const std::string& path) {
 	Debug::Message("ArchiveParser", "loading archive");
     int ms = 0;
-    JsonObject json = JsonParser::Parse(IO::ReadFile(path + "_index.json"));
+    JsonObject json = JsonParser::Parse(IO::ReadFile(path + "_index"));
     for (auto& j : json.group) {
         Entry e = {};
         auto& jv = j.value;
@@ -43,12 +43,12 @@ std::string ArchiveParser::ReadStr(const std::string& sig) {
     return std::string((char*)dt.data(), dt.size());
 }
 
-ArchiveParser::Strm ArchiveParser::GetStrm(const std::string& sig) {
+DataStream ArchiveParser::GetStrm(const std::string& sig) {
 	const auto& e = entries[sig];
 	auto& strm = streams[e.fileIndex];
 	strm.seekg(e.pos);
 	strm.clear();
-	return Strm(strm, e.len);
+	return DataStream(strm, e.len, sig);
 }
 
 JsonObject ArchiveParser::GetMetaOf(const std::string& sig) {

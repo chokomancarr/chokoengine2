@@ -31,27 +31,31 @@ _Texture::_Texture(uint w, uint h, GLenum type, const TextureOptions& opts, cons
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-_Texture::_Texture(std::istream& strm, size_t sz, const std::string& ext, const TextureOptions& opts, bool async)
+_Texture::_Texture(DataStream strm, const TextureOptions& opts, bool async)
 	: _Asset(AssetType::Texture), _pointer(0), _width(0), _height(0), _hdr(false), _opts(opts), _pixels({}) {
-	_asyncThread = std::thread([&]() {
+	_asyncThread = std::thread([this](DataStream strm) {
 		CE_OBJECT_SET_ASYNC_LOADING;
 
+		const auto ext = StrExt::ExtensionOf(strm.path);
+		if (!strm) {
+			return;
+		}
 		if (ext == "jpg") {
-			if (!Texture_I::FromJPG(strm, sz, _width, _height, _channels, _pixels))
+			if (!Texture_I::FromJPG(std::move(strm), _width, _height, _channels, _pixels))
 				return;
 		}
 		else if (ext == "png") {
-			if (!Texture_I::FromPNG(strm, sz, _width, _height, _channels, _pixels))
+			if (!Texture_I::FromPNG(std::move(strm), _width, _height, _channels, _pixels))
 				return;
 			//rgb = GL_BGR;
 			//rgba = GL_BGRA;
 		}
 		else if (ext == "bmp") {
-			if (!Texture_I::FromBMP(strm, sz, _width, _height, _channels, _pixels))
+			if (!Texture_I::FromBMP(std::move(strm), _width, _height, _channels, _pixels))
 				return;
 		}
 		else if (ext == "hdr") {
-			if (!Texture_I::FromHDR(strm, sz, _width, _height, _channels, _pixels))
+			if (!Texture_I::FromHDR(std::move(strm), _width, _height, _channels, _pixels))
 				return;
 			_hdr = true;
 		}
@@ -61,43 +65,7 @@ _Texture::_Texture(std::istream& strm, size_t sz, const std::string& ext, const 
 		}
 
 		CE_OBJECT_SET_ASYNC_READY;
-	});
-
-	CE_OBJECT_INIT_ASYNC;
-}
-
-_Texture::_Texture(const std::string& path, const TextureOptions& opts, bool async)
-			: _Asset(AssetType::Texture), _pointer(0), _width(0), _height(0), _hdr(false), _opts(opts), _pixels({}) {
-	_asyncThread = std::thread([&](const std::string& path) {
-		CE_OBJECT_SET_ASYNC_LOADING;
-		std::string ss = path.substr(path.find_last_of('.') + 1, std::string::npos);
-
-		if (ss == "jpg") {
-			if (!Texture_I::FromJPG(path, _width, _height, _channels, _pixels))
-				return;
-		}
-		else if (ss == "png") {
-			if (!Texture_I::FromPNG(path, _width, _height, _channels, _pixels))
-				return;
-			//rgb = GL_BGR;
-			//rgba = GL_BGRA;
-		}
-		else if (ss == "bmp") {
-			if (!Texture_I::FromBMP(path, _width, _height, _channels, _pixels))
-				return;
-		}
-		else if (ss == "hdr") {
-			if (!Texture_I::FromHDR(path, _width, _height, _channels, _pixels))
-				return;
-			_hdr = true;
-		}
-		else {
-			Debug::Error("Texture", "Cannot determine format of \"" + path + "\"!");
-			return;
-		}
-
-		CE_OBJECT_SET_ASYNC_READY;
-	}, path);
+	}, std::move(strm));
 
 	CE_OBJECT_INIT_ASYNC;
 }
@@ -113,6 +81,8 @@ bool _Texture::loaded() {
 }
 
 void _Texture::LoadAsync() {
+	if (!_width || !_height)
+		return;
 	glGenTextures(1, &_pointer);
 	glBindTexture(GL_TEXTURE_2D, _pointer);
 	if (_channels == 1) {

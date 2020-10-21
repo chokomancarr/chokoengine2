@@ -53,7 +53,7 @@ void EAssetArchiver::Exec(const std::string& tar) {
         }
     }
 
-    std::ofstream(tar + "assets_index.json") << JsonParser::Export(list);
+    std::ofstream(tar + "assets_index") << JsonParser::Export(list);
 
 	EDebug::Log("Asset Archive", "archive generation completed");
 };

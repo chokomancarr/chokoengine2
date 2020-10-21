@@ -20,27 +20,18 @@ void Texture_I::FlipY(std::vector<byte>& data, uint w, uint h) {
 		memcpy(&data[(h - a - 1) * w * 4], &tmp[0], w * 4);
 	}
 }
-
-bool Texture_I::FromJPG(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
-	std::ifstream strm(path.c_str(), std::ios::binary | std::ios::ate);
-
-	if (!strm) {					//if the jpeg file doesn't load
-		Debug::Error("Texture", "Read jpg error: cannot open file!");
-		return false;
-	}
-	const auto sz = strm.tellg();
-	strm.seekg(0);
-
-	return FromJPG(strm, sz, w, h, channels, data);
-}
-bool Texture_I::FromJPG(std::istream& strm, size_t sz, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
+bool Texture_I::FromJPG(DataStream strm, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
 	unsigned long data_size;     // length
 	unsigned char* rowptr[1];
 	struct jpeg_decompress_struct info; //for our jpeg info
 	struct jpeg_error_mgr err;          //the error handler
 
-	std::vector<byte> mem(sz);
-	strm.read((char*)mem.data(), sz);
+	std::vector<byte> mem(strm.len);
+	strm->read((char*)mem.data(), strm.len);
+
+	if (!strm) {
+		return false;
+	}
 
 	info.err = jpeg_std_error(&err);
 	err.error_exit = [](j_common_ptr) {
@@ -48,7 +39,7 @@ bool Texture_I::FromJPG(std::istream& strm, size_t sz, uint& w, uint& h, byte& c
 	};
 	jpeg_create_decompress(&info);   //fills info structure
 
-	jpeg_mem_src(&info, mem.data(), sz);
+	jpeg_mem_src(&info, mem.data(), strm.len);
 
 	jpeg_read_header(&info, TRUE);   // read jpeg file header
 
@@ -75,21 +66,9 @@ bool Texture_I::FromJPG(std::istream& strm, size_t sz, uint& w, uint& h, byte& c
 	return true;
 }
 
-bool Texture_I::FromPNG(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
-	std::ifstream strm(path.c_str(), std::ios::binary | std::ios::ate);
-
-	if (!strm) {
-		Debug::Error("Texture", "Read png error: cannot open file!");
-		return false;
-	}
-	const auto sz = strm.tellg();
-	strm.seekg(0);
-
-	return FromPNG(strm, sz, w, h, channels, data);
-}
-bool Texture_I::FromPNG(std::istream& strm, size_t sz, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
-	std::vector<byte> mem(sz);
-	strm.read((char*)mem.data(), sz);
+bool Texture_I::FromPNG(DataStream strm, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
+	std::vector<byte> mem(strm.len);
+	strm->read((char*)mem.data(), strm.len);
 
 	channels = 4;
 	uint err = lodepng::decode(data, w, h, mem);
@@ -107,19 +86,13 @@ bool Texture_I::FromPNG(std::istream& strm, size_t sz, uint& w, uint& h, byte& c
         return false;\
     } while(0)
 
-bool Texture_I::FromBMP(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
-	std::ifstream strm(path, std::ios::binary);
-	if (!strm)
-		BMPERR("cannot open image");
-	return FromBMP(strm, 0, w, h, channels, data);
-}
-bool Texture_I::FromBMP(std::istream& strm, size_t sz, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
+bool Texture_I::FromBMP(DataStream strm, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
 	char header[54]; // Each BMP file begins by a 54-bytes header
 	unsigned int dataPos;     // Position in the file where the actual data begins
 	unsigned int imageSize;   // = width*height*3
 	unsigned short bpi;
 
-	strm.read(header, 54);
+	strm->read(header, 54);
 	if (!strm)
 		BMPERR("cannot read header");
 	
@@ -139,15 +112,12 @@ bool Texture_I::FromBMP(std::istream& strm, size_t sz, uint& w, uint& h, byte& c
 	if (dataPos == 0)      dataPos = 54; // The BMP header is done that way
 	data.resize(imageSize);
 	// Read the actual data from the file into the buffer
-	strm.read((char*)data.data(), imageSize);
+	strm->read((char*)data.data(), imageSize);
 	return true;
 }
 
-bool Texture_I::FromHDR(const std::string& path, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
-	return FromHDR(std::ifstream(path, std::ios::binary), 0, w, h, channels, data);
-}
-bool Texture_I::FromHDR(std::istream& strm, size_t sz, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
-	byte* d = hdr::read_hdr(strm, &w, &h);
+bool Texture_I::FromHDR(DataStream strm, uint& w, uint& h, byte& channels, std::vector<byte>& data) {
+	byte* d = hdr::read_hdr(strm(), &w, &h);
 	if (!d) return false;
 
 	channels = 3;

@@ -16,8 +16,7 @@ CE_MOD_AA_IMPL(Texture) {
 			opts.linear = g.value.ToBool();
 	}
 
-	auto strm = ArchiveParser::GetStrm(path);
-	return Texture::New(strm.strm, strm.len, path.substr(path.find_last_of('.') + 1), opts, async);
+	return Texture::New(ArchiveParser::GetStrm(path), opts, async);
 }
 
 CE_END_MOD_AA_NAMESPACE

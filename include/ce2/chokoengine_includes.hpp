@@ -59,18 +59,19 @@ CE_BEGIN_NAMESPACE
  */
 class Color;
 class CRValue;
-class Vec2;
-class Vec3;
-class Vec4;
+class DataStream;
+class FCurve;
+class Gradient;
 class Int2;
 class Int3;
 class Int4;
-class FCurve;
-class Gradient;
-class Quat;
-class Rect;
 class Mat3x3;
 class Mat4x4;
+class Quat;
+class Rect;
+class Vec2;
+class Vec3;
+class Vec4;
 
 class _VertexBuffer;
 typedef std::shared_ptr<_VertexBuffer> VertexBuffer;
@@ -138,6 +139,7 @@ CE_END_NAMESPACE
 #include "types/rect.hpp"
 #include "types/mat3x3.hpp"
 #include "types/mat4x4.hpp"
+#include "types/data_stream.hpp"
 
 #include "parsers/json.hpp"
 #include "parsers/mesh.hpp"
