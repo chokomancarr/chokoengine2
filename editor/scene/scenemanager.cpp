@@ -28,20 +28,30 @@ void ESceneManager::Init() {
 	LoadSceneList();
 }
 
-void ESceneManager::Load(const std::string& path) {
+ESceneManager::_scenedatast ESceneManager::GetSceneData(const std::string& path) {
+	_scenedatast res = {};
 	if (!IO::FileExists(CE_DIR_ASSET + path))
-		return;
-	auto& scene = ChokoEditor::scene;
+		return res;
 	auto json = JsonParser::Parse(IO::ReadFile(CE_DIR_ASSET + path));
 	auto prb = Prefab::New(json, [](const std::string& s) -> Prefab {
 		return (Prefab)EAssetList::Get(AssetType::Prefab, s, true);
 	});
 
-	scene->RemoveObject(scene->objects()[1]);
-	scene->AddObject(prb->Instantiate([](AssetType t, const std::string& s) -> Asset {
+	res.obj = prb->Instantiate([](AssetType t, const std::string& s) -> Asset {
 		return EAssetList::Get(t, s, true);
-	}));
-	scene->sky((Background)EAssetManager::FromJson(json.Get("sky"), true));
+	});
+	res.sky = (Background)EAssetManager::FromJson(json.Get("sky"), true);
+	return res;
+}
+
+void ESceneManager::Load(const std::string& path) {
+	if (!IO::FileExists(CE_DIR_ASSET + path))
+		return;
+	auto res = GetSceneData(path);
+	auto& scene = ChokoEditor::scene;
+	scene->RemoveObject(scene->objects()[1]);
+	scene->AddObject(res.obj);
+	scene->sky(res.sky);
 
 	RegActive(path);
 }

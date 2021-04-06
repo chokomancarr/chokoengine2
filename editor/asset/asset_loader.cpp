@@ -5,34 +5,6 @@
 
 CE_BEGIN_ED_NAMESPACE
 
-std::vector<ArmatureBone> EAssetLoader::LoadBones(const JsonObject& data) {
-	std::vector<ArmatureBone> res;
-	res.reserve(data.group.size());
-	for (auto& g : data.group) {
-		ArmatureBone b(g.key.string);
-		for (auto& p : g.value.group) {
-			if (p.key.string == "head") {
-				b.base = p.value.ToVec3();
-			}
-			else if (p.key.string == "tail") {
-				b.length = p.value.ToVec3();
-			}
-			else if (p.key.string == "front") {
-				b.front = p.value.ToVec3();
-			}
-			else if (p.key.string == "connected") {
-				b.connected = p.value.ToBool();
-			}
-			else if (p.key.string == "children") {
-				b.children = LoadBones(p.value);
-			}
-		}
-		b.length -= b.base;
-		res.push_back(b);
-	}
-	return res;
-}
-
 #define CE_E_MKM(t, nm) case t::nm: {\
 	std::ofstream strm(CE_DIR_ASSET + path + ".meta");\
 	strm << meta::nm;\

@@ -5,7 +5,7 @@
 
 //disables windows.h features
 #define NOGDICAPMASKS     ;// CC_*, LC_*, PC_*, CP_*, TC_*, RC_
-#define NOVIRTUALKEYCODES ;// VK_*
+//#define NOVIRTUALKEYCODES ;// VK_*
 //#define NOWINMESSAGES     ;// WM_*, EM_*, LB_*, CB_*
 #define NOWINSTYLES       ;// WS_*, CS_*, ES_*, LBS_*, SBS_*, CBS_*
 #define NOSYSMETRICS      ;// SM_*
@@ -13,7 +13,7 @@
 #define NOICONS           ;// IDI_*
 #define NOKEYSTATES       ;// MK_*
 #define NOSYSCOMMANDS     ;// SC_*
-#define NORASTEROPS       ;// Binary and Tertiary raster ops
+//#define NORASTEROPS       ;// Binary and Tertiary raster ops
 #define OEMRESOURCE       ;// OEM Resource values
 #define NOATOM            ;// Atom Manager routines
 #define NOCLIPBOARD       ;// Clipboard routines

@@ -1,18 +1,15 @@
 #include "chokoeditor.hpp"
 #include "deflate.hpp"
+#include "getdeps.hpp"
 
 CE_BEGIN_ED_NAMESPACE
 
 namespace {
     const size_t MAXLEN = 500000000; //500MB
-
-    std::vector<byte> GetAssetBytes(const AssetType tp, const std::string& sig) {
-        return IO::ReadFileBinary(CE_DIR_ASSET + sig);
-    }
 }
 
 void EAssetArchiver::Exec(const std::string& tar) {
-    JsonObject list(JsonObject::Type::Group);
+	JsonObject list(JsonObject::Type::Group);
 
     int fi = 0;
     size_t fsz = 0;
@@ -23,8 +20,11 @@ void EAssetArchiver::Exec(const std::string& tar) {
     const auto& evs = EAssetList::entries();
     for (int a = 0; a < (int)AssetType::_COUNT; a++) {
         for (auto& e : evs[a]) {
+			if (!AssetDepends::resultA[a].count(e.sig)) {
+				continue;
+			}
+			std::cout << "writing " << e.sig << std::endl;
             const auto data = ZLIB::Deflate(
-                //GetAssetBytes((AssetType)a, e.sig)
 				IO::ReadFileBinary(CE_DIR_ASSET + e.sig)
             );
             const auto dsz = data.size();

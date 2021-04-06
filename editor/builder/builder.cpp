@@ -1,4 +1,5 @@
 #include "chokoeditor.hpp"
+#include "asset/archiver/getdeps.hpp"
 
 #ifdef PLATFORM_WIN
     #define CE_PROG_EXT ".exe"
@@ -64,6 +65,15 @@ bool EProjectBuilder::BuildRelease() {
 	{
 		std::lock_guard<std::mutex> lock(_mtx);
 		_busy = true;
+	}
+
+	AssetDepends::Clear();
+	for (auto& s : ESceneManager::scenes) {
+		if (s.enabled) {
+			auto sc = ESceneManager::GetSceneData(s.sig);
+			AssetDepends::Reg(sc.obj);
+			AssetDepends::RegBackground(sc.sky);
+		}
 	}
 
 	const auto dir = ChokoEditor::projectRoot + "build/";

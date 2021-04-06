@@ -1,0 +1,2 @@
+
+#undef ASSET_DEFS_ALL

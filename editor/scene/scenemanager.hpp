@@ -16,6 +16,11 @@ public:
 
 	static void Init();
 
+	static struct _scenedatast {
+		SceneObject obj;
+		Background sky;
+	} GetSceneData(const std::string& path);
+
 	static void Load(const std::string& path);
 	static void LoadLastOpened();
 
