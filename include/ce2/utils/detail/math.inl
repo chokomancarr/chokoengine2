@@ -4,12 +4,16 @@
 CE_BEGIN_NAMESPACE
 
 template <typename T, typename F>
-T Math::Lerp(const T& a, const T& b, const F& t) {
-    return a * (1 - t) + b * t;
+T Math::Lerp(const T& a, const T& b, const F& t, bool clamped) {
+	if (clamped) {
+		if (t <= 0) return a;
+		else if (t >= 1) return b;
+	}
+	return a * (1 - t) + b * t;
 }
 
 template <>
-Quat Math::Lerp<Quat, float>(const Quat& a, const Quat& b, const float& t);
+Quat Math::Lerp<Quat, float>(const Quat& a, const Quat& b, const float& t, bool clamped);
 
 template <typename T, typename F>
 T Math::LerpAngle(const T& a, const T& b, const F& t) {

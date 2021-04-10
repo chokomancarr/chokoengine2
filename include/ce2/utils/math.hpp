@@ -9,9 +9,10 @@ namespace Math {
 	const float rad2deg = 57.295779513f;
 
 	/* Linear interpolate from A to B at T
+	 * if unclamped, out-of-bounds values are extrapolated
 	 */
     template <typename T, typename F>
-    T Lerp(const T& a, const T& b, const F& t);
+    T Lerp(const T& a, const T& b, const F& t, bool clamped = false);
 
 	/* Similar to Lerp, but wrap values around
 	 * 0~360

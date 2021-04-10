@@ -16,7 +16,7 @@ void UI::Float<T>::set(bool b) {
 template <typename T>
 UI::Float<T>::operator T() const {
     float t = (Time::millis() - settime) * lerpsp * Time::delta();
-    return Math::Lerp(val_off, val_on, _enabled ? t : 1 - t);
+    return Math::Lerp(val_off, val_on, _enabled ? t : 1 - t, true);
 }
 
 CE_END_NAMESPACE
