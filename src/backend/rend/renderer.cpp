@@ -4,6 +4,7 @@
 #include "glsl/skyFrag.h"
 #include "glsl/probeLightFrag.h"
 #include "glsl/transoverlayfrag.h"
+#include "ce2/ext/enum_ext.hpp"
 
 /* The renderer backend
  *
@@ -64,6 +65,7 @@ Background Renderer::sky;
 
 void Renderer::ScanObjects(const std::vector<SceneObject>& oo) {
 	for (auto& o : oo) {
+		if (!o->_active) continue;
 		for (auto& c : o->_components) {
 			switch(c->componentType) {
 			case ComponentType::Camera:
@@ -306,10 +308,7 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
 	if (!sky || !sky->loaded()) {
-		gbuf->Bind(true);
-		glReadBuffer(GL_COLOR_ATTACHMENT3);
-		glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		gbuf->Unbind(true);
+		UI::Texture(Display::fullscreenRect(), gbuf->tex(3));
 	}
 	else {
 		skyShad->Bind();
@@ -454,13 +453,12 @@ void Renderer::RenderCamera(const Camera& cam) {
 	}
 
 	RenderScene(btar, cam->_blitTargets[1], p, gbuf, [&]() {
-		if ((cam->_clearType == CameraClearType::Color)
-				|| (cam->_clearType == CameraClearType::ColorAndDepth)) {
+		if (!!(cam->_clearType & CameraClearType::Color)) {
 			glClearBufferfv(GL_COLOR, 0, &cam->_clearColor.r);
 		}
-		if ((cam->_clearType == CameraClearType::Depth)
-			|| (cam->_clearType == CameraClearType::ColorAndDepth))
+		if (!!(cam->_clearType & CameraClearType::Depth)) {
 			glClearBufferfv(GL_DEPTH, 0, &cam->_clearDepth);
+		}
 
 		for (auto& c : cam->_object.lock()->_components) {
 			c->OnPreBlit();

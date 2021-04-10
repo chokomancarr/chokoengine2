@@ -15,6 +15,8 @@ public:
 
 	static std::vector<uintptr_t> StackTrace(uint count);
 	static uint StackTrace(uint count, uintptr_t* frames);
+
+	static std::string DemangleSymbol(const char*);
 };
 
 CE_END_NAMESPACE

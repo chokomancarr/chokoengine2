@@ -112,6 +112,9 @@ public:
 
 	static void ResetMatrix();
 
+	template <typename T>
+	class Float;
+
     /* Interactive UI elements
      * (see interactive_ui.hpp)
      */
@@ -124,5 +127,6 @@ public:
 
 CE_END_NAMESPACE
 
+#include "ui_float.hpp"
 #include "interactive_ui.hpp"
 #include "world_ui.hpp"

@@ -107,10 +107,10 @@ void ESceneManager::LoadSceneList() {
 void ESceneManager::WriteSceneList() {
 	JsonObject scns(JsonObject::Type::Group);
 	for (auto& s : scenes) {
-		JsonObject scn({
+		JsonObject scn(std::vector<JsonPair>({
 			JsonPair(JsonObject("sig"), s.sig),
 			JsonPair(JsonObject("enabled"), JsonObject(s.enabled ? "1" : "0"))
-		});
+		}));
 		scns.group.push_back(JsonPair(s.name, scn));
 	}
 	JsonObject obj({

@@ -10,7 +10,7 @@ T Prefab_ObjRef::Seek(T root,
 		const std::function<T(T, size_t)> childof) const {
 	
 	typedef decltype(path)::const_iterator _it;
-	static std::remove_reference<T>::type null = {};
+	static typename std::remove_reference<T>::type null = {};
 	
 	if (empty) {
 		return null;

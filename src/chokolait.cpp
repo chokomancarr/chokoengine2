@@ -34,6 +34,10 @@ bool ChokoLait::Init(int w, int h, const InitOptionsSt& opts) {
 
 	if (opts.createScene) {
 		scene = Scene::New();
+		auto cobj = scene->AddNewObject();
+		cobj->name("camera");
+		cobj->transform()->localPosition(Vec3(0, 0, -10));
+		mainCamera = cobj->AddComponent<Camera>();
 	}
 
 	glClearColor(0, 0, 0, 0);

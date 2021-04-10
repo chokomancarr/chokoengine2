@@ -1,7 +1,10 @@
 #pragma once
 
+#define CE_ED_NAMESPACE Editor
+#define CE_ED_NS CE_NS CE_ED_NAMESPACE::
+
 #define CE_BEGIN_ED_NAMESPACE CE_BEGIN_NAMESPACE\
-	namespace Editor {
+	namespace CE_ED_NAMESPACE {
 
 #define CE_END_ED_NAMESPACE CE_END_NAMESPACE\
 	}

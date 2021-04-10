@@ -5,6 +5,8 @@
 #pragma once
 #include "chokoengine.hpp"
 
+namespace std { template <> struct hash<CE_NS ParticleEmissionShape> { size_t operator() (const CE_NS ParticleEmissionShape &t) const { return size_t(t); } }; }
+
 CE_BEGIN_NAMESPACE
 
 const std::unordered_map<ParticleEmissionShape, std::string> ParticleEmissionShapeStr = {

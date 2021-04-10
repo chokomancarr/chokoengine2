@@ -53,7 +53,7 @@ private:
 
 	PrefabInfo _prefabInfo;
 
-	bool _wasActive;
+	bool _active, _wasActive;
 
 	void UnlinkPrefabTree();
 
@@ -85,6 +85,10 @@ public:
 	/* Prefab infomation this object is spawned from
 	 */
 	CE_GET_SET_MEMBER(prefabInfo);
+
+	/* Is this object and its children used in the scene
+	 */
+	CE_GET_SET_MEMBER(active);
 
 	/* Scene this object is attached to
 	 */

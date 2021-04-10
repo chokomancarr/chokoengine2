@@ -10,7 +10,7 @@ namespace PrefabState {
 
 	std::stack<SceneObject> activeBaseObjs = {};
 
-	std::stack<std::unordered_set<size_t>> ids_indirect = {};
+	std::stack<std::unordered_set<ChokoEngine::objectid>> ids_indirect = {};
 
 	std::stack<std::vector<std::function<void()>>> refresolvers = {};
 }

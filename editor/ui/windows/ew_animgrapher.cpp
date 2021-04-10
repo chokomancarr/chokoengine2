@@ -78,7 +78,7 @@ void EW_AnimGrapher::DrawInspectMenu(UI_Ext::Layout::InfoSt& lt) {
 				CE_E_ASSET_SELECT_FV(cds.second);
 				CE_E_INC_Y();
 			}
-			CE_E_LIST_ADD(clips, std::make_pair(0.f, AnimClip(nullptr)));
+			CE_E_LIST_ADD(clips, std::make_pair(0.f, AnimClip(nullptr)),);
 		});
 		CE_E_LBL("blend");
 		const auto& vr = _graph->vars()[nd.var1D];
@@ -110,7 +110,7 @@ void EW_AnimGrapher::DrawInspectMenu(UI_Ext::Layout::InfoSt& lt) {
 			CE_E_EDIT_F(tr., "duration", length);
 
 			CE_E_LBL("conditions");
-			CE_E_LIST_ADD(tr.conditions, std::vector<_AnimGraph::Link::Cond>());
+			CE_E_LIST_ADD(tr.conditions, std::vector<_AnimGraph::Link::Cond>(),);
 			for (auto& cds : tr.conditions) {
 				UI_Ext::Layout::Block("", lt, [&]() {
 					for (auto& cd : cds) {
@@ -140,7 +140,7 @@ void EW_AnimGrapher::DrawInspectMenu(UI_Ext::Layout::InfoSt& lt) {
 						}
 						CE_E_INC_Y();
 					}
-					CE_E_LIST_ADD(cds, _AnimGraph::Link::Cond());
+					CE_E_LIST_ADD(cds, _AnimGraph::Link::Cond(),);
 				});
 			}
 		}, CE_UI_BUTTON_CLOSE);

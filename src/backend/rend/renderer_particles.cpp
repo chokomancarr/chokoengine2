@@ -1,4 +1,3 @@
-#pragma once
 #include "backend/chokoengine_backend.hpp"
 #include "glsl/particlesys_tf.h"
 #include "glsl/particleout_tf.h"

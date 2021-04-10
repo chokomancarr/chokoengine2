@@ -1,8 +1,9 @@
 #include "chokoengine.hpp"
-#ifndef PLATFORM_WIN
-#include <execinfo.h>
-#else
+#ifdef PLATFORM_WIN
 #include <DbgHelp.h>
+#else
+#include <execinfo.h>
+#include <cxxabi.h>
 #endif
 #include <thread>
 
@@ -18,7 +19,9 @@ namespace {
 #endif
 	}
 
+#ifdef PLATFORM_WIN
 	HANDLE winHandle;
+#endif
 
 	bool _initstacktrace() {
 #ifdef PLATFORM_WIN
@@ -112,6 +115,23 @@ uint Debug::StackTrace(uint count, uintptr_t* result) {
 	return CaptureStackBackTrace(0, count, (void**)result, NULL);
 #else
 	return backtrace((void**)result, count);
+#endif
+}
+
+std::string Debug::DemangleSymbol(const char* c) {
+#ifdef PLATFORM_WIN
+	return std::string(c);
+#else
+	int st = 0;
+	auto dc = abi::__cxa_demangle(c, 0, 0, &st);
+	if (!st) {
+		std::string res(dc);
+		free(dc);
+		return res;
+	}
+	else {
+		return std::string(c);
+	}
 #endif
 }
 

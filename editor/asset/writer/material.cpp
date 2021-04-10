@@ -31,10 +31,10 @@ CE_EAW_IMPL(Material) {
 				+ std::to_string((int)v.type()) + "!", EDEBUG_LVL_WARNING);
 			continue;
 		}
-		res.group.push_back(JsonPair(tnm, JsonObject({
+		res.group.push_back(JsonPair(tnm, JsonObject(std::vector<JsonPair>({
 			JsonPair(JsonObject("name"), v.name()),
 			JsonPair(JsonObject("value"), vvl)
-		})));
+		}))));
 	}
 
 	std::ofstream(CE_DIR_ASSET + obj->assetSignature()) << JsonParser::Export(res);

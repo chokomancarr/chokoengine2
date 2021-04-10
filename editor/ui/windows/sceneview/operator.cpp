@@ -23,7 +23,7 @@ namespace {
 	Vec3 editingAxis;
 	pTransform editingTr;
 
-	constexpr float uint2float(uint i) {
+	inline float uint2float(const uint i) {
 		return *(float*)&i;
 	}
 }

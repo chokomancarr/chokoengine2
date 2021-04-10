@@ -6,7 +6,7 @@ CE_BEGIN_ED_NAMESPACE
 #define CALLBACKSIGARG(sig, ...) {CallbackSig::sig, ECallbackArgs({\
 	__VA_ARGS__\
 })}
-#define CALLBACKSIGARG_EMPTY(sig) {CallbackSig::sig, ECallbackArgs({})}
+#define CALLBACKSIGARG_EMPTY(sig) {CallbackSig::sig, ECallbackArgs()}
 
 
 const std::unordered_map<CallbackSig, ECallbackArgs> CallbackSigArgs = {

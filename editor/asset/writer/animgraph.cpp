@@ -81,10 +81,10 @@ CE_EAW_IMPL(AnimGraph) {
 						}
 
 						cdata.group.push_back(JsonPair(std::to_string(cnd.paramId), 
-							JsonObject({
+							JsonObject(std::vector<JsonObject>({
 								JsonObject(compstrs[(int)cnd.comp]),
 								JsonObject(valstr)
-								})));
+								}))));
 					}
 
 					cdata2.list.push_back(cdata);

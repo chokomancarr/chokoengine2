@@ -1,4 +1,3 @@
-#pragma once
 #include "chokolait.hpp"
 #include "chokoballs.hpp"
 
@@ -35,7 +34,7 @@ namespace {
 					_set(tr->worldRotation, src->rotation);
 				}
 
-				auto& rig = tar->GetComponent<Rigidbody>();
+				auto rig = tar->GetComponent<Rigidbody>();
 				_set(rig->velocity, src->rigidbody.velocity);
 				_set(rig->angularVelocity, src->rigidbody.rotVelocity);
 				_set(rig->acceleration, src->rigidbody.accel);
@@ -167,14 +166,14 @@ void Physics::OnBodyChanged(const SceneObject& o) {
 	}
 	if (!!obj->collider) {
 #define _set(src, tar) ctr->tar = *(decltype(ctr->tar)*)&(col->src())
-		auto& col = (*it)->GetComponent<Collider>();
+		auto col = (*it)->GetComponent<Collider>();
 		switch (col->type()) {
 		case ColliderType::InfPlane: {
 			//auto& ctr = (CB::Collider_InfPlane)obj->collider;
 			break;
 		}
 		case ColliderType::Sphere: {
-			auto& ctr = (CB::Collider_Sphere)obj->collider;
+			auto ctr = (CB::Collider_Sphere)obj->collider;
 			_set(radius, radius);
 			break;
 		}

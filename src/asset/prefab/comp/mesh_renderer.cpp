@@ -5,9 +5,9 @@ CE_BEGIN_NAMESPACE
 namespace PrefabMR {
 	PrefabItem toPrefab(const MeshSkinModifier& mod);
 
-	void instMeshModifier(MeshShapeModifier& mod, const PrefabItemGroup& data);
-	void instMeshModifier(MeshSkinModifier& mod, const PrefabItemGroup& data);
-	void instMeshModifier(MeshClothModifier& mod, const PrefabItemGroup& data);
+	void instMeshModifier(const MeshShapeModifier& mod, const PrefabItemGroup& data);
+	void instMeshModifier(const MeshSkinModifier& mod, const PrefabItemGroup& data);
+	void instMeshModifier(const MeshClothModifier& mod, const PrefabItemGroup& data);
 }
 
 CE_PR_IMPL_COMP(MeshRenderer) {
@@ -54,8 +54,9 @@ CE_PR_IMPL_COMP_APP(MeshRenderer) {
 			PrefabMR::instMeshModifier(c->AddModifier<MeshSkinModifier>(), m.value.group);
 		}
 	}
-	const auto& mats = _CE_PR_GET<const PrefabItemGroup&>(this, "materials", *(const PrefabItemGroup*)nullptr);
-	if (&mats) {
+	static const PrefabItemGroup grp = {};
+	const auto& mats = _CE_PR_GET<const PrefabItemGroup&>(this, "materials", grp);
+	if (&mats == &grp) {
 		std::vector<Material> _mats = c->materials();
 		const auto n = mats.size();
 		_mats.resize(std::max(n, _mats.size()));

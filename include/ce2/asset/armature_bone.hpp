@@ -34,7 +34,8 @@ public:
 		Vec3 scl;
 
 		Mat4x4 toMat() const;
-	} getTRS() const;
+	};
+	TRS getTRS() const;
 };
 
 /* A bone in an armature (generated)

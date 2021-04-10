@@ -3,7 +3,7 @@
 CE_BEGIN_NAMESPACE
 
 namespace PrefabMR {
-	void instMeshModifier(MeshClothModifier& mod) {
+	void instMeshModifier(const MeshClothModifier& mod) {
 
 	}
 }

@@ -8,7 +8,7 @@ void _SceneObject::UnlinkPrefabTree() {
 
 _SceneObject::_SceneObject(const std::string& nm, const Vec3& pos, const Quat& rot,
 		const Vec3& scl) : _Object(nm), _components({}), _children(0), _scene(nullptr),
-		_parent(nullptr), _prefabInfo(), _wasActive(false) {
+		_parent(nullptr), _prefabInfo(), _active(true), _wasActive(false) {
 	_transform._object = this;
 	_transform._localPosition = pos;
 	_transform._localScale = scl;

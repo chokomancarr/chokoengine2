@@ -33,6 +33,12 @@ template <class U, typename std::enable_if<
 Ref_w<T>::Ref_w(const Ref_w<U>& ref) : _object(std::dynamic_pointer_cast<T>(ref._object)) {}
 
 template <class T>
+Ref_w<T>& Ref_w<T>::operator =(std::nullptr_t) {
+    _object.reset();
+    return *this;
+}
+
+template <class T>
 Ref_w<T>& Ref_w<T>::operator =(const Ref<T>& rhs) {
     _object = rhs._object;
     return *this;
@@ -48,11 +54,15 @@ template <class T>
 T* Ref_w<T>::operator ->() const {
     std::shared_ptr<T> o = 0;
     if (!(o = _object.lock())) {
-        Debug::Error("Object Reference", "Cannot dereference: reference is empty!");
+		auto btp = std::string(std::strstr(Debug::DemangleSymbol(typeid(*this).name()).c_str(), "::_") + 3);
+		btp.pop_back();
+        Debug::Error("Object Reference", "Cannot dereference p" + btp + ": reference is empty!");
         return nullptr;
     }
     else if (o->_deleted) {
-        Debug::Error("Object Reference", "Cannot dereference: object is deleted!");
+		auto btp = std::string(std::strstr(Debug::DemangleSymbol(typeid(*this).name()).c_str(), "::_") + 3);
+		btp.pop_back();
+        Debug::Error("Object Reference", "Cannot dereference p" + btp + ": reference is empty!");
         return nullptr;
     }
     return o.get();

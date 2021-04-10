@@ -23,7 +23,7 @@ UI_Ext::Layout::Block("", lt, [&]() {
 		CE_E_INC_Y();
 		CE_E_EDIT_TG(vr.defaultValue., "value", b);
 	}
-	CE_E_LIST_ADD(obj->vars(), _AnimGraph::Var());
+	CE_E_LIST_ADD(obj->vars(), _AnimGraph::Var(),);
 });
 
 

@@ -42,13 +42,13 @@ Ref<T>& Ref<T>::operator =(const Ref<T>& rhs) {
 template <class T>
 T* Ref<T>::operator ->() const {
     if (!_object) {
-		auto btp = std::string(std::strstr(typeid(*this).name(), "::_") + 3);
+		auto btp = std::string(std::strstr(Debug::DemangleSymbol(typeid(*this).name()).c_str(), "::_") + 3);
 		btp.pop_back();
         Debug::Error("Object Reference", "Cannot dereference " + btp + ": reference is empty!");
         return nullptr;
     }
     else if (_object->_deleted) {
-		auto btp = std::string(std::strstr(typeid(*this).name(), "::_") + 3);
+		auto btp = std::string(std::strstr(Debug::DemangleSymbol(typeid(*this).name()).c_str(), "::_") + 3);
 		btp.pop_back();
         Debug::Error("Object Reference", "Cannot dereference " + btp + ": object is deleted!");
         return nullptr;

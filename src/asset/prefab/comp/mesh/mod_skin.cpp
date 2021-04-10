@@ -10,7 +10,7 @@ namespace PrefabMR {
 		return PrefabItem(std::move(res));
 	}
 
-	void instMeshModifier(MeshSkinModifier& mod, const PrefabItemGroup& data) {
+	void instMeshModifier(const MeshSkinModifier& mod, const PrefabItemGroup& data) {
 		for (auto& d : data) {
 			if (d.name == "rig") {
 				const auto cref = d.Get<Prefab_CompRef>();

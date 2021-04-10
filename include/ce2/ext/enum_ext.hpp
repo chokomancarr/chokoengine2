@@ -1,18 +1,28 @@
 #pragma once
-#include "chokoengine.hpp"
+#include <type_traits>
 
-CE_BEGIN_NAMESPACE
+#define CE_ENUM_OP_DEF(op) \
+template <typename E, typename T>\
+constexpr inline typename std::enable_if<std::is_enum<E>::value, E>::type operator op(E a, T b) {\
+	return E((size_t)a op (size_t)b);\
+}\
+template <typename E, typename T>\
+constexpr inline typename std::enable_if<std::is_enum<E>::value, E>::type& operator op##=(E& a, const T b) {\
+	return (a = a op b);\
+}
 
-/* Defines flag operations for an enum
- * The _MASK flag must be defined
- */
-#define CE_DEF_ENUM_OP_FLAGS(T)\
-constexpr inline T operator~ (const T a) { return (T)(~(size_t)a & ((size_t)T::_MASK - 1); }\
-constexpr inline T operator| (const T a, const T b) { return (T)((size_t)a | (size_t)b); }\
-constexpr inline T operator& (const T a, const T b) { return (T)((size_t)a & (size_t)b); }\
-constexpr inline T operator^ (const T a, const T b) { return (T)((size_t)a ^ (size_t)b); }\
-inline T& operator|= (T& a, const T b) { return (T&)((size_t&)a |= (size_t)b); }\
-inline T& operator&= (T& a, const T b) { return (T&)((size_t&)a &= (size_t)b); }\
-inline T& operator^= (T& a, const T b) { return (T&)((size_t&)a ^= (size_t)b); }
+CE_ENUM_OP_DEF(&)
+CE_ENUM_OP_DEF(|)
+CE_ENUM_OP_DEF(^)
 
-CE_END_NAMESPACE
+#undef CE_ENUM_OP_DEF
+
+template <typename E, typename = typename std::enable_if<std::is_enum<E>::value, E>::type*>\
+constexpr inline E operator~(E a) {\
+	return (size_t)a ^ ((size_t)E::_MASK);
+}
+
+template <typename E, typename = typename std::enable_if<std::is_enum<E>::value, E>::type*>\
+constexpr inline bool operator!(E a) {\
+	return !(size_t)a;
+}

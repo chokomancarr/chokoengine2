@@ -1,6 +1,8 @@
 #pragma once
 #include "chokoengine.hpp"
 
+namespace std { template <> struct hash<CE_NS ComponentType> { size_t operator() (const CE_NS ComponentType &t) const { return size_t(t); } }; }
+
 CE_BEGIN_NAMESPACE
 
 #include "../comp/detail/compdefsall.inl"

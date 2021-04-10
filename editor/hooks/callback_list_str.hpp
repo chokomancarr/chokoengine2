@@ -5,6 +5,8 @@
 #pragma once
 #include "chokoeditor.hpp"
 
+namespace std { template <> struct hash<CE_ED_NS CallbackSig> { size_t operator() (const CE_ED_NS CallbackSig &t) const { return size_t(t); } }; }
+
 CE_BEGIN_ED_NAMESPACE
 
 const std::unordered_map<CallbackSig, std::string> CallbackSigStr = {

@@ -79,7 +79,7 @@ void UI_Ext::Editor::Gradient(Layout::InfoSt& lt, CE_NS Gradient& gd) {
 	CE_E_INC_Y();
 
 	if (changed) {
-		auto& it = std::find_if(gd.entries.begin(), gd.entries.end(), [&](const Gradient::Entry& e2) {
+		auto it = std::find_if(gd.entries.begin(), gd.entries.end(), [&](const Gradient::Entry& e2) {
 			return e2.position > _egdil->position;
 		});
 		if (it != gd.entries.end() && (&*it - _egdil) != 1) {

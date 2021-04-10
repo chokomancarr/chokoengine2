@@ -35,6 +35,8 @@ public:
 		!std::is_base_of<T, U>::value, U>::type* = nullptr>
 	explicit Ref_w(const Ref_w<U>& ref);
 
+	Ref_w<T>& operator =(std::nullptr_t);
+
 	Ref_w<T>& operator =(const Ref<T>& rhs);
 
 	Ref_w<T>& operator =(const Ref_w<T>& rhs);

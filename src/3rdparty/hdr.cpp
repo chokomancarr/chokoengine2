@@ -9,7 +9,8 @@ namespace {
 }
 
 unsigned char* hdr::read_hdr(const char *filename, unsigned int *w, unsigned int *h) {
-	return read_hdr(std::ifstream(filename, std::ios::binary), w, h);
+	auto strm = std::ifstream(filename, std::ios::binary);
+	return read_hdr(strm, w, h);
 }
 
 unsigned char* hdr::read_hdr(std::istream& strm, unsigned int *w, unsigned int *h) {

@@ -11,6 +11,7 @@ print("generating: " + path2)
 first_word = ""
 first_inc = ""
 ns_def = ""
+ns_def_s = "CE_NS "
 
 while first_word != "enum":
     line = src_file.readline().strip()
@@ -21,6 +22,8 @@ while first_word != "enum":
             first_inc = line
     elif line[0:8] == "CE_BEGIN":
         ns_def = line[8:]
+        if (len(ns_def) > 10):
+            ns_def_s = "CE" + ns_def[:-9] + "NS "
 
 enum_name = lsplit[1]
 if enum_name == "class":
@@ -35,7 +38,10 @@ dst_file.write(R"""/*
  * DO NOT EDIT
  */
 #pragma once
-""" + first_inc + "\n\nCE_BEGIN" + ns_def + "\
+""" + first_inc + "\n\n"
+
++ "namespace std { template <> struct hash<" + ns_def_s + enum_name + "> { size_t operator() (const " + ns_def_s + enum_name + " &t) const { return size_t(t); } }; }"
++ "\n\nCE_BEGIN" + ns_def + "\
 \n\nconst std::unordered_map<""" + enum_name + ", std::string> " + enum_name + "Str = {\n")
 
 strs = []

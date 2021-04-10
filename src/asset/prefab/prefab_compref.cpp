@@ -30,10 +30,10 @@ Component Prefab_CompRef::Seek(const SceneObject& root) const {
 }
 
 JsonObject Prefab_CompRef::ToJson() const {
-	return JsonObject({
+	return JsonObject(std::vector<JsonPair>({
 		JsonPair(JsonObject("object"), objref.ToJson()),
 		JsonPair(JsonObject("component"), ComponentTypeStr.at(type))
-	});
+	}));
 }
 
 CE_END_NAMESPACE
