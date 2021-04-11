@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(glm REQUIRED)
+#find_package(glm REQUIRED)
 if (NOT APPLE)
 	find_package(GLEW REQUIRED)
 endif()
@@ -49,7 +49,7 @@ set(INC_DIRS
 	${JPEG_INCLUDE_DIR}
 	${FREETYPE_INCLUDE_DIRS}
 	${ZLIB_INCLUDE_DIRS}
-	${PROJECT_SOURCE_DIR}/chokoballs/include
+	#${PROJECT_SOURCE_DIR}/chokoballs/include
 )
 if (NOT APPLE)
 set(INC_DIRS
@@ -65,7 +65,7 @@ if (MSVC)
 endif()
 
 set(LINK_DIRS
-    ${PROJECT_SOURCE_DIR}/chokoballs/build/lib
+	#${PROJECT_SOURCE_DIR}/chokoballs/build/lib
 )
 
 set(LIBS
@@ -75,7 +75,7 @@ set(LIBS
 	${JPEG_LIBRARY}
 	${FREETYPE_LIBRARIES}
 	${ZLIB_LIBRARIES}
-	ChokoBalls
+	ChokoBalls::ChokoBalls
 )
 if (NOT APPLE)
 set(LIBS
@@ -131,6 +131,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 add_library(ChokoEngine SHARED "")
+add_library(CE2::CE2 ALIAS ChokoEngine)
 target_compile_definitions(ChokoEngine PRIVATE BUILD_CHOKOENGINE=1)
 
 if(MSVC)
@@ -138,6 +139,7 @@ if(MSVC)
     set_target_properties(ChokoEngine PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
 
+add_subdirectory(chokoballs)
 add_subdirectory(src)
 
 set(enum_gen_strs
@@ -171,6 +173,7 @@ set(LIBS
 #------modules-------
 
 add_library(Module_AssetCommon STATIC "")
+add_library(CE2::MOD_AC ALIAS Module_AssetCommon)
 if(MSVC)
     set_target_properties(Module_AssetCommon PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
@@ -183,6 +186,8 @@ set(LIBS_MA
 )
 
 add_library(Module_AssetArchive STATIC "")
+add_library(CE2::MOD_AA ALIAS Module_AssetArchive)
+
 if(MSVC)
     set_target_properties(Module_AssetArchive PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
@@ -192,6 +197,8 @@ target_include_directories(Module_AssetArchive PRIVATE include/ce2/modules/aa)
 target_link_libraries(Module_AssetArchive ${LIBS_MA})
 
 add_library(Module_AssetEditor STATIC "")
+add_library(CE2::MOD_AE ALIAS Module_AssetEditor)
+
 if(MSVC)
     set_target_properties(Module_AssetEditor PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
@@ -210,6 +217,8 @@ set(LIBS_A
 )
 
 add_library(Module_PlayerEditor STATIC "")
+add_library(CE2::MOD_PE ALIAS Module_PlayerEditor)
+
 if(MSVC)
     set_target_properties(Module_PlayerEditor PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
@@ -219,6 +228,8 @@ target_include_directories(Module_PlayerEditor PRIVATE include/ce2/modules/pe)
 target_link_libraries(Module_PlayerEditor ${LIBS_E})
 
 add_library(Module_PlayerRelease STATIC "")
+add_library(CE2::MOD_PR ALIAS Module_PlayerRelease)
+
 if(MSVC)
     set_target_properties(Module_PlayerRelease PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 endif()
@@ -229,57 +240,61 @@ target_link_libraries(Module_PlayerRelease ${LIBS_R})
 
 #------editor-------
 
-add_executable(ChokoEditor "")
-add_subdirectory(editor)
+if(NOT CE_NO_EDITOR)
 
-if(MSVC)
-    target_sources(ChokoEditor PRIVATE cpp.hint)
-    set_target_properties(ChokoEditor PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
-endif()
+	add_executable(ChokoEditor "")
+	add_subdirectory(editor)
 
-add_dependencies(ChokoEditor Module_AssetEditor Module_PlayerEditor)
-
-set(enum_gen_strs
-	${PROJECT_SOURCE_DIR}/editor/hooks/callback_list
-)
-
-foreach (enumfl ${enum_gen_strs})
-	ADD_CUSTOM_COMMAND(OUTPUT "${enumfl}_str.hpp"
-		COMMAND python "${PROJECT_SOURCE_DIR}/preproc/enum2str.py" "${enumfl}.hpp"
-		DEPENDS "${enumfl}.hpp" "${PROJECT_SOURCE_DIR}/preproc/enum2str.py"
-	)
-	target_sources(ChokoEditor PRIVATE
-		"${enumfl}_str.hpp"
-	)
-endforeach()
-
-target_include_directories(ChokoEditor PRIVATE editor)
-target_link_libraries(ChokoEditor ${LIBS_E})
-
-#------tasks------
-
-set(taskrunner_list
-	builder_dbg
-	builder_rel
-)
-
-foreach(tasknm ${taskrunner_list})
-	add_executable(${tasknm} "")
 	if(MSVC)
-		set_target_properties(${tasknm} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+		target_sources(ChokoEditor PRIVATE cpp.hint)
+		set_target_properties(ChokoEditor PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 	endif()
-	add_subdirectory(editor/taskrunners/${tasknm})
 
-	target_include_directories(${tasknm} PRIVATE editor/taskrunners/${tasknm})
-	target_link_libraries(${tasknm} ${LIBS})
-endforeach()
+	add_dependencies(ChokoEditor Module_AssetEditor Module_PlayerEditor)
 
-foreach (file_i ${DLLS})
-	add_custom_command(
-		TARGET ChokoEngine
-		POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different
-		${file_i}
-		"${CMAKE_BINARY_DIR}/bin/"
+	set(enum_gen_strs
+		${PROJECT_SOURCE_DIR}/editor/hooks/callback_list
 	)
-endforeach(file_i)
+
+	foreach (enumfl ${enum_gen_strs})
+		ADD_CUSTOM_COMMAND(OUTPUT "${enumfl}_str.hpp"
+			COMMAND python "${PROJECT_SOURCE_DIR}/preproc/enum2str.py" "${enumfl}.hpp"
+			DEPENDS "${enumfl}.hpp" "${PROJECT_SOURCE_DIR}/preproc/enum2str.py"
+		)
+		target_sources(ChokoEditor PRIVATE
+			"${enumfl}_str.hpp"
+		)
+	endforeach()
+
+	target_include_directories(ChokoEditor PRIVATE editor)
+	target_link_libraries(ChokoEditor ${LIBS_E})
+
+	#------tasks------
+
+	set(taskrunner_list
+		builder_dbg
+		builder_rel
+	)
+
+	foreach(tasknm ${taskrunner_list})
+		add_executable(${tasknm} "")
+		if(MSVC)
+			set_target_properties(${tasknm} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
+		endif()
+		add_subdirectory(editor/taskrunners/${tasknm})
+
+		target_include_directories(${tasknm} PRIVATE editor/taskrunners/${tasknm})
+		target_link_libraries(${tasknm} ${LIBS})
+	endforeach()
+
+	foreach (file_i ${DLLS})
+		add_custom_command(
+			TARGET ChokoEngine
+			POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			${file_i}
+			"${CMAKE_BINARY_DIR}/bin/"
+		)
+	endforeach(file_i)
+
+endif()
