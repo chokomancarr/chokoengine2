@@ -19,16 +19,6 @@ find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
 
 if (MSVC)
-	add_definitions(-DPLATFORM_WIN -DWIN32)
-elseif (LINUX)
-	add_definitions(-DPLATFORM_LNX)
-elseif (APPLE)
-	add_definitions(-DPLATFORM_MAC -DGL_SILENCE_DEPRECATION -DCL_SILENCE_DEPRECATION)
-else()
-	message(FATAL_ERROR "Platform not supported!")
-endif()
-
-if (MSVC)
 	SET(CMAKE_CXX_FLAGS "/EHsc /W3")
 	string(REPLACE "/O2" "/Od" CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
 else()
@@ -132,7 +122,24 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 add_library(ChokoEngine SHARED "")
 add_library(CE2::CE2 ALIAS ChokoEngine)
+
+if (MSVC)
+	target_compile_definitions(ChokoEngine PUBLIC PLATFORM_WIN=1 WIN32=1)
+elseif (LINUX)
+	target_compile_definitions(ChokoEngine PUBLIC PLATFORM_LNX=1)
+elseif (APPLE)
+	target_compile_definitions(ChokoEngine PUBLIC PLATFORM_MAC=1 GL_SILENCE_DEPRECATION=1 CL_SILENCE_DEPRECATION=1)
+else()
+	message(FATAL_ERROR "Platform not supported!")
+endif()
+
+
 target_compile_definitions(ChokoEngine PRIVATE BUILD_CHOKOENGINE=1)
+
+target_include_directories(ChokoEngine PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${FREETYPE_INCLUDE_DIRS}
+)
 
 if(MSVC)
     target_sources(ChokoEngine PRIVATE cpp.hint)
@@ -167,7 +174,7 @@ target_link_libraries(ChokoEngine ${LIBS})
 
 set(LIBS
 	${LIBS}
-	ChokoEngine
+	CE2::CE2
 )
 
 #------modules-------
@@ -226,6 +233,10 @@ target_compile_definitions(Module_PlayerEditor PRIVATE BUILD_MODULE_PE=1)
 add_subdirectory(src/modules/player_editor)
 target_include_directories(Module_PlayerEditor PRIVATE include/ce2/modules/pe)
 target_link_libraries(Module_PlayerEditor ${LIBS_E})
+
+set(LIBS_R
+	${LIBS}
+)
 
 add_library(Module_PlayerRelease STATIC "")
 add_library(CE2::MOD_PR ALIAS Module_PlayerRelease)
