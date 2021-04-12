@@ -25,14 +25,25 @@ void AssetLoader::Init(const std::string& basePath) {
 
 JsonObject AssetLoader::LoadMeta(const std::string& path) {
 	auto obj = JsonParser::Parse(IO::ReadFile(_basePath + path + ".meta"));
+	if (obj.type != JsonObject::Type::Group) {
+		Debug::Warning("Asset MetaData", "Invalid file contents!");
+		return {};
+	}
+	if (obj.group.size() < 2) {
+		Debug::Warning("Asset MetaData", "Invalid file contents!");
+		return {};
+	}
 	if (obj.group[0].key.string != "signature") {
-		Debug::Error("Asset MetaData", "Signature entry missing!");
+		Debug::Warning("Asset MetaData", "Signature entry missing!");
+		return {};
 	}
 	if (obj.group[0].value.string != CE_MOD_AE_META_SIGNATURE) {
-		Debug::Error("Asset MetaData", "Signature is incorrect!");
+		Debug::Warning("Asset MetaData", "Signature is incorrect!");
+		return {};
 	}
 	if (obj.group[1].key.string != "version") {
-		Debug::Error("Asset MetaData", "Version entry missing!");
+		Debug::Warning("Asset MetaData", "Version entry missing!");
+		return {};
 	}
 	//check for version compat here
 	return obj;

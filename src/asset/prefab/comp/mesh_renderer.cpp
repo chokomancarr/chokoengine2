@@ -56,7 +56,7 @@ CE_PR_IMPL_COMP_APP(MeshRenderer) {
 	}
 	static const PrefabItemGroup grp = {};
 	const auto& mats = _CE_PR_GET<const PrefabItemGroup&>(this, "materials", grp);
-	if (&mats == &grp) {
+	if (&mats != &grp) {
 		std::vector<Material> _mats = c->materials();
 		const auto n = mats.size();
 		_mats.resize(std::max(n, _mats.size()));

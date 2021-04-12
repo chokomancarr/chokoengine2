@@ -216,11 +216,11 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 
 	gbuf->Unbind();
 
-	glBlendFunc(GL_ONE, GL_ONE);
 	glDepthMask(false);
 	glDepthFunc(GL_ALWAYS);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
+
 
 	//we render to the temporary target
 	//because we want to random-sample from it
@@ -229,12 +229,17 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 
 	if (preBlit) preBlit();
 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	RenderSky(_w, _h, gbuf, ip, false);
+
+	glBlendFunc(GL_ONE, GL_ONE);
+
 	if (useProbes) {
 		for (auto& p : probes) {
 			ApplyLightProbe(p, _w, _h, gbuf, ip);
 		}
 	}
-	RenderSky(_w, _h, gbuf, ip, false);
 
 	for (auto& l : lights) {
 		switch (l->_type) {
@@ -307,40 +312,37 @@ void Renderer::RenderScene(const RenderTarget& tar, const RenderTarget& ttar, co
 }
 
 void Renderer::RenderSky(int w, int h, const FrameBuffer& gbuf, const Mat4x4& ip, bool tr) {
-	if (!sky || !sky->loaded()) {
-		UI::Texture(Display::fullscreenRect(), gbuf->tex(3));
-	}
-	else {
-		skyShad->Bind();
-		glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, fptr(ip));
-		glUniform2f(skyShad->Loc(1), w, h);
-		glUniform1i(skyShad->Loc(2), false); //is_ortho
-		glUniform1i(skyShad->Loc(3), 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
-		glUniform1i(skyShad->Loc(4), 1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
-		glUniform1i(skyShad->Loc(5), 2);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
-		glUniform1i(skyShad->Loc(6), 3);
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_texs[3]->_pointer);
-		glUniform1i(skyShad->Loc(7), 4);
-		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
-		glUniform1i(skyShad->Loc(8), 5);
-		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_2D, sky->_pointer);
-		glUniform1f(skyShad->Loc(9), sky->_brightness);
-		glUniform1i(skyShad->Loc(10), sky->_layers - 1);
-		glUniform1f(skyShad->Loc(11), tr ? 1 : 0);
-		_emptyVao->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		_emptyVao->Unbind();
-		skyShad->Unbind();
-	}
+	bool ok = !!sky && sky->loaded();
+
+	skyShad->Bind();
+	glUniformMatrix4fv(skyShad->Loc(0), 1, GL_FALSE, fptr(ip));
+	glUniform2f(skyShad->Loc(1), w, h);
+	glUniform1i(skyShad->Loc(2), false); //is_ortho
+	glUniform1i(skyShad->Loc(3), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[0]->_pointer);
+	glUniform1i(skyShad->Loc(4), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[1]->_pointer);
+	glUniform1i(skyShad->Loc(5), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[2]->_pointer);
+	glUniform1i(skyShad->Loc(6), 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_texs[3]->_pointer);
+	glUniform1i(skyShad->Loc(7), 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, gbuf->_depth->_pointer);
+	glUniform1i(skyShad->Loc(8), 5);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, ok ? sky->_pointer : 0);
+	glUniform1f(skyShad->Loc(9), ok ? sky->_brightness : 0);
+	glUniform1i(skyShad->Loc(10), ok ? sky->_layers - 1 : -1);
+	glUniform1f(skyShad->Loc(11), tr ? 1 : 0);
+	_emptyVao->Bind();
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	_emptyVao->Unbind();
+	skyShad->Unbind();
 }
 
 bool Renderer::Init() {
