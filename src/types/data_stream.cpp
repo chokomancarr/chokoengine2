@@ -2,7 +2,7 @@
 
 CE_BEGIN_NAMESPACE
 
-DataStream::DataStream(std::ifstream& strm, size_t len, const std::string& path)
+DataStream::DataStream(std::istream& strm, size_t len, const std::string& path)
 	:_usefstrm(false), _fstrm(), _istrm(strm), path(path), len(len) {}
 
 DataStream::DataStream(std::ifstream&& strm, size_t len, const std::string& path)
@@ -13,9 +13,11 @@ DataStream::DataStream(const std::string& path) : DataStream(path.c_str()) {}
 DataStream::DataStream(const char* path) : _usefstrm(true),
 		_fstrm(std::ifstream(path, std::ios::binary | std::ios::ate)),
 		_istrm(_fstrm), path(path), len(0) {
-	len = _fstrm.tellg();
-	_fstrm.seekg(0);
-	_fstrm.clear();
+	if (_fstrm) {
+		len = _fstrm.tellg();
+		_fstrm.seekg(0);
+		_fstrm.clear();
+	}
 }
 
 bool DataStream::operator !() const {

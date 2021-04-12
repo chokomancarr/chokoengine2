@@ -14,9 +14,11 @@ void _MeshSkinModifier::InitResult(size_t n) {
 
 void _MeshSkinModifier::InitRig() {
 	if (_rig == _attachedRig) return;
+
 	if (parent->object()->parent() != _rig->object()->parent()) {
 		Debug::Error("MeshSkinModifier", "rig must be at the same child hierarchy!");
 	}
+	_attachedRig = _rig;
 	InitWeights();
 	_matBuf = TextureBuffer::New(VertexBuffer_New(true, 16, _rig->boneObjs().size(), nullptr), GL_RGBA32F);
 }

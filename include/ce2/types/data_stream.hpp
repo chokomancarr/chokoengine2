@@ -9,7 +9,7 @@ class DataStream {
 	std::istream& _istrm;
 
 public:
-	DataStream(std::ifstream& strm, size_t len = -1, const std::string& path = "");
+	DataStream(std::istream& strm, size_t len = -1, const std::string& path = "");
 	DataStream(std::ifstream&& strm, size_t len = -1, const std::string& path = "");
 	DataStream(const std::string& path);
 	DataStream(const char* path);

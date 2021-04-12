@@ -123,6 +123,8 @@ JsonObject JsonParser::Parse(std::string text) {
 		byte(text[2]) == 0xbf) {
 		text = text.substr(3);
 	}
+
+	if (text.empty()) return {};
 	
 	std::string text2;
 	text2.reserve(text.size());

@@ -14,8 +14,9 @@ namespace {
 				sl += l ? "|  " : "   ";
 			}
 			sl += (a == sz - 1) ? "`--" : "+--";
-			s += IO::ColorOutput(sl, TerminalColor::DarkGrey)
-				+ objs[a]->name();
+			s += IO::ColorOutput(sl, TerminalColor::DarkGrey);
+			if (objs[a]->active()) s += objs[a]->name();
+			else s += IO::ColorOutput(objs[a]->name(), TerminalColor::Yellow);
 			sl = " [";
 			for (auto& c : objs[a]->components()) {
 				sl += " " + c->name() + ",";
