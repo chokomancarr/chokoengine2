@@ -123,6 +123,7 @@ Mesh MeshLoader::LoadMesh(std::istream& strm) {
 	std::vector<Vec3> verts;
 	std::vector<Vec3> norms;
 	std::vector<Vec2> uvs;
+	std::vector<std::vector<Vec2>> uvs2;
 	std::vector<Int3> tris;
 	std::vector<_Mesh::VertexGroup> grps;
 	std::vector<_Mesh::ShapeKey> shps;
@@ -171,12 +172,15 @@ Mesh MeshLoader::LoadMesh(std::istream& strm) {
 			break;
 		}
 		case 'U': {
-			READ(c); //1
-			uvs.reserve(vcnt);
-			for (uint32_t a = 0; a < vcnt; a++) {
-				Vec2 uv;
-				READ(uv);
-				uvs.push_back(uv);
+			READ(c);
+			uvs.resize(vcnt);
+			strm.read((char*)uvs.data(), sizeof(Vec2) * vcnt);
+			if (c > 1) {
+				uvs2.resize(c-1);
+				for (char i = 0; i < c-1; i++) {
+					uvs2[i].resize(vcnt);
+					strm.read((char*)uvs2[i].data(), sizeof(Vec2) * vcnt);
+				}
 			}
 			break;
 		}
@@ -195,6 +199,7 @@ Mesh MeshLoader::LoadMesh(std::istream& strm) {
 					READ(grps[gi].weights[a]);
 				}
 			}
+			break;
 		}
 		case 'S': {
 			uint8_t ns = 0;
@@ -206,13 +211,13 @@ Mesh MeshLoader::LoadMesh(std::istream& strm) {
 				shp.offsets.resize(vcnt);
 				strm.read((char*)shp.offsets.data(), vcnt * sizeof(Vec3));
 			}
-		}
-		default:
-			goto asdf;
 			break;
 		}
+		default:
+			Debug::Error("MeshLoader::LoadMesh", "Unexpected data identifier \'" + std::to_string({c}) + "\' in file (offset " + std::to_string(strm.tellg()) + ")!");
+			return nullptr;
+		}
 	}
-	asdf:
 
 	if (!verts.size()) {
 		Debug::Warning("Mesh Parser", "vertex count is zero!");

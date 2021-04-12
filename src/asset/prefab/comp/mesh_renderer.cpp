@@ -53,6 +53,9 @@ CE_PR_IMPL_COMP_APP(MeshRenderer) {
 		if (m.name == "skin") {
 			PrefabMR::instMeshModifier(c->AddModifier<MeshSkinModifier>(), m.value.group);
 		}
+		else if (m.name == "shape") {
+			PrefabMR::instMeshModifier(c->AddModifier<MeshShapeModifier>(), m.value.group);
+		}
 	}
 	static const PrefabItemGroup grp = {};
 	const auto& mats = _CE_PR_GET<const PrefabItemGroup&>(this, "materials", grp);

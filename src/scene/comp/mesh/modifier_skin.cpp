@@ -43,7 +43,7 @@ void _MeshSkinModifier::InitWeights() {
 		byte a = 0;
 		float tot = 0;
 		for (size_t g = 0, n = grps.size(); g < n; g++) {
-			auto bn = bis[g];
+			const auto bn = bis[g];
 			if (bn == -1) continue;
 			const auto w = grps[g].weights[i];
 			if (w > 0) {
@@ -52,7 +52,7 @@ void _MeshSkinModifier::InitWeights() {
 				if (++a == 4) break;
 			}
 		}
-		if (a == 0) {
+		if (!a) {
 			noweights++;
 		}
 		else {
@@ -63,7 +63,7 @@ void _MeshSkinModifier::InitWeights() {
 	}
 
 	if (!!noweights) {
-		Debug::Warning("SMR", std::to_string(noweights) + " vertices in \"" + mesh->name() + "\" have no weights assigned!");
+		Debug::Warning("SMR", std::to_string(noweights) + " out of " + std::to_string(vsz) + " vertices in \"" + mesh->name() + "\" have no weights assigned!");
 	}
 
 	_whtIdBuf = TextureBuffer::New(

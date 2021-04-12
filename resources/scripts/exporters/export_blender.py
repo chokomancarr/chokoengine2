@@ -1,5 +1,4 @@
 import bpy as bpy
-import bmesh
 import itertools
 import os
 import sys
@@ -18,8 +17,6 @@ def printlog(msg):
 
 class CE_Exporter():
     SIGNATURE = "ChokoEngine Mesh 20"
-
-    is_28 = (bpy.app.version[1] >= 80)
     
     args = sys.argv[sys.argv.index("--") + 1:]
     scene = bpy.context.scene
@@ -45,11 +42,16 @@ class CE_Exporter():
     
     def execute(self):
         global logfile, indent0
-        self.cleandir(self.fd)
+
+        if bpy.app.version[1] < 80:
+            printlog("fatal: please use Blender 2.8 or newer!!!")
+            return
 
         if os.access(self.fd, os.W_OK) is False:
             print("!permission denied : " + self.fd)
             return False
+
+        self.cleandir(self.fd)
             
         logfile = open(self.fd + self.fn + ".log.txt", "w")
         
@@ -65,7 +67,7 @@ class CE_Exporter():
         
         object_entries = []
         
-        has_arm = False;
+        has_arm = False
         
         for obj in arranged_objs:
             if obj.type == 'MESH' or obj.type == 'ARMATURE':
@@ -92,7 +94,7 @@ class CE_Exporter():
         self.write(prefab_file, indent(2) + '"children.ObjGroup":{\n')
         
         self.export_entries(prefab_file, object_entries, indent(2))
-        indent0 = "";
+        indent0 = ""
         
         self.write(prefab_file, indent(2) + "}\n")
         self.write(prefab_file, indent(1) + '},\n' + indent(1) + '"readonly":"1"\n}')
@@ -114,7 +116,7 @@ class CE_Exporter():
         n = len(entries)
         for i, e in enumerate(entries, 1):
             printlog("object " + str(i) + "/" + str(n) + ": " + e.obj.name)
-            mesh_is_skinned = False;
+            mesh_is_skinned = False
             self.write(prefab_file, indent(1) + '"object":{\n')
             self.write(prefab_file, indent(2) + '"name.String":"' + e.obj.name + '",\n')
             if e.obj.parent_type == "BONE":
@@ -130,18 +132,19 @@ class CE_Exporter():
             self.write(prefab_file, indent(2) + '"scale.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(scll[0], scll[2], scll[1]))
 
             if e.obj.type == 'MESH':
+                mesh_is_shaped = e.obj.data.shape_keys and len(e.obj.data.shape_keys.key_blocks)
                 self.write(prefab_file, indent(2) + '"components.ObjGroup":{\n' + indent(3) + '"MeshRenderer":{\n')
                 self.write(prefab_file, indent(4) + '"mesh.Asset":{"Mesh":"' + self.relfd + e.obj.name + '.mesh' + '"},\n')
+                self.write(prefab_file, indent(4) + '"modifiers.ItemGroup":{\n')
                 if mesh_is_skinned:
-                    self.write(prefab_file, indent(4) + '"modifiers.ItemGroup":{\n')
                     self.write(prefab_file, indent(5) + '"skin.ItemGroup":{\n')
                     self.write(prefab_file, indent(6) + '"rig.Component":{\n')
                     self.write(prefab_file, indent(7) + '"object":{"' + e.rig.name + '":"0"}, "component":"Rig"\n')
                     self.write(prefab_file, indent(6) + '}\n')
-                    self.write(prefab_file, indent(5) + '}\n')
-                    self.write(prefab_file, indent(4) + '},\n')
-                else:
-                    self.write(prefab_file, indent(4) + '"modifiers.ItemGroup":{},\n')
+                    self.write(prefab_file, indent(5) + ('},\n' if mesh_is_shaped else '}\n'))
+                if mesh_is_shaped:
+                    self.write(prefab_file, indent(5) + '"shape.ItemGroup":{}\n')
+                self.write(prefab_file, indent(4) + '},\n')
                 self.write(prefab_file, indent(4) + '"materials.ItemGroup":{\n')
                 ml = len(e.obj.data.materials)
                 for j in range(max(ml-1, 0)):
@@ -177,35 +180,22 @@ class CE_Exporter():
                 arma = mod
                 obj.modifiers.remove(mod)
                 break
-        
-        #apply modifiers
-        bm = bmesh.new()
-        if self.is_28:
-            bm.from_mesh(obj.to_mesh())
-            bpy.context.view_layer.objects.active = obj
-        else:
-            bm.from_mesh(obj.to_mesh(bpy.context.scene, False, 'PREVIEW'))
-            bpy.context.scene.objects.active = obj
-        if bm.verts.layers.shape.keys():
+
+        bpy.context.view_layer.objects.active = obj
+
+        m = obj.data
+
+        num_shapes = len(m.shape_keys.key_blocks) if m.shape_keys else 0
+        if num_shapes:
             obj.modifiers.clear()
-            if self.is_28: #shape keys will be removed in 2.7x when calling to_mesh(,True,)
-                bpy.ops.object.shape_key_remove(all=True)
-        obj.modifiers.new("EdgeSplit", 'EDGE_SPLIT')
-        obj.modifiers["EdgeSplit"].split_angle = 1.0472 #60 degrees
-        obj.modifiers["EdgeSplit"].use_edge_sharp = True
-        obj.modifiers.new("Triangulate", 'TRIANGULATE')
-        if self.is_28:
+        else:
             while (len(obj.modifiers) > 0):
                 bpy.ops.object.modifier_apply(apply_as='DATA', modifier=obj.modifiers[0].name)
-            m = obj.to_mesh()
-        else:
-            m = obj.to_mesh(bpy.context.scene, True, 'PREVIEW')
-        
+
         #extract and clean vertex data
         verts = m.vertices
         vrts = [] #(vert_id, uv)
         loop2vrt = [] #int
-        vrt2vert = [] #int
         _vrts2 = []
         vrts2 = []
         
@@ -223,7 +213,6 @@ class CE_Exporter():
                 except ValueError:
                     vrts.append(pr)
                     loop2vrt.append(vrtc)
-                    vrt2vert.append(pr[0])
                     vrtc = vrtc + 1
                     if _vrts2:
                         vrts2.append(_vrts2[i])
@@ -233,7 +222,8 @@ class CE_Exporter():
         else:
             for i in range(len(verts)):
                 vrts.append((i, 0))
-        
+            loop2vrt = list(range(len(verts)))
+
         vrtsz = len(vrts)
 
         #write data
@@ -248,6 +238,31 @@ class CE_Exporter():
             file.write(struct.pack("<fff", v.co[0], v.co[2], -v.co[1]))
             file.write(struct.pack("<fff", v.normal[0], v.normal[2], -v.normal[1]))
         
+        #S size1 [name NULL [3xdelta4 array] array]
+        if num_shapes:
+            shapes = m.shape_keys.key_blocks
+            self.write(file, "S")
+            file.write(struct.pack("<B", num_shapes - 1))
+            is_first = True
+            for shp in shapes:
+                if is_first:
+                    is_first = False
+                else:
+                    self.write(file, shp.name + "\x00")
+                    for vrt in vrts:
+                        v = verts[vrt[0]].co
+                        vs = shp.data[vrt[0]].co
+                        delta = vs - v
+                        file.write(struct.pack("<fff", delta[0], delta[2], -delta[1]))
+            #bpy.ops.object.shape_key_remove(all=True)
+        
+        #obj.modifiers.new("EdgeSplit", 'EDGE_SPLIT')
+        #obj.modifiers["EdgeSplit"].split_angle = 1.0472 #60 degrees
+        #obj.modifiers["EdgeSplit"].use_edge_sharp = True
+        #obj.modifiers.new("Triangulate", 'TRIANGULATE')
+        #bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Triangulate")
+
+
         #F size4 [{material1 3xface4} array]
         self.write(file, "F")
         file.write(struct.pack("<i", len(m.polygons)))
@@ -255,15 +270,11 @@ class CE_Exporter():
             for poly in m.polygons:
                 file.write(struct.pack("<B", poly.material_index))
                 file.write(struct.pack("<iii", loop2vrt[poly.loop_indices[0]], loop2vrt[poly.loop_indices[1]], loop2vrt[poly.loop_indices[2]]))
-        else:
-            for poly in m.polygons:
-                file.write(struct.pack("<B", poly.material_index))
-                file.write(struct.pack("<iii", poly.loop_indices[0], poly.loop_indices[1], poly.loop_indices[2]))
         
         #U size1 [uv04 array] ([uv14 array])
         if m.uv_layers:
             self.write(file, "U")
-            file.write(struct.pack("<B", 1))
+            file.write(struct.pack("<B", 2 if vrts2 else 1))
             for v in vrts:
                 file.write(struct.pack("<ff", v[1][0], v[1][1]))
             if vrts2:
@@ -271,7 +282,7 @@ class CE_Exporter():
                     file.write(struct.pack("<ff", v[0], v[1]))
         
         #G size1 [groupName NULL array] (for each vert)[{groupSz1 [groupId1 groupWeight4 array]} array]
-        if len(obj.vertex_groups) > 0:
+        if len(obj.vertex_groups):
             self.write(file, "G")
             file.write(struct.pack("<B", len(obj.vertex_groups)))
             for grp in obj.vertex_groups:
@@ -281,33 +292,6 @@ class CE_Exporter():
                 file.write(struct.pack("<B", len(vert.groups)))
                 for grp in vert.groups:
                     file.write(struct.pack("<Bf", grp.group, grp.weight))
-        
-        #S size1 [name NULL [3xdelta4 array] array]
-        if len(bm.verts.layers.shape.keys()) > 1:
-            isFirst = True
-            self.write(file, "S")
-            file.write(struct.pack("<B", len(bm.verts.layers.shape.keys()) - 1))
-            bm.verts.ensure_lookup_table()
-            
-            vert2bvt = []
-            for v2 in verts:
-                i = 0
-                for v in bm.verts:
-                    if v2.co == v.co:
-                        vert2bvt.append(i)
-                        break
-                    i = i + 1
-            
-            for key in bm.verts.layers.shape.keys():
-                if isFirst:
-                    isFirst = False
-                else:
-                    val = bm.verts.layers.shape.get(key)
-                    self.write(file, key + "\x00")
-                    for vt in vrt2vert:
-                        v = bm.verts[vert2bvt[vt]]
-                        delta = v[val] - v.co
-                        file.write(struct.pack("<fff", delta[0], delta[2], -delta[1]))
             
         file.close()
         
@@ -316,7 +300,7 @@ class CE_Exporter():
         for o in objs:
             if o.parent == None:
                 self.do_arrange_objs(o, oo)
-        return oo;
+        return oo
     
     def do_arrange_objs(self, o, oo):
         oo.append(o)
