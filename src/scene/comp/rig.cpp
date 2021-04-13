@@ -14,7 +14,7 @@ void _Rig::AddBones(const SceneObject& parent, const std::vector<ArmatureBone>& 
 
         obj->name(b.name);
         auto tr = obj->transform();
-		tr->worldPosition(b.base);
+		tr->worldPosition(b.base + object()->transform()->worldPosition());
 		tr->worldRotation(rot);
 
         const auto _bn = ArmatureBoneG(b, (pi == -1) ? "" : (_boneObjs[pi].bone.sig + "/"), pi, ib * tr->worldMatrix());
@@ -54,6 +54,7 @@ int _Rig::BoneIndex(const std::string& nm) {
 void _Rig::OnLateUpdate() {
 	auto anim = _object->parent()->GetComponent<Animator>();
 
+	const auto ib = object()->transform()->worldMatrix().inverse();
 	const auto& sz = _boneObjs.size();
 	for (size_t a = 0; a < sz; a++) {
 		auto& bo = _boneObjs[a];
@@ -68,8 +69,7 @@ void _Rig::OnLateUpdate() {
 			if (vq.valid) tr->localScale(*(Vec3*)&vq.v);
 		}
 
-		if (bo.bone.parentId == -1) bo.bone.currMat = bo.obj->transform()->localMatrix();
-		else bo.bone.currMat = _boneObjs[bo.bone.parentId].bone.currMat * bo.obj->transform()->localMatrix();
+		bo.bone.currMat = ib * bo.obj->transform()->worldMatrix();
 		_matrices[a] = bo.bone.currMat * bo.bone.restMatI;
 	}
 }

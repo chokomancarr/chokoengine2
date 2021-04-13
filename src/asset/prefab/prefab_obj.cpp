@@ -64,7 +64,11 @@ SceneObject _PrefabObj::Instantiate(const SceneObject& pr) {
 	CE_PR_IFVALID(par) {
 		auto pr2 = par->second.value.scobjref.Seek(PrefabState::activeBaseObjs.top());
 		if (!!pr2) {
+			auto pos = res->transform()->worldPosition();
+			auto rot = res->transform()->worldRotation();
 			res->parent(pr2);
+			res->transform()->worldPosition(pos);
+			res->transform()->worldRotation(rot);
 		}
 		else {
 			return nullptr;

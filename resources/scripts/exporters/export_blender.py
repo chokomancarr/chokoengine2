@@ -39,7 +39,7 @@ class CE_Exporter():
             self.obj = obj
             self.children = []
             self.rig = None
-    
+
     def execute(self):
         global logfile, indent0
 
@@ -120,9 +120,17 @@ class CE_Exporter():
             self.write(prefab_file, indent(1) + '"object":{\n')
             self.write(prefab_file, indent(2) + '"name.String":"' + e.obj.name + '",\n')
             if e.obj.parent_type == "BONE":
-                self.write(prefab_file, indent(2) + '"parent_bone.String":"' + e.obj.parent_bone + '",\n')
+                for b in e.obj.parent.data.bones:
+                    if b.name == e.obj.parent_bone:
+                        tree = self.getobjtree(b)
+                        break
+                tree.extend(self.getobjtree(e.obj.parent))
+                tree.reverse()
+                self.write(prefab_file, indent(2) + '"parent.SceneObject":{ ' + ', '.join(tree) + ' },\n')
+                #self.write(prefab_file, indent(2) + '"parent_bone.String":"' + e.obj.parent_bone + '",\n')
+                
             elif e.rig:
-                self.write(prefab_file, indent(2) + '"rig.String":"' + e.rig.name + '",\n')
+            #    self.write(prefab_file, indent(2) + '"rig.String":"' + e.rig.name + '",\n')
                 mesh_is_skinned = True
             poss = e.obj.location
             self.write(prefab_file, indent(2) + '"position.Vec3":[ "{:f}", "{:f}", "{:f}" ],\n'.format(poss[0], poss[2], -poss[1]))
@@ -136,14 +144,16 @@ class CE_Exporter():
                 self.write(prefab_file, indent(2) + '"components.ObjGroup":{\n' + indent(3) + '"MeshRenderer":{\n')
                 self.write(prefab_file, indent(4) + '"mesh.Asset":{"Mesh":"' + self.relfd + e.obj.name + '.mesh' + '"},\n')
                 self.write(prefab_file, indent(4) + '"modifiers.ItemGroup":{\n')
+                if mesh_is_shaped:
+                    self.write(prefab_file, indent(5) + '"shape.ItemGroup":{}' + (',\n' if mesh_is_skinned else '\n'))
                 if mesh_is_skinned:
                     self.write(prefab_file, indent(5) + '"skin.ItemGroup":{\n')
                     self.write(prefab_file, indent(6) + '"rig.Component":{\n')
-                    self.write(prefab_file, indent(7) + '"object":{"' + e.rig.name + '":"0"}, "component":"Rig"\n')
+                    tree = self.getobjtree(e.rig)
+                    tree.reverse()
+                    self.write(prefab_file, indent(7) + '"object":{ ' + ', '.join(tree) + ' }, "component":"Rig"\n')
                     self.write(prefab_file, indent(6) + '}\n')
-                    self.write(prefab_file, indent(5) + ('},\n' if mesh_is_shaped else '}\n'))
-                if mesh_is_shaped:
-                    self.write(prefab_file, indent(5) + '"shape.ItemGroup":{}\n')
+                    self.write(prefab_file, indent(5) + '}\n')
                 self.write(prefab_file, indent(4) + '},\n')
                 self.write(prefab_file, indent(4) + '"materials.ItemGroup":{\n')
                 ml = len(e.obj.data.materials)
@@ -262,14 +272,15 @@ class CE_Exporter():
         #obj.modifiers.new("Triangulate", 'TRIANGULATE')
         #bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Triangulate")
 
-
         #F size4 [{material1 3xface4} array]
+        tris = []
+        for poly in m.polygons:
+            self.triangulate(poly, tris)
         self.write(file, "F")
-        file.write(struct.pack("<i", len(m.polygons)))
-        if m.uv_layers:
-            for poly in m.polygons:
-                file.write(struct.pack("<B", poly.material_index))
-                file.write(struct.pack("<iii", loop2vrt[poly.loop_indices[0]], loop2vrt[poly.loop_indices[1]], loop2vrt[poly.loop_indices[2]]))
+        file.write(struct.pack("<i", len(tris)))
+        for tri in tris:
+            file.write(struct.pack("<B", tri[0]))
+            file.write(struct.pack("<iii", loop2vrt[tri[1][0]], loop2vrt[tri[1][1]], loop2vrt[tri[1][2]]))
         
         #U size1 [uv04 array] ([uv14 array])
         if m.uv_layers:
@@ -439,6 +450,17 @@ class CE_Exporter():
             return bone.parent.matrix.inverted() @ bone.matrix
         else:
             return bone.matrix
+
+    def getobjtree (self, obj):
+        res = []
+        while obj:
+            res.append('"' + obj.name + '":"0"')
+            obj = obj.parent
+        return res
+
+    def triangulate (self, src, res):
+        for i in range(1, len(src.loop_indices)-1):
+            res.append((src.material_index, [src.loop_indices[0], src.loop_indices[i], src.loop_indices[i+1]]))
 
     def cleandir(self, path):
         if os.path.isdir(path):

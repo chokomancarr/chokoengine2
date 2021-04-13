@@ -92,13 +92,17 @@ bool _MeshSkinModifier::Apply(const VertexArray& vao_in) {
 	_tfProg->vao(vao_in);
 	_tfProg->outputs(result->buffers());
 	_tfProg->Bind();
-	glUniform1i(_tfProg->Loc(1), 1);
+	const auto& md = parent->object()->transform()->localMatrix();
+	const auto imd = md.inverse();
+	glUniformMatrix4fv(_tfProg->Loc(0), 1, false, &md[0]);
+	glUniformMatrix4fv(_tfProg->Loc(1), 1, false, &imd[0]);
+	glUniform1i(_tfProg->Loc(2), 1);
 	glActiveTexture(GL_TEXTURE1);
 	_whtIdBuf->Bind();
-	glUniform1i(_tfProg->Loc(2), 2);
+	glUniform1i(_tfProg->Loc(3), 2);
 	glActiveTexture(GL_TEXTURE2);
 	_whtBuf->Bind();
-	glUniform1i(_tfProg->Loc(3), 3);
+	glUniform1i(_tfProg->Loc(4), 3);
 	glActiveTexture(GL_TEXTURE3);
 	_matBuf->Bind();
 	_tfProg->Exec();
@@ -112,7 +116,7 @@ void _MeshSkinModifier::OnSetMesh(const Mesh& m) {}
 _MeshSkinModifier::_MeshSkinModifier() : _MeshModifier("Skinning", MeshModifierType::Skin), _matBuf(0), _whtIdBuf(0), _whtBuf(0) {
 	if (!_tfProg) {
 		(_tfProg = TransformFeedback_New(compute::skin_tf_mat, { "outPos", "outNrm", "outTgt" }))
-			->AddUniforms({ "params", "mids", "mws", "mats" });
+			->AddUniforms({ "Md", "iMd", "mids", "mws", "mats" });
 	}
 }
 

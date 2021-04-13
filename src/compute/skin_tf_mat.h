@@ -6,13 +6,12 @@ layout(location=0) in vec3 pos;
 layout(location=1) in vec3 normal;
 layout(location=2) in vec3 tangent;
 
-uniform ivec4 params;
+uniform mat4 Md; //model space to rig space
+uniform mat4 iMd;
 
 uniform isamplerBuffer mids;
 uniform samplerBuffer mws;
 uniform samplerBuffer mats;
-//uniform samplerBuffer shps;
-//uniform samplerBuffer shpWs;
 
 out vec3 outPos;
 out vec3 outNrm;
@@ -39,10 +38,8 @@ void main() {
     vec4 p = vec4(pos, 1);
     vec4 n = vec4(normal, 0);
     vec4 t = vec4(tangent, 0);
-//    for (int s = 0; s < params.y; s++) {
-//        p += texelFetch(shps, s*params.x + gid) * texelFetch(shpWs, s).r;
-//    }
     p.w = 1;
+    //p = iMd * m * Md * p;
     p = m * p;
     outPos = p.xyz / p.w;
     outNrm = normal;//m * n;
