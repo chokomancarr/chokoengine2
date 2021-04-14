@@ -12,7 +12,7 @@ public:
 	bool empty;
 	std::vector<std::pair<std::string, int>> path;
 
-	const SceneObject& Seek(const SceneObject&) const;
+	SceneObject Seek(const SceneObject&) const;
 
 	template <typename T>
 	T Seek(T, 

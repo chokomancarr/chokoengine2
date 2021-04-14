@@ -49,7 +49,7 @@ Prefab_ObjRef::Prefab_ObjRef(const JsonObject& json) : empty(false) {
 	}
 }
 
-const SceneObject& Prefab_ObjRef::Seek(const SceneObject& root) const {
+SceneObject Prefab_ObjRef::Seek(const SceneObject& root) const {
 	return Seek<SceneObject>(root,
 		[](SceneObject o) {
 			return o->name();
