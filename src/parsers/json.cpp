@@ -14,11 +14,11 @@ CE_BEGIN_NAMESPACE
 namespace {
 	struct strmSt {
 		const char* pos;
-		const char* end;
+		const char* last;
 
 		strmSt(const std::string& s) {
 			pos = s.data();
-			end = &(*s.end());
+			last = &s.back();
 		}
 
 		char next() {
@@ -32,7 +32,7 @@ namespace {
 		}
 
 		bool operator !() const {
-			return pos >= end;
+			return pos > last;
 		}
 	};
 

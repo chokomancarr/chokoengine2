@@ -200,7 +200,7 @@ class CE_Exporter():
             obj.modifiers.clear()
         else:
             while (len(obj.modifiers) > 0):
-                bpy.ops.object.modifier_apply(apply_as='DATA', modifier=obj.modifiers[0].name)
+                bpy.ops.object.modifier_apply(modifier=obj.modifiers[0].name)
 
         #extract and clean vertex data
         verts = m.vertices
@@ -270,7 +270,7 @@ class CE_Exporter():
         #obj.modifiers["EdgeSplit"].split_angle = 1.0472 #60 degrees
         #obj.modifiers["EdgeSplit"].use_edge_sharp = True
         #obj.modifiers.new("Triangulate", 'TRIANGULATE')
-        #bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Triangulate")
+        #bpy.ops.object.modifier_apply(modifier="Triangulate")
 
         #F size4 [{material1 3xface4} array]
         tris = []
